@@ -1,4 +1,4 @@
-package io.github.bootystar.util;
+package io.github.bootystar.tool;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +11,7 @@ import java.nio.channels.FileChannel;
  * @author booty
  * @date 2023/5/27 9:18
  */
-public class FileUtil {
-
+public class FileTool {
 
 
 

@@ -5,15 +5,15 @@
     <parent>
         <artifactId>common</artifactId>
         <groupId>io.github.bootystar</groupId>
-        <version>1.0.1-RELEASE</version>
+        <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>util</artifactId>
+    <artifactId>tool</artifactId>
 
     <properties>
-<!--        <maven.compiler.source>8</maven.compiler.source>-->
-<!--        <maven.compiler.target>8</maven.compiler.target>-->
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
 </project>

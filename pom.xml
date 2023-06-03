@@ -6,9 +6,9 @@
 
     <groupId>io.github.bootystar</groupId>
     <artifactId>common</artifactId>
-    <version>1.0.1-RELEASE</version>
+    <version>0.0.1</version>
     <modules>
-        <module>util</module>
+        <module>tool</module>
     </modules>
     <packaging>pom</packaging>
     <name>common</name>
@@ -100,7 +100,8 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <!--是否自动检测发布-->
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+<!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -148,9 +149,9 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
+<!--                        <configuration>-->
+<!--                            <skip>true</skip>-->
+<!--                        </configuration>-->
                     </plugin>
                 </plugins>
             </build>

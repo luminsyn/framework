@@ -1,4 +1,4 @@
-package io.github.bootystar.util;
+package io.github.bootystar.tool;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,11 +11,10 @@ import java.util.Date;
  * @author booty
  * @date 2023/5/28 11:15
  */
-public class DateUtil {
+public class DateTool {
+
     /**
      * 格式化
-     * DateTimeFormatter
-     *
      * YYYY 代表 Week Year
      * yyyy 代表year
      *
@@ -34,8 +33,6 @@ public class DateUtil {
 
     private static final ZoneId ZONE_ID = ZoneId.systemDefault();
     private static final SimpleDateFormat SDF_DATE_TIME=new SimpleDateFormat(DATE_TIME_EXPRESSION);
-    private static final SimpleDateFormat SDF_DATE=new SimpleDateFormat(DATE_TIME_EXPRESSION);
-    private static final SimpleDateFormat SDF_TIME=new SimpleDateFormat(DATE_TIME_EXPRESSION);
     private static final DateTimeFormatter DTF_LOCAL_DATE_TIME = DateTimeFormatter.ofPattern(DATE_TIME_EXPRESSION);
     private static final DateTimeFormatter DTF_LOCAL_DATE = DateTimeFormatter.ofPattern(DATE_EXPRESSION);
     private static final DateTimeFormatter DTF_LOCAL_TIME = DateTimeFormatter.ofPattern(TIME_EXPRESSION);
@@ -131,7 +128,7 @@ public class DateUtil {
     }
 
     /**
-     * 字符串转Date
+     * 字符串转Date对象
      * 格式：yyyy-MM-dd HH:mm:ss
      * @param source
      * @return
@@ -141,45 +138,52 @@ public class DateUtil {
             Date date = SDF_DATE_TIME.parse(source);
             return date;
         } catch (ParseException e) {
+            e.printStackTrace();
             throw new RuntimeException("字符格式不匹配");
         }
     }
 
     /**
-     * 字符串转Date
+     * 日期字符串转Date
      * 格式：yyyy-MM-dd
      * @param source
-     * @return
+     * @return  返回指定日期00:00:00 对应的date对象
      */
     public  static Date string2Date(String source) {
         try {
             LocalTime now = LocalTime.now();
-            String format = DTF_LOCAL_TIME.format(now);
-            Date date = SDF_DATE.parse(source+ " 00:00:00");
+            Date date = SDF_DATE_TIME.parse(source+ " 00:00:00");
             return date;
         } catch (ParseException e) {
+            e.printStackTrace();
             throw new RuntimeException("字符格式不匹配");
         }
     }
 
     /**
-     * 字符串转Time
+     * 时间字符串转Date
      * 格式：HH:mm:ss
      * @param source
-     * @return
+     * @return 返回当日 + 时间字符串 对应的date对象
      */
     public static Date string2Time(String source) {
         try {
             LocalDate now = LocalDate.now();
             String format = DTF_LOCAL_DATE.format(now);
-            Date date = SDF_TIME.parse(format+" "+source);
+            Date date = SDF_DATE_TIME.parse(format+" "+source);
             return date;
         } catch (ParseException e) {
+            e.printStackTrace();
             throw new RuntimeException("字符格式不匹配");
         }
     }
 
-
+    /**
+     * 字符串根据指定格式转Date对象
+     * @param source    要转化的字符串
+     * @param pattern   格式
+     * @return
+     */
     public static Date string2Date(String source,String pattern) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(pattern);
