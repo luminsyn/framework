@@ -9,6 +9,7 @@
     <version>0.0.1</version>
     <modules>
         <module>tool</module>
+        <module>wechat</module>
     </modules>
     <packaging>pom</packaging>
     <name>common</name>
