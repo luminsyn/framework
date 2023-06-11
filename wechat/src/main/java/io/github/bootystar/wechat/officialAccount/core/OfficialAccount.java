@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class OfficialAccount {
 
     private AccessToken accessToken;
-    private String appId;
-    private String appSecret;
+    private final String appId;
+    private final String appSecret;
     public OfficialAccount(String appId, String appSecret) {
         this.appId = appId;
         this.appSecret = appSecret;
