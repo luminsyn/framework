@@ -2,10 +2,11 @@ package io.github.bootystar.wechat.officialAccount.core;
 
 import io.github.bootystar.wechat.entity.ResponseBase;
 import io.github.bootystar.wechat.officialAccount.entity.*;
-import lombok.Data;
+import io.github.bootystar.wechat.officialAccount.enums.CgiPathEnum;
+import io.github.bootystar.wechat.officialAccount.interfaces.AccessTokenFactory;
+import lombok.SneakyThrows;
 
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 /**
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
  * @author booty
  * @date 2023/6/4 10:28
  */
-@Data
 public class OfficialAccount {
 
     private AccessToken accessToken;
@@ -25,14 +25,14 @@ public class OfficialAccount {
     }
 
 
-    /*
-    以snsapi_base为scope发起的网页授权，是用来获取进入页面的用户的openid的，并且是静默授权并自动跳转到回调页的。用户感知的就是直接进入了回调页（往往是业务页面）
-    以snsapi_userinfo为scope发起的网页授权，是用来获取用户的基本信息的。但这种授权需要用户手动同意，并且由于用户同意过，所以无须关注，就可在授权后获取该用户的基本信息
-    应用授权作用域，
-    snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid），
-    snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
-    用户同意授权后
-    如果用户同意授权，页面将跳转至 redirect_uri/?code=CODE&state=STATE
+    /**
+     *     以snsapi_base为scope发起的网页授权，是用来获取进入页面的用户的openid的，并且是静默授权并自动跳转到回调页的。用户感知的就是直接进入了回调页（往往是业务页面）
+     *     以snsapi_userinfo为scope发起的网页授权，是用来获取用户的基本信息的。但这种授权需要用户手动同意，并且由于用户同意过，所以无须关注，就可在授权后获取该用户的基本信息
+     *     应用授权作用域，
+     *     snsapi_base （不弹出授权页面，直接跳转，只能获取用户openid），
+     *     snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
+     *     用户同意授权后
+     *     如果用户同意授权，页面将跳转至 redirect_uri/?code=CODE&state=STATE
      */
     private final static String URL_OAUTH2_URL="https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect";
     public static final String SCOPE_SNSAPI_BASE = "snsapi_base";
@@ -47,9 +47,10 @@ public class OfficialAccount {
      * @author booty
      * @date 2023/06/06 15:50
      */
-    public String authorizationUrlBase(String RedirectURL){
+    @SneakyThrows
+    public String oAuth2UrlBase(String RedirectURL){
         String url = URL_OAUTH2_URL.replace("APPID", appId);
-        url = url.replace("REDIRECT_URI", URLEncoder.encode(RedirectURL, StandardCharsets.UTF_8));
+        url = url.replace("REDIRECT_URI", URLEncoder.encode(RedirectURL, "UTF-8"));
         url = url.replace("SCOPE", SCOPE_SNSAPI_BASE);
         url = url.replace("STATE", "");
         return url;
@@ -64,9 +65,10 @@ public class OfficialAccount {
      * @author booty
      * @date 2023/06/06 15:50
      */
-    public String authorizationUrlUserInfo(String RedirectURL){
+    @SneakyThrows
+    public String oAuth2UrlUserInfo(String RedirectURL){
         String url = URL_OAUTH2_URL.replace("APPID", appId);
-        url = url.replace("REDIRECT_URI", URLEncoder.encode(RedirectURL, StandardCharsets.UTF_8));
+        url = url.replace("REDIRECT_URI", URLEncoder.encode(RedirectURL, "UTF-8"));
         url = url.replace("SCOPE", SCOPE_SNSAPI_USERINFO);
         url = url.replace("STATE", "");
         return url;
@@ -82,9 +84,10 @@ public class OfficialAccount {
      * @author booty
      * @date 2023/06/06 16:03
      */
-    public String authorizationUrl(String RedirectURL,String scope,String state){
+    @SneakyThrows
+    public String oAuth2Url(String RedirectURL,String scope,String state){
         String url = URL_OAUTH2_URL.replace("APPID", appId);
-        url = url.replace("REDIRECT_URI", URLEncoder.encode(RedirectURL, StandardCharsets.UTF_8));
+        url = url.replace("REDIRECT_URI", URLEncoder.encode(RedirectURL, "UTF-8"));
         url = url.replace("SCOPE", scope);
         url = url.replace("STATE", state);
         return url;
@@ -155,6 +158,30 @@ public class OfficialAccount {
     }
 
 
+    /**
+     * 令牌工厂
+     */
+    private AccessTokenFactory accessTokenFactory;
+
+    public void setAccessTokenFactory(AccessTokenFactory accessTokenFactory) {
+        this.accessTokenFactory = accessTokenFactory;
+    }
+
+
+    /**
+     * 创建访问令牌
+     *
+     * @return {@link AccessToken }
+     * @author booty
+     * @date 2023/06/11 14:10
+     */
+    private AccessToken createAccessToken(){
+        if (this.accessTokenFactory !=null){
+            return this.accessTokenFactory.createAccessToken();
+        }
+        return AccessToken.createAccessToken(appId, appSecret);
+    }
+
 
     /**
      * 获取授权令牌
@@ -162,13 +189,28 @@ public class OfficialAccount {
      * @author booty
      * @date 2023/06/06 15:31
      */
-    public AccessToken requireAccessToken() {
+    public AccessToken getAccessToken() {
         if (this.accessToken==null){
-            this.accessToken= AccessToken.createAccessToken(appId, appSecret);
+            this.accessToken= createAccessToken();
         }
-        if (accessToken.getExpiresTime().isAfter(LocalDateTime.now())){
-            this.accessToken= AccessToken.createAccessToken(appId, appSecret);
+        if (LocalDateTime.now().isAfter(accessToken.getExpiresTime())){
+            this.accessToken= createAccessToken();
         }
+        return accessToken;
+    }
+
+
+    /**
+     * 获取稳定访问令牌
+     * 与获取Access token获取的调用凭证完全隔离，互不影响。
+     *
+     * @param refresh 是否强制更新令牌，若否，相同时间段内获取的为同一token
+     * @return {@link AccessToken }
+     * @author booty
+     * @date 2023/06/11 18:26
+     */
+    public AccessToken getStableAccessToken(boolean refresh) {
+        this.accessToken= AccessToken.createStableAccessToken(appId, appSecret,refresh);
         return accessToken;
     }
 
@@ -202,9 +244,25 @@ public class OfficialAccount {
     /**
      * 查询指定链接接口的调用次数
      * ”/xxx/sns/xxx“这类接口不支持使用该接口，会出现76022报错
-     * @return boolean
+     *
+     * @param pathEnum 路径枚举
+     * @return {@link QueryQuota }
      * @author booty
-     * @date 2023/06/08 17:51
+     * @date 2023/06/11 14:46
+     */
+    public QueryQuota queryQuota(CgiPathEnum pathEnum){
+        AccessToken accessToken = getAccessToken();
+        return QueryQuota.queryQuota(accessToken.getAccess_token(),pathEnum.url);
+    }
+
+
+    /**
+     * 查询指定链接接口的调用次数
+     * api的请求地址，例如"/cgi-bin/message/custom/send";不要前缀“https://api.weixin.qq.com” ，也不要漏了"/",否则都会76003的报错
+     * @param cgiPath cgi路径
+     * @return {@link QueryQuota }
+     * @author booty
+     * @date 2023/06/11 14:45
      */
     public QueryQuota queryQuota(String cgiPath){
         AccessToken accessToken = getAccessToken();

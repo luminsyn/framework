@@ -6,8 +6,7 @@ package io.github.bootystar.wechat.entity;
  * @Author booty
  * @Date 2023/6/8 9:43
  */
-
-public  class ResponseBase {
+public class ResponseBase {
 
     private Integer errcode;
     private String errmsg;

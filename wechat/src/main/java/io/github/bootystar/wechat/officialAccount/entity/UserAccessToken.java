@@ -1,13 +1,11 @@
 package io.github.bootystar.wechat.officialAccount.entity;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import io.github.bootystar.tool.HttpTool;
 import io.github.bootystar.tool.ObjectTool;
 import io.github.bootystar.wechat.common.exception.WechatResponseException;
 import io.github.bootystar.wechat.entity.ResponseBase;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +15,6 @@ import java.time.LocalDateTime;
  * @date 2023/6/4 10:25
  */
 @Data
-@Slf4j
 public class UserAccessToken extends ResponseBase {
     /**
      * 网页授权接口调用凭证,注意：此access_token与基础支持的access_token不同
@@ -89,13 +86,12 @@ public class UserAccessToken extends ResponseBase {
               "unionid": "UNIONID"
             }
          */
-        JSONObject jsonObject = JSON.parseObject(result);
         UserAccessToken token = JSON.parseObject(result, UserAccessToken.class);
-        // 设置过期时间
-        token.setExpiresTime(LocalDateTime.now().plusSeconds(token.getExpires_in()));
         if (ObjectTool.isEmpty(token.getAccess_token())){
             throw new WechatResponseException(token);
         }
+        // 设置过期时间
+        token.setExpiresTime(LocalDateTime.now().plusSeconds(token.getExpires_in()));
         return token;
     }
 
