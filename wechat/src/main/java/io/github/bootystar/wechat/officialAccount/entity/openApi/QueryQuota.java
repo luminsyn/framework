@@ -1,4 +1,4 @@
-package io.github.bootystar.wechat.officialAccount.entity;
+package io.github.bootystar.wechat.officialAccount.entity.openApi;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -24,7 +24,7 @@ public class QueryQuota extends ResponseBase {
     /**
      * 本接口用于清空公众号/小程序/第三方平台等接口的每日调用接口次数
      */
-    private static final String POST_CLEAR_QUOTA_URL="https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN";
+    private static final String POST_JSON_CLEAR_QUOTA_URL ="https://api.weixin.qq.com/cgi-bin/clear_quota?access_token=ACCESS_TOKEN";
 
     /**
      * 清空公众号/小程序/第三方平台等接口的每日调用接口次数
@@ -42,7 +42,7 @@ public class QueryQuota extends ResponseBase {
      * @date 2023/06/08 11:40
      */
     public static ResponseBase clearQuotaByAccessToken(String appId, String accessToken){
-        String url = POST_CLEAR_QUOTA_URL.replace("ACCESS_TOKEN", accessToken);
+        String url = POST_JSON_CLEAR_QUOTA_URL.replace("ACCESS_TOKEN", accessToken);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("appid",appId);
         String body = jsonObject.toJSONString();
@@ -84,7 +84,7 @@ public class QueryQuota extends ResponseBase {
     /**
      * 本接口用于查询公众号/小程序/第三方平台等接口的每日调用接口的额度以及调用次数
      */
-    private static final String POST_QUERY_QUOTA_URL="https://api.weixin.qq.com/cgi-bin/openapi/quota/get?access_token=ACCESS_TOKEN";
+    private static final String POST_JSON_QUERY_QUOTA_URL ="https://api.weixin.qq.com/cgi-bin/openapi/quota/get?access_token=ACCESS_TOKEN";
 
     /**
      * 查询openAPI调用配额
@@ -105,7 +105,7 @@ public class QueryQuota extends ResponseBase {
      * @date 2023/06/08 17:06
      */
     public static QueryQuota queryQuota(String accessToken,String cgiPath){
-        String url = POST_QUERY_QUOTA_URL.replace("ACCESS_TOKEN", accessToken);
+        String url = POST_JSON_QUERY_QUOTA_URL.replace("ACCESS_TOKEN", accessToken);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("cgi_path",cgiPath);
         String body = jsonObject.toJSONString();

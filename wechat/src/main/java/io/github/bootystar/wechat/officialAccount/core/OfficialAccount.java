@@ -2,6 +2,10 @@ package io.github.bootystar.wechat.officialAccount.core;
 
 import io.github.bootystar.wechat.entity.ResponseBase;
 import io.github.bootystar.wechat.officialAccount.entity.*;
+import io.github.bootystar.wechat.officialAccount.entity.menu.Menu;
+import io.github.bootystar.wechat.officialAccount.entity.menu.MenuQuery;
+import io.github.bootystar.wechat.officialAccount.entity.openApi.QueryQuota;
+import io.github.bootystar.wechat.officialAccount.entity.openApi.Rid;
 import io.github.bootystar.wechat.officialAccount.enums.CgiPathEnum;
 import io.github.bootystar.wechat.officialAccount.interfaces.AccessTokenFactory;
 import lombok.SneakyThrows;
@@ -283,6 +287,45 @@ public class OfficialAccount {
         return Rid.queryRid(accessToken.getAccess_token(),rid);
     }
 
+
+    /**
+     * 创建/调整菜单内容
+     *
+     * @param menu 菜单
+     * @return {@code ResponseBase }
+     * @author booty
+     * @date 2023/06/13 10:34
+     */
+    public ResponseBase adjustMenu(Menu menu){
+        return Menu.createMenu(getAccessToken().getAccess_token(), menu);
+    }
+
+
+    /**
+     * 查询菜单
+     *
+     * @return {@code MenuQuery }
+     * @author booty
+     * @date 2023/06/13 11:01
+     */
+    public MenuQuery queryMenu(){
+        return Menu.queryMenu(getAccessToken().getAccess_token());
+    }
+
+
+    /**
+     * 删除菜单
+     *
+     * @return {@code ResponseBase }
+     * @author booty
+     * @date 2023/06/13 11:01
+     */
+    public ResponseBase deleteMenu(){
+        return Menu.deleteMenu(getAccessToken().getAccess_token());
+    }
+
+
+    // todo 封装事件推送相关代码
 
 
 

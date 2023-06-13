@@ -1,4 +1,4 @@
-package io.github.bootystar.wechat.officialAccount.entity;
+package io.github.bootystar.wechat.officialAccount.entity.openApi;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -18,7 +18,7 @@ public class Rid extends ResponseBase {
      * rid对应的请求详情
      */
     private Request request;
-    private static final String POST_QUERY_RID="https://api.weixin.qq.com/cgi-bin/openapi/rid/get?access_token=ACCESS_TOKEN";
+    private static final String POST_JSON_QUERY_RID ="https://api.weixin.qq.com/cgi-bin/openapi/rid/get?access_token=ACCESS_TOKEN";
 
 
     /**
@@ -31,7 +31,7 @@ public class Rid extends ResponseBase {
      * @date 2023/06/08 17:22
      */
     public static Rid queryRid(String accessToken,String rid){
-        String url = POST_QUERY_RID.replace("ACCESS_TOKEN", accessToken);
+        String url = POST_JSON_QUERY_RID.replace("ACCESS_TOKEN", accessToken);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("rid",rid);
         String body = jsonObject.toJSONString();

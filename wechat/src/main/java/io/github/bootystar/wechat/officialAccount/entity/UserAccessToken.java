@@ -95,7 +95,7 @@ public class UserAccessToken extends ResponseBase {
         return token;
     }
 
-    private static final String CHECK_PERSONAL_TOKEN_URL="https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID";
+    private static final String GET_CHECK_PERSONAL_TOKEN_URL ="https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID";
 
 
     /**
@@ -109,7 +109,7 @@ public class UserAccessToken extends ResponseBase {
      * @date 2023/06/08 10:51
      */
     public static ResponseBase checkUserAccessToken(String token,String openId){
-        String url = CHECK_PERSONAL_TOKEN_URL.replace("ACCESS_TOKEN", token).replace("OPENID",openId);
+        String url = GET_CHECK_PERSONAL_TOKEN_URL.replace("ACCESS_TOKEN", token).replace("OPENID",openId);
         String result = HttpTool.doGet(url);
         /*
         { "errcode":0,"errmsg":"ok"}
