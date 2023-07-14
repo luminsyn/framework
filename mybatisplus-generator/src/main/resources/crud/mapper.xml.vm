@@ -52,17 +52,17 @@
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
             </if>
             <if test="dto.${field.propertyName}Like !=null and dto.${field.propertyName}Like.length()>0">
-                and a.${field.columnName} like concat('${shift5}',concat(${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight},'${shift5}'))
+                and a.${field.columnName} like concat('${shift5}',concat(${shift3}${shiftLeft}dto.${field.propertyName}Like${shiftRight},'${shift5}'))
             </if>
         #elseif(${field.propertyType} == "LocalDateTime")
             <if test="dto.${field.propertyName}!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
             </if>
             <if test="dto.${field.propertyName}Start!=null">
-                and a.${field.columnName} &gt;= ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+                and a.${field.columnName} &gt;= ${shift3}${shiftLeft}dto.${field.propertyName}Start${shiftRight}
             </if>
             <if test="dto.${field.propertyName}End!=null">
-                and a.${field.columnName} &lt;= ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+                and a.${field.columnName} &lt;= ${shift3}${shiftLeft}dto.${field.propertyName}End${shiftRight}
             </if>
         #elseif(${field.propertyType} == "Integer" && ${field.metaInfo.length}<3)
             <if test="dto.${field.propertyName}!=null">

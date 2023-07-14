@@ -23,6 +23,7 @@ public class CrudGenerator extends BaseGenerator {
         CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/crud/entityUpdateDto.java.vm").packageName("dto").build();
         CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/crud/entitySelectDto.java.vm").packageName("dto").build();
         CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/crud/entityVo.java.vm").packageName("vo").build();
+        strategyConfigBuilder.controllerBuilder().enableRestStyle();
         injectionConfigBuilder.customFile(Arrays.asList(InsertDto,updateDto,selectDto,vo));
         templateConfigBuilder.controller("/crud/controller.java");
         templateConfigBuilder.service("/crud/service.java");
