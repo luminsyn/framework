@@ -1,0 +1,40 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+import ${basePackage}.dto.${entity}InsertDto;
+import ${basePackage}.dto.${entity}UpdateDto;
+
+#if(${pageByDto})
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import ${basePackage}.dto.${entity}SelectDto;
+import ${basePackage}.vo.${entity}Vo;
+#end
+import java.io.Serializable;
+
+/**
+ * $!{table.comment} 服务类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+    ${entity} insertByDto(${entity}InsertDto dto);
+
+    boolean updateByDto(${entity}UpdateDto dto);
+
+    #if(${pageByDto})
+    ${entity}Vo getVoById(Serializable id);
+
+    IPage<${entity}Vo> pageByDto(${entity}SelectDto dto);
+
+    #if(${exportExcel})
+    void exportExcel(${entity}SelectDto dto);
+    #end
+    #end
+}
+#end

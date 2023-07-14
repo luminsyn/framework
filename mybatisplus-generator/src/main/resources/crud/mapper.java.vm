@@ -1,0 +1,34 @@
+package ${package.Mapper};
+
+import ${package.Entity}.${entity};
+import ${superMapperClassPackage};
+#if(${mapperAnnotationClass})
+import ${mapperAnnotationClass.name};
+#end
+#if(${pageByDto})
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
+import ${basePackage}.dto.${entity}SelectDto;
+import ${basePackage}.vo.${entity}Vo;
+#end
+
+/**
+ * $!{table.comment} Mapper 接口
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${mapperAnnotationClass})
+@${mapperAnnotationClass.simpleName}
+#end
+#if(${kotlin})
+interface ${table.mapperName} : ${superMapperClass}<${entity}>
+#else
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+
+    #if(${pageByDto})
+    IPage<${entity}Vo> pageByDto(@Param("dto")${entity}SelectDto dto,Page<${entity}Vo> page);
+    #end
+}
+#end

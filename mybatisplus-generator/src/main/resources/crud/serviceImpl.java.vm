@@ -1,0 +1,145 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import org.springframework.stereotype.Service;
+import org.springframework.beans.BeanUtils;
+#if(${pageByDto})
+#if(${exportExcel})
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import com.alibaba.excel.EasyExcel;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
+#end
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import ${basePackage}.dto.${entity}SelectDto;
+import ${basePackage}.vo.${entity}Vo;
+#end
+import java.io.Serializable;
+import java.util.List;
+
+import ${basePackage}.dto.${entity}InsertDto;
+import ${basePackage}.dto.${entity}UpdateDto;
+
+
+/**
+ * $!{table.comment} 服务实现类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>() implements ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+    @Override
+    public ${entity} insertByDto(${entity}InsertDto dto){
+        ${entity} entity = new ${entity}();
+        BeanUtils.copyProperties(dto,entity);
+        // 字段检查,额外赋值
+
+        super.save(entity);
+        return entity;
+    }
+
+    @Override
+    public boolean updateByDto(${entity}UpdateDto dto){
+        ${entity} entity = new ${entity}();
+        BeanUtils.copyProperties(dto,entity);
+        // 字段检查,额外赋值
+
+        return super.updateById(entity);
+    }
+
+    @Override
+    public boolean removeById(Serializable id){
+        // 删除前检查
+
+        return super.removeById(id);
+    }
+
+    #if(${pageByDto})
+    @Override
+    public ${entity}Vo getVoById(Serializable id){
+        ${entity}SelectDto dto = new ${entity}SelectDto();
+        dto.setPrimaryKey(id);
+        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,null);
+        List<${entity}Vo> records = result.getRecords();
+        this.voPostProcess(records);
+        return records==null||records.size()==0?null:records.get(0);
+    }
+
+    @Override
+    public IPage<${entity}Vo> pageByDto(${entity}SelectDto dto){
+        Page<${entity}Vo> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
+        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,page);
+        this.voPostProcess(result.getRecords());
+        return result;
+    }
+
+    /**
+     * vo后置处理操作
+     *
+     * @author ${author}
+     * @date ${nowTime}
+     * @param voList Vo列表
+     */
+    private void voPostProcess(List<${entity}Vo> voList){
+        if(voList==null || voList.size()==0){
+            return;
+        }
+        // 更新状态\数据拼接
+
+    }
+
+    #if(${exportExcel})
+    @Override
+    public void exportExcel(${entity}SelectDto dto){
+        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,null);
+        List<${entity}Vo> records = result.getRecords();
+        this.voPostProcess(records);
+        String fileName= "$!{table.comment}"+"${date}"+".xlsx";
+        fileName = convertFileName(fileName);
+        try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
+            EasyExcel.write(outputStream,${entity}Vo.class).sheet().doWrite(records);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static String convertFileName(String fileName) {
+        try {
+            return new String(URLEncoder.encode(fileName, "UTF-8").getBytes(), StandardCharsets.ISO_8859_1);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static HttpServletResponse getResponse4excel(String fileName){
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletResponse response = requestAttributes.getResponse();
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+        response.addHeader("Pargam", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        return response;
+    }
+
+    #end
+    #end
+}
+#end

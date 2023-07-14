@@ -10,6 +10,7 @@
     <modules>
         <module>tool</module>
         <module>wechat</module>
+        <module>mybatisplus-generator</module>
     </modules>
     <packaging>pom</packaging>
     <name>common</name>
