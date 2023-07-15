@@ -162,9 +162,9 @@ public class ${table.controllerName} {
     #end
     @GetMapping("/getById/{id}")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}>#end getById(@PathVariable Long id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}>#end getById(@PathVariable Serializable id){
     #else
-    public Object getById(@PathVariable Long id){
+    public Object getById(@PathVariable Serializable id){
     #end
         ${entity} result = baseService.getById(id);
     #if(${returnResultClass})
@@ -189,9 +189,9 @@ public class ${table.controllerName} {
     #end
     @GetMapping("/getVoById/{id}")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end getVoById(@PathVariable Long id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end getVoById(@PathVariable Serializable id){
     #else
-    public Object getVoById(@PathVariable Long id){
+    public Object getVoById(@PathVariable Serializable id){
     #end
         ${entity}Vo result = baseService.getVoById(id);
     #if(${returnResultClass})

@@ -74,7 +74,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public ${entity}Vo getVoById(Serializable id){
         ${entity}SelectDto dto = new ${entity}SelectDto();
         dto.setPrimaryKey(id);
-        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,null);
+        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,new Page<>(1L,1L));
         List<${entity}Vo> records = result.getRecords();
         this.voPostProcess(records);
         return records==null||records.size()==0?null:records.get(0);
@@ -106,10 +106,10 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${exportExcel})
     @Override
     public void exportExcel(${entity}SelectDto dto){
-        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,null);
+        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,new Page<>(1L,-1L));
         List<${entity}Vo> records = result.getRecords();
         this.voPostProcess(records);
-        String fileName= "$!{table.comment}"+"${date}"+".xlsx";
+        String fileName= "$!{table.comment}.xlsx";
         fileName = convertFileName(fileName);
         try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
             EasyExcel.write(outputStream,${entity}Vo.class).sheet().doWrite(records);
@@ -118,7 +118,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         }
     }
 
-    public static String convertFileName(String fileName) {
+    private static String convertFileName(String fileName) {
         try {
             return new String(URLEncoder.encode(fileName, "UTF-8").getBytes(), StandardCharsets.ISO_8859_1);
         } catch (UnsupportedEncodingException e) {
@@ -127,7 +127,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         }
     }
 
-    public static HttpServletResponse getResponse4excel(String fileName){
+    private static HttpServletResponse getResponse4excel(String fileName){
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = requestAttributes.getResponse();
         response.setContentType("application/vnd.ms-excel");

@@ -54,22 +54,41 @@ public class ${entity}SelectDto {
 
     private static final long serialVersionUID = 1L;
 #end
+    #if(${springdoc})
+    @Schema(description = "主键id")
+    #elseif(${swagger})
+    @ApiModelProperty("主键id")
+    #else
     /**
      * 主键id
      */
+    #end
     private Serializable primaryKey;
+    #if(${springdoc})
+    @Schema(description = "当前页码")
+    #elseif(${swagger})
+    @ApiModelProperty("当前页码")
+    #else
     /**
      * 当前页码
      */
+    #end
     private Long currentPage = 1L;
+    #if(${springdoc})
+    @Schema(description = "每页大小")
+    #elseif(${swagger})
+    @ApiModelProperty("每页大小")
+    #else
     /**
      * 每页大小
      */
+    #end
     private Long pageSize = 10L;
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
 #else
+
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")

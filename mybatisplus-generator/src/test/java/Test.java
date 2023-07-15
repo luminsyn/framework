@@ -1,3 +1,4 @@
+import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
 

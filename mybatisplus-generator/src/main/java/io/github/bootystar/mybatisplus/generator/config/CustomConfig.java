@@ -219,6 +219,21 @@ public class CustomConfig {
         }
 
         /**
+         * 返回结果类
+         *
+         * @param fullClassName 返回结果类
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/13 16:12
+         */
+        public Builder returnResultClass(@NotNull String fullClassName){
+            this.customConfig.returnResultClassPackage= fullClassName;
+            this.customConfig.returnResultClass=ClassUtils.getSimpleName(fullClassName);
+            return this;
+        }
+
+
+        /**
          * 返回结果是否为泛型类型
          *
          * @param isGenericType 是泛型类型
