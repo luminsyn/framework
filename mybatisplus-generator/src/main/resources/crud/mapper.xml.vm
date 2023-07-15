@@ -64,7 +64,7 @@
             <if test="dto.${field.propertyName}End!=null">
                 and a.${field.columnName} &lt;= ${shift3}${shiftLeft}dto.${field.propertyName}End${shiftRight}
             </if>
-        #elseif(${field.propertyType} == "Integer" && ${field.metaInfo.length}<3)
+        #elseif(${field.propertyType} == "Integer")
             <if test="dto.${field.propertyName}!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
             </if>

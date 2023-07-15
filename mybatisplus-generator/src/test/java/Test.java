@@ -16,7 +16,7 @@ public class Test {
         BaseGenerator generator = new CrudGenerator(url, username, password);
 
         generator.globalConfigBuilder()
-                .outputDir(System.getProperty("user.dir")+ "/mybatisplus-generator/src/main/java");  // 指定输出目录
+                .outputDir(System.getProperty("user.dir")+ "/mybatisplus-generator/src/test/java");  // 指定输出目录
 
         generator.packageConfigBuilder().parent("com.test");
 

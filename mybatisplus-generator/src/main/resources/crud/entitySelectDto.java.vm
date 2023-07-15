@@ -9,6 +9,12 @@ import javax.validation.constraints.Size;
         #break
     #end
 #end
+#foreach($field in ${table.fields})
+    #if(${field.propertyType}=="Integer")
+import java.util.List;
+        #break
+    #end
+#end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
@@ -55,11 +61,11 @@ public class ${entity}SelectDto {
     /**
      * 当前页码
      */
-    private Long currentPage;
+    private Long currentPage = 1L;
     /**
      * 每页大小
      */
-    private Long pageSize;
+    private Long pageSize = 10L;
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
@@ -118,7 +124,7 @@ public class ${entity}SelectDto {
     #end
     private ${field.propertyType} ${field.propertyName}End;
 ## int类型长度小于3时追加in查询
-#elseif(${field.propertyType} == "Integer" && ${field.metaInfo.length}<3)
+#elseif(${field.propertyType} == "Integer")
 
     #if(${springdoc})
     @Schema(description = "${field.comment}批量查询")
@@ -263,9 +269,9 @@ public class ${entity}SelectDto {
     #end
     }
 
-    #elseif(${field.propertyType} == "Integer" && ${field.metaInfo.length}<3)
+    #elseif(${field.propertyType} == "Integer")
 ##  int批量查询getter and setter
-    public ${field.propertyType} ${getprefix}${field.capitalName}List() {
+    public List<${field.propertyType}> ${getprefix}${field.capitalName}List() {
         return ${field.propertyName}List;
     }
 
