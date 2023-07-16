@@ -52,7 +52,6 @@ public class CrudGenerator extends BaseGenerator {
         TemplateConfig templateConfig = templateConfigBuilder.build();
 
 
-
         CustomConfig customConfig = customConfigBuilder.build();
         String dtoPackage = customConfig.getDtoPackage();
         String voPackage = customConfig.getVoPackage();

@@ -27,7 +27,11 @@ public class Test {
                 .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
         ;  // 指定输出目录
-
+        generator
+                .customConfigBuilder()
+                .dtoPackage("dto.cs")
+                .voPackage("vo.cs")
+        ;
 
         generator.strategyConfigBuilder()
                 .controllerBuilder()
