@@ -6,11 +6,11 @@
 
     <groupId>io.github.bootystar</groupId>
     <artifactId>common</artifactId>
-    <version>0.0.1</version>
+    <version>${revision}</version>
     <modules>
         <module>tool</module>
         <module>wechat</module>
-        <module>mybatisplus-generator</module>
+        <module>mybatis-plus-generator</module>
     </modules>
 
     <properties>
@@ -55,13 +55,6 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-
-
-
-
-
-
-
 
 
     <dependencies>
