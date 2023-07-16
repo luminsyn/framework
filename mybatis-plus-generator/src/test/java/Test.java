@@ -23,7 +23,8 @@ public class Test {
 
         generator
                 .globalConfigBuilder()
-                .outputDir(projectPath+ "/mybatisplus-generator/src/test/java")
+                .enableSwagger()
+                .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
         ;  // 指定输出目录
 
@@ -37,7 +38,7 @@ public class Test {
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
-                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatisplus-generator/src/test/resources/xml"))
+                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
 
         ;
 
