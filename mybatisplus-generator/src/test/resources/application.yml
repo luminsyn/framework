@@ -10,9 +10,9 @@ spring:
     username: root
     password: root
 mybatis-plus:
-  mapper-locations: classpath:xml/*Mapper.xml
-  mapper-base-package: com.test.mapper
+  mapper-locations: xml/*Mapper.xml
+  mapper-base-package: bootystar.test.mapper
 logging:
   level:
     root: info
-    com.test.mapper: debug
+    bootystar.test.mapper: debug

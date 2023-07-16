@@ -88,7 +88,14 @@ public class CustomConfig {
     private String shiftLeft="{";
     private String shiftRight="}";
 
-
+    /**
+     * vo所在包
+     */
+    private String voPackage = "vo";
+    /**
+     * dto所在包
+     */
+    private String dtoPackage = "dto";
 
     /**
      * 不对外爆露
@@ -97,6 +104,73 @@ public class CustomConfig {
 
     }
 
+    public String getReturnResultClass() {
+        return returnResultClass;
+    }
+
+    public String getReturnResultClassPackage() {
+        return returnResultClassPackage;
+    }
+
+    public Boolean getReturnResultGenericType() {
+        return returnResultGenericType;
+    }
+
+    public String getReturnResultDefaultStaticMethodName() {
+        return returnResultDefaultStaticMethodName;
+    }
+
+    public Boolean getPageByDto() {
+        return pageByDto;
+    }
+
+    public Boolean getExportExcel() {
+        return exportExcel;
+    }
+
+    public List<String> getInsertExcludeFields() {
+        return insertExcludeFields;
+    }
+
+    public List<String> getUpdateExcludeFields() {
+        return updateExcludeFields;
+    }
+
+    public List<String> getSelectExcludeFields() {
+        return selectExcludeFields;
+    }
+
+    public String getShift3() {
+        return shift3;
+    }
+
+    public String getShift4() {
+        return shift4;
+    }
+
+    public String getShift5() {
+        return shift5;
+    }
+
+    public String getShift8() {
+        return shift8;
+    }
+
+    public String getShiftLeft() {
+        return shiftLeft;
+    }
+
+    public String getShiftRight() {
+        return shiftRight;
+    }
+
+    public String getVoPackage() {
+        return voPackage;
+    }
+
+    public String getDtoPackage() {
+        return dtoPackage;
+    }
 
     /**
      * 呈现数据
@@ -365,7 +439,15 @@ public class CustomConfig {
         }
 
 
+        public Builder voPackage(@NotNull String  voPackage){
+            this.customConfig.voPackage=voPackage;
+            return this;
+        }
 
+        public Builder dtoPackage(@NotNull String dtoPackage){
+            this.customConfig.dtoPackage=dtoPackage;
+            return this;
+        }
 
         /**
          * 构建模板配置对象

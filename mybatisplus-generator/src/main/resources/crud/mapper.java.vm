@@ -9,8 +9,8 @@ import ${mapperAnnotationClass.name};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import ${basePackage}.dto.${entity}SelectDto;
-import ${basePackage}.vo.${entity}Vo;
+import ${basePackage}.${dtoPackage}.${entity}SelectDto;
+import ${basePackage}.${voPackage}.${entity}Vo;
 #end
 
 /**

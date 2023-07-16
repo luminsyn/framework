@@ -2,13 +2,13 @@ package ${package.Service};
 
 import ${package.Entity}.${entity};
 import ${superServiceClassPackage};
-import ${basePackage}.dto.${entity}InsertDto;
-import ${basePackage}.dto.${entity}UpdateDto;
+import ${basePackage}.${dtoPackage}.${entity}InsertDto;
+import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 
 #if(${pageByDto})
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import ${basePackage}.dto.${entity}SelectDto;
-import ${basePackage}.vo.${entity}Vo;
+import ${basePackage}.${dtoPackage}.${entity}SelectDto;
+import ${basePackage}.${voPackage}.${entity}Vo;
 #end
 import java.io.Serializable;
 

@@ -1,6 +1,10 @@
+import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
+
+import java.util.Collections;
+import java.util.Map;
 
 
 /**
@@ -14,13 +18,28 @@ public class Test {
     private static String username ="root";
     private static String password ="root";
     public static void main(String[] args) {
+        String projectPath = System.getProperty("user.dir");
         BaseGenerator generator = new CrudGenerator(url, username, password);
 
-        generator.globalConfigBuilder()
-                .outputDir(System.getProperty("user.dir")+ "/mybatisplus-generator/src/test/java");  // 指定输出目录
+        generator
+                .globalConfigBuilder()
+                .outputDir(projectPath+ "/mybatisplus-generator/src/test/java")
 
-        generator.packageConfigBuilder().parent("com.test");
+        ;  // 指定输出目录
 
+
+        generator.strategyConfigBuilder()
+                .controllerBuilder()
+                .enableFileOverride()
+
+                ;
+
+        generator
+                .packageConfigBuilder()
+                .parent("bootystar.test")
+                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatisplus-generator/src/test/resources/xml"))
+
+        ;
 
         generator.execute("cc_app_user");
     }

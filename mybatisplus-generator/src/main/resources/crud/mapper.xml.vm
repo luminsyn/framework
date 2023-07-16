@@ -45,9 +45,7 @@
         ${schemaName} ${table.name} a
         <where>
 #foreach($field in ${table.fields})
-    #if($selectExcludeFields.contains(${field.propertyName}))
-    #else
-        #if(${field.keyFlag})
+    #if(${field.keyFlag})
             <if test="dto.primaryKey!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.primaryKey${shiftRight}
             </if>
@@ -57,7 +55,8 @@
                     ${shift3}${shiftLeft}prop${shiftRight}
                 </foreach>
             </if>
-        #end
+    #elseif($selectExcludeFields.contains(${field.propertyName}))
+    #else
         #if(${field.propertyType} == "String")
             <if test="dto.${field.propertyName}!=null and dto.${field.propertyName}.length()>0">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}

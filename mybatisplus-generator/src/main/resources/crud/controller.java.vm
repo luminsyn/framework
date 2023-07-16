@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.validation.annotation.Validated;
 import ${package.Service}.${table.serviceName};
 import ${package.Entity}.${entity};
-import ${basePackage}.dto.${entity}InsertDto;
-import ${basePackage}.dto.${entity}UpdateDto;
-import ${basePackage}.dto.${entity}SelectDto;
-import ${basePackage}.vo.${entity}Vo;
+import ${basePackage}.${dtoPackage}.${entity}InsertDto;
+import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 import java.io.Serializable;
 #if(${returnResultClass})
 import ${returnResultClassPackage};
@@ -38,6 +36,8 @@ import ${superControllerClassPackage};
 #end
 #if(${pageByDto})
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import ${basePackage}.${dtoPackage}.${entity}SelectDto;
+import ${basePackage}.${voPackage}.${entity}Vo;
 #end
 
 /**

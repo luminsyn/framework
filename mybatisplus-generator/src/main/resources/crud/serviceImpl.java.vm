@@ -19,14 +19,14 @@ import java.io.UnsupportedEncodingException;
 #end
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import ${basePackage}.dto.${entity}SelectDto;
-import ${basePackage}.vo.${entity}Vo;
+import ${basePackage}.${dtoPackage}.${entity}SelectDto;
+import ${basePackage}.${voPackage}.${entity}Vo;
 #end
 import java.io.Serializable;
 import java.util.List;
 
-import ${basePackage}.dto.${entity}InsertDto;
-import ${basePackage}.dto.${entity}UpdateDto;
+import ${basePackage}.${dtoPackage}.${entity}InsertDto;
+import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 
 
 /**
@@ -74,9 +74,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public ${entity}Vo getVoById(Serializable id){
         ${entity}SelectDto dto = new ${entity}SelectDto();
         dto.setPrimaryKey(id);
-        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,new Page<>(1L,1L));
+        dto.setPageSize(-1L);
+        IPage<${entity}Vo> result = this.pageByDto(dto);
         List<${entity}Vo> records = result.getRecords();
-        this.voPostProcess(records);
         return records==null||records.size()==0?null:records.get(0);
     }
 
@@ -106,9 +106,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${exportExcel})
     @Override
     public void exportExcel(${entity}SelectDto dto){
-        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,new Page<>(1L,-1L));
+        dto.setPageSize(-1L);
+        IPage<${entity}Vo> result = this.pageByDto(dto);
         List<${entity}Vo> records = result.getRecords();
-        this.voPostProcess(records);
         String fileName= "$!{table.comment}.xlsx";
         fileName = convertFileName(fileName);
         try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
