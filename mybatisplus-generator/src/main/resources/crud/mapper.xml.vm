@@ -51,6 +51,12 @@
             <if test="dto.primaryKey!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.primaryKey${shiftRight}
             </if>
+            <if test="dto.${field.propertyName}List!=null and dto.${field.propertyName}List.size()>0">
+                and a.${field.columnName} in
+                <foreach collection="dto.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                    ${shift3}${shiftLeft}prop${shiftRight}
+                </foreach>
+            </if>
         #end
         #if(${field.propertyType} == "String")
             <if test="dto.${field.propertyName}!=null and dto.${field.propertyName}.length()>0">

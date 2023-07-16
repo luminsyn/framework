@@ -11,7 +11,8 @@ import javax.validation.constraints.Size;
 #end
 #foreach($field in ${table.fields})
     #if(${field.propertyType}=="Integer")
-import java.util.List;
+    import java.io.Serializable;
+    import java.util.List;
         #break
     #end
 #end
@@ -75,12 +76,12 @@ public class ${entity}SelectDto {
     #end
     private Long currentPage = 1L;
     #if(${springdoc})
-    @Schema(description = "每页大小")
+    @Schema(description = "每页大小|-1检索全部")
     #elseif(${swagger})
-    @ApiModelProperty("每页大小")
+    @ApiModelProperty("每页大小|-1检索全部")
     #else
     /**
-     * 每页大小
+     * 每页大小|-1检索全部
      */
     #end
     private Long pageSize = 10L;
@@ -104,8 +105,20 @@ public class ${entity}SelectDto {
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
     #end
     private ${field.propertyType} ${field.propertyName};
+#if(${field.keyFlag})
+
+    #if(${springdoc})
+    @Schema(description = "${field.comment}批量查询")
+    #elseif(${swagger})
+    @ApiModelProperty("${field.comment}批量查询")
+    #else
+    /**
+     * ${field.comment}批量查询
+     */
+    #end
+    private List<${field.propertyType}> ${field.propertyName}List;
 ## String类型追加模糊查询
-#if(${field.propertyType} == "String")
+#elseif(${field.propertyType} == "String")
 
     #if(${springdoc})
     @Schema(description = "${field.comment}模糊查询")
@@ -238,7 +251,24 @@ public class ${entity}SelectDto {
   #end
     }
 
-    #if(${field.propertyType} == "String")
+    #if(${field.keyFlag})
+    ##  主键批量查询getter and setter
+    public List<${field.propertyType}> ${getprefix}${field.capitalName}List() {
+        return ${field.propertyName}List;
+    }
+
+    #if(${chainModel})
+    public ${entity} set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    #else
+    public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    #end
+        this.${field.propertyName}List = ${field.propertyName};
+    #if(${chainModel})
+        return this;
+    #end
+    }
+
+    #elseif(${field.propertyType} == "String")
 ##  模糊字段getter and setter
     public ${field.propertyType} ${getprefix}${field.capitalName}Like() {
         return ${field.propertyName}Like;
