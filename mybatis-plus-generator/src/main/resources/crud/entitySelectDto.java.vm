@@ -11,8 +11,7 @@ import javax.validation.constraints.Size;
 #end
 #foreach($field in ${table.fields})
     #if(${field.propertyType}=="Integer")
-    import java.io.Serializable;
-    import java.util.List;
+import java.util.List;
         #break
     #end
 #end
@@ -54,6 +53,7 @@ public class ${entity}SelectDto {
 #if(${entitySerialVersionUID})
 
     private static final long serialVersionUID = 1L;
+
 #end
     #if(${springdoc})
     @Schema(description = "主键id")
@@ -64,24 +64,24 @@ public class ${entity}SelectDto {
      * 主键id
      */
     #end
-    private Serializable primaryKey;
+    private Object primaryKey;
     #if(${springdoc})
-    @Schema(description = "当前页码")
+    @Schema(description = "当前页码(默认1)")
     #elseif(${swagger})
-    @ApiModelProperty("当前页码")
+    @ApiModelProperty("当前页码(默认1)")
     #else
     /**
-     * 当前页码
+     * 当前页码(默认1)
      */
     #end
     private Long currentPage = 1L;
     #if(${springdoc})
-    @Schema(description = "每页大小|-1检索全部")
+    @Schema(description = "每页大小(默认10,-1检索全部)")
     #elseif(${swagger})
-    @ApiModelProperty("每页大小|-1检索全部")
+    @ApiModelProperty("每页大小(默认10,-1检索全部)")
     #else
     /**
-     * 每页大小|-1检索全部
+     * 每页大小(默认10,-1检索全部)
      */
     #end
     private Long pageSize = 10L;
@@ -131,8 +131,8 @@ public class ${entity}SelectDto {
     #end
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
     private ${field.propertyType} ${field.propertyName}Like;
-## LocalDateTime类型追加时间段查询
-#elseif(${field.propertyType} == "LocalDateTime")
+## 时间类型追加时间段查询
+#elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
 
     #if(${springdoc})
     @Schema(description = "${field.comment}时间段查询(开始)")
@@ -174,6 +174,7 @@ public class ${entity}SelectDto {
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
     #if(${chainModel})
+
     public Serializable getPrimaryKey() {
         return primaryKey;
     }
@@ -201,11 +202,12 @@ public class ${entity}SelectDto {
         return this;
     }
     #else
-    public Serializable getPrimaryKey() {
+
+    public Object getPrimaryKey() {
         return primaryKey;
     }
 
-    public void setPrimaryKey(Serializable primaryKey) {
+    public void setPrimaryKey(Object primaryKey) {
         this.primaryKey = primaryKey;
     }
 
@@ -285,7 +287,7 @@ public class ${entity}SelectDto {
     #end
     }
 
-    #elseif(${field.propertyType} == "LocalDateTime")
+    #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
 ##  日期开始getter and setter
     public ${field.propertyType} ${getprefix}${field.capitalName}Start() {
         return ${field.propertyName}Start;

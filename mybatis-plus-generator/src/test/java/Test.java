@@ -1,4 +1,5 @@
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
@@ -29,8 +30,13 @@ public class Test {
         ;  // 指定输出目录
         generator
                 .customConfigBuilder()
-                .dtoPackage("dto.cs")
-                .voPackage("vo.cs")
+                .dtoPackage("dto")
+                .voPackage("vo")
+        ;
+        generator.strategyConfigBuilder()
+                .entityBuilder()
+//                .disableSerialVersionUID()
+//                .columnNaming(NamingStrategy.no_change)
         ;
 
         generator.strategyConfigBuilder()
@@ -42,7 +48,15 @@ public class Test {
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
-                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
+//                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
+        ;
+
+        generator
+                .customConfigBuilder()
+                .voResultMap(true)
+                .orderColumn("age",true)
+                .orderColumn("name", false)
+                .orderColumn("id_card", true)
 
         ;
 

@@ -87,6 +87,13 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
                 outputService(tableInfo, objectMap);
                 // controller
                 outputController(tableInfo, objectMap);
+
+
+                Optional.ofNullable(customConfig).ifPresent(t -> {
+                    // 输出自定义文件
+                    outputCustomFile(t.getCustomFiles(), tableInfo, objectMap);
+                });
+
             });
         } catch (Exception e) {
             throw new RuntimeException("无法创建文件，请检查配置信息！", e);

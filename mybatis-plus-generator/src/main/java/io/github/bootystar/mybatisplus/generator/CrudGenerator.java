@@ -6,7 +6,6 @@ import io.github.bootystar.mybatisplus.generator.config.CustomConfig;
 import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * @Author booty
@@ -37,7 +36,8 @@ public class CrudGenerator extends BaseGenerator {
         customConfigBuilder.exportExcel(true);
         customConfigBuilder.insertExcludeField("createTime","updateTime","version");
         customConfigBuilder.updateExcludeField("createTime","updateTime");
-        customConfigBuilder.selectExcludeField("version");
+        customConfigBuilder.orderColumn("create_time",true);
+        customConfigBuilder.voExtendsEntity(true);
     }
 
     @Override
@@ -51,17 +51,18 @@ public class CrudGenerator extends BaseGenerator {
 
         TemplateConfig templateConfig = templateConfigBuilder.build();
 
+        InjectionConfig injectionConfig = injectionConfigBuilder.build();
+
 
         CustomConfig customConfig = customConfigBuilder.build();
         String dtoPackage = customConfig.getDtoPackage();
         String voPackage = customConfig.getVoPackage();
-
         CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();
         CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/crud/entityUpdateDto.java.vm").packageName(dtoPackage).build();
         CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/crud/entitySelectDto.java.vm").packageName(dtoPackage).build();
         CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/crud/entityVo.java.vm").packageName(voPackage).build();
-        injectionConfigBuilder.customFile(Arrays.asList(InsertDto,updateDto,selectDto,vo));
-        InjectionConfig injectionConfig = injectionConfigBuilder.build();
+        customConfigBuilder.customFile(Arrays.asList(InsertDto,updateDto,selectDto,vo));
+
 
 
         CustomGenerator customGenerator =

@@ -26,7 +26,7 @@
     </resultMap>
 
 #end
-    #if(${baseResultMap})
+    #if(${voResultMap})
     <!-- 通用查询映射结果 -->
     <resultMap id="voMap" type="${basePackage}.${voPackage}.${entity}Vo">
         #foreach($field in ${table.fields})
@@ -57,7 +57,7 @@
 #end
 
 #if(${pageByDto})
-    <select id="pageByDto"#if(${baseResultMap})resultMap="voMap"#else resultType="${basePackage}.${voPackage}.${entity}Vo"#end>
+    <select id="pageByDto" #if(${voResultMap})resultMap="voMap"#else resultType="${basePackage}.${voPackage}.${entity}Vo"#end>
         select
         a.${shift8}
         from
@@ -81,9 +81,9 @@
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
             </if>
             <if test="dto.${field.propertyName}Like !=null and dto.${field.propertyName}Like.length()>0">
-                and a.${field.columnName} like concat('${shift5}',concat(${shift3}${shiftLeft}dto.${field.propertyName}Like${shiftRight},'${shift5}'))
+                and a.${field.columnName} like concat('${shift5}',${shift3}${shiftLeft}dto.${field.propertyName}Like${shiftRight},'${shift5}')
             </if>
-        #elseif(${field.propertyType} == "LocalDateTime")
+        #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
             <if test="dto.${field.propertyName}!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
             </if>
@@ -112,7 +112,9 @@
 #end
 ## ----------  END 字段循环遍历  ----------
         </where>
-
+        #if(${orderBySql})
+           order by ${orderBySql}
+        #end
     </select>
 
 
