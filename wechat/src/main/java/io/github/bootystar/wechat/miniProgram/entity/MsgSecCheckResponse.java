@@ -1,8 +1,9 @@
 package io.github.bootystar.wechat.miniProgram.entity;
 
-import com.xnql.cc.wechat.miniProgram.core.ResponseBase;
-import com.xnql.cc.wechat.miniProgram.enums.LabelEnum;
-import com.xnql.cc.wechat.miniProgram.enums.SuggestEnum;
+
+import io.github.bootystar.wechat.core.ResponseBase;
+import io.github.bootystar.wechat.miniProgram.enums.LabelEnum;
+import io.github.bootystar.wechat.miniProgram.enums.SuggestEnum;
 import lombok.Data;
 
 import java.util.List;
