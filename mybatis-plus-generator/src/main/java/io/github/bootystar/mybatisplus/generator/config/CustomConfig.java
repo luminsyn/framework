@@ -248,7 +248,7 @@ public class CustomConfig {
             orderColumnList = orderColumnList.stream().filter(e -> existColumnNames.contains(e.getName())).collect(Collectors.toList());
             if (orderColumnList.size()>0){
                 orderColumnList.stream()
-                        .map(e -> String.format("a.%s %s", e.getName(), e.getDesc() ? "desc" : ""))
+                        .map(e -> String.format("a.%s%s", e.getName(), e.getDesc() ? " desc" : ""))
                         .reduce((e1, e2) -> e1 + "," + e2)
                         .ifPresent(e->data.put("orderBySql",e));
                 ;
