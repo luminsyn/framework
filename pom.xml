@@ -15,7 +15,7 @@
 
     <properties>
         <!-- 全局版本控制，如果要修改版本号，修改此处即可-->
-<!--        <revision>0.0.1</revision>-->
+        <revision>0.0.1</revision>
         <revision>0.0.1-SNAPSHOT</revision>
 
         <maven.compiler.source>8</maven.compiler.source>
@@ -104,7 +104,7 @@
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <!--是否自动检测发布-->
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+<!--                            <autoReleaseAfterClose>false</autoReleaseAfterClose>-->
                         </configuration>
                     </plugin>
                     <plugin>
