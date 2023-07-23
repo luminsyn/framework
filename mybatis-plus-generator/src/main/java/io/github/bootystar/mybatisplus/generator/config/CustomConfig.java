@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  */
 public class CustomConfig {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomConfig.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(CustomConfig.class);
 
 
     /**
@@ -73,11 +73,11 @@ public class CustomConfig {
     /**
      * 新增排除的字段
      */
-    private List<String> insertExcludeFields = new LinkedList<>();
+    private Set<String> insertExcludeFields = new HashSet<>();
     /**
      * 修改排除的字段
      */
-    private List<String> updateExcludeFields = new LinkedList<>();
+    private Set<String> updateExcludeFields = new HashSet<>();
 
     private String shift3="#";
     private String shift4="$";
@@ -104,6 +104,10 @@ public class CustomConfig {
      * vo是否继承entity
      */
     private Boolean voExtendsEntity;
+    /**
+     * exportVo是否继承vo
+     */
+    private Boolean exportExtendsVo;
 
     /**
      * vo是否生成ResultMap
@@ -114,7 +118,7 @@ public class CustomConfig {
      * 排序字段map
      * 字段名 -> 是否倒序
      */
-    private List<OrderColumn> orderColumnList =new LinkedList<>();
+    private Map<String,Boolean> orderColumnMap =new HashMap<>();
 
     /**
      * 不对外爆露
@@ -147,11 +151,11 @@ public class CustomConfig {
         return exportExcel;
     }
 
-    public List<String> getInsertExcludeFields() {
+    public Set<String> getInsertExcludeFields() {
         return insertExcludeFields;
     }
 
-    public List<String> getUpdateExcludeFields() {
+    public Set<String> getUpdateExcludeFields() {
         return updateExcludeFields;
     }
 
@@ -200,9 +204,6 @@ public class CustomConfig {
         return voResultMap;
     }
 
-    public List<OrderColumn> getOrderColumnList() {
-        return orderColumnList;
-    }
 
     /**
      * 呈现数据
@@ -244,15 +245,13 @@ public class CustomConfig {
 
         List<TableField> fields = tableInfo.getFields();
         List<String> existColumnNames = fields.stream().map(TableField::getColumnName).collect(Collectors.toList());
-        if (orderColumnList!=null && orderColumnList.size()>0){
-            orderColumnList = orderColumnList.stream().filter(e -> existColumnNames.contains(e.getName())).collect(Collectors.toList());
-            if (orderColumnList.size()>0){
-                orderColumnList.stream()
-                        .map(e -> String.format("a.%s%s", e.getName(), e.getDesc() ? " desc" : ""))
-                        .reduce((e1, e2) -> e1 + "," + e2)
-                        .ifPresent(e->data.put("orderBySql",e));
-                ;
-            }
+        if (orderColumnMap !=null && orderColumnMap.size()>0){
+            orderColumnMap.entrySet().stream()
+                    .filter(e -> existColumnNames.contains(e.getKey()))
+                    .map(e -> String.format("a.%s%s", e.getKey(), e.getValue() ? " desc" : ""))
+                    .reduce((e1, e2) -> e1 + "," + e2)
+                    .ifPresent(e->data.put("orderBySql",e))
+            ;
 
         }
 
@@ -584,6 +583,19 @@ public class CustomConfig {
         }
 
         /**
+         * exportVo是否继承vo
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/23 15:42
+         */
+        public Builder exportExtendsVo(@NotNull Boolean b){
+            this.customConfig.exportExtendsVo=b;
+            return this;
+        }
+
+        /**
          * 是否创建voResultMap
          *
          * @param b b
@@ -606,7 +618,7 @@ public class CustomConfig {
          * @date 2023/07/17 15:49
          */
         public Builder orderColumn(@NotNull String columnName , @NotNull Boolean isDesc){
-            this.customConfig.orderColumnList.add(new OrderColumn(columnName,isDesc));
+            this.customConfig.orderColumnMap.put(columnName,isDesc);
             return this;
         }
 
@@ -620,7 +632,7 @@ public class CustomConfig {
          * @date 2023/07/17 15:51
          */
         public Builder clearOrderColumn(){
-            this.customConfig.orderColumnList.clear();
+            this.customConfig.orderColumnMap.clear();
             return this;
         }
 
@@ -632,24 +644,6 @@ public class CustomConfig {
         @Override
         public CustomConfig build() {
             return this.customConfig;
-        }
-    }
-
-    public static class OrderColumn{
-        private String name;
-        private Boolean isDesc;
-
-        public OrderColumn(String name, Boolean isDesc) {
-            this.name = name;
-            this.isDesc = isDesc;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Boolean getDesc() {
-            return isDesc;
         }
     }
 }

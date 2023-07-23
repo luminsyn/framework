@@ -10,7 +10,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${basePackage}.${dtoPackage}.${entity}SelectDto;
 import ${basePackage}.${voPackage}.${entity}Vo;
 #end
-import java.io.Serializable;
 
 /**
  * $!{table.comment} 服务类
@@ -26,13 +25,11 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     ${entity} insertByDto(${entity}InsertDto dto);
 
     boolean updateByDto(${entity}UpdateDto dto);
-
     #if(${pageByDto})
-    ${entity}Vo getVoById(Serializable id);
 
     IPage<${entity}Vo> pageByDto(${entity}SelectDto dto);
-
     #if(${exportExcel})
+
     void exportExcel(${entity}SelectDto dto);
     #end
     #end

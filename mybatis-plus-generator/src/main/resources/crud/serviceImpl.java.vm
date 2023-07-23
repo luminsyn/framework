@@ -4,6 +4,8 @@ import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
+import ${basePackage}.${dtoPackage}.${entity}InsertDto;
+import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
 #if(${pageByDto})
@@ -16,17 +18,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.io.UnsupportedEncodingException;
+import ${basePackage}.${voPackage}.${entity}ExportVo;
 #end
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${basePackage}.${dtoPackage}.${entity}SelectDto;
 import ${basePackage}.${voPackage}.${entity}Vo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 #end
+
 import java.io.Serializable;
 import java.util.List;
 
-import ${basePackage}.${dtoPackage}.${entity}InsertDto;
-import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 
 
 /**
@@ -70,15 +72,6 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
 
     #if(${pageByDto})
-    @Override
-    public ${entity}Vo getVoById(Serializable id){
-        ${entity}SelectDto dto = new ${entity}SelectDto();
-        dto.setPrimaryKey(id);
-        dto.setPageSize(-1L);
-        IPage<${entity}Vo> result = this.pageByDto(dto);
-        List<${entity}Vo> records = result.getRecords();
-        return records==null||records.size()==0?null:records.get(0);
-    }
 
     @Override
     public IPage<${entity}Vo> pageByDto(${entity}SelectDto dto){
@@ -112,7 +105,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         String fileName= "$!{table.comment}.xlsx";
         fileName = convertFileName(fileName);
         try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
-            EasyExcel.write(outputStream,${entity}Vo.class).sheet().doWrite(records);
+            EasyExcel.write(outputStream,${entity}ExportVo.class).sheet().doWrite(records);
         }catch (Exception e){
             e.printStackTrace();
         }

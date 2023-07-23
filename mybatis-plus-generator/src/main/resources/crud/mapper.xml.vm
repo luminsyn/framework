@@ -68,6 +68,9 @@
             <if test="dto.primaryKey!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.primaryKey${shiftRight}
             </if>
+            <if test="dto.${field.propertyName}!=null">
+                and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+            </if>
             <if test="dto.${field.propertyName}List!=null and dto.${field.propertyName}List.size()>0">
                 and a.${field.columnName} in
                 <foreach collection="dto.${field.propertyName}List" item="prop" open="(" close=")" separator=",">

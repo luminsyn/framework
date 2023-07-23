@@ -9,12 +9,6 @@ import javax.validation.constraints.Size;
         #break
     #end
 #end
-#foreach($field in ${table.fields})
-    #if(${field.propertyType}=="Integer")
-import java.util.List;
-        #break
-    #end
-#end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
@@ -26,9 +20,12 @@ import lombok.Getter;
 import lombok.Setter;
 #if(${chainModel})
 import lombok.experimental.Accessors;
+#end
+#end
 
 import java.util.List;
-#end
+#if(!$table.importPackages.contains("java.io.Serializable"))
+import java.io.Serializable;
 #end
 
 /**
@@ -51,10 +48,11 @@ import java.util.List;
 #end
 public class ${entity}SelectDto {
 #if(${entitySerialVersionUID})
-
-    private static final long serialVersionUID = 1L;
-
+##
+##    private static final long serialVersionUID = 1L;
+##
 #end
+
     #if(${springdoc})
     @Schema(description = "主键id")
     #elseif(${swagger})
@@ -65,6 +63,7 @@ public class ${entity}SelectDto {
      */
     #end
     private Object primaryKey;
+
     #if(${springdoc})
     @Schema(description = "当前页码(默认1)")
     #elseif(${swagger})
@@ -75,10 +74,11 @@ public class ${entity}SelectDto {
      */
     #end
     private Long currentPage = 1L;
+
     #if(${springdoc})
-    @Schema(description = "每页大小(默认10,-1检索全部)")
+    @Schema(description = "每页大小(默认:10,检索全部:-1)")
     #elseif(${swagger})
-    @ApiModelProperty("每页大小(默认10,-1检索全部)")
+    @ApiModelProperty("每页大小(默认:10,检索全部:-1)")
     #else
     /**
      * 每页大小(默认10,-1检索全部)

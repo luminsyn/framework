@@ -29,7 +29,7 @@ public class CrudGenerator extends BaseGenerator {
         templateConfigBuilder.mapper("/crud/mapper.java");
         templateConfigBuilder.xml("/crud/mapper.xml");
         templateConfigBuilder.entity("/crud/entity.java");
-        customConfigBuilder.returnResultClass(ReturnResult.class);
+//        customConfigBuilder.returnResultClass(ReturnResult.class);
         customConfigBuilder.returnResultGenericType(true);
         customConfigBuilder.returnResultDefaultStaticMethodName("success");
         customConfigBuilder.pageByDto(true);
@@ -37,7 +37,6 @@ public class CrudGenerator extends BaseGenerator {
         customConfigBuilder.insertExcludeField("createTime","updateTime","version");
         customConfigBuilder.updateExcludeField("createTime","updateTime");
         customConfigBuilder.orderColumn("create_time",true);
-        customConfigBuilder.voExtendsEntity(true);
     }
 
     @Override
@@ -53,15 +52,20 @@ public class CrudGenerator extends BaseGenerator {
 
         InjectionConfig injectionConfig = injectionConfigBuilder.build();
 
+        PackageConfig packageConfig = packageConfigBuilder.build();
 
         CustomConfig customConfig = customConfigBuilder.build();
         String dtoPackage = customConfig.getDtoPackage();
         String voPackage = customConfig.getVoPackage();
+
         CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();
         CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/crud/entityUpdateDto.java.vm").packageName(dtoPackage).build();
         CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/crud/entitySelectDto.java.vm").packageName(dtoPackage).build();
         CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/crud/entityVo.java.vm").packageName(voPackage).build();
-        customConfigBuilder.customFile(Arrays.asList(InsertDto,updateDto,selectDto,vo));
+        CustomFile exportVo = new CustomFile.Builder().fileName("ExportVo.java").templatePath("/crud/entityExportVo.java.vm").packageName(voPackage).build();
+        customConfigBuilder.customFile(Arrays.asList(InsertDto,updateDto,selectDto,vo,exportVo));
+
+
 
 
 
@@ -69,7 +73,7 @@ public class CrudGenerator extends BaseGenerator {
                 new CustomGenerator(dataSourceConfig)
                         .global(globalConfig)
                         // 包配置
-                        .packageInfo(packageConfigBuilder.build())
+                        .packageInfo(packageConfig)
                         // 策略配置
                         .strategy(strategyConfig)
                         // 模板配置

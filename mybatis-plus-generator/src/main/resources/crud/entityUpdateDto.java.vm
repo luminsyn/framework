@@ -58,12 +58,12 @@ import lombok.experimental.Accessors;
 #end
 public class ${entity}UpdateDto {
 #if(${entitySerialVersionUID})
-
-    private static final long serialVersionUID = 1L;
+##
+##    private static final long serialVersionUID = 1L;
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-#if($updateExcludeFields.contains(${field.propertyName}))
+#if(($updateExcludeFields.contains(${field.propertyName})))
 #else
 
 #if("$!field.comment" != "")
@@ -84,7 +84,6 @@ public class ${entity}UpdateDto {
     @NotBlank(message = "${field.comment}不能为空")
     #end
 #end
-#end
 ## 乐观锁注解
 #if(${field.versionField})
     @NotNull(message = "${field.comment}不能为空")
@@ -96,6 +95,7 @@ public class ${entity}UpdateDto {
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
     #end
     private ${field.propertyType} ${field.propertyName};
+#end
 #end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})

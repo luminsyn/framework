@@ -1,5 +1,7 @@
+import com.baomidou.mybatisplus.annotation.IdType;
 import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
+import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
 
 
 /**
@@ -18,17 +20,26 @@ public class Test {
 
         generator
                 .globalConfigBuilder()
-                .enableSwagger()
+//                .enableSwagger()
                 .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
         ;  // 指定输出目录
         generator
                 .customConfigBuilder()
+                .returnResultClass(ReturnResult.class)
                 .dtoPackage("dto")
                 .voPackage("vo")
+                .exportExtendsVo(true)
+                .voExtendsEntity(true)
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
+                .enableLombok()
+                .enableActiveRecord()
+                .idType(IdType.ASSIGN_ID)
+                .enableActiveRecord()
+                .enableColumnConstant()
+                .enableTableFieldAnnotation()
 //                .disableSerialVersionUID()
 //                .columnNaming(NamingStrategy.no_change)
         ;
@@ -45,6 +56,7 @@ public class Test {
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
+        .moduleName("v4")
 //                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
 
