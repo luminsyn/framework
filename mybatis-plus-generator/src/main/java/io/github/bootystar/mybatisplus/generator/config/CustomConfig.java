@@ -204,6 +204,13 @@ public class CustomConfig {
         return voResultMap;
     }
 
+    public Boolean getExportExtendsVo() {
+        return exportExtendsVo;
+    }
+
+    public Map<String, Boolean> getOrderColumnMap() {
+        return orderColumnMap;
+    }
 
     /**
      * 呈现数据

@@ -1,4 +1,5 @@
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
 import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
@@ -20,6 +21,7 @@ public class Test {
 
         generator
                 .globalConfigBuilder()
+                .dateType(DateType.SQL_PACK)
 //                .enableSwagger()
                 .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
@@ -27,10 +29,17 @@ public class Test {
         generator
                 .customConfigBuilder()
                 .returnResultClass(ReturnResult.class)
+                .returnResultGenericType(true)
+                .returnResultDefaultStaticMethodName("success")
+                .pageByDto(true)
+                .exportExcel(true)
                 .dtoPackage("dto")
                 .voPackage("vo")
                 .exportExtendsVo(true)
                 .voExtendsEntity(true)
+                .orderColumn("age",true)
+                .orderColumn("name", false)
+                .orderColumn("id_card", true)
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
@@ -60,14 +69,6 @@ public class Test {
 //                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
 
-        generator
-                .customConfigBuilder()
-                .voResultMap(true)
-                .orderColumn("age",true)
-                .orderColumn("name", false)
-                .orderColumn("id_card", true)
-
-        ;
 
         generator.execute("cc_app_user");
     }

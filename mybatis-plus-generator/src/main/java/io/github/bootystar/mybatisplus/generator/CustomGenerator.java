@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class CustomGenerator {
 
-    private static final Logger logger = LoggerFactory.getLogger(AutoGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomGenerator.class);
 
     /**
      * 配置信息
