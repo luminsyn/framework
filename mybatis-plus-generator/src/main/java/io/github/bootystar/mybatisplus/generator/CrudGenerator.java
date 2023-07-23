@@ -37,6 +37,8 @@ public class CrudGenerator extends BaseGenerator {
         customConfigBuilder.insertExcludeField("createTime","updateTime","version");
         customConfigBuilder.updateExcludeField("createTime","updateTime");
         customConfigBuilder.orderColumn("create_time",true);
+        customConfigBuilder.requestBody(true);
+        customConfigBuilder.addValidated(true);
     }
 
     @Override

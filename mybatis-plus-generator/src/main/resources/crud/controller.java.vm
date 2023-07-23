@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 ##import org.springframework.web.bind.annotation.DeleteMapping;
 ##import org.springframework.web.bind.annotation.PutMapping;
+#if(${requestBody})
 import org.springframework.web.bind.annotation.RequestBody;
+#end
+#if(${addValidated})
 import org.springframework.validation.annotation.Validated;
+#end
 import ${package.Service}.${table.serviceName};
 import ${package.Entity}.${entity};
 import ${basePackage}.${dtoPackage}.${entity}InsertDto;
@@ -89,9 +93,9 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/insert")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}>#end insert(@RequestBody @Validated ${entity}InsertDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}>#end insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end${entity}InsertDto dto){
     #else
-    public Object insert(@RequestBody @Validated ${entity}InsertDto dto){
+    public Object insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}InsertDto dto){
     #end
         ${entity} result = baseService.insertByDto(dto);
     #if(${returnResultClass})
@@ -116,9 +120,9 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/update")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(@RequestBody @Validated ${entity}UpdateDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end${entity}UpdateDto dto){
     #else
-    public Object update(@RequestBody @Validated ${entity}UpdateDto dto){
+    public Object update(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}UpdateDto dto){
     #end
         Boolean result = baseService.updateByDto(dto);
     #if(${returnResultClass})
@@ -202,9 +206,9 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/page")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(@RequestBody ${entity}SelectDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
     #else
-    public Object page(@RequestBody ${entity}SelectDto dto){
+    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
     #end
         IPage<${entity}Vo> result=baseService.pageByDto(dto);
     #if(${returnResultClass})
@@ -229,7 +233,7 @@ public class ${table.controllerName} {
      */
     #end
     @PostMapping("/export")
-    public void export(@RequestBody ${entity}SelectDto dto){
+    public void export(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
         baseService.exportExcel(dto);
     }
     #end

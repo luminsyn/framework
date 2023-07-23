@@ -3,6 +3,7 @@ package ${basePackage}.${dtoPackage};
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
 #end
+#if(${addValidated})
 #foreach($field in ${table.fields})
     #if(${field.metaInfo.nullable}==false && ${field.keyFlag})
 import javax.validation.constraints.NotNull;
@@ -23,6 +24,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
     #break
     #end
+#end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -77,6 +79,7 @@ public class ${entity}UpdateDto {
      */
   #end
 #end
+#if(${addValidated})
 #if(${field.keyFlag})
 ## 主键
     @NotNull(message = "${field.comment}不能为空")
@@ -94,6 +97,7 @@ public class ${entity}UpdateDto {
     #if(${field.propertyType} == "String")
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
     #end
+#end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end

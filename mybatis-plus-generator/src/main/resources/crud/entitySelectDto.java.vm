@@ -62,7 +62,7 @@ public class ${entity}SelectDto {
      * 主键id
      */
     #end
-    private Object primaryKey;
+    private Serializable primaryKey;
 
     #if(${springdoc})
     @Schema(description = "当前页码(默认1)")

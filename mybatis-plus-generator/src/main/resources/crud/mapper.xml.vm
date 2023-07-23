@@ -57,7 +57,7 @@
 #end
 
 #if(${pageByDto})
-    <select id="pageByDto" #if(${voResultMap})resultMap="voMap"#else resultType="${basePackage}.${voPackage}.${entity}Vo"#end>
+    <select id="pageByDto"#if(${voResultMap}) resultMap="voMap"#else resultType="${basePackage}.${voPackage}.${entity}Vo"#end>
         select
         a.${shift8}
         from

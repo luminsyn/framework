@@ -121,6 +121,16 @@ public class CustomConfig {
     private Map<String,Boolean> orderColumnMap =new HashMap<>();
 
     /**
+     * controller是否使用@RequestBody注解
+     */
+    private Boolean requestBody;
+    /**
+     * 是否添加参数校验
+     */
+    private Boolean addValidated;
+
+
+    /**
      * 不对外爆露
      */
     private CustomConfig() {
@@ -211,6 +221,7 @@ public class CustomConfig {
     public Map<String, Boolean> getOrderColumnMap() {
         return orderColumnMap;
     }
+
 
     /**
      * 呈现数据
@@ -629,8 +640,6 @@ public class CustomConfig {
             return this;
         }
 
-
-
         /**
          * 清空自定义排序字段名称
          *
@@ -640,6 +649,33 @@ public class CustomConfig {
          */
         public Builder clearOrderColumn(){
             this.customConfig.orderColumnMap.clear();
+            return this;
+        }
+
+        /**
+         * controller是否使用@RequestBody注解
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/23 22:01
+         */
+        public Builder requestBody(@NotNull Boolean b){
+            this.customConfig.requestBody=b;
+            return this;
+        }
+
+
+        /**
+         * 是否添加校验注解
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/23 22:06
+         */
+        public Builder addValidated(@NotNull Boolean b){
+            this.customConfig.addValidated=b;
             return this;
         }
 

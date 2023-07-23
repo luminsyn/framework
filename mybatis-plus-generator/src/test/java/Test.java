@@ -37,9 +37,12 @@ public class Test {
                 .voPackage("vo")
                 .exportExtendsVo(true)
                 .voExtendsEntity(true)
+                .addValidated(false)
+                .requestBody(false)
                 .orderColumn("age",true)
                 .orderColumn("name", false)
                 .orderColumn("id_card", true)
+                .voResultMap(true)
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
