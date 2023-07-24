@@ -43,15 +43,6 @@ public class CustomServiceImp<M extends CustomMapper<T, P>, T, P extends SelectD
         return updateById(t);
     }
 
-    @Override
-    public Vo<T> getVoById(Serializable id) {
-        SelectDto<T> dto = new SelectDto<T>();
-        dto.setId(id);
-        dto.setSize(1L);
-        IPage<Vo<T>> page = pageByDto((P) dto);
-        List<Vo<T>> records = page.getRecords();
-        return records==null|| records.size()==0?null:records.get(0);
-    }
 
     @Override
     public IPage<Vo<T>> pageByDto(P dto) {
