@@ -17,14 +17,13 @@ package io.github.bootystar.mybatisplus.generator.config;
 
 
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
+import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.util.ClassUtils;
 import org.apache.ibatis.type.JdbcType;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -43,9 +42,10 @@ import java.util.stream.Collectors;
  */
 public class CustomConfig {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(CustomConfig.class);
-
-
+    /**
+     * 全局配置
+     */
+    private ConfigBuilder config;
     /**
      * 返回结果类
      */
@@ -62,14 +62,7 @@ public class CustomConfig {
      * 返回结果静态方法名
      */
     private String returnResultDefaultStaticMethodName;
-    /**
-     * 生成分页查询方法
-     */
-    private Boolean pageByDto;
-    /**
-     * 生成excel导出方法
-     */
-    private Boolean exportExcel;
+
     /**
      * 新增排除的字段
      */
@@ -78,6 +71,18 @@ public class CustomConfig {
      * 修改排除的字段
      */
     private Set<String> updateExcludeFields = new HashSet<>();
+
+
+
+    /**
+     * 生成分页查询方法
+     */
+    private Boolean pageByDto;
+    /**
+     * 生成excel导出方法
+     */
+    private Boolean exportExcel;
+
 
     private String shift3="#";
     private String shift4="$";
@@ -128,100 +133,27 @@ public class CustomConfig {
      * 是否添加参数校验
      */
     private Boolean addValidated;
-
+    /**
+     *
+     */
+    private Boolean importExcel;
 
     /**
      * 不对外爆露
      */
-    private CustomConfig() {
+    private CustomConfig() {}
 
+
+    /**
+     * 初始化
+     *
+     * @param config 汇总配置
+     * @author booty
+     * @date 2023/07/26 17:53
+     */
+    public void init(@NotNull ConfigBuilder config){
+        this.config=config;
     }
-
-    public String getReturnResultClass() {
-        return returnResultClass;
-    }
-
-    public String getReturnResultClassPackage() {
-        return returnResultClassPackage;
-    }
-
-    public Boolean getReturnResultGenericType() {
-        return returnResultGenericType;
-    }
-
-    public String getReturnResultDefaultStaticMethodName() {
-        return returnResultDefaultStaticMethodName;
-    }
-
-    public Boolean getPageByDto() {
-        return pageByDto;
-    }
-
-    public Boolean getExportExcel() {
-        return exportExcel;
-    }
-
-    public Set<String> getInsertExcludeFields() {
-        return insertExcludeFields;
-    }
-
-    public Set<String> getUpdateExcludeFields() {
-        return updateExcludeFields;
-    }
-
-    public String getShift3() {
-        return shift3;
-    }
-
-    public String getShift4() {
-        return shift4;
-    }
-
-    public String getShift5() {
-        return shift5;
-    }
-
-    public String getShift8() {
-        return shift8;
-    }
-
-    public String getShiftLeft() {
-        return shiftLeft;
-    }
-
-    public String getShiftRight() {
-        return shiftRight;
-    }
-
-    public String getVoPackage() {
-        return voPackage;
-    }
-
-    public String getDtoPackage() {
-        return dtoPackage;
-    }
-
-    public List<CustomFile> getCustomFiles() {
-        return customFiles;
-    }
-
-
-    public Boolean getVoExtendsEntity() {
-        return voExtendsEntity;
-    }
-
-    public Boolean getVoResultMap() {
-        return voResultMap;
-    }
-
-    public Boolean getExportExtendsVo() {
-        return exportExtendsVo;
-    }
-
-    public Map<String, Boolean> getOrderColumnMap() {
-        return orderColumnMap;
-    }
-
 
     /**
      * 呈现数据
@@ -232,18 +164,22 @@ public class CustomConfig {
      * @date 2023/07/13 14:01
      */
     public Map<String, Object> renderData(TableInfo tableInfo) {
-
         HashMap<String, Object> data = new HashMap<>();
         // 添加自定义字段
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
                 String name = field.getName();
                 field.setAccessible(true);
-                data.put(name,field.get(this));
+                if (!"config".equals(name)){
+                    data.put(name,field.get(this));
+                }
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        // 基础包
+        data.put("basePackage",config.getPackageConfig().getParent());
         // 当前时间
         data.put("nowTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
@@ -481,6 +417,19 @@ public class CustomConfig {
         }
 
         /**
+         * 清空新增排除字段
+         *
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/26 16:48
+         */
+        public Builder clearInsertExcludeField(){
+            this.customConfig.insertExcludeFields.clear();
+            return this;
+        }
+
+
+        /**
          * 添加更新排除字段
          *
          * @param fieldNames 字段名称
@@ -490,6 +439,18 @@ public class CustomConfig {
          */
         public Builder updateExcludeField(@NotNull String...  fieldNames){
             this.customConfig.updateExcludeFields.addAll(Arrays.asList(fieldNames));
+            return this;
+        }
+
+        /**
+         * 清空更新排除字段
+         *
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/26 16:48
+         */
+        public Builder clearUpdateExcludeField(){
+            this.customConfig.updateExcludeFields.clear();
             return this;
         }
 
