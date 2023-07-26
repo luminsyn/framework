@@ -27,6 +27,7 @@
             <groupId>io.github.bootystar</groupId>
             <artifactId>tool</artifactId>
             <version>${revision}</version>
+<!--            <version>0.0.4</version>-->
         </dependency>
     </dependencies>
 

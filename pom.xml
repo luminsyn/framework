@@ -16,7 +16,7 @@
     <properties>
         <!-- 全局版本控制，如果要修改版本号，修改此处即可-->
 <!--        <revision>0.0.1-SNAPSHOT</revision>-->
-        <revision>0.0.3</revision>
+        <revision>0.0.5</revision>
 
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -130,8 +130,8 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <!--是否自动检测发布-->
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-<!--                            <autoReleaseAfterClose>false</autoReleaseAfterClose>-->
+<!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                     <plugin>
