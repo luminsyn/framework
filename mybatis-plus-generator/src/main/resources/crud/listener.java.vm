@@ -1,0 +1,48 @@
+package ${basePackage}.${listenerPackage};
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
+import java.util.LinkedList;
+import java.util.List;
+import ${package.Service}.${table.serviceName};
+import ${package.Service}.${table.serviceName};
+
+/**
+ * $!{table.comment} 导入监听器
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public class ${entity}ImportListener implements ReadListener<${entity}ImportVo> {
+    private final List<Object> cachedDataList = new LinkedList<>();
+    private final ${table.serviceName} baseService;
+    private boolean success = false ;
+    private String msg ="";
+
+    public ${entity}ImportListener(${table.serviceName} baseService) {
+        this.baseService = baseService;
+    }
+
+    @Override
+    public void invoke(${entity}ImportVo data, AnalysisContext context) {
+        cachedDataList.add(data);
+    }
+
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext context) {
+        try {
+            success = baseService.importExcel(cachedDataList);
+        }catch (Exception e){
+            msg = e.getMessage();
+        }
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+}

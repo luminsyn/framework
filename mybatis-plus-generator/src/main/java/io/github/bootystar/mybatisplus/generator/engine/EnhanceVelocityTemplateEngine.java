@@ -61,7 +61,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
             }
         }
        ;
-        objectMap.put("basePackage",config.getPackageConfig().getParent());
+
         return objectMap ;
     }
 
