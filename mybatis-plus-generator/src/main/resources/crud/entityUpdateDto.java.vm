@@ -3,7 +3,7 @@ package ${basePackage}.${dtoPackage};
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
 #end
-#if(${addValidated})
+#if(${enableValidated})
 #foreach($field in ${table.fields})
     #if(${field.metaInfo.nullable}==false && ${field.keyFlag})
 import javax.validation.constraints.NotNull;
@@ -79,7 +79,7 @@ public class ${entity}UpdateDto {
      */
   #end
 #end
-#if(${addValidated})
+#if(${enableValidated})
 #if(${field.keyFlag})
 ## 主键
     @NotNull(message = "${field.comment}不能为空")

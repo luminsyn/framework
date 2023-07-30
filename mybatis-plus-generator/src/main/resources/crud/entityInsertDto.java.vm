@@ -3,7 +3,7 @@ package ${basePackage}.${dtoPackage};
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
 #end
-#if(${addValidated})
+#if(${enableValidated})
 #foreach($field in ${table.fields})
   #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
 import javax.validation.constraints.NotNull;
@@ -79,7 +79,7 @@ public class ${entity}InsertDto {
      */
     #end
   #end
-  #if(${addValidated})
+  #if(${enableValidated})
   #if(!${field.metaInfo.nullable})
     #if(${field.propertyType} == "String")
     @NotBlank(message = "${field.comment}不能为空")

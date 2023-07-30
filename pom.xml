@@ -130,8 +130,8 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <!--是否自动检测发布-->
-<!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+<!--                            <autoReleaseAfterClose>false</autoReleaseAfterClose>-->
                         </configuration>
                     </plugin>
                     <plugin>

@@ -17,7 +17,6 @@ package io.github.bootystar.mybatisplus.generator.config;
 
 
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
-import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
@@ -25,7 +24,6 @@ import com.baomidou.mybatisplus.generator.util.ClassUtils;
 import org.apache.ibatis.type.JdbcType;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -42,54 +40,65 @@ import java.util.stream.Collectors;
  */
 public class CustomConfig {
 
-    /**
-     * 全局配置
-     */
-    private ConfigBuilder config;
+//    private static final Logger LOGGER = LoggerFactory.getLogger(CustomConfig.class);
+
+    //--------------返回结果相关配置---------------
+
     /**
      * 返回结果类
      */
     private String returnResultClass;
+
     /**
      * 返回结果类所在包
      */
     private String returnResultClassPackage;
+
     /**
      * 返回结果是否支持泛型
      */
-    private Boolean returnResultGenericType ;
+    private Boolean returnResultGenericType;
+
     /**
      * 返回结果静态方法名
      */
     private String returnResultDefaultStaticMethodName;
 
     /**
+     * controller是否使用@RequestBody注解
+     */
+    private Boolean requestBody;
+
+    /**
+     * 是否添加参数校验
+     */
+    private Boolean enableValidated;
+    /**
+     * 是否添加跨域注解
+     */
+    private Boolean enableOrigins;
+
+
+    /**
      * 新增排除的字段
      */
-    private Set<String> insertExcludeFields = new HashSet<>();
+    private final Set<String> insertExcludeFields = new HashSet<>();
+
     /**
      * 修改排除的字段
      */
-    private Set<String> updateExcludeFields = new HashSet<>();
-
-
+    private final Set<String> updateExcludeFields = new HashSet<>();
 
     /**
-     * 生成分页查询方法
+     * 生成分页扩展查询方法
      */
     private Boolean pageByDto;
+
     /**
-     * 生成excel导出方法
+     * 生成excel导出方法（基于分页扩展查询方法）
      */
     private Boolean exportExcel;
 
-
-    private String shift3="#";
-    private String shift4="$";
-    private String shift5="%";
-    private String shift8="*";
-    private String shiftLeft="{";
-    private String shiftRight="}";
 
     /**
      * vo所在包
@@ -100,10 +109,11 @@ public class CustomConfig {
      */
     private String dtoPackage = "dto";
 
+
     /**
      * 自定义模板文件列表
      */
-    private List<CustomFile> customFiles = new ArrayList<>();
+    private final List<CustomFile> customFiles = new ArrayList<>();
 
     /**
      * vo是否继承entity
@@ -125,35 +135,12 @@ public class CustomConfig {
      */
     private Map<String,Boolean> orderColumnMap =new HashMap<>();
 
-    /**
-     * controller是否使用@RequestBody注解
-     */
-    private Boolean requestBody;
-    /**
-     * 是否添加参数校验
-     */
-    private Boolean addValidated;
-    /**
-     *
-     */
-    private Boolean importExcel;
 
     /**
      * 不对外爆露
      */
-    private CustomConfig() {}
+    private CustomConfig() { }
 
-
-    /**
-     * 初始化
-     *
-     * @param config 汇总配置
-     * @author booty
-     * @date 2023/07/26 17:53
-     */
-    public void init(@NotNull ConfigBuilder config){
-        this.config=config;
-    }
 
     /**
      * 呈现数据
@@ -165,21 +152,16 @@ public class CustomConfig {
      */
     public Map<String, Object> renderData(TableInfo tableInfo) {
         HashMap<String, Object> data = new HashMap<>();
-        // 添加自定义字段
-        try {
-            for (Field field : this.getClass().getDeclaredFields()) {
-                String name = field.getName();
-                field.setAccessible(true);
-                if (!"config".equals(name)){
-                    data.put(name,field.get(this));
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        // 基础包
-        data.put("basePackage",config.getPackageConfig().getParent());
+//        // 添加自定义字段
+//        try {
+//            for (Field field : this.getClass().getDeclaredFields()) {
+//                String name = field.getName();
+//                field.setAccessible(true);
+//                data.put(name,field.get(this));
+//            }
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
         // 当前时间
         data.put("nowTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
@@ -417,19 +399,6 @@ public class CustomConfig {
         }
 
         /**
-         * 清空新增排除字段
-         *
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/26 16:48
-         */
-        public Builder clearInsertExcludeField(){
-            this.customConfig.insertExcludeFields.clear();
-            return this;
-        }
-
-
-        /**
          * 添加更新排除字段
          *
          * @param fieldNames 字段名称
@@ -439,18 +408,6 @@ public class CustomConfig {
          */
         public Builder updateExcludeField(@NotNull String...  fieldNames){
             this.customConfig.updateExcludeFields.addAll(Arrays.asList(fieldNames));
-            return this;
-        }
-
-        /**
-         * 清空更新排除字段
-         *
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/26 16:48
-         */
-        public Builder clearUpdateExcludeField(){
-            this.customConfig.updateExcludeFields.clear();
             return this;
         }
 
@@ -635,8 +592,8 @@ public class CustomConfig {
          * @author booty
          * @date 2023/07/23 22:06
          */
-        public Builder addValidated(@NotNull Boolean b){
-            this.customConfig.addValidated=b;
+        public Builder enableValidated(@NotNull Boolean b){
+            this.customConfig.enableValidated=b;
             return this;
         }
 

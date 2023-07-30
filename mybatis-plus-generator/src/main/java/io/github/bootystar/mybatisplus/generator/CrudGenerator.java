@@ -1,12 +1,7 @@
 package io.github.bootystar.mybatisplus.generator;
 
 import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import io.github.bootystar.mybatisplus.generator.config.CustomConfig;
-import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
-
-import java.util.Arrays;
-import java.util.LinkedList;
 
 /**
  * @Author booty
@@ -39,7 +34,8 @@ public class CrudGenerator extends BaseGenerator {
         customConfigBuilder.updateExcludeField("createTime","updateTime");
         customConfigBuilder.orderColumn("create_time",true);
         customConfigBuilder.requestBody(true);
-        customConfigBuilder.addValidated(true);
+        // todo 开启验证
+//        customConfigBuilder.addValidated(true);
     }
 
     @Override
@@ -58,27 +54,27 @@ public class CrudGenerator extends BaseGenerator {
         PackageConfig packageConfig = packageConfigBuilder.build();
 
         CustomConfig customConfig = customConfigBuilder.build();
-        String dtoPackage = customConfig.getDtoPackage();
-        String voPackage = customConfig.getVoPackage();
-
-
-
-        LinkedList<CustomFile> customFiles = new LinkedList<>();
-        CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();
-        customFiles.add(InsertDto);
-        CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/crud/entityUpdateDto.java.vm").packageName(dtoPackage).build();
-        customFiles.add(updateDto);
-        if (customConfig.getPageByDto()){
-            CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/crud/entitySelectDto.java.vm").packageName(dtoPackage).build();
-            customFiles.add(selectDto);
-            CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/crud/entityVo.java.vm").packageName(voPackage).build();
-            customFiles.add(vo);
-            if (customConfig.getExportExcel()){
-                CustomFile exportVo = new CustomFile.Builder().fileName("ExportVo.java").templatePath("/crud/entityExportVo.java.vm").packageName(voPackage).build();
-                customFiles.add(exportVo);
-            }
-        }
-        customConfigBuilder.customFile(customFiles);
+//        String dtoPackage = customConfig.getDtoPackage();
+//        String voPackage = customConfig.getVoPackage();
+//
+//
+//
+//        LinkedList<CustomFile> customFiles = new LinkedList<>();
+//        CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();
+//        customFiles.add(InsertDto);
+//        CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/crud/entityUpdateDto.java.vm").packageName(dtoPackage).build();
+//        customFiles.add(updateDto);
+//        if (customConfig.getPageByDto()){
+//            CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/crud/entitySelectDto.java.vm").packageName(dtoPackage).build();
+//            customFiles.add(selectDto);
+//            CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/crud/entityVo.java.vm").packageName(voPackage).build();
+//            customFiles.add(vo);
+//            if (customConfig.getExportExcel()){
+//                CustomFile exportVo = new CustomFile.Builder().fileName("ExportVo.java").templatePath("/crud/entityExportVo.java.vm").packageName(voPackage).build();
+//                customFiles.add(exportVo);
+//            }
+//        }
+//        customConfigBuilder.customFile(customFiles);
 
         CustomGenerator customGenerator =
                 new CustomGenerator(dataSourceConfig)

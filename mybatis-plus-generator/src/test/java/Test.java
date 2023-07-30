@@ -37,7 +37,7 @@ public class Test {
                 .voPackage("vo")
                 .exportExtendsVo(true)
                 .voExtendsEntity(true)
-                .addValidated(true)
+//                .addValidated(true)
                 .requestBody(true)
                 .orderColumn("age",true)
                 .orderColumn("name", false)
