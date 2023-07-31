@@ -29,7 +29,7 @@ import java.io.Serializable;
 #end
 
 /**
- * $!{table.comment}
+ * $!{table.comment}查询dto
  *
  * @author ${author}
  * @since ${date}
@@ -85,6 +85,17 @@ public class ${entity}SelectDto {
      */
     #end
     private Long pageSize = 10L;
+
+    #if(${springdoc})
+    @Schema(description = "指定需要导出的字段,为空时导出全部")
+    #elseif(${swagger})
+    @ApiModelProperty("指定需要导出的字段,为空时导出全部")
+    #else
+    /**
+     * 指定需要导出的字段,为空时导出全部
+     */
+    #end
+    private List<String> propertyList;
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
@@ -201,9 +212,17 @@ public class ${entity}SelectDto {
         this.pageSize = pageSize;
         return this;
     }
+
+    public List<String> getPropertyList() {
+        return propertyList;
+    }
+
+    public ${entity}SelectDto setPropertyList(List<String> propertyList) {
+        this.propertyList = propertyList;
+    }
     #else
 
-    public Object getPrimaryKey() {
+    public Serializable getPrimaryKey() {
         return primaryKey;
     }
 
@@ -226,6 +245,14 @@ public class ${entity}SelectDto {
     public void setPageSize(Long pageSize) {
         this.pageSize = pageSize;
     }
+
+    public List<String> getPropertyList() {
+        return propertyList;
+    }
+
+    public void setPropertyList(List<String> propertyList) {
+        this.propertyList = propertyList;
+    }
     #end
 
 
@@ -243,7 +270,7 @@ public class ${entity}SelectDto {
     }
 
   #if(${chainModel})
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDto set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -260,7 +287,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity} set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    public ${entity}SelectDto set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #else
     public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #end
@@ -277,7 +304,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity} set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDto set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #end
@@ -294,7 +321,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity} set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDto set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
     #end
@@ -310,7 +337,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity} set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDto set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
     #end
@@ -327,7 +354,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-        public ${entity} set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+        public ${entity}SelectDto set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #else
         public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #end
@@ -360,6 +387,7 @@ public class ${entity}SelectDto {
                 "primaryKey = " + primaryKey +
                 "currentPage = " + currentPage +
                 "pageSize = " + pageSize +
+                "propertyList = " + propertyList +
   #foreach($field in ${table.fields})
   #if($selectExcludeFields.contains(${field.propertyName}))
   #else

@@ -4,13 +4,15 @@ import ${package.Entity}.${entity};
 import ${superServiceClassPackage};
 import ${basePackage}.${dtoPackage}.${entity}InsertDto;
 import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
-
 #if(${pageByDto})
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${basePackage}.${dtoPackage}.${entity}SelectDto;
 import ${basePackage}.${voPackage}.${entity}Vo;
 #end
-
+#if(${importExcel})
+import java.util.List;
+import ${basePackage}.${voPackage}.${entity}ImportVo;
+#end
 /**
  * $!{table.comment} 服务类
  *
@@ -33,5 +35,10 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     void exportExcel(${entity}SelectDto dto);
     #end
     #end
+
+    #if(${importExcel})
+    boolean importExcel(List<${entity}ImportVo> importList);
+    #end
+
 }
 #end

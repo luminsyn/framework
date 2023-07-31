@@ -25,6 +25,10 @@ import ${basePackage}.${voPackage}.${entity}Vo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 #end
+#if(${importExcel})
+import java.util.ArrayList;
+import ${basePackage}.${voPackage}.${entity}ImportVo;
+#end
 
 import java.io.Serializable;
 import java.util.List;
@@ -105,7 +109,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         String fileName= "$!{table.comment}.xlsx";
         fileName = convertFileName(fileName);
         try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
-            EasyExcel.write(outputStream,${entity}ExportVo.class).sheet().doWrite(records);
+            if(dto.getPropertyList()!=null && dto.getPropertyList().size()>0){
+                EasyExcel.write(outputStream,${entity}ExportVo.class).includeColumnFieldNames(dto.getPropertyList()).sheet().doWrite(records);
+            }else{
+                EasyExcel.write(outputStream,${entity}ExportVo.class).sheet().doWrite(records);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -131,8 +139,28 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         response.addHeader("Cache-Control", "no-cache");
         return response;
     }
+    #end
+    #end
+
+    #if(${importExcel})
+    @Override
+    public boolean importExcel(List<${entity}ImportVo> importDtoList){
+        List<${entity}> insertList=new ArrayList<>(importDtoList.size());
+        for (${entity}ImportVo vo : importDtoList) {
+            // 数据校验, 默认参数赋值
+
+            #if(${importExcelEntity})
+            insertList.add(vo);
+            #else
+            ${entity} entity = new ${entity}();
+            BeanUtils.copyProperties(vo,entity);
+            insertList.add(entity);
+            #end
+        }
+        return saveBatch(insertList);
+    }
 
     #end
-    #end
+
 }
 #end

@@ -38,7 +38,7 @@ import lombok.experimental.Accessors;
 #end
 
 /**
- * $!{table.comment} 新增入参对象
+ * $!{table.comment} 新增dto
  *
  * @author ${author}
  * @since ${date}

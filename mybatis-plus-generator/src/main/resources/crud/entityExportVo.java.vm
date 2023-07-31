@@ -25,7 +25,7 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 #end
 
 /**
- * $!{table.comment}
+ * $!{table.comment}导出vo
  *
  * @author ${author}
  * @since ${date}
@@ -88,7 +88,7 @@ public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
     }
 
   #if(${chainModel})
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}ExportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end

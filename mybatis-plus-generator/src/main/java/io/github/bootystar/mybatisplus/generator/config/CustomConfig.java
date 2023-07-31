@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2011-2022, baomidou (jobob@qq.com).
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.github.bootystar.mybatisplus.generator.config;
 
 
@@ -24,10 +9,10 @@ import com.baomidou.mybatisplus.generator.util.ClassUtils;
 import org.apache.ibatis.type.JdbcType;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -40,9 +25,29 @@ import java.util.stream.Collectors;
  */
 public class CustomConfig {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(CustomConfig.class);
+    //--------------常量---------------
+    public final String shift3="#";
+    public final String shift4="$";
+    public final String shift5="%";
+    public final String shift8="*";
+    public final String shiftLeft="{";
+    public final String shiftRight="}";
+
 
     //--------------返回结果相关配置---------------
+
+    /**
+     * dto所在包
+     */
+    private String dtoPackage="dto";
+    /**
+     * vo所在包
+     */
+    private String voPackage="vo";
+    /**
+     * 导入监听器包
+     */
+    private String listenerPackage="listener";
 
     /**
      * 返回结果类
@@ -64,6 +69,8 @@ public class CustomConfig {
      */
     private String returnResultDefaultStaticMethodName;
 
+    //--------------controller基础配置---------------
+
     /**
      * controller是否使用@RequestBody注解
      */
@@ -78,51 +85,22 @@ public class CustomConfig {
      */
     private Boolean enableOrigins;
 
-
     /**
      * 新增排除的字段
      */
-    private final Set<String> insertExcludeFields = new HashSet<>();
+    private Collection<String> insertExcludeFields = new HashSet<>();
 
     /**
      * 修改排除的字段
      */
-    private final Set<String> updateExcludeFields = new HashSet<>();
+    private Collection<String> updateExcludeFields = new HashSet<>();
+
+    //--------------分页查询配置---------------
 
     /**
      * 生成分页扩展查询方法
      */
     private Boolean pageByDto;
-
-    /**
-     * 生成excel导出方法（基于分页扩展查询方法）
-     */
-    private Boolean exportExcel;
-
-
-    /**
-     * vo所在包
-     */
-    private String voPackage = "vo";
-    /**
-     * dto所在包
-     */
-    private String dtoPackage = "dto";
-
-
-    /**
-     * 自定义模板文件列表
-     */
-    private final List<CustomFile> customFiles = new ArrayList<>();
-
-    /**
-     * vo是否继承entity
-     */
-    private Boolean voExtendsEntity;
-    /**
-     * exportVo是否继承vo
-     */
-    private Boolean exportExtendsVo;
 
     /**
      * vo是否生成ResultMap
@@ -135,12 +113,131 @@ public class CustomConfig {
      */
     private Map<String,Boolean> orderColumnMap =new HashMap<>();
 
+    /**
+     * vo是否继承entity
+     */
+    private Boolean voExtendsEntity;
+
+    /**
+     * 生成excel导出方法（基于分页扩展查询方法）
+     */
+    private Boolean exportExcel;
+
+    /**
+     * 导出实体类是否继承vo
+     */
+    private Boolean exportExtendsVo;
+
+
+    //--------------excel导入配置---------------
+    /**
+     * 是否开启导入excel
+     */
+    private Boolean importExcel;
+
+    /**
+     * 导入excel类是否继承实体类
+     */
+    private Boolean importExtendsEntity;
+
+    /**
+     * 自定义文件
+     */
+    private List<CustomFile> customFiles;
+
 
     /**
      * 不对外爆露
      */
     private CustomConfig() { }
 
+    public List<CustomFile> getCustomFiles() {
+        return this.customFiles;
+    }
+
+    public String getDtoPackage() {
+        return dtoPackage;
+    }
+
+    public String getVoPackage() {
+        return voPackage;
+    }
+
+    public String getListenerPackage() {
+        return listenerPackage;
+    }
+
+    public String getReturnResultClass() {
+        return returnResultClass;
+    }
+
+    public String getReturnResultClassPackage() {
+        return returnResultClassPackage;
+    }
+
+    public Boolean getReturnResultGenericType() {
+        return returnResultGenericType;
+    }
+
+    public String getReturnResultDefaultStaticMethodName() {
+        return returnResultDefaultStaticMethodName;
+    }
+
+    public Boolean getRequestBody() {
+        return requestBody;
+    }
+
+    public Boolean getEnableValidated() {
+        return enableValidated;
+    }
+
+    public Boolean getEnableOrigins() {
+        return enableOrigins;
+    }
+
+    public Collection<String> getInsertExcludeFields() {
+        return insertExcludeFields;
+    }
+
+    public Collection<String> getUpdateExcludeFields() {
+        return updateExcludeFields;
+    }
+
+    public Boolean getPageByDto() {
+        return pageByDto;
+    }
+
+    public Boolean getVoResultMap() {
+        return voResultMap;
+    }
+
+    public Map<String, Boolean> getOrderColumnMap() {
+        return orderColumnMap;
+    }
+
+    public Boolean getVoExtendsEntity() {
+        return voExtendsEntity;
+    }
+
+    public Boolean getExportExcel() {
+        return exportExcel;
+    }
+
+    public Boolean getExportExtendsVo() {
+        return exportExtendsVo;
+    }
+
+    public Boolean getImportExcel() {
+        return importExcel;
+    }
+
+    public Boolean getImportExtendsEntity() {
+        return importExtendsEntity;
+    }
+
+    public void setCustomFiles(List<CustomFile> customFiles) {
+        this.customFiles = customFiles;
+    }
 
     /**
      * 呈现数据
@@ -152,16 +249,19 @@ public class CustomConfig {
      */
     public Map<String, Object> renderData(TableInfo tableInfo) {
         HashMap<String, Object> data = new HashMap<>();
-//        // 添加自定义字段
-//        try {
-//            for (Field field : this.getClass().getDeclaredFields()) {
-//                String name = field.getName();
-//                field.setAccessible(true);
-//                data.put(name,field.get(this));
-//            }
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
+        // 添加自定义字段
+        try {
+            for (Field field : this.getClass().getDeclaredFields()) {
+                String name = field.getName();
+                field.setAccessible(true);
+                if (!"customFiles".equals(field.getName())){
+                    data.put(name,field.get(this));
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
         // 当前时间
         data.put("nowTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
@@ -177,8 +277,7 @@ public class CustomConfig {
                 );
         // 对应fields[i].metaInfo.jdbcType
         data.put("jdbcTimeTypes",jdbcTimeTypes);
-
-
+        // 排序字段
         List<TableField> fields = tableInfo.getFields();
         List<String> existColumnNames = fields.stream().map(TableField::getColumnName).collect(Collectors.toList());
         if (orderColumnMap !=null && orderColumnMap.size()>0){
@@ -276,6 +375,55 @@ public class CustomConfig {
         }
 
         /**
+         * 构建模板配置对象
+         *
+         * @return 模板配置对象
+         */
+        @Override
+        public CustomConfig build() {
+            return this.customConfig;
+        }
+
+        /**
+         * dto所在包
+         *
+         * @param packageName 包名
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/31 11:18
+         */
+        public Builder dtoPackage(@NotNull String packageName){
+            this.customConfig.dtoPackage=packageName;
+            return this;
+        }
+
+        /**
+         * vo所在包
+         *
+         * @param packageName 包名
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/31 11:18
+         */
+        public Builder voPackage(@NotNull String packageName){
+            this.customConfig.dtoPackage=packageName;
+            return this;
+        }
+
+        /**
+         * 导入监听器listener所在包
+         *
+         * @param packageName 包名
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/31 11:18
+         */
+        public Builder listenerPackage(@NotNull String packageName){
+            this.customConfig.dtoPackage=packageName;
+            return this;
+        }
+
+        /**
          * 返回结果类
          *
          * @param returnResultClass 返回结果类
@@ -283,7 +431,13 @@ public class CustomConfig {
          * @author booty
          * @date 2023/07/13 16:12
          */
-        public Builder returnResultClass(@NotNull Class<?> returnResultClass){
+        public Builder returnResultClass(Class<?> returnResultClass){
+            if (returnResultClass==null){
+                this.customConfig.returnResultClass=null;
+                this.customConfig.returnResultClassPackage=null;
+                this.customConfig.returnResultGenericType=false;
+                return this;
+            }
             String fullClassName = returnResultClass.getName();
             this.customConfig.returnResultClassPackage= fullClassName;
             this.customConfig.returnResultClass=ClassUtils.getSimpleName(fullClassName);
@@ -298,7 +452,13 @@ public class CustomConfig {
          * @author booty
          * @date 2023/07/13 16:12
          */
-        public Builder returnResultClass(@NotNull String fullClassName){
+        public Builder returnResultClass(String fullClassName){
+            if (fullClassName==null){
+                this.customConfig.returnResultClass=null;
+                this.customConfig.returnResultClassPackage=null;
+                this.customConfig.returnResultGenericType=false;
+                return this;
+            }
             this.customConfig.returnResultClassPackage= fullClassName;
             this.customConfig.returnResultClass=ClassUtils.getSimpleName(fullClassName);
             return this;
@@ -332,6 +492,58 @@ public class CustomConfig {
         }
 
         /**
+         * 添加插入排除字段
+         *
+         * @param fieldNames 字段名称
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/14 15:38
+         */
+        public Builder insertExcludeFields(List<String> fieldNames){
+            this.customConfig.insertExcludeFields = fieldNames;
+            return this;
+        }
+
+        /**
+         * 添加更新排除字段
+         *
+         * @param fieldNames 字段名称
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/14 15:38
+         */
+        public Builder updateExcludeFields(List<String> fieldNames){
+            this.customConfig.updateExcludeFields = fieldNames;
+            return this;
+        }
+
+        /**
+         * controller是否使用@RequestBody注解
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/23 22:01
+         */
+        public Builder requestBody(@NotNull Boolean b){
+            this.customConfig.requestBody=b;
+            return this;
+        }
+
+        /**
+         * 是否添加校验注解
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/23 22:06
+         */
+        public Builder enableValidated(@NotNull Boolean b){
+            this.customConfig.enableValidated=b;
+            return this;
+        }
+
+        /**
          * 生成分页查询方法
          *
          * @param generate 生成
@@ -345,162 +557,46 @@ public class CustomConfig {
         }
 
         /**
-         * 生成excel导出方法
+         * 是否创建voResultMap
          *
-         * @param generate 生成
+         * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 10:03
+         * @date 2023/07/17 15:16
          */
-        public Builder exportExcel(@NotNull Boolean generate){
-            this.customConfig.exportExcel=generate;
-            return this;
-        }
-
-
-        /**
-         * 添加插入排除字段
-         *
-         * @param fieldNames 字段名称
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/14 15:38
-         */
-        public Builder insertExcludeFields(@NotNull List<String> fieldNames){
-            this.customConfig.insertExcludeFields.addAll(fieldNames);
+        public Builder voResultMap(@NotNull Boolean b){
+            this.customConfig.voResultMap=b;
             return this;
         }
 
         /**
-         * 添加更新排除字段
+         * 排序字段map
+         * k=字段名 v=启用倒序
          *
-         * @param fieldNames 字段名称
+         * @param map 地图
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 15:38
+         * @date 2023/07/31 09:12
          */
-        public Builder updateExcludeFields(@NotNull List<String> fieldNames){
-            this.customConfig.updateExcludeFields.addAll(fieldNames);
-            return this;
-        }
-
-
-        /**
-         * 添加插入排除字段
-         *
-         * @param fieldNames 字段名称
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/14 15:37
-         */
-        public Builder insertExcludeField(@NotNull String...  fieldNames){
-            this.customConfig.insertExcludeFields.addAll(Arrays.asList(fieldNames));
+        public Builder orderColumnMap(Map<String,Boolean> map){
+            this.customConfig.orderColumnMap=map;
             return this;
         }
 
         /**
-         * 添加更新排除字段
+         * 添加排序字段
          *
-         * @param fieldNames 字段名称
+         * @param columnName 列名
+         * @param isDesc     是desc
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 15:37
+         * @date 2023/07/31 11:28
          */
-        public Builder updateExcludeField(@NotNull String...  fieldNames){
-            this.customConfig.updateExcludeFields.addAll(Arrays.asList(fieldNames));
-            return this;
-        }
-
-        /**
-         * vo生成路径
-         *
-         * @param voPackage 签证官包
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:07
-         */
-        public Builder voPackage(@NotNull String voPackage){
-            this.customConfig.voPackage=voPackage;
-            return this;
-        }
-
-        /**
-         * dto生成路径
-         * @param dtoPackage
-         * @return
-         */
-        public Builder dtoPackage(@NotNull String dtoPackage){
-            this.customConfig.dtoPackage=dtoPackage;
-            return this;
-        }
-
-
-        /**
-         * 自定义文件
-         *
-         * @param customFile 自定义文件
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:08
-         */
-        public Builder customFile(@NotNull Map<String, String> customFile) {
-            return customFile(customFile.entrySet().stream()
-                    .map(e -> new CustomFile.Builder().fileName(e.getKey()).templatePath(e.getValue()).build())
-                    .collect(Collectors.toList()));
-        }
-
-        /**
-         * 自定义文件
-         *
-         * @param customFile 自定义文件
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:08
-         */
-        public Builder customFile(@NotNull CustomFile customFile) {
-            this.customConfig.customFiles.add(customFile);
-            return this;
-        }
-
-        /**
-         * 自定义文件
-         *
-         * @param customFiles 自定义文件
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:08
-         */
-        public Builder customFile(@NotNull List<CustomFile> customFiles) {
-            this.customConfig.customFiles.addAll(customFiles);
-            return this;
-        }
-
-        /**
-         * 清空自定义文件
-         *
-         * @param customFiles 自定义文件
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 16:08
-         */
-        public Builder clearCustomFile(@NotNull List<CustomFile> customFiles) {
-            this.customConfig.customFiles.clear();
-            return this;
-        }
-
-
-        /**
-         * 自定义文件
-         *
-         * @param consumer 消费者
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:08
-         */
-        public Builder customFile(Consumer<CustomFile.Builder> consumer) {
-            CustomFile.Builder builder = new CustomFile.Builder();
-            consumer.accept(builder);
-            this.customConfig.customFiles.add(builder.build());
+        public Builder orderColumn(@NotNull String columnName,@NotNull Boolean isDesc){
+            if (this.customConfig.orderColumnMap==null){
+                this.customConfig.orderColumnMap=new HashMap<>();
+            }
+            this.customConfig.orderColumnMap.put(columnName,isDesc);
             return this;
         }
 
@@ -519,6 +615,19 @@ public class CustomConfig {
         }
 
         /**
+         * 生成excel导出方法
+         *
+         * @param generate 生成
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/07/14 10:03
+         */
+        public Builder exportExcel(@NotNull Boolean generate){
+            this.customConfig.exportExcel=generate;
+            return this;
+        }
+
+        /**
          * exportVo是否继承vo
          *
          * @param b b
@@ -531,80 +640,32 @@ public class CustomConfig {
             return this;
         }
 
+
         /**
-         * 是否创建voResultMap
+         * 生成导入excel方法
          *
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/17 15:16
+         * @date 2023/07/31 10:20
          */
-        public Builder voResultMap(@NotNull Boolean b){
-            this.customConfig.voResultMap=b;
+        public Builder importExcel(@NotNull Boolean b){
+            this.customConfig.importExcel=b;
             return this;
         }
 
-        /**
-         * 添加自定义排序字段名称
-         *
-         * @param columnName 列名
-         * @param isDesc     是否倒序
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:49
-         */
-        public Builder orderColumn(@NotNull String columnName , @NotNull Boolean isDesc){
-            this.customConfig.orderColumnMap.put(columnName,isDesc);
-            return this;
-        }
 
         /**
-         * 清空自定义排序字段名称
-         *
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/17 15:51
-         */
-        public Builder clearOrderColumn(){
-            this.customConfig.orderColumnMap.clear();
-            return this;
-        }
-
-        /**
-         * controller是否使用@RequestBody注解
+         * 导入类是否继承entity
          *
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/23 22:01
+         * @date 2023/07/31 10:21
          */
-        public Builder requestBody(@NotNull Boolean b){
-            this.customConfig.requestBody=b;
+        public Builder importExtendsEntity(@NotNull Boolean b){
+            this.customConfig.importExtendsEntity=b;
             return this;
-        }
-
-
-        /**
-         * 是否添加校验注解
-         *
-         * @param b b
-         * @return {@code Builder }
-         * @author booty
-         * @date 2023/07/23 22:06
-         */
-        public Builder enableValidated(@NotNull Boolean b){
-            this.customConfig.enableValidated=b;
-            return this;
-        }
-
-        /**
-         * 构建模板配置对象
-         *
-         * @return 模板配置对象
-         */
-        @Override
-        public CustomConfig build() {
-            return this.customConfig;
         }
     }
 }

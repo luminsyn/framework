@@ -5,21 +5,19 @@ import com.alibaba.excel.read.listener.ReadListener;
 import java.util.LinkedList;
 import java.util.List;
 import ${package.Service}.${table.serviceName};
-import ${package.Service}.${table.serviceName};
-
+import ${basePackage}.${voPackage}.${entity}ImportVo;
 /**
  * $!{table.comment} 导入监听器
  *
  * @author ${author}
  * @since ${date}
  */
-public class ${entity}ImportListener implements ReadListener<${entity}ImportVo> {
-    private final List<Object> cachedDataList = new LinkedList<>();
+public class ${entity}Listener implements ReadListener<${entity}ImportVo> {
+    private final List<${entity}ImportVo> cachedDataList = new LinkedList<>();
     private final ${table.serviceName} baseService;
     private boolean success = false ;
-    private String msg ="";
 
-    public ${entity}ImportListener(${table.serviceName} baseService) {
+    public ${entity}Listener(${table.serviceName} baseService) {
         this.baseService = baseService;
     }
 
@@ -30,19 +28,12 @@ public class ${entity}ImportListener implements ReadListener<${entity}ImportVo> 
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        try {
-            success = baseService.importExcel(cachedDataList);
-        }catch (Exception e){
-            msg = e.getMessage();
-        }
+        success = baseService.importExcel(cachedDataList);
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getMsg() {
-        return msg;
-    }
 
 }

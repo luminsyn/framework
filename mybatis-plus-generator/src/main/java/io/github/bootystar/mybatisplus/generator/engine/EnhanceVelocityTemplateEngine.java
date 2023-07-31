@@ -60,7 +60,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
                 objectMap.putAll(customData);
             }
         }
-       ;
+        objectMap.put("basePackage",config.getPackageConfig().getParent());
 
         return objectMap ;
     }
@@ -87,7 +87,6 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
                 outputService(tableInfo, objectMap);
                 // controller
                 outputController(tableInfo, objectMap);
-
 
                 Optional.ofNullable(customConfig).ifPresent(t -> {
                     // 输出自定义文件

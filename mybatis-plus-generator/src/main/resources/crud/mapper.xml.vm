@@ -27,7 +27,7 @@
 
 #end
     #if(${voResultMap})
-    <!-- 通用查询映射结果 -->
+    <!-- vo查询映射结果 -->
     <resultMap id="voMap" type="${basePackage}.${voPackage}.${entity}Vo">
         #foreach($field in ${table.fields})
             #if(${field.keyFlag})##生成主键排在第一位

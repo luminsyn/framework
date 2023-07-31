@@ -21,28 +21,29 @@ public class Test {
 
         generator
                 .globalConfigBuilder()
-                .dateType(DateType.SQL_PACK)
+                .dateType(DateType.TIME_PACK)
 //                .enableSwagger()
                 .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
         ;  // 指定输出目录
         generator
                 .customConfigBuilder()
-                .returnResultClass(ReturnResult.class)
-                .returnResultGenericType(true)
-                .returnResultDefaultStaticMethodName("success")
-                .pageByDto(true)
-                .exportExcel(true)
-                .dtoPackage("dto")
-                .voPackage("vo")
+//                .returnResultClass(ReturnResult.class)
+//                .returnResultGenericType(true)
+//                .returnResultDefaultStaticMethodName("success")
+//                .pageByDto(false)
+//                .exportExcel(true)
+//                .dtoPackage("dto")
+//                .voPackage("vo")
                 .exportExtendsVo(true)
                 .voExtendsEntity(true)
-//                .addValidated(true)
-                .requestBody(true)
+                .importExtendsEntity(true)
+                .enableValidated(true)
+//                .requestBody(true)
                 .orderColumn("age",true)
                 .orderColumn("name", false)
                 .orderColumn("id_card", true)
-                .voResultMap(true)
+//                .voResultMap(true)
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
@@ -68,7 +69,7 @@ public class Test {
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
-        .moduleName("v4")
+//        .moduleName("v4")
 //                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
 

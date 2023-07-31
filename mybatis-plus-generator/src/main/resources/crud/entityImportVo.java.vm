@@ -17,15 +17,14 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 #end
 #end
-#if(${exportExcel})
+#if(${importExtendsEntity})
+import ${package.Entity}.${entity};
+#end
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.*;
-import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
-#end
 
 /**
- * $!{table.comment}
+ * $!{table.comment}导入vo
  *
  * @author ${author}
  * @since ${date}
@@ -42,15 +41,8 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 #elseif(${swagger})
 @ApiModel(value = "${entity}对象", description = "$!{table.comment}")
 #end
-#if(${exportExcel})
 @ExcelIgnoreUnannotated
-@HeadRowHeight(30)
-@HeadFontStyle(fontHeightInPoints = 12)
-@HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL)
-@ColumnWidth(25)
-@ContentRowHeight(20)
-#end
-public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
+public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
@@ -69,9 +61,9 @@ public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
      */
   #end
 #end
-#if(${exportExcel})
+    #if(!${field.keyFlag})
     @ExcelProperty(value = "${field.comment}")
-#end
+    #end
     private ${field.propertyType} ${field.propertyName};
 #end
 ## ----------  END 字段循环遍历  ----------
@@ -88,7 +80,7 @@ public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
     }
 
   #if(${chainModel})
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}ImportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end

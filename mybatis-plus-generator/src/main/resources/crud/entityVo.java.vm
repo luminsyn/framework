@@ -28,7 +28,7 @@ import ${package.Entity}.${entity};
 #end
 
 /**
- * $!{table.comment}
+ * $!{table.comment} 展示vo
  *
  * @author ${author}
  * @since ${date}
@@ -83,7 +83,7 @@ public class ${entity}Vo#if(${voExtendsEntity}) extends ${entity}#end{
     }
 
   #if(${chainModel})
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}Vo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
