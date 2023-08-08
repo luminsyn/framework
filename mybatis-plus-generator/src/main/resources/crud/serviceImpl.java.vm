@@ -13,8 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import com.alibaba.excel.EasyExcel;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import ${javaApiPackage}.servlet.ServletOutputStream;
+import ${javaApiPackage}.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.io.UnsupportedEncodingException;
@@ -79,6 +79,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public IPage<${entity}Vo> pageByDto(${entity}SelectDto dto){
+        if(dto==null){
+            dto = new ${entity}SelectDto();
+        }
         Page<${entity}Vo> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
         IPage<${entity}Vo> result = baseMapper.pageByDto(dto,page);
         this.voPostProcess(result.getRecords());
@@ -89,7 +92,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
      * vo后置处理操作
      *
      * @author ${author}
-     * @date ${nowTime}
+     * @since ${nowTime}
      * @param voList Vo列表
      */
     private void voPostProcess(List<${entity}Vo> voList){
@@ -103,14 +106,17 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${exportExcel})
     @Override
     public void exportExcel(${entity}SelectDto dto){
+        if(dto==null){
+            dto = new ${entity}SelectDto();
+        }
         dto.setPageSize(-1L);
         IPage<${entity}Vo> result = this.pageByDto(dto);
         List<${entity}Vo> records = result.getRecords();
         String fileName= "$!{table.comment}.xlsx";
         fileName = convertFileName(fileName);
         try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
-            if(dto.getPropertyList()!=null && dto.getPropertyList().size()>0){
-                EasyExcel.write(outputStream,${entity}ExportVo.class).includeColumnFieldNames(dto.getPropertyList()).sheet().doWrite(records);
+            if(dto.getPropertyListExport()!=null && dto.getPropertyListExport().size()>0){
+                EasyExcel.write(outputStream,${entity}ExportVo.class).includeColumnFieldNames(dto.getPropertyListExport()).sheet().doWrite(records);
             }else{
                 EasyExcel.write(outputStream,${entity}ExportVo.class).sheet().doWrite(records);
             }

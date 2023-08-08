@@ -6,19 +6,19 @@ import ${pkg};
 #if(${enableValidated})
 #foreach($field in ${table.fields})
   #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
-import javax.validation.constraints.NotNull;
+import ${javaApiPackage}.validation.constraints.NotNull;
   #break
   #end
 #end
 #foreach($field in ${table.fields})
   #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
-import javax.validation.constraints.NotBlank;
+import ${javaApiPackage}.validation.constraints.NotBlank;
   #break
   #end
 #end
 #foreach($field in ${table.fields})
   #if(${field.propertyType}=="String")
-import javax.validation.constraints.Size;
+import ${javaApiPackage}.validation.constraints.Size;
   #break
   #end
 #end

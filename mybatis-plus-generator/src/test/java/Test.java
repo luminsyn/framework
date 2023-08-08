@@ -35,6 +35,7 @@ public class Test {
 //                .exportExcel(true)
 //                .dtoPackage("dto")
 //                .voPackage("vo")
+                .jakartaApi(false)
                 .exportExtendsVo(true)
                 .voExtendsEntity(true)
                 .importExtendsEntity(true)
@@ -43,11 +44,14 @@ public class Test {
                 .orderColumn("age",true)
                 .orderColumn("name", false)
                 .orderColumn("id_card", true)
+                .dtoPackage("entity.dto")
+                .voPackage("entity.vo")
+                .listenerPackage("entity.listener")
 //                .voResultMap(true)
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
-                .enableLombok()
+//                .enableLombok()
                 .enableActiveRecord()
                 .idType(IdType.ASSIGN_ID)
                 .enableActiveRecord()
@@ -69,6 +73,7 @@ public class Test {
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
+                .entity("entity.pojo")
 //        .moduleName("v4")
 //                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;

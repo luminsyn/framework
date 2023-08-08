@@ -29,7 +29,7 @@ import java.io.Serializable;
 import ${returnResultClassPackage};
 #end
 #if(${springdoc})
-import io.swagger.v3.oas.annotations.tags.tag;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.*;
 #elseif(${swagger})
 import io.swagger.annotations.Api;
@@ -194,6 +194,7 @@ public class ${table.controllerName} {
         dto.setPrimaryKey(id);
         dto.setPageSize(-1L);
         IPage<${entity}Vo> result = baseService.pageByDto(dto);
+##        IPage<${entity}Vo> result = baseService.pageByDto(dto,1L,-1L);
         List<${entity}Vo> records = result.getRecords();
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(records==null||records.size()==0?null:records.get(0))#else null#end;
@@ -216,11 +217,14 @@ public class ${table.controllerName} {
      */
     #end
     @PostMapping("/page")
+##    @PostMapping("/page/{current}/{size}")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+##    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
+    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
     #end
+##        IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
         IPage<${entity}Vo> result=baseService.pageByDto(dto);
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
@@ -244,7 +248,7 @@ public class ${table.controllerName} {
      */
     #end
     @PostMapping("/export")
-    public void export(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
+    public void export(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
         baseService.exportExcel(dto);
     }
     #end

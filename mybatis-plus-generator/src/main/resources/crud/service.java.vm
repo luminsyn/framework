@@ -30,6 +30,7 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #if(${pageByDto})
 
     IPage<${entity}Vo> pageByDto(${entity}SelectDto dto);
+##    IPage<${entity}Vo> pageByDto(${entity}SelectDto dto, Long current, Long size);
     #if(${exportExcel})
 
     void exportExcel(${entity}SelectDto dto);

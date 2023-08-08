@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import io.github.bootystar.mybatisplus.generator.config.CustomConfig;
 import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -59,11 +60,19 @@ public class CrudGenerator extends BaseGenerator {
         PackageConfig packageConfig = packageConfigBuilder.build();
 
         CustomConfig customConfig = customConfigBuilder.build();
-        String dtoPackage = customConfig.getDtoPackage();
-        String voPackage = customConfig.getVoPackage();
-        String listenerPackage = customConfig.getListenerPackage();
+//        String dtoPackage = customConfig.getDtoPackage();
+//        String voPackage = customConfig.getVoPackage();
+//        String listenerPackage = customConfig.getListenerPackage();
 
-
+//        String outputDir = globalConfig.getOutputDir();
+//        String packageInfo = packageConfig.getParent();
+//        String parentPath= outputDir + File.separator+packageInfo;
+//        String dtoFilePath = (parentPath + File.separator + dtoPackage).replaceAll("\\.", "\\" + File.separator);
+//        String voFilePath = (parentPath + File.separator + voPackage).replaceAll("\\.", "\\" + File.separator);
+//        String listenerFilePath = (parentPath + File.separator +listenerPackage).replaceAll("\\.", "\\" + File.separator);
+        String dtoPackage = customConfig.getDtoPackage().replaceAll("\\.", "\\" + File.separator);
+        String voPackage = customConfig.getVoPackage().replaceAll("\\.", "\\" + File.separator);
+        String listenerPackage = customConfig.getListenerPackage().replaceAll("\\.", "\\" + File.separator);
 
         LinkedList<CustomFile> customFiles = new LinkedList<>();
         CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();

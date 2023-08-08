@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.util.ClassUtils;
+import lombok.Getter;
 import org.apache.ibatis.type.JdbcType;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * @date 2023/07/13 13:59
  * @since 2017-06-17
  */
+@Getter
 public class CustomConfig {
 
     //--------------常量---------------
@@ -145,95 +147,18 @@ public class CustomConfig {
      */
     private List<CustomFile> customFiles;
 
+    /**
+     * java api包
+     */
+    private String javaApiPackage ="javax";
+
+
 
     /**
      * 不对外爆露
      */
     private CustomConfig() { }
 
-    public List<CustomFile> getCustomFiles() {
-        return this.customFiles;
-    }
-
-    public String getDtoPackage() {
-        return dtoPackage;
-    }
-
-    public String getVoPackage() {
-        return voPackage;
-    }
-
-    public String getListenerPackage() {
-        return listenerPackage;
-    }
-
-    public String getReturnResultClass() {
-        return returnResultClass;
-    }
-
-    public String getReturnResultClassPackage() {
-        return returnResultClassPackage;
-    }
-
-    public Boolean getReturnResultGenericType() {
-        return returnResultGenericType;
-    }
-
-    public String getReturnResultDefaultStaticMethodName() {
-        return returnResultDefaultStaticMethodName;
-    }
-
-    public Boolean getRequestBody() {
-        return requestBody;
-    }
-
-    public Boolean getEnableValidated() {
-        return enableValidated;
-    }
-
-    public Boolean getEnableOrigins() {
-        return enableOrigins;
-    }
-
-    public Collection<String> getInsertExcludeFields() {
-        return insertExcludeFields;
-    }
-
-    public Collection<String> getUpdateExcludeFields() {
-        return updateExcludeFields;
-    }
-
-    public Boolean getPageByDto() {
-        return pageByDto;
-    }
-
-    public Boolean getVoResultMap() {
-        return voResultMap;
-    }
-
-    public Map<String, Boolean> getOrderColumnMap() {
-        return orderColumnMap;
-    }
-
-    public Boolean getVoExtendsEntity() {
-        return voExtendsEntity;
-    }
-
-    public Boolean getExportExcel() {
-        return exportExcel;
-    }
-
-    public Boolean getExportExtendsVo() {
-        return exportExtendsVo;
-    }
-
-    public Boolean getImportExcel() {
-        return importExcel;
-    }
-
-    public Boolean getImportExtendsEntity() {
-        return importExtendsEntity;
-    }
 
     public void setCustomFiles(List<CustomFile> customFiles) {
         this.customFiles = customFiles;
@@ -352,8 +277,6 @@ public class CustomConfig {
         objectMap.put("schemaName", schemaName);
         objectMap.put("table", tableInfo);
         objectMap.put("entity", tableInfo.getEntityName());
-
-
          */
         return data;
     }
@@ -384,6 +307,25 @@ public class CustomConfig {
             return this.customConfig;
         }
 
+
+        /**
+         * 使用jakarta的api
+         * (自java17起移除了javax包,使用jakarta替代)
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/08/08 11:21
+         */
+        public Builder jakartaApi(@NotNull Boolean b){
+            if (b){
+                this.customConfig.javaApiPackage ="jakarta";
+            }else{
+                this.customConfig.javaApiPackage ="javax";
+            }
+            return this;
+        }
+
         /**
          * dto所在包
          *
@@ -406,7 +348,7 @@ public class CustomConfig {
          * @date 2023/07/31 11:18
          */
         public Builder voPackage(@NotNull String packageName){
-            this.customConfig.dtoPackage=packageName;
+            this.customConfig.voPackage=packageName;
             return this;
         }
 
@@ -419,7 +361,7 @@ public class CustomConfig {
          * @date 2023/07/31 11:18
          */
         public Builder listenerPackage(@NotNull String packageName){
-            this.customConfig.dtoPackage=packageName;
+            this.customConfig.listenerPackage=packageName;
             return this;
         }
 
