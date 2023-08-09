@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-generator</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 
 
     <properties>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.1.1</version>
+            <version>3.3.2</version>
             <scope>test</scope>
         </dependency>
 
