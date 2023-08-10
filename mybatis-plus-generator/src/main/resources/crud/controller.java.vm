@@ -57,15 +57,15 @@ import java.io.Serializable;
 
 
 /**
- * $!{table.comment} 前端控制器
+ * $!{table.comment} 前端接口
  *
  * @author ${author}
  * @since ${date}
  */
 #if(${springdoc})
-@Tag(name = "${table.comment}接口", description = "$!{table.comment}")
+@Tag(name = "${table.comment}前端接口", description = "$!{table.comment}")
 #elseif(${swagger})
-@Api(value = "#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}接口")
+@Api(value = "#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}前端接口")
 #end
 #if(${restControllerStyle})
 @RestController
@@ -235,12 +235,12 @@ public class ${table.controllerName} {
 
     #if(${exportExcel})
     #if(${springdoc})
-    @Operation(summary = "导出excel表格")
+    @Operation(summary = "导出excel")
     #elseif(${swagger})
-    @ApiOperation(value = "导出excel表格")
+    @ApiOperation(value = "导出excel")
     #else
     /**
-     * 导出excel表格
+     * 导出excel
      * @author ${author}
      * @since ${nowTime}
      * @param dto 查询条件dto
@@ -256,9 +256,9 @@ public class ${table.controllerName} {
 
     #if(${importExcel})
     #if(${springdoc})
-    @Operation(summary = "删除")
+    @Operation(summary = "导入excel")
     #elseif(${swagger})
-    @ApiOperation(value = "删除")
+    @ApiOperation(value = "导入excel")
     #else
     /**
      * 导入excel
