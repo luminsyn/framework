@@ -142,6 +142,8 @@ public class CustomConfig {
      */
     private Boolean importExtendsEntity;
 
+    // --------------后续迭代--------------
+
     /**
      * 自定义文件
      */
@@ -151,11 +153,24 @@ public class CustomConfig {
      * java api包
      */
     private String javaApiPackage ="javax";
+    /**
+     * 所有请求都使用post方法
+     */
+    private Boolean allPost =false;
+    /**
+     * 请求基础url
+     */
+    private String baseUrl = null;
+
+    /**
+     * 是否覆盖已有文件
+     */
+    private Boolean fileOverride = false;
 
 
 
     /**
-     * 不对外爆露
+     * 不对外暴露
      */
     private CustomConfig() { }
 
@@ -488,13 +503,13 @@ public class CustomConfig {
         /**
          * 生成分页查询方法
          *
-         * @param generate 生成
+         * @param b 生成
          * @return {@code Builder }
          * @author booty
          * @date 2023/07/14 10:04
          */
-        public Builder pageByDto(@NotNull Boolean generate){
-            this.customConfig.pageByDto=generate;
+        public Builder pageByDto(@NotNull Boolean b){
+            this.customConfig.pageByDto=b;
             return this;
         }
 
@@ -559,13 +574,13 @@ public class CustomConfig {
         /**
          * 生成excel导出方法
          *
-         * @param generate 生成
+         * @param b 生成
          * @return {@code Builder }
          * @author booty
          * @date 2023/07/14 10:03
          */
-        public Builder exportExcel(@NotNull Boolean generate){
-            this.customConfig.exportExcel=generate;
+        public Builder exportExcel(@NotNull Boolean b){
+            this.customConfig.exportExcel=b;
             return this;
         }
 
@@ -596,7 +611,6 @@ public class CustomConfig {
             return this;
         }
 
-
         /**
          * 导入类是否继承entity
          *
@@ -609,5 +623,68 @@ public class CustomConfig {
             this.customConfig.importExtendsEntity=b;
             return this;
         }
+
+        /**
+         * controller全部使用post请求
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/09/06 16:04
+         */
+        public Builder allPost(@NotNull Boolean b){
+            this.customConfig.allPost=b;
+            return this;
+        }
+
+        /**
+         * 跨域注解
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/09/07 10:20
+         */
+        public Builder enableOrigins(@NotNull Boolean b){
+            this.customConfig.enableOrigins=b;
+            return this;
+        }
+
+        /**
+         * controller请求前缀
+         *
+         * @param url url
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/09/07 10:14
+         */
+        public Builder baseUrl(@NotNull String url){
+            if (url==null||url.length()==0){
+                this.customConfig.baseUrl=url;
+                return this;
+            }
+            if (!url.startsWith("/")){
+                url="/"+url;
+            }
+            if (url.endsWith("/")){
+                url=url.substring(0,url.length()-1);
+            }
+            this.customConfig.baseUrl=url;
+            return this;
+        }
+
+        /**
+         * 是否开启文件覆盖
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @date 2023/09/07 10:28
+         */
+        public Builder fileOverride(@NotNull Boolean b){
+            this.customConfig.fileOverride=b;
+            return this;
+        }
+
     }
 }

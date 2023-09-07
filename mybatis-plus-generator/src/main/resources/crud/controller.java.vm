@@ -12,7 +12,7 @@ import java.io.IOException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 #end
 #if(${enableOrigins})
-import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.CrossOrigin;
 #end
 #if(${requestBody})
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,7 +75,7 @@ import java.io.Serializable;
 #if(${enableOrigins})
 @CrossOrigin
 #end
-@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@RequestMapping("#if(${baseUrl})${baseUrl}#end#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
 #if(${kotlin})
 class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
 
@@ -129,7 +129,11 @@ public class ${table.controllerName} {
      * @return
      */
     #end
+    #if(${allPost})
     @PostMapping("/update")
+    #else
+    @PutMapping("/update")
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDto dto){
     #else
@@ -156,7 +160,11 @@ public class ${table.controllerName} {
      * @return
      */
     #end
+    #if(${allPost})
     @PostMapping("/delete/{id}")
+    #else
+    @DeleteMapping("/delete/{id}")
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(@PathVariable Serializable id) {
     #else
@@ -184,22 +192,52 @@ public class ${table.controllerName} {
      * @return
      */
     #end
+    #if(${allPost})
     @PostMapping("/get/{id}")
+    #else
+    @GetMapping("/get/{id}")
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(@PathVariable Serializable id){
     #else
     public Object get(@PathVariable Serializable id){
     #end
-        ${entity}SelectDto dto = new ${entity}SelectDto();
-        dto.setPrimaryKey(id);
-        dto.setPageSize(-1L);
-        IPage<${entity}Vo> result = baseService.pageByDto(dto);
-##        IPage<${entity}Vo> result = baseService.pageByDto(dto,1L,-1L);
-        List<${entity}Vo> records = result.getRecords();
+        ${entity}Vo result=baseService.getVoById(id);
     #if(${returnResultClass})
-        return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(records==null||records.size()==0?null:records.get(0))#else null#end;
+        return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
     #else
-        return records==null||records.size()==0?null:records.get(0);
+        return result;
+    #end
+    }
+
+    #if(${springdoc})
+    @Operation(summary = "列表")
+    #elseif(${swagger})
+    @ApiOperation(value = "列表")
+    #else
+    /**
+     * 列表
+     * @author ${author}
+     * @since ${nowTime}
+     * @param dto 查询条件dto
+     * @return
+     */
+    #end
+    #if(${allPost})
+    @PostMapping("/list")
+    #else
+    @GetMapping("/list")
+    #end
+    #if(${returnResultClass})
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    #else
+    public Object list(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
+    #end
+        List<${entity}Vo> result=baseService.listByDto(dto);
+    #if(${returnResultClass})
+        return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
+    #else
+        return result;
     #end
     }
 
@@ -216,13 +254,17 @@ public class ${table.controllerName} {
      * @return
      */
     #end
+    #if(${allPost})
     @PostMapping("/page")
+    #else
+    @GetMapping("/page")
+    #end
 ##    @PostMapping("/page/{current}/{size}")
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
 ##    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
+    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
     #end
 ##        IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
         IPage<${entity}Vo> result=baseService.pageByDto(dto);
@@ -247,7 +289,11 @@ public class ${table.controllerName} {
      * @return
      */
     #end
+    #if(${allPost})
     @PostMapping("/export")
+    #else
+    @GetMapping("/export")
+    #end
     public void export(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
         baseService.exportExcel(dto);
     }

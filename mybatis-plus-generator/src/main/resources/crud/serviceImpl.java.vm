@@ -78,11 +78,32 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${pageByDto})
 
     @Override
+    public ${entity}Vo getVoById(Serializable id){
+        ${entity}SelectDto dto = new ${entity}SelectDto();
+        dto.setPrimaryKey(id);
+        dto.setPageSize(-1L);
+        IPage<${entity}Vo> result = this.pageByDto(dto);
+        List<${entity}Vo> records = result.getRecords();
+        return records!=null && records.size()>0 ? records.get(0) : null;
+    }
+
+    @Override
+    public List<${entity}Vo> listByDto(${entity}SelectDto dto){
+        dto.setPageSize(-1L);
+        IPage<${entity}Vo> result = this.pageByDto(dto);
+        List<${entity}Vo> records = result.getRecords();
+        return records;
+    }
+
+    @Override
     public IPage<${entity}Vo> pageByDto(${entity}SelectDto dto){
         if(dto==null){
             dto = new ${entity}SelectDto();
         }
         Page<${entity}Vo> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
+        if(dto.getPageSize()==-1L){
+            page.setSearchCount(false);
+        }
         IPage<${entity}Vo> result = baseMapper.pageByDto(dto,page);
         this.voPostProcess(result.getRecords());
         return result;

@@ -41,13 +41,16 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
     protected void outputCustomFile(@NotNull List<CustomFile> customFiles, @NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
         String entityName = tableInfo.getEntityName();
         String parentPath = getPathInfo(OutputFile.parent);
+        Boolean fileOverride = customConfig.getFileOverride();
         customFiles.forEach(file -> {
             String filePath = StringUtils.isNotBlank(file.getFilePath()) ? file.getFilePath() : parentPath;
             if (StringUtils.isNotBlank(file.getPackageName())) {
                 filePath = filePath + File.separator + file.getPackageName();
             }
             String fileName = filePath + File.separator + entityName + file.getFileName();
-            outputFile(new File(fileName), objectMap, file.getTemplatePath(), file.isFileOverride());
+
+//            outputFile(new File(fileName), objectMap, file.getTemplatePath(), file.isFileOverride());
+            outputFile(new File(fileName), objectMap, file.getTemplatePath(), fileOverride);
         });
     }
 

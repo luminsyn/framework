@@ -3,7 +3,7 @@ package io.github.bootystar.mybatisplus.generator;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import io.github.bootystar.mybatisplus.generator.config.CustomConfig;
-import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
+import io.github.bootystar.mybatisplus.generator.core.Result;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ public class CrudGenerator extends BaseGenerator {
         templateConfigBuilder.mapper("/crud/mapper.java");
         templateConfigBuilder.xml("/crud/mapper.xml");
         templateConfigBuilder.entity("/crud/entity.java");
-        customConfigBuilder.returnResultClass(ReturnResult.class);
+        customConfigBuilder.returnResultClass(Result.class);
         customConfigBuilder.returnResultGenericType(true);
         customConfigBuilder.returnResultDefaultStaticMethodName("success");
         customConfigBuilder.pageByDto(true);

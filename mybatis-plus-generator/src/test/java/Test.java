@@ -47,6 +47,11 @@ public class Test {
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
                 .listenerPackage("entity.listener")
+                .requestBody(false)
+                .baseUrl("/admin/apiV2")
+                .enableOrigins(true)
+                .fileOverride(true)
+
 //                .voResultMap(true)
         ;
         generator.strategyConfigBuilder()
@@ -57,17 +62,17 @@ public class Test {
                 .enableActiveRecord()
                 .enableColumnConstant()
                 .enableTableFieldAnnotation()
+
 //                .disableSerialVersionUID()
 //                .columnNaming(NamingStrategy.no_change)
         ;
 
-        generator.strategyConfigBuilder()
-                .controllerBuilder()
-                .enableFileOverride()
+        generator.strategyConfigBuilder();
 
-                ;
+
         generator.strategyConfigBuilder()
                 .entityBuilder()
+                .enableFileOverride()
 //                .enableActiveRecord()
         ;
         generator
@@ -77,7 +82,9 @@ public class Test {
 //        .moduleName("v4")
 //                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
-
+        generator.globalConfigBuilder()
+//                .enableSpringdoc()
+                .enableSwagger();
 
         generator.execute("cc_app_user");
     }

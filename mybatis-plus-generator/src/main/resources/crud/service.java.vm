@@ -8,11 +8,14 @@ import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${basePackage}.${dtoPackage}.${entity}SelectDto;
 import ${basePackage}.${voPackage}.${entity}Vo;
+import java.util.List;
+import java.io.Serializable;
 #end
 #if(${importExcel})
-import java.util.List;
 import ${basePackage}.${voPackage}.${entity}ImportVo;
 #end
+
+
 /**
  * $!{table.comment} 服务类
  *
@@ -29,8 +32,12 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     boolean updateByDto(${entity}UpdateDto dto);
     #if(${pageByDto})
 
+    ${entity}Vo getVoById(Serializable id);
+
+    List<${entity}Vo> listByDto(${entity}SelectDto dto);
+
     IPage<${entity}Vo> pageByDto(${entity}SelectDto dto);
-##    IPage<${entity}Vo> pageByDto(${entity}SelectDto dto, Long current, Long size);
+
     #if(${exportExcel})
 
     void exportExcel(${entity}SelectDto dto);
