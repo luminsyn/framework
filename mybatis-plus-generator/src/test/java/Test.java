@@ -2,7 +2,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
-import io.github.bootystar.mybatisplus.generator.core.ReturnResult;
 
 
 /**
