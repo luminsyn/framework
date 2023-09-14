@@ -49,7 +49,8 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-
+#if(${field.logicDeleteField})
+#else
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")
@@ -66,9 +67,12 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
     #end
     private ${field.propertyType} ${field.propertyName};
 #end
+#end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
 #foreach($field in ${table.fields})
+#if(${field.logicDeleteField})
+#else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
   #else
@@ -90,6 +94,7 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
   #end
     }
 #end
+#end
 ## --foreach end---
 #end
 ## --end of #if(!${entityLombokModel})--
@@ -99,11 +104,14 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
+  #if(${field.logicDeleteField})
+  #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +
     #else
         ", ${field.propertyName} = " + ${field.propertyName} +
     #end
+  #end
   #end
         "}";
     }

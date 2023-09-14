@@ -58,9 +58,10 @@ public class Test {
 //                .enableLombok()
                 .enableActiveRecord()
                 .idType(IdType.ASSIGN_ID)
-                .enableActiveRecord()
-                .enableColumnConstant()
+//                .enableActiveRecord()
+//                .enableColumnConstant()
                 .enableTableFieldAnnotation()
+                .logicDeleteColumnName("deleted")
 
 //                .disableSerialVersionUID()
 //                .columnNaming(NamingStrategy.no_change)
@@ -71,7 +72,8 @@ public class Test {
 
         generator.strategyConfigBuilder()
                 .entityBuilder()
-                .enableFileOverride()
+//                .enableFileOverride()
+
 //                .enableActiveRecord()
         ;
         generator

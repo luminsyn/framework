@@ -20,6 +20,7 @@ public interface CustomService<T,V> extends IService<T> {
     boolean updateByDto(Dto<T> dto);
     V getVoById(Serializable id);
     List<V> listByDto(Dto<T> dto);
+    List<?> listByDto(Dto<T> dto, Class<?> clazz);
     IPage<V> pageByDto(Dto<T> dto,Long current, Long size);
     IPage<V> pageByMap(Map<String,Object> map, Long current, Long size);
     void exportExcel(Dto<T> dto, OutputStream os, Class<?> clazz);

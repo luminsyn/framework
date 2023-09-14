@@ -99,6 +99,7 @@ public class ${entity}SelectDto {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
+#elseif(${field.logicDeleteField})
 #else
 
 #if("$!field.comment" != "")
@@ -257,6 +258,7 @@ public class ${entity}SelectDto {
     #end
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
+#elseif(${field.logicDeleteField})
 #else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
@@ -370,6 +372,7 @@ public class ${entity}SelectDto {
 #if(${entityColumnConstant})
   #foreach($field in ${table.fields})
   #if($selectExcludeFields.contains(${field.propertyName}))
+  #elseif(${field.logicDeleteField})
   #else
 
     public static final String ${field.name.toUpperCase()} = "${field.name}";
@@ -387,6 +390,7 @@ public class ${entity}SelectDto {
 ##                "propertyList = " + propertyList +
   #foreach($field in ${table.fields})
   #if($selectExcludeFields.contains(${field.propertyName}))
+  #elseif(${field.logicDeleteField})
   #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +

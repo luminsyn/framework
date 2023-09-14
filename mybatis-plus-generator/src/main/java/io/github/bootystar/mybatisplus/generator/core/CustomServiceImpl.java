@@ -36,7 +36,7 @@ public class CustomServiceImpl<M extends CustomMapper<T,V>, T,V> extends Service
     }
 
     @Override
-    public boolean updateByDto(Dto<T>  dto) {
+    public boolean updateByDto(Dto<T> dto) {
         T entity = dto.toEntity();
         boolean b = super.updateById(entity);
         return b;
@@ -53,12 +53,18 @@ public class CustomServiceImpl<M extends CustomMapper<T,V>, T,V> extends Service
     }
 
     @Override
-    public List<V> listByDto(Dto<T>  dto) {
+    public List<V> listByDto(Dto<T> dto) {
         return pageByDto(dto,1L,-1L).getRecords();
     }
 
+    public List<V> listByDto(Dto<T> dto,Class<?> clazz) {
+
+        return pageByDto(dto,1L,-1L).getRecords();
+    }
+
+
     @Override
-    public IPage<V> pageByDto(Dto<T>  dto, Long current, Long size) {
+    public IPage<V> pageByDto(Dto<T> dto, Long current, Long size) {
         return pageByMap(dto.toMap(), current, size);
     }
 

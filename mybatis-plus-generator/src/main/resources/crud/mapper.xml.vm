@@ -39,6 +39,8 @@
         #end
         #foreach($field in ${table.fields})
             #if(!${field.keyFlag})##生成普通字段
+            #elseif(${field.logicDeleteField})
+            #else
         <result column="${field.name}" property="${field.propertyName}" />
             #end
         #end
@@ -64,7 +66,11 @@
         ${schemaName} ${table.name} a
         <where>
 #foreach($field in ${table.fields})
-    #if(${field.keyFlag})
+    #if(${field.logicDeleteField})
+            <if test="dto!=null">
+                and a.${field.columnName} = 0
+            </if>
+    #elseif(${field.keyFlag})
             <if test="dto.primaryKey!=null">
                 and a.${field.columnName} = ${shift3}${shiftLeft}dto.primaryKey${shiftRight}
             </if>
