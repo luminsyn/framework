@@ -2,15 +2,6 @@ package ${package.Controller};
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-#if(${importExcel})
-import org.springframework.web.multipart.MultipartFile;
-import ${basePackage}.${voPackage}.${entity}ImportVo;
-import ${basePackage}.${listenerPackage}.${entity}Listener;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.exception.ExcelAnalysisException;
-import java.io.IOException;
-import com.alibaba.excel.exception.ExcelDataConvertException;
-#end
 #if(${enableOrigins})
 import org.springframework.web.bind.annotation.CrossOrigin;
 #end
@@ -21,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.validation.annotation.Validated;
 #end
 import ${package.Service}.${table.serviceName};
-import ${package.Entity}.${entity};
-import ${basePackage}.${dtoPackage}.${entity}InsertDto;
-import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 #if(${returnResultClass})
 import ${returnResultClassPackage};
 #end
@@ -43,15 +31,30 @@ import org.springframework.stereotype.Controller;
 #if(${superControllerClassPackage})
 import ${superControllerClassPackage};
 #end
-#if(${pageByDto})
+
+import java.io.Serializable;
+#if(${generateInsert})
+import ${basePackage}.${dtoPackage}.${entity}InsertDto;
+#end
+#if(${generateUpdate})
+import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
+#end
+#if(${generateSelect})
 import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${basePackage}.${dtoPackage}.${entity}SelectDto;
 import ${basePackage}.${voPackage}.${entity}Vo;
 #end
-
-#if(!$table.importPackages.contains("java.io.Serializable"))
-import java.io.Serializable;
+#if(${generateImport}||${generateExport})
+import java.io.IOException;
+#end
+#if(${generateImport})
+import org.springframework.web.multipart.MultipartFile;
+import ${basePackage}.${dtoPackage}.${entity}ImportDto;
+#end
+#if(${generateExport})
+import ${javaApiPackage}.servlet.http.HttpServletResponse;
+import ${basePackage}.${dtoPackage}.${entity}ExportDto;
 #end
 
 
@@ -88,6 +91,7 @@ public class ${table.controllerName} {
     @Autowired
     private ${table.serviceName} baseService;
 
+#if(${generateInsert})
     #if(${springdoc})
     @Operation(summary = "新增")
     #elseif(${swagger})
@@ -103,17 +107,46 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/insert")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDto dto){
     #else
     public Object insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}InsertDto dto){
     #end
-        ${entity} result = baseService.insertByDto(dto);
+        ${entity}Vo result = baseService.insertByDto(dto);
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
     #else
         return result;
     #end
     }
+
+    #if(${springdoc})
+    @Operation(summary = "批量新增")
+    #elseif(${swagger})
+    @ApiOperation(value = "批量新增")
+    #else
+    /**
+     * 批量新增
+     * @author ${author}
+     * @since ${nowTime}
+     * @param dtoList 新增入参对象列表
+     * @return
+     */
+    #end
+    @PostMapping("/insertBatch")
+    #if(${returnResultClass})
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDto> dtoList){
+    #else
+    public Object insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
+    #end
+        Boolean result = baseService.insertBatchByDto(dtoList);
+    #if(${returnResultClass})
+        return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
+    #else
+        return result;
+    #end
+    }
+#end
+#if(${generateUpdate})
 
     #if(${springdoc})
     @Operation(summary = "修改")
@@ -145,6 +178,7 @@ public class ${table.controllerName} {
         return result;
     #end
     }
+#end
 
     #if(${springdoc})
     @Operation(summary = "删除")
@@ -176,8 +210,8 @@ public class ${table.controllerName} {
         return result;
     #end
     }
+#if(${generateSelect})
 
-    #if(${pageByDto})
     #if(${springdoc})
     @Operation(summary = "根据id查询详情")
     #elseif(${swagger})
@@ -249,32 +283,32 @@ public class ${table.controllerName} {
      * 分页查询
      * @author ${author}
      * @since ${nowTime}
+     * @param current 页码
+     * @param size 每页大小
      * @param dto 查询条件dto
      * @return
      */
     #end
     #if(${allPost})
-    @PostMapping("/page")
+    @PostMapping("/page/{current}/{size}")
     #else
-    @GetMapping("/page")
+    @GetMapping("/page/{current}/{size}")
     #end
-##    @PostMapping("/page/{current}/{size}")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
-##    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
+    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
     #end
-##        IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
-        IPage<${entity}Vo> result=baseService.pageByDto(dto);
+        IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
     #else
         return result;
     #end
     }
+#end
 
-    #if(${exportExcel})
+#if(${generateExport}&&${generateSelect})
     #if(${springdoc})
     @Operation(summary = "导出excel")
     #elseif(${swagger})
@@ -293,13 +327,18 @@ public class ${table.controllerName} {
     #else
     @GetMapping("/export")
     #end
-    public void export(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
-        baseService.exportExcel(dto);
+    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+        response.addHeader("Pargam", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        baseService.exportExcel(dto,response.getOutputStream(), ${entity}ExportDto.class);
     }
-    #end
-    #end
+#end
 
-    #if(${importExcel})
+#if(${generateImport})
     #if(${springdoc})
     @Operation(summary = "导入excel")
     #elseif(${swagger})
@@ -309,43 +348,31 @@ public class ${table.controllerName} {
      * 导入excel
      * @author ${author}
      * @since ${nowTime}
-     * @param excel excel文件
+     * @param file excel文件
      * @return
      */
     #end
     @PostMapping("/import")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end importFromExcel(@RequestParam("excel") MultipartFile excel) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end importExcel(MultipartFile file) throws IOException {
     #else
-    public Object importFromExcel(@RequestParam("excel") MultipartFile excel) {
+    public Object importFromExcel(MultipartFile file) throws IOException {
     #end
-        if (excel==null || excel.isEmpty()){
+        if (file==null || file.isEmpty()){
         #if(${returnResultClass})
             return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(false)#else null#end;
         #else
             return false;
         #end
         }
-        ${entity}Listener listener = new ${entity}Listener(this.baseService);
-        try {
-            // 解析
-            EasyExcel.read(excel.getInputStream(), ${entity}ImportVo.class, listener).sheet().doRead();
-        } catch (ExcelAnalysisException | IOException e) {
-            e.printStackTrace();
-            if (e.getCause() instanceof ExcelDataConvertException) {
-                ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) e.getCause();
-                String msg= String.format("第%s行，第%s列数据格式不正确：%s",excelDataConvertException.getRowIndex() + 1,excelDataConvertException.getColumnIndex() + 1,excelDataConvertException.getCellData());
-                throw new RuntimeException(msg);
-            }
-        }
-        Boolean result = listener.isSuccess();
+        Boolean result = baseService.importExcel(file.getInputStream(), ${entity}ImportDto.class);
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
     #else
         return result;
     #end
     }
-    #end
+#end
 
 
 

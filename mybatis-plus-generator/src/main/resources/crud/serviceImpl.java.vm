@@ -133,8 +133,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         dto.setPageSize(-1L);
         IPage<${entity}Vo> result = this.pageByDto(dto);
         List<${entity}Vo> records = result.getRecords();
-        String fileName= "$!{table.comment}.xlsx";
-        fileName = convertFileName(fileName);
+        String fileName= System.currentTimeMillis()+".xlsx";
         try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
             if(dto.getPropertyListExport()!=null && dto.getPropertyListExport().size()>0){
                 EasyExcel.write(outputStream,${entity}ExportVo.class).includeColumnFieldNames(dto.getPropertyListExport()).sheet().doWrite(records);
@@ -143,15 +142,6 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             }
         }catch (Exception e){
             e.printStackTrace();
-        }
-    }
-
-    private static String convertFileName(String fileName) {
-        try {
-            return new String(URLEncoder.encode(fileName, "UTF-8").getBytes(), StandardCharsets.ISO_8859_1);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
         }
     }
 

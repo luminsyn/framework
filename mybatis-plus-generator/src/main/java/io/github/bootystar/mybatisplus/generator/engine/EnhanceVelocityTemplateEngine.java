@@ -1,14 +1,13 @@
 package io.github.bootystar.mybatisplus.generator.engine;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.generator.config.ConstVal;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.AbstractTemplateEngine;
 import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
-import io.github.bootystar.mybatisplus.generator.config.CustomConfig;
+import io.github.bootystar.mybatisplus.generator.config.IConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -23,17 +22,17 @@ import java.util.Optional;
  */
 public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
-    private CustomConfig customConfig;
+    private IConfig customConfig;
 
 
     public EnhanceVelocityTemplateEngine() {
     }
 
-    public CustomConfig getCustomConfig() {
+    public IConfig getCustomConfig() {
         return customConfig;
     }
 
-    public EnhanceVelocityTemplateEngine(CustomConfig customConfig) {
+    public EnhanceVelocityTemplateEngine(IConfig customConfig) {
         this.customConfig = customConfig;
     }
 

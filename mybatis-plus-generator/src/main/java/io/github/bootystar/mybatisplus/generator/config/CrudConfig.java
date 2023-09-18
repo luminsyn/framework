@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @since 2017-06-17
  */
 @Getter
-public class CustomConfig {
+public class CrudConfig implements IConfig {
 
     //--------------常量---------------
     public final String shift3="#";
@@ -172,7 +172,7 @@ public class CustomConfig {
     /**
      * 不对外暴露
      */
-    private CustomConfig() { }
+    private CrudConfig() { }
 
 
     public void setCustomFiles(List<CustomFile> customFiles) {
@@ -229,6 +229,7 @@ public class CustomConfig {
             ;
 
         }
+
 
 
 
@@ -296,20 +297,29 @@ public class CustomConfig {
         return data;
     }
 
+    @Override
+    public List<CustomFile> getCustomFiles() {
+        return this.customFiles;
+    }
+
+    @Override
+    public boolean getFileOverride() {
+        return false;
+    }
 
     /**
      * 模板路径配置构建者
      *
      * @author booty 3.5.3
      */
-    public static class Builder implements IConfigBuilder<CustomConfig> {
-        private final CustomConfig customConfig;
+    public static class Builder implements IConfigBuilder<CrudConfig> {
+        private final CrudConfig customConfig;
 
         /**
          * 默认生成一个空的
          */
         public Builder() {
-            this.customConfig = new CustomConfig();
+            this.customConfig = new CrudConfig();
         }
 
         /**
@@ -318,7 +328,7 @@ public class CustomConfig {
          * @return 模板配置对象
          */
         @Override
-        public CustomConfig build() {
+        public CrudConfig build() {
             return this.customConfig;
         }
 

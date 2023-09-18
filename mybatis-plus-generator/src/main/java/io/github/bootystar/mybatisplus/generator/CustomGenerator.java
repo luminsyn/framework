@@ -15,11 +15,10 @@
  */
 package io.github.bootystar.mybatisplus.generator;
 
-import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import io.github.bootystar.mybatisplus.generator.config.CustomConfig;
+import io.github.bootystar.mybatisplus.generator.config.IConfig;
 import io.github.bootystar.mybatisplus.generator.engine.EnhanceVelocityTemplateEngine;
 
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +69,7 @@ public class CustomGenerator {
     /**
      * 自定义相关配置
      */
-    private CustomConfig custom;
+    private IConfig custom;
 
     private CustomGenerator() {
         // 不推荐使用
@@ -159,15 +158,9 @@ public class CustomGenerator {
         return this;
     }
 
-    /**
-     * 设置自定义配置
-     *
-     * @param customConfig 自定义配置
-     * @return this
-     * @since 3.5.0
-     */
-    public CustomGenerator custom(@NotNull CustomConfig customConfig) {
-        this.custom = customConfig;
+
+    public CustomGenerator custom(@NotNull IConfig config) {
+        this.custom = config;
         return this;
     }
 
@@ -227,5 +220,9 @@ public class CustomGenerator {
 
     public GlobalConfig getGlobalConfig() {
         return globalConfig;
+    }
+
+    public IConfig getCustom() {
+        return custom;
     }
 }

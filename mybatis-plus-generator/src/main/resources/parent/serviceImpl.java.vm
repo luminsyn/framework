@@ -1,0 +1,79 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${basePackage}.${voPackage}.${entity}Vo;
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+import org.springframework.stereotype.Service;
+
+#if(${serviceImplOverride})
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+#end
+
+/**
+ * $!{table.comment} 服务实现类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>() implements ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity},${entity}Vo,${table.mapperName}> implements ${table.serviceName} {
+
+#if(${serviceImplOverride})
+        #if(${generateInsert})
+        @Override
+        public <S> ${entity}Vo insertByDto(S dto) {
+            // 新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
+            ${entity} entity = this.toEntity(dto);
+
+            super.save(entity);
+            return toVo(entity);
+        }
+        #end
+
+
+        @Override
+        public <S> boolean insertBatchByDto(Collection<S> dtoList) {
+            // 批量新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
+            List<${entity}> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+
+            return super.saveBatch(entityList);
+        }
+
+
+        #if(${generateUpdate})
+        @Override
+        public <S> boolean updateByDto(S dto) {
+            // 修改=>如有必要, 在此处强转dto为传入参数类型进行参数校验
+            ${entity} entity = this.toEntity(dto);
+
+            return super.updateById(entity);
+        }
+        #end
+
+        @Override
+        protected void voPostProcess(List<${entity}Vo> dataList) {
+            // 查询=>如有必要, 在此处对查询后的vo进行操作(赋值\连表\额外数据拼接), 所有查询的vo都会添加该操作
+
+        }
+
+        #if(${generateImport})
+        @Override
+        protected <U> List<${entity}> processImportData(List<U> cachedDataList) {
+            // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
+
+            return super.processImportData(cachedDataList);
+        }
+        #end
+#end
+
+}
+#end
