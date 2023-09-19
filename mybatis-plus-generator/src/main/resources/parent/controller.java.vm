@@ -22,9 +22,6 @@ import io.swagger.v3.oas.annotations.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiModelProperty;
-#if(${requestBody})
-import io.swagger.annotations.ApiImplicitParam;
-#end
 #end
 #if(${restControllerStyle})
 import org.springframework.web.bind.annotation.RestController;
@@ -98,9 +95,6 @@ public class ${table.controllerName} {
     @Operation(summary = "新增")
     #elseif(${swagger})
     @ApiOperation(value = "新增")
-    #if(${requestBody})
-    @ApiImplicitParam(name = "dto",  paramType = "body")
-    #end
     #else
     /**
      * 新增
@@ -112,9 +106,9 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/insert")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end insert(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end#if(${enableValidated})@Validated #end${entity}InsertDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDto dto){
     #else
-    public Object insert(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end#if(${addValidated})@Validated #end ${entity}InsertDto dto){
+    public Object insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}InsertDto dto){
     #end
         ${entity}Vo result = baseService.insertByDto(dto);
     #if(${returnResultClass})
@@ -128,9 +122,6 @@ public class ${table.controllerName} {
     @Operation(summary = "批量新增")
     #elseif(${swagger})
     @ApiOperation(value = "批量新增")
-    #if(${requestBody})
-    @ApiImplicitParam(name = "dtoList",  paramType = "body")
-    #end
     #else
     /**
      * 批量新增
@@ -142,9 +133,9 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/insertBatch")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end#if(${enableValidated})@Validated #end List<${entity}InsertDto> dtoList){
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDto> dtoList){
     #else
-    public Object insert(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
+    public Object insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
     #end
         Boolean result = baseService.insertBatchByDto(dtoList);
     #if(${returnResultClass})
@@ -160,9 +151,6 @@ public class ${table.controllerName} {
     @Operation(summary = "修改")
     #elseif(${swagger})
     @ApiOperation(value = "修改")
-    #if(${requestBody})
-    @ApiImplicitParam(name = "dto",  paramType = "body")
-    #end
     #else
     /**
      * 修改
@@ -178,9 +166,9 @@ public class ${table.controllerName} {
     @PutMapping("/update")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end#if(${enableValidated})@Validated #end${entity}UpdateDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDto dto){
     #else
-    public Object update(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end#if(${addValidated})@Validated #end ${entity}UpdateDto dto){
+    public Object update(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}UpdateDto dto){
     #end
         Boolean result = baseService.updateByDto(dto);
     #if(${returnResultClass})
@@ -258,9 +246,6 @@ public class ${table.controllerName} {
     @Operation(summary = "列表")
     #elseif(${swagger})
     @ApiOperation(value = "列表")
-    #if(${requestBody})
-    @ApiImplicitParam(name = "dto",  paramType = "body")
-    #end
     #else
     /**
      * 列表
@@ -276,9 +261,9 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody})@RequestBody(required = false)#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end${entity}SelectDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
     #else
-    public Object list(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end${entity}SelectDto dto){
+    public Object list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
     #end
         List<${entity}Vo> result=baseService.listByDto(dto);
     #if(${returnResultClass})
@@ -292,9 +277,6 @@ public class ${table.controllerName} {
     @Operation(summary = "分页查询")
     #elseif(${swagger})
     @ApiOperation(value = "分页查询")
-    #if(${requestBody})
-    @ApiImplicitParam(name = "dto",  paramType = "body")
-    #end
     #else
     /**
      * 分页查询
@@ -312,9 +294,9 @@ public class ${table.controllerName} {
     @GetMapping("/page/{current}/{size}")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false)#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
+    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
     #end
         IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
     #if(${returnResultClass})
@@ -330,9 +312,6 @@ public class ${table.controllerName} {
     @Operation(summary = "导出excel")
     #elseif(${swagger})
     @ApiOperation(value = "导出excel")
-    #if(${requestBody})
-    @ApiImplicitParam(name = "dto",  paramType = "body")
-    #end
     #else
     /**
      * 导出excel
@@ -346,7 +325,7 @@ public class ${table.controllerName} {
     #else
     @GetMapping("/export")
     #end
-    public void exportExcel(#if(${requestBody})@RequestBody(required = false)#if(${springdoc}) @io.swagger.v3.oas.annotations.parameters.RequestBody#end #end${entity}SelectDto dto, HttpServletResponse response) throws IOException {
+    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, HttpServletResponse response) throws IOException {
         response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
         response.setHeader("Access-Control-Expose-Headers","Content-Disposition");

@@ -81,8 +81,8 @@ public class Test2 {
                 .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
         generator.globalConfigBuilder()
-//                .enableSpringdoc()
-                .enableSwagger()
+                .enableSpringdoc()
+//                .enableSwagger()
                 ;
 
         generator.execute("user");
