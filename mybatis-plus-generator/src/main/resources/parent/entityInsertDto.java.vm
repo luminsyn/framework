@@ -51,9 +51,9 @@ import lombok.experimental.Accessors;
   #end
 #end
 #if(${springdoc})
-@Schema(name = "${entity}", description = "$!{table.comment}")
+@Schema(name = "${entity}InsertDto ", description = "$!{table.comment}新增对象")
 #elseif(${swagger})
-@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+@ApiModel(value = "${entity}InsertDto对象", description = "$!{table.comment}新增对象")
 #end
 public class ${entity}InsertDto {
 #if(${entitySerialVersionUID})

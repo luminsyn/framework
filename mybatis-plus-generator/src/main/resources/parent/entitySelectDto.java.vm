@@ -42,9 +42,9 @@ import java.io.Serializable;
   #end
 #end
 #if(${springdoc})
-@Schema(name = "${entity}", description = "$!{table.comment}")
+@Schema(name = "${entity}SelectDto", description = "$!{table.comment}查询dto")
 #elseif(${swagger})
-@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+@ApiModel(value = "${entity}SelectDto对象", description = "$!{table.comment}查询dto")
 #end
 public class ${entity}SelectDto {
 ###if(${entitySerialVersionUID})

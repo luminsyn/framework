@@ -37,9 +37,9 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
   #end
 #end
 #if(${springdoc})
-@Schema(name = "${entity}", description = "$!{table.comment}")
+@Schema(name = "${entity}ExportDto", description = "$!{table.comment}导出dto")
 #elseif(${swagger})
-@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+@ApiModel(value = "${entity}ExportDto对象", description = "$!{table.comment}导出dto")
 #end
 @ExcelIgnoreUnannotated
 @HeadRowHeight(30)

@@ -32,9 +32,9 @@ import lombok.experimental.Accessors;
   #end
 #end
 #if(${springdoc})
-@Schema(name = "${entity}", description = "$!{table.comment}")
+@Schema(name = "${entity}Vo", description = "$!{table.comment}vo")
 #elseif(${swagger})
-@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+@ApiModel(value = "${entity}Vo对象", description = "$!{table.comment}vo")
 #end
 public class ${entity}Vo {
 

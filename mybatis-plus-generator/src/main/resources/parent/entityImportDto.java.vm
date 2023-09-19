@@ -34,9 +34,9 @@ import com.alibaba.excel.annotation.ExcelProperty;
   #end
 #end
 #if(${springdoc})
-@Schema(name = "${entity}", description = "$!{table.comment}")
+@Schema(name = "${entity}ImportDto", description = "$!{table.comment}导入dto")
 #elseif(${swagger})
-@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+@ApiModel(value = "${entity}ImportDto对象", description = "$!{table.comment}导入dto")
 #end
 @ExcelIgnoreUnannotated
 public class ${entity}ImportDto {
