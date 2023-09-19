@@ -58,7 +58,6 @@
 
 #end
 
-
     <select id="listByDto"#if(${voResultMap}) resultMap="voMap"#else resultType="${basePackage}.${voPackage}.${entity}Vo"#end>
         select
         a.${shift8}

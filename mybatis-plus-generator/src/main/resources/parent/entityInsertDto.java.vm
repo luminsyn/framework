@@ -26,7 +26,7 @@ import ${javaApiPackage}.validation.constraints.Size;
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-import io.swagger.annotations.ApiModel;
+##import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -50,11 +50,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
   #end
 #end
-#if(${springdoc})
-@Schema(name = "${entity}InsertDto ", description = "$!{table.comment}新增对象")
-#elseif(${swagger})
-@ApiModel(value = "${entity}InsertDto对象", description = "$!{table.comment}新增对象")
-#end
+###if(${springdoc})
+##@Schema(name = "${entity}InsertDto ", description = "$!{table.comment}新增对象")
+###elseif(${swagger})
+##@ApiModel(value = "${entity}InsertDto对象", description = "$!{table.comment}新增对象")
+###end
 public class ${entity}InsertDto {
 #if(${entitySerialVersionUID})
 ##

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @Service
 #if(${kotlin})
-open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>() implements ${table.serviceName} {
+open class ${table.serviceImplName} : ${superServiceImplClass}<${entity},${entity}Vo,${table.mapperName}>() implements ${table.serviceName} {
 
 }
 #else
@@ -29,6 +29,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}
 
 #if(${serviceImplOverride})
     #if(${generateInsert})
+
     @Override
     public <S> ${entity}Vo insertByDto(S dto) {
         // 新增=>如有必要 在此处强转dto为传入参数类型进行参数校验

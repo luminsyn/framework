@@ -45,7 +45,7 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
     @Override
     public V getVoById(Serializable id) {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("id", id);
+        map.put("primaryKey", id);
         List<V> vs = this.listByDto(map);
         if (vs == null || vs.size()==0 ) {
             return null;

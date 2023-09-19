@@ -15,7 +15,6 @@ import java.io.Serializable;
 import ${basePackage}.${voPackage}.${entity}ImportVo;
 #end
 
-
 /**
  * $!{table.comment} 服务类
  *

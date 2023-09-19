@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author booty
- * @Date 2023/9/15 17:07
+ * @author booty
+ * @since 2023/9/15 17:07
  */
 public class DefaultConfig implements IConfig {
     @Override

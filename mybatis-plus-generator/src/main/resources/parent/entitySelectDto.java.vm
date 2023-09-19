@@ -12,7 +12,7 @@ import ${javaApiPackage}.validation.constraints.Size;
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-import io.swagger.annotations.ApiModel;
+##import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -41,11 +41,11 @@ import java.io.Serializable;
 @Accessors(chain = true)
   #end
 #end
-#if(${springdoc})
-@Schema(name = "${entity}SelectDto", description = "$!{table.comment}查询dto")
-#elseif(${swagger})
-@ApiModel(value = "${entity}SelectDto对象", description = "$!{table.comment}查询dto")
-#end
+###if(${springdoc})
+##@Schema(name = "${entity}SelectDto", description = "$!{table.comment}查询dto")
+###elseif(${swagger})
+##@ApiModel(value = "${entity}SelectDto对象", description = "$!{table.comment}查询dto")
+###end
 public class ${entity}SelectDto {
 ###if(${entitySerialVersionUID})
 ##
