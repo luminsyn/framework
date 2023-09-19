@@ -374,7 +374,5 @@ public class ${table.controllerName} {
     }
 #end
 
-
-
 }
 #end

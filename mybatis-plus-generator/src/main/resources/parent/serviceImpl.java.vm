@@ -28,51 +28,49 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity},${entity}Vo,${table.mapperName}> implements ${table.serviceName} {
 
 #if(${serviceImplOverride})
-        #if(${generateInsert})
-        @Override
-        public <S> ${entity}Vo insertByDto(S dto) {
-            // 新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
-            ${entity} entity = this.toEntity(dto);
+    #if(${generateInsert})
+    @Override
+    public <S> ${entity}Vo insertByDto(S dto) {
+        // 新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
+        ${entity} entity = this.toEntity(dto);
 
-            super.save(entity);
-            return toVo(entity);
-        }
-        #end
+        super.save(entity);
+        return toVo(entity);
+    }
 
+    @Override
+    public <S> boolean insertBatchByDto(Collection<S> dtoList) {
+        // 批量新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
+        List<${entity}> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
 
-        @Override
-        public <S> boolean insertBatchByDto(Collection<S> dtoList) {
-            // 批量新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
-            List<${entity}> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+        return super.saveBatch(entityList);
+    }
+    #end
+    #if(${generateUpdate})
 
-            return super.saveBatch(entityList);
-        }
+    @Override
+    public <S> boolean updateByDto(S dto) {
+        // 修改=>如有必要, 在此处强转dto为传入参数类型进行参数校验
+        ${entity} entity = this.toEntity(dto);
 
+        return super.updateById(entity);
+    }
+    #end
 
-        #if(${generateUpdate})
-        @Override
-        public <S> boolean updateByDto(S dto) {
-            // 修改=>如有必要, 在此处强转dto为传入参数类型进行参数校验
-            ${entity} entity = this.toEntity(dto);
+    @Override
+    protected void voPostProcess(List<${entity}Vo> dataList) {
+        // 查询=>如有必要, 在此处对查询后的vo进行操作(赋值\连表\额外数据拼接), 所有查询的vo都会添加该操作
 
-            return super.updateById(entity);
-        }
-        #end
+    }
+    #if(${generateImport})
 
-        @Override
-        protected void voPostProcess(List<${entity}Vo> dataList) {
-            // 查询=>如有必要, 在此处对查询后的vo进行操作(赋值\连表\额外数据拼接), 所有查询的vo都会添加该操作
+    @Override
+    protected <U> List<${entity}> processImportData(List<U> cachedDataList) {
+        // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
 
-        }
-
-        #if(${generateImport})
-        @Override
-        protected <U> List<${entity}> processImportData(List<U> cachedDataList) {
-            // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
-
-            return super.processImportData(cachedDataList);
-        }
-        #end
+        return super.processImportData(cachedDataList);
+    }
+    #end
 #end
 
 }
