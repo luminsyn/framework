@@ -57,17 +57,16 @@ import ${javaApiPackage}.servlet.http.HttpServletResponse;
 import ${basePackage}.${dtoPackage}.${entity}ExportDto;
 #end
 
-
 /**
- * $!{table.comment} 前端接口
+ * $!{table.comment}
  *
  * @author ${author}
  * @since ${date}
  */
 #if(${springdoc})
-@Tag(name = "${table.comment}前端接口", description = "$!{table.comment}")
+@Tag(name = "${table.comment}", description = "$!{table.comment}")
 #elseif(${swagger})
-@Api(value = "#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}前端接口")
+@Api(value = "#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}")
 #end
 #if(${restControllerStyle})
 @RestController
@@ -102,7 +101,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param dto 新增入参对象
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     @PostMapping("/insert")
@@ -129,7 +128,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param dtoList 新增入参对象列表
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     @PostMapping("/insertBatch")
@@ -158,7 +157,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param dto 修改入参对象
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     #if(${allPost})
@@ -190,7 +189,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param id 主键ID|1
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     #if(${allPost})
@@ -222,7 +221,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param id 主键id
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     #if(${allPost})
@@ -253,7 +252,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param dto 查询条件dto
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     #if(${allPost})
@@ -264,7 +263,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
     #else
-    public Object list(#if(${requestBody})@RequestBody #end${entity}SelectDto dto){
+    public Object list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
     #end
         List<${entity}Vo> result=baseService.listByDto(dto);
     #if(${returnResultClass})
@@ -286,7 +285,7 @@ public class ${table.controllerName} {
      * @param current 页码
      * @param size 每页大小
      * @param dto 查询条件dto
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     #if(${allPost})
@@ -297,7 +296,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
+    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
     #end
         IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
     #if(${returnResultClass})
@@ -319,7 +318,6 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param dto 查询条件dto
-     * @return
      */
     #end
     #if(${allPost})
@@ -349,7 +347,7 @@ public class ${table.controllerName} {
      * @author ${author}
      * @since ${nowTime}
      * @param file excel文件
-     * @return
+     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
      */
     #end
     @PostMapping("/import")

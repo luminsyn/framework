@@ -4,10 +4,9 @@ package ${basePackage}.${voPackage};
 import ${pkg};
 #end
 #if(${springdoc})
-import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-import io.swagger.annotations.ApiModel;
+##import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -31,18 +30,17 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
   #end
 #end
-#if(${springdoc})
-@Schema(name = "${entity}Vo", description = "$!{table.comment}vo")
-#elseif(${swagger})
-@ApiModel(value = "${entity}Vo对象", description = "$!{table.comment}vo")
-#end
+###if(${springdoc})
+##@Schema(name = "${entity}Vo", description = "$!{table.comment}vo")
+###elseif(${swagger})
+##@ApiModel(value = "${entity}Vo对象", description = "$!{table.comment}vo")
+###end
 public class ${entity}Vo {
-
-
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
 #else
+
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")

@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @Author booty
- * @Date 2023/9/18 12:51
+ * @author booty
+ * @since 2023/9/18 12:51
  */
 @SpringBootApplication
 public class App {

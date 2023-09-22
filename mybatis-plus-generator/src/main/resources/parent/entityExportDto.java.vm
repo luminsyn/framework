@@ -4,10 +4,9 @@ package ${basePackage}.${dtoPackage};
 import ${pkg};
 #end
 #if(${springdoc})
-import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-import io.swagger.annotations.ApiModel;
+##import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -22,7 +21,6 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.*;
 import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 
-
 /**
  * $!{table.comment}导出dto
  *
@@ -36,11 +34,11 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 @Accessors(chain = true)
   #end
 #end
-#if(${springdoc})
-@Schema(name = "${entity}ExportDto", description = "$!{table.comment}导出dto")
-#elseif(${swagger})
-@ApiModel(value = "${entity}ExportDto对象", description = "$!{table.comment}导出dto")
-#end
+###if(${springdoc})
+##@Schema(name = "${entity}ExportDto", description = "$!{table.comment}导出dto")
+###elseif(${swagger})
+##@ApiModel(value = "${entity}ExportDto对象", description = "$!{table.comment}导出dto")
+###end
 @ExcelIgnoreUnannotated
 @HeadRowHeight(30)
 @HeadFontStyle(fontHeightInPoints = 12)
@@ -56,6 +54,7 @@ public class ${entity}ExportDto {
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
 #else
+
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")

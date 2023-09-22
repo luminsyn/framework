@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * 模板路径配置项
  *
  * @author booty
- * @date 2023/07/13 13:59
+ * @since 2023/07/13 13:59
  * @since 2017-06-17
  */
 @Getter
@@ -185,7 +185,7 @@ public class CrudConfig implements IConfig {
      * @param tableInfo 表信息
      * @return {@code Map<String, Object> }
      * @author booty
-     * @date 2023/07/13 14:01
+     * @since 2023/07/13 14:01
      */
     public Map<String, Object> renderData(TableInfo tableInfo) {
         HashMap<String, Object> data = new HashMap<>();
@@ -229,71 +229,6 @@ public class CrudConfig implements IConfig {
             ;
 
         }
-
-
-
-
-        /*
-        data.put("controllerMappingHyphen", StringUtils.camelToHyphen(tableInfo.getEntityPath()));
-        data.put("controllerMappingHyphenStyle", this.hyphenStyle);
-        data.put("restControllerStyle", this.restStyle);
-        data.put("superControllerClassPackage", StringUtils.isBlank(superClass) ? null : superClass);
-        data.put("superControllerClass", ClassUtils.getSimpleName(this.superClass));
-
-        data.put("enableCache", enableCache);
-        data.put("mapperAnnotation", mapperAnnotationClass != null);
-        data.put("mapperAnnotationClass", mapperAnnotationClass);
-        data.put("baseResultMap", this.baseResultMap);
-        data.put("baseColumnList", this.baseColumnList);
-        data.put("superMapperClassPackage", this.superClass);
-        if (enableCache) {
-            Class<? extends Cache> cacheClass = this.getCache();
-            data.put("cache", cacheClass);
-            data.put("cacheClassName", cacheClass.getName());
-        }
-        data.put("superMapperClass", ClassUtils.getSimpleName(this.superClass));
-
-
-        data.put("superServiceClassPackage", this.superServiceClass);
-        data.put("superServiceClass", ClassUtils.getSimpleName(this.superServiceClass));
-        data.put("superServiceImplClassPackage", this.superServiceImplClass);
-        data.put("superServiceImplClass", ClassUtils.getSimpleName(this.superServiceImplClass));
-
-
-        data.put("idType", idType == null ? null : idType.toString());
-        data.put("logicDeleteFieldName", this.logicDeleteColumnName);
-        data.put("versionFieldName", this.versionColumnName);
-        data.put("activeRecord", this.activeRecord);
-        data.put("entitySerialVersionUID", this.serialVersionUID);
-        data.put("entityColumnConstant", this.columnConstant);
-        data.put("entityBuilderModel", this.chain);
-        data.put("chainModel", this.chain);
-        data.put("entityLombokModel", this.lombok);
-        data.put("entityBooleanColumnRemoveIsPrefix", this.booleanColumnRemoveIsPrefix);
-        data.put("superEntityClass", ClassUtils.getSimpleName(this.superClass));
-
-
-        objectMap.put("config", config);
-        objectMap.put("package", config.getPackageConfig().getPackageInfo());
-        objectMap.put("author", globalConfig.getAuthor());
-        objectMap.put("kotlin", globalConfig.isKotlin());
-        objectMap.put("swagger", globalConfig.isSwagger());
-        objectMap.put("springdoc", globalConfig.isSpringdoc());
-        objectMap.put("date", globalConfig.getCommentDate());
-        // 启用 schema 处理逻辑
-        String schemaName = "";
-        if (strategyConfig.isEnableSchema()) {
-            // 存在 schemaName 设置拼接 . 组合表名
-            schemaName = config.getDataSourceConfig().getSchemaName();
-            if (StringUtils.isNotBlank(schemaName)) {
-                schemaName += ".";
-                tableInfo.setConvert(true);
-            }
-        }
-        objectMap.put("schemaName", schemaName);
-        objectMap.put("table", tableInfo);
-        objectMap.put("entity", tableInfo.getEntityName());
-         */
         return data;
     }
 
@@ -304,7 +239,7 @@ public class CrudConfig implements IConfig {
 
     @Override
     public boolean getFileOverride() {
-        return false;
+        return this.fileOverride;
     }
 
     /**
@@ -340,7 +275,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/08/08 11:21
+         * @since 2023/08/08 11:21
          */
         public Builder jakartaApi(@NotNull Boolean b){
             if (b){
@@ -357,7 +292,7 @@ public class CrudConfig implements IConfig {
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:18
+         * @since 2023/07/31 11:18
          */
         public Builder dtoPackage(@NotNull String packageName){
             this.customConfig.dtoPackage=packageName;
@@ -370,7 +305,7 @@ public class CrudConfig implements IConfig {
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:18
+         * @since 2023/07/31 11:18
          */
         public Builder voPackage(@NotNull String packageName){
             this.customConfig.voPackage=packageName;
@@ -383,7 +318,7 @@ public class CrudConfig implements IConfig {
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:18
+         * @since 2023/07/31 11:18
          */
         public Builder listenerPackage(@NotNull String packageName){
             this.customConfig.listenerPackage=packageName;
@@ -396,7 +331,7 @@ public class CrudConfig implements IConfig {
          * @param returnResultClass 返回结果类
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/13 16:12
+         * @since 2023/07/13 16:12
          */
         public Builder returnResultClass(Class<?> returnResultClass){
             if (returnResultClass==null){
@@ -417,7 +352,7 @@ public class CrudConfig implements IConfig {
          * @param fullClassName 返回结果类
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/13 16:12
+         * @since 2023/07/13 16:12
          */
         public Builder returnResultClass(String fullClassName){
             if (fullClassName==null){
@@ -438,7 +373,7 @@ public class CrudConfig implements IConfig {
          * @param isGenericType 是泛型类型
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 09:20
+         * @since 2023/07/14 09:20
          */
         public Builder returnResultGenericType(@NotNull Boolean isGenericType){
             this.customConfig.returnResultGenericType=isGenericType;
@@ -451,7 +386,7 @@ public class CrudConfig implements IConfig {
          * @param name 名字
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 09:20
+         * @since 2023/07/14 09:20
          */
         public Builder returnResultDefaultStaticMethodName(@NotNull String name){
             this.customConfig.returnResultDefaultStaticMethodName=name;
@@ -464,7 +399,7 @@ public class CrudConfig implements IConfig {
          * @param fieldNames 字段名称
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 15:38
+         * @since 2023/07/14 15:38
          */
         public Builder insertExcludeFields(List<String> fieldNames){
             this.customConfig.insertExcludeFields = fieldNames;
@@ -477,7 +412,7 @@ public class CrudConfig implements IConfig {
          * @param fieldNames 字段名称
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 15:38
+         * @since 2023/07/14 15:38
          */
         public Builder updateExcludeFields(List<String> fieldNames){
             this.customConfig.updateExcludeFields = fieldNames;
@@ -490,7 +425,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/23 22:01
+         * @since 2023/07/23 22:01
          */
         public Builder requestBody(@NotNull Boolean b){
             this.customConfig.requestBody=b;
@@ -503,7 +438,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/23 22:06
+         * @since 2023/07/23 22:06
          */
         public Builder enableValidated(@NotNull Boolean b){
             this.customConfig.enableValidated=b;
@@ -516,7 +451,7 @@ public class CrudConfig implements IConfig {
          * @param b 生成
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 10:04
+         * @since 2023/07/14 10:04
          */
         public Builder pageByDto(@NotNull Boolean b){
             this.customConfig.pageByDto=b;
@@ -529,7 +464,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/17 15:16
+         * @since 2023/07/17 15:16
          */
         public Builder voResultMap(@NotNull Boolean b){
             this.customConfig.voResultMap=b;
@@ -543,7 +478,7 @@ public class CrudConfig implements IConfig {
          * @param map 地图
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 09:12
+         * @since 2023/07/31 09:12
          */
         public Builder orderColumnMap(Map<String,Boolean> map){
             this.customConfig.orderColumnMap=map;
@@ -557,7 +492,7 @@ public class CrudConfig implements IConfig {
          * @param isDesc     是desc
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:28
+         * @since 2023/07/31 11:28
          */
         public Builder orderColumn(@NotNull String columnName,@NotNull Boolean isDesc){
             if (this.customConfig.orderColumnMap==null){
@@ -574,7 +509,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/17 15:16
+         * @since 2023/07/17 15:16
          */
         public Builder voExtendsEntity(@NotNull Boolean b){
             this.customConfig.voExtendsEntity=b;
@@ -587,7 +522,7 @@ public class CrudConfig implements IConfig {
          * @param b 生成
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 10:03
+         * @since 2023/07/14 10:03
          */
         public Builder exportExcel(@NotNull Boolean b){
             this.customConfig.exportExcel=b;
@@ -600,7 +535,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/23 15:42
+         * @since 2023/07/23 15:42
          */
         public Builder exportExtendsVo(@NotNull Boolean b){
             this.customConfig.exportExtendsVo=b;
@@ -614,7 +549,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 10:20
+         * @since 2023/07/31 10:20
          */
         public Builder importExcel(@NotNull Boolean b){
             this.customConfig.importExcel=b;
@@ -627,7 +562,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 10:21
+         * @since 2023/07/31 10:21
          */
         public Builder importExtendsEntity(@NotNull Boolean b){
             this.customConfig.importExtendsEntity=b;
@@ -640,7 +575,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/06 16:04
+         * @since 2023/09/06 16:04
          */
         public Builder allPost(@NotNull Boolean b){
             this.customConfig.allPost=b;
@@ -653,7 +588,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/07 10:20
+         * @since 2023/09/07 10:20
          */
         public Builder enableOrigins(@NotNull Boolean b){
             this.customConfig.enableOrigins=b;
@@ -666,7 +601,7 @@ public class CrudConfig implements IConfig {
          * @param url url
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/07 10:14
+         * @since 2023/09/07 10:14
          */
         public Builder baseUrl(@NotNull String url){
             if (url==null||url.length()==0){
@@ -689,7 +624,7 @@ public class CrudConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/07 10:28
+         * @since 2023/09/07 10:28
          */
         public Builder fileOverride(@NotNull Boolean b){
             this.customConfig.fileOverride=b;

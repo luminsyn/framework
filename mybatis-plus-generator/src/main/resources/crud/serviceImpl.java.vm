@@ -33,8 +33,6 @@ import ${basePackage}.${voPackage}.${entity}ImportVo;
 import java.io.Serializable;
 import java.util.List;
 
-
-
 /**
  * $!{table.comment} 服务实现类
  *

@@ -39,7 +39,7 @@ public class Test2 {
                 .orderColumn("id_card", true)
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
-                .requestBody(false)
+                .requestBody(true)
                 .baseUrl("/admin/apiV2")
                 .enableOrigins(true)
                 .fileOverride(true)
@@ -81,7 +81,7 @@ public class Test2 {
                 .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
         generator.globalConfigBuilder()
-//                .enableSpringdoc()
+                .enableSpringdoc()
 //                .enableSwagger()
                 ;
 

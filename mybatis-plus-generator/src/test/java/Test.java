@@ -2,9 +2,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
-import io.github.bootystar.mybatisplus.generator.core.CustomMapper;
-import io.github.bootystar.mybatisplus.generator.core.CustomService;
-import io.github.bootystar.mybatisplus.generator.core.CustomServiceImpl;
 
 import java.util.Collections;
 
@@ -51,7 +48,7 @@ public class Test {
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
                 .listenerPackage("entity.listener")
-                .requestBody(false)
+                .requestBody(true)
                 .baseUrl("/admin/apiV2")
                 .enableOrigins(true)
                 .fileOverride(true)
@@ -92,7 +89,9 @@ public class Test {
                 .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
         generator.globalConfigBuilder()
-                .enableSwagger();
+                .enableSwagger()
+//                .enableSpringdoc()
+        ;
 
         generator.execute("user");
     }

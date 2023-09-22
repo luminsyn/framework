@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Author booty
- * @Date 2023/9/15 14:49
+ * @since 2023/9/15 14:49
  */
 
 @Getter
@@ -146,7 +146,6 @@ public class ParentConfig implements IConfig {
     private Boolean serviceImplOverride;
 
 
-
     /**
      * 自定义文件
      */
@@ -211,7 +210,7 @@ public class ParentConfig implements IConfig {
 
     @Override
     public boolean getFileOverride() {
-        return false;
+        return this.fileOverride;
     }
 
 
@@ -247,7 +246,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/08/08 11:21
+         * @since 2023/08/08 11:21
          */
         public ParentConfig.Builder jakartaApi(@NotNull Boolean b){
             if (b){
@@ -264,7 +263,7 @@ public class ParentConfig implements IConfig {
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:18
+         * @since 2023/07/31 11:18
          */
         public ParentConfig.Builder dtoPackage(@NotNull String packageName){
             this.parentConfig.dtoPackage=packageName;
@@ -277,7 +276,7 @@ public class ParentConfig implements IConfig {
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:18
+         * @since 2023/07/31 11:18
          */
         public ParentConfig.Builder voPackage(@NotNull String packageName){
             this.parentConfig.voPackage=packageName;
@@ -290,7 +289,7 @@ public class ParentConfig implements IConfig {
          * @param returnResultClass 返回结果类
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/13 16:12
+         * @since 2023/07/13 16:12
          */
         public ParentConfig.Builder returnResultClass(Class<?> returnResultClass){
             if (returnResultClass==null){
@@ -311,7 +310,7 @@ public class ParentConfig implements IConfig {
          * @param fullClassName 返回结果类
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/13 16:12
+         * @since 2023/07/13 16:12
          */
         public ParentConfig.Builder returnResultClass(String fullClassName){
             if (fullClassName==null){
@@ -332,7 +331,7 @@ public class ParentConfig implements IConfig {
          * @param isGenericType 是泛型类型
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 09:20
+         * @since 2023/07/14 09:20
          */
         public ParentConfig.Builder returnResultGenericType(@NotNull Boolean isGenericType){
             this.parentConfig.returnResultGenericType=isGenericType;
@@ -345,7 +344,7 @@ public class ParentConfig implements IConfig {
          * @param name 名字
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 09:20
+         * @since 2023/07/14 09:20
          */
         public ParentConfig.Builder returnResultDefaultStaticMethodName(@NotNull String name){
             this.parentConfig.returnResultDefaultStaticMethodName=name;
@@ -358,7 +357,7 @@ public class ParentConfig implements IConfig {
          * @param fieldNames 字段名称
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 15:38
+         * @since 2023/07/14 15:38
          */
         public ParentConfig.Builder insertExcludeFields(List<String> fieldNames){
             this.parentConfig.insertExcludeFields = fieldNames;
@@ -371,7 +370,7 @@ public class ParentConfig implements IConfig {
          * @param fieldNames 字段名称
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/14 15:38
+         * @since 2023/07/14 15:38
          */
         public ParentConfig.Builder updateExcludeFields(List<String> fieldNames){
             this.parentConfig.updateExcludeFields = fieldNames;
@@ -384,7 +383,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/23 22:01
+         * @since 2023/07/23 22:01
          */
         public ParentConfig.Builder requestBody(@NotNull Boolean b){
             this.parentConfig.requestBody=b;
@@ -397,7 +396,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/23 22:06
+         * @since 2023/07/23 22:06
          */
         public ParentConfig.Builder enableValidated(@NotNull Boolean b){
             this.parentConfig.enableValidated=b;
@@ -411,7 +410,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/17 15:16
+         * @since 2023/07/17 15:16
          */
         public ParentConfig.Builder voResultMap(@NotNull Boolean b){
             this.parentConfig.voResultMap=b;
@@ -425,7 +424,7 @@ public class ParentConfig implements IConfig {
          * @param map 地图
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 09:12
+         * @since 2023/07/31 09:12
          */
         public ParentConfig.Builder orderColumnMap(Map<String,Boolean> map){
             this.parentConfig.orderColumnMap=map;
@@ -439,7 +438,7 @@ public class ParentConfig implements IConfig {
          * @param isDesc     是desc
          * @return {@code Builder }
          * @author booty
-         * @date 2023/07/31 11:28
+         * @since 2023/07/31 11:28
          */
         public ParentConfig.Builder orderColumn(@NotNull String columnName, @NotNull Boolean isDesc){
             if (this.parentConfig.orderColumnMap==null){
@@ -457,7 +456,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/06 16:04
+         * @since 2023/09/06 16:04
          */
         public ParentConfig.Builder allPost(@NotNull Boolean b){
             this.parentConfig.allPost=b;
@@ -470,7 +469,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/07 10:20
+         * @since 2023/09/07 10:20
          */
         public ParentConfig.Builder enableOrigins(@NotNull Boolean b){
             this.parentConfig.enableOrigins=b;
@@ -483,7 +482,7 @@ public class ParentConfig implements IConfig {
          * @param url url
          * @return {@code Builder }
          * @author booty
-         * @date 2023/09/07 10:14
+         * @since 2023/09/07 10:14
          */
         public ParentConfig.Builder baseUrl(@NotNull String url){
             if (url==null||url.length()==0){
@@ -506,7 +505,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 09:37
+         * @since 2023/09/18 09:37
          */
         public ParentConfig.Builder fileOverride(@NotNull Boolean b){
             this.parentConfig.fileOverride=b;
@@ -520,7 +519,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 09:37
+         * @since 2023/09/18 09:37
          */
         public ParentConfig.Builder generateInsert(@NotNull Boolean b){
             this.parentConfig.generateInsert=b;
@@ -535,7 +534,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 09:36
+         * @since 2023/09/18 09:36
          */
         public ParentConfig.Builder generateUpdate(@NotNull Boolean b){
             this.parentConfig.generateUpdate=b;
@@ -548,7 +547,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 09:36
+         * @since 2023/09/18 09:36
          */
         public ParentConfig.Builder generateSelect(@NotNull Boolean b){
             this.parentConfig.generateSelect=b;
@@ -561,7 +560,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 09:36
+         * @since 2023/09/18 09:36
          */
         public ParentConfig.Builder generateExport(@NotNull Boolean b){
             this.parentConfig.generateExport=b;
@@ -574,7 +573,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 09:36
+         * @since 2023/09/18 09:36
          */
         public ParentConfig.Builder generateImport(@NotNull Boolean b){
             this.parentConfig.generateImport=b;
@@ -587,7 +586,7 @@ public class ParentConfig implements IConfig {
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
-         * @date 2023/09/18 11:32
+         * @since 2023/09/18 11:32
          */
         public ParentConfig.Builder serviceImplOverride(@NotNull Boolean b){
             this.parentConfig.serviceImplOverride=b;

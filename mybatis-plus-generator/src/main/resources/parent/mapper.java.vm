@@ -7,7 +7,6 @@ import ${superMapperClassPackage};
 import ${mapperAnnotationClass.name};
 #end
 
-
 /**
  * $!{table.comment} Mapper 接口
  *
@@ -18,7 +17,7 @@ import ${mapperAnnotationClass.name};
 @${mapperAnnotationClass.simpleName}
 #end
 #if(${kotlin})
-interface ${table.mapperName} : ${superMapperClass}<${entity}>
+interface ${table.mapperName} : ${superMapperClass}<${entity},${entity}Vo>
 #else
 public interface ${table.mapperName} extends ${superMapperClass}<${entity},${entity}Vo> {
 
