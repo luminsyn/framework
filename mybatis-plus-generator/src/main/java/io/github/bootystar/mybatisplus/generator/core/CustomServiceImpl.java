@@ -98,6 +98,7 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
         uPage.setSize(viPage.getSize());
         uPage.setTotal(viPage.getTotal());
         uPage.setPages(viPage.getPages());
+        uPage.setRecords(voList);
         return uPage;
     }
 
