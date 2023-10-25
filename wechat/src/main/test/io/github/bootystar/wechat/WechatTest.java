@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 
 /**
  * 微信测试
- * @Author booty
- * @Date 2023/6/8 10:16
+ * @author booty
+ * @since 2023/6/8 10:16
  */
 public class WechatTest {
 

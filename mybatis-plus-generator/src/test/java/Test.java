@@ -7,8 +7,8 @@ import java.util.Collections;
 
 
 /**
- * @Author booty
- * @Date 2023/7/13 14:44
+ * @author booty
+ * @since 2023/7/13 14:44
  */
 public class Test {
 
@@ -49,7 +49,6 @@ public class Test {
                 .voPackage("entity.vo")
                 .listenerPackage("entity.listener")
                 .requestBody(true)
-                .baseUrl("/admin/apiV2")
                 .enableOrigins(true)
                 .fileOverride(true)
                 .voResultMap(true)

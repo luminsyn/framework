@@ -31,8 +31,9 @@ import org.springframework.stereotype.Controller;
 #if(${superControllerClassPackage})
 import ${superControllerClassPackage};
 #end
-
+#if(${generateDelete})
 import java.io.Serializable;
+#end
 #if(${generateInsert})
 import ${basePackage}.${dtoPackage}.${entity}InsertDto;
 #end
@@ -135,7 +136,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDto> dtoList){
     #else
-    public Object insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
+    public Object insertBatch(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
     #end
         Boolean result = baseService.insertBatchByDto(dtoList);
     #if(${returnResultClass})
@@ -178,7 +179,7 @@ public class ${table.controllerName} {
     #end
     }
 #end
-
+#if(${generateDelete})
     #if(${springdoc})
     @Operation(summary = "删除")
     #elseif(${swagger})
@@ -193,14 +194,14 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete")
     #else
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(@PathVariable Serializable id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(Serializable id) {
     #else
-    public Object delete(@PathVariable Serializable id) {
+    public Object delete(Serializable id) {
     #end
         Boolean result = baseService.removeById(id);
     #if(${returnResultClass})
@@ -209,6 +210,7 @@ public class ${table.controllerName} {
         return result;
     #end
     }
+#end
 #if(${generateSelect})
 
     #if(${springdoc})
@@ -225,14 +227,14 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/get/{id}")
+    @PostMapping("/get")
     #else
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(@PathVariable Serializable id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(Serializable id){
     #else
-    public Object get(@PathVariable Serializable id){
+    public Object get(Serializable id){
     #end
         ${entity}Vo result=baseService.getVoById(id);
     #if(${returnResultClass})
@@ -289,14 +291,14 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/page/{current}/{size}")
+    @PostMapping("/page")
     #else
-    @GetMapping("/page/{current}/{size}")
+    @GetMapping("/page")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, Long current, Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,@PathVariable Long current, @PathVariable Long size){
+    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,Long current, Long size){
     #end
         IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
     #if(${returnResultClass})

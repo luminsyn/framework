@@ -10,8 +10,8 @@ import java.util.Collections;
 
 
 /**
- * @Author booty
- * @Date 2023/7/13 14:44
+ * @author booty
+ * @since 2023/7/13 14:44
  */
 public class Test2 {
 
@@ -40,9 +40,8 @@ public class Test2 {
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
                 .requestBody(true)
-                .baseUrl("/admin/apiV2")
                 .enableOrigins(true)
-                .fileOverride(true)
+                .generateDelete(true)
                 .voResultMap(true)
                 .serviceImplOverride(true)
 

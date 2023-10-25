@@ -6,8 +6,8 @@ import lombok.Data;
  * 点击菜单跳转链接时的事件推送
  * 消息类型，event
  * 事件类型，VIEW
- * @Author booty
- * @Date 2023/6/13 13:41
+ * @author booty
+ * @since 2023/6/13 13:41
  */
 @Data
 public class View{

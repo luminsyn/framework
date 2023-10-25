@@ -9,8 +9,8 @@ import lombok.Data;
 
 /**
  * 接口调用配额查询
- * @Author booty
- * @Date 2023/6/8 14:48
+ * @author booty
+ * @since 2023/6/8 14:48
  */
 @Data
 public class ResponseQueryQuota extends ResponseBase {

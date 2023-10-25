@@ -16,10 +16,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @Author booty
+ * @author booty
  * @since 2023/9/15 14:49
  */
-
 @Getter
 public class ParentConfig implements IConfig {
     //--------------常量---------------
@@ -128,6 +127,10 @@ public class ParentConfig implements IConfig {
      */
     private Boolean generateUpdate;
     /**
+     * 生成删除方法
+     */
+    private Boolean generateDelete;
+    /**
      * 查询dto
      */
     private Boolean generateSelect;
@@ -143,7 +146,7 @@ public class ParentConfig implements IConfig {
     /**
      * 服务impl重写父类方法
      */
-    private Boolean serviceImplOverride;
+    private Boolean serviceImplOverride = true;
 
 
     /**
@@ -224,6 +227,8 @@ public class ParentConfig implements IConfig {
          */
         public Builder() {
             this.parentConfig = new ParentConfig();
+            // 默认重写方法
+            parentConfig.serviceImplOverride=true;
         }
 
         /**
@@ -581,6 +586,20 @@ public class ParentConfig implements IConfig {
         }
 
         /**
+         * 生成删除
+         *
+         * @param b b
+         * @return {@code ParentConfig.Builder }
+         * @author booty
+         * @since 2023/10/23
+         */
+        public ParentConfig.Builder generateDelete(@NotNull Boolean b){
+            this.parentConfig.generateDelete=b;
+            return this;
+        }
+
+
+        /**
          * 服务impl重写父类方法
          *
          * @param b b
@@ -592,6 +611,8 @@ public class ParentConfig implements IConfig {
             this.parentConfig.serviceImplOverride=b;
             return this;
         }
+
+
 
 
     }

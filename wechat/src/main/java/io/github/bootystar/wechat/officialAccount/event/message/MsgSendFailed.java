@@ -3,8 +3,8 @@ package io.github.bootystar.wechat.officialAccount.event.message;
 /**
  * 在模版消息发送任务完成后，微信服务器会将是否送达成功作为通知
  * 送达由于其他原因失败时，推送的XML
- * @Author booty
- * @Date 2023/6/19 14:30
+ * @author booty
+ * @since 2023/6/19 14:30
  */
 public class MsgSendFailed {
     /*

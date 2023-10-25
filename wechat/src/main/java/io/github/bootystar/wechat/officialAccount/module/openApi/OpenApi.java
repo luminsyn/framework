@@ -8,8 +8,8 @@ import io.github.bootystar.wechat.core.exception.ResponseException;
 
 /**
  * openApi管理
- * @Author booty
- * @Date 2023/6/19 15:26
+ * @author booty
+ * @since 2023/6/19 15:26
  */
 public class OpenApi {
 
@@ -34,7 +34,7 @@ public class OpenApi {
      * 4、由于指标计算方法或统计时间差异，实时调用量数据可能会出现误差，一般在1%以内
      * @return boolean
      * @author booty
-     * @date 2023/06/08 11:40
+     * @since 2023/06/08 11:40
      */
     public static ResponseBase clearQuotaByAccessToken(String appId, String accessToken){
         String url = POST_JSON_CLEAR_QUOTA_URL.replace("ACCESS_TOKEN", accessToken);
@@ -66,7 +66,7 @@ public class OpenApi {
      * @param appSecret 应用程序秘密
      * @return {@code ResponseBase }
      * @author booty
-     * @date 2023/06/08 17:47
+     * @since 2023/06/08 17:47
      */
     public static ResponseBase clearQuotaByAppSecret(String appId, String appSecret){
         String url = POST_CLEAR_QUOTA_V2_URL.replace("APPID", appId).replace("APPSECRET", appSecret);
@@ -97,7 +97,7 @@ public class OpenApi {
      * @param cgiPath     cgi路径
      * @return {@code QueryQuota }
      * @author booty
-     * @date 2023/06/08 17:06
+     * @since 2023/06/08 17:06
      */
     public static ResponseQueryQuota queryQuota(String accessToken, String cgiPath){
         String url = POST_JSON_QUERY_QUOTA_URL.replace("ACCESS_TOKEN", accessToken);
@@ -133,7 +133,7 @@ public class OpenApi {
      * @param rid         错误rid
      * @return {@code Rid }
      * @author booty
-     * @date 2023/06/08 17:22
+     * @since 2023/06/08 17:22
      */
     public static ResponseQueryRid queryRid(String accessToken, String rid){
         String url = POST_JSON_QUERY_RID.replace("ACCESS_TOKEN", accessToken);

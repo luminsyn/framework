@@ -5,8 +5,8 @@ import io.github.bootystar.wechat.core.ApiBase;
 
 /**
  * 小程序api
- * @Author booty
- * @Date 2023/6/15 10:29
+ * @author booty
+ * @since 2023/6/15 10:29
  */
 public class MiniProgramApi extends ApiBase {
 

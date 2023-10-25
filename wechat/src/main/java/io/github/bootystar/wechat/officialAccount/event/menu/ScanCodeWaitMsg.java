@@ -6,8 +6,8 @@ import lombok.Data;
  * 扫码推事件且弹出“消息接收中”提示框的事件推送
  * 消息类型，event
  * 事件类型，scancode_waitmsg
- * @Author booty
- * @Date 2023/6/13 13:50
+ * @author booty
+ * @since 2023/6/13 13:50
  */
 @Data
 public class ScanCodeWaitMsg {

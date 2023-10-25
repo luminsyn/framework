@@ -8,8 +8,8 @@ package io.github.bootystar.wechat.officialAccount.enums;
  * 9～12，是专门给第三方平台旗下未微信认证（具体而言，是资质认证未通过）的订阅号准备的事件类型，
  * 它们是没有事件推送的，能力相对受限，其他类型的公众号不必使用。
  *
- * @Author booty
- * @Date 2023/6/12 9:42
+ * @author booty
+ * @since 2023/6/12 9:42
  */
 public enum MenuButtonTypeEnum {
     /**

@@ -6,8 +6,8 @@ import lombok.Data;
 /**
  * 公众号菜单查询类
  *
- * @Author booty
- * @Date 2023/6/13 10:38
+ * @author booty
+ * @since 2023/6/13 10:38
  */
 @Data
 public class ResponseMenuQuery extends ResponseBase{

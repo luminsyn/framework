@@ -4,8 +4,8 @@ import lombok.Data;
 
 /**
  * 综合结果
- * @Author booty
- * @Date 2023/6/15 11:03
+ * @author booty
+ * @since 2023/6/15 11:03
  */
 @Data
 public class MsgSecCheckResponseResult {

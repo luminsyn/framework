@@ -2,8 +2,8 @@ package io.github.bootystar.wechat.miniProgram.enums;
 
 
 /**
- * @Author booty
- * @Date 2023/6/15 11:31
+ * @author booty
+ * @since 2023/6/15 11:31
  */
 
 public enum SceneEnum {

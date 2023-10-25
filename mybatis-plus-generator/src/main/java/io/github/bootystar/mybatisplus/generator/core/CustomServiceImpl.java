@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 
 /**
- * @Author booty
- * @Date 2023/8/21 9:44
+ * @author booty
+ * @since 2023/8/21 9:44
  */
 public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends ServiceImpl<M, T> implements CustomService<T,V> {
 
@@ -60,6 +60,30 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
     public <U> U getVoById(Serializable id, Class<U> clazz) {
         V vo = getVoById(id);
         return this.toTarget(vo, clazz);
+    }
+
+    @Override
+    public <S> V oneByDto(S dto) {
+        List<V> vs = listByDto(dto);
+        if (vs == null || vs.size()==0 ) {
+            return null;
+        }
+        if(vs.size() > 1) {
+            throw new RuntimeException("error query => required one but found"+vs.size());
+        }
+        return vs.get(0);
+    }
+
+    @Override
+    public <S, U> U oneByDto(S dto, Class<U> clazz) {
+        List<U> vs = listByDto(dto,clazz);
+        if (vs == null || vs.size()==0 ) {
+            return null;
+        }
+        if(vs.size() > 1) {
+            throw new RuntimeException("error query => required one but found"+vs.size());
+        }
+        return vs.get(0);
     }
 
     @Override
@@ -139,7 +163,7 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
             EasyExcel.read(is, clazz, listener).sheet().doRead();
         } catch (ExcelAnalysisException e) {
             ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) e.getCause();
-            String msg = String.format("第%s行，第%s列数据格式不正确：%s", excelDataConvertException.getRowIndex() + 1, excelDataConvertException.getColumnIndex() + 1, excelDataConvertException.getCellData());
+            String msg = String.format("第%s行，第%s列数据格式不正确：%s", excelDataConvertException.getRowIndex() + 1, excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
             throw new RuntimeException(msg);
         }
         List<T> result = this.processImportData(cachedDataList);

@@ -10,8 +10,8 @@ import java.util.Map;
 
 /**
  * 自定义Mapper
- * @Author booty
- * @Date 2023/8/20 21:36
+ * @author booty
+ * @since 2023/8/20 21:36
  */
 public interface CustomMapper<T,V>  extends BaseMapper<T> {
     List<V> listByDto(@Param("dto") Map<String,Object> dto, IPage<V> page);

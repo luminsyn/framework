@@ -20,7 +20,7 @@ import lombok.SneakyThrows;
 /**
  * 微信公众号api
  * @author booty
- * @date 2023/6/4 10:28
+ * @since 2023/6/4 10:28
  */
 public class OfficialAccountApi extends ApiBase {
 
@@ -37,7 +37,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param redirectURL 重定向url
      * @return {@code String }
      * @author booty
-     * @date 2023/06/06 15:50
+     * @since 2023/06/06 15:50
      */
     public String oAuth2UrlBase(String redirectURL){
         return WebApi.oAuth2UrlBase(getAppId(),redirectURL);
@@ -49,7 +49,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param redirectURL 重定向url
      * @return {@code String }
      * @author booty
-     * @date 2023/06/06 15:50
+     * @since 2023/06/06 15:50
      */
     @SneakyThrows
     public String oAuth2UrlUserInfo(String redirectURL){
@@ -64,7 +64,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param state       状态  重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
      * @return {@code String }
      * @author booty
-     * @date 2023/06/06 16:03
+     * @since 2023/06/06 16:03
      */
     @SneakyThrows
     public String oAuth2Url(String redirectURL,String scope,String state){
@@ -86,7 +86,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param code 微信网页重定向获取的授权code
      * @return {@code UserAccessToken }
      * @author booty
-     * @date 2023/06/08 09:14
+     * @since 2023/06/08 09:14
      */
     public UserAccessToken createPersonalAccessToken(String code){
         return WebApi.createUserAccessToken(getAppId(), getAppSecret(), code);
@@ -99,7 +99,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param openId 开放id
      * @return boolean true 有效
      * @author booty
-     * @date 2023/06/08 11:26
+     * @since 2023/06/08 11:26
      */
     public boolean checkPersonalAccessToken(UserAccessToken token,String openId){
         ResponseBase responseBase = WebApi.checkUserAccessToken(token.getAccess_token(), openId);
@@ -116,7 +116,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param oldToken 旧令牌
      * @return {@code UserAccessToken }
      * @author booty
-     * @date 2023/06/08 10:22
+     * @since 2023/06/08 10:22
      */
     public UserAccessToken refreshPersonalAccessToken(UserAccessToken oldToken){
         return WebApi.refreshUserAccessToken(getAppId(), oldToken.getRefresh_token());
@@ -129,7 +129,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param openId 开放id
      * @return {@code UserInfo }
      * @author booty
-     * @date 2023/06/08 17:10
+     * @since 2023/06/08 17:10
      */
     public UserInfo getUserInfoByOpenId(UserAccessToken token, String openId){
         return WebApi.getUserInfoByOpenId(token.getAccess_token(),openId);
@@ -142,7 +142,7 @@ public class OfficialAccountApi extends ApiBase {
      *
      * @return boolean
      * @author booty
-     * @date 2023/06/08 17:50
+     * @since 2023/06/08 17:50
      */
     public boolean clearQuotaByAccessToken(){
         ResponseBase responseBase = OpenApi.clearQuotaByAccessToken(getAppId(), getTokenValue());
@@ -155,7 +155,7 @@ public class OfficialAccountApi extends ApiBase {
      *
      * @return boolean
      * @author booty
-     * @date 2023/06/08 17:51
+     * @since 2023/06/08 17:51
      */
     public boolean clearQuotaByAppSecret(){
         ResponseBase responseBase = OpenApi.clearQuotaByAppSecret(getAppId(), getAppSecret());
@@ -169,7 +169,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param pathEnum 路径枚举
      * @return {@link ResponseQueryQuota }
      * @author booty
-     * @date 2023/06/11 14:46
+     * @since 2023/06/11 14:46
      */
     public ResponseQueryQuota queryQuota(CgiPathEnum pathEnum){
         return OpenApi.queryQuota(getTokenValue(),pathEnum.url);
@@ -182,7 +182,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param cgiPath cgi路径
      * @return {@link ResponseQueryQuota }
      * @author booty
-     * @date 2023/06/11 14:45
+     * @since 2023/06/11 14:45
      */
     public ResponseQueryQuota queryQuota(String cgiPath){
         return OpenApi.queryQuota(getTokenValue(),cgiPath);
@@ -195,7 +195,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param rid 掉
      * @return {@code Rid }
      * @author booty
-     * @date 2023/06/08 18:10
+     * @since 2023/06/08 18:10
      */
     public ResponseQueryRid queryRid(String rid){
         return OpenApi.queryRid(getTokenValue(),rid);
@@ -208,7 +208,7 @@ public class OfficialAccountApi extends ApiBase {
      * @param menu 菜单
      * @return {@code ResponseBase }
      * @author booty
-     * @date 2023/06/13 10:34
+     * @since 2023/06/13 10:34
      */
     public ResponseBase adjustMenu(MenuBase menu){
         return MenuApi.createMenu(getTokenValue(), menu);
@@ -220,7 +220,7 @@ public class OfficialAccountApi extends ApiBase {
      *
      * @return {@code MenuQuery }
      * @author booty
-     * @date 2023/06/13 11:01
+     * @since 2023/06/13 11:01
      */
     public ResponseMenuQuery queryMenu(){
         return MenuApi.queryMenu(getTokenValue());
@@ -232,7 +232,7 @@ public class OfficialAccountApi extends ApiBase {
      *
      * @return {@code ResponseBase }
      * @author booty
-     * @date 2023/06/13 11:01
+     * @since 2023/06/13 11:01
      */
     public ResponseBase deleteMenu(){
         return MenuApi.deleteMenu(getTokenValue());
@@ -245,7 +245,7 @@ public class OfficialAccountApi extends ApiBase {
      *
      * @return {@code Industry }
      * @author booty
-     * @date 2023/06/16 17:22
+     * @since 2023/06/16 17:22
      */
     public ResponseIndustry getIndustry(){
         return MessageApi.getIndustry(getTokenValue());

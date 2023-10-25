@@ -3,7 +3,7 @@ package io.github.bootystar.wechat.officialAccount.enums;
 /**
  * api的请求地址查询枚举
  * @author booty
- * @date 2023/6/11 14:29
+ * @since 2023/6/11 14:29
  */
 public enum CgiPathEnum {
 

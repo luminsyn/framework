@@ -3,8 +3,8 @@ package io.github.bootystar.wechat.miniProgram.entity;
 import lombok.Data;
 
 /**
- * @Author booty
- * @Date 2023/6/15 11:02
+ * @author booty
+ * @since 2023/6/15 11:02
  */
 @Data
 public class MsgSecCheckBody {

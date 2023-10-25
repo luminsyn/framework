@@ -6,8 +6,8 @@ import lombok.Data;
  * 扫码推事件的事件推送
  * 件类型，scancode_push
  * 消息类型，event
- * @Author booty
- * @Date 2023/6/13 13:47
+ * @author booty
+ * @since 2023/6/13 13:47
  */
 @Data
 public class ScanCodePush {

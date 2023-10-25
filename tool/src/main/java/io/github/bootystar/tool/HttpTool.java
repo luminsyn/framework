@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * http请求工具类
  * @author booty
- * @date 2023/6/4 14:24
+ * @since 2023/6/4 14:24
  */
 public class HttpTool {
 

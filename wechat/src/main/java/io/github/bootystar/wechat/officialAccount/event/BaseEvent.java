@@ -2,8 +2,8 @@ package io.github.bootystar.wechat.officialAccount.event;
 
 /**
  * 事件推送基类
- * @Author booty
- * @Date 2023/6/13 13:52
+ * @author booty
+ * @since 2023/6/13 13:52
  */
 public abstract class BaseEvent {
     /**

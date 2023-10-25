@@ -6,8 +6,8 @@ import io.github.bootystar.wechat.core.ResponseBase;
 import io.github.bootystar.wechat.core.exception.ResponseException;
 
 /**
- * @Author booty
- * @Date 2023/6/19 15:36
+ * @author booty
+ * @since 2023/6/19 15:36
  */
 public class MenuApi {
 
@@ -28,7 +28,7 @@ public class MenuApi {
      * @param accessToken 访问令牌
      * @return {@code ResponseBase }
      * @author booty
-     * @date 2023/06/12 11:49
+     * @since 2023/06/12 11:49
      */
     public static ResponseBase createMenu(String accessToken, MenuBase menuCreate){
         String json = JSON.toJSONString(menuCreate);
@@ -53,7 +53,7 @@ public class MenuApi {
      * @param accessToken 访问令牌
      * @return {@code ResponseBase }
      * @author booty
-     * @date 2023/06/13 10:42
+     * @since 2023/06/13 10:42
      */
     public static ResponseMenuQuery queryMenu(String accessToken){
         String url = GET_QUERY_MENU_URL.replace("ACCESS_TOKEN", accessToken);

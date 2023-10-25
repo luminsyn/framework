@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * 公众号菜单
- * @Author booty
- * @Date 2023/6/12 9:34
+ * @author booty
+ * @since 2023/6/12 9:34
  */
 @Data
 public class MenuBase {

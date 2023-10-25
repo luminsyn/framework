@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 
 /**
  * 微信网页开发API
- * @Author booty
- * @Date 2023/6/19 16:39
+ * @author booty
+ * @since 2023/6/19 16:39
  */
 public class WebApi {
 
@@ -38,7 +38,7 @@ public class WebApi {
      * @param redirectURL 重定向url
      * @return {@code String }
      * @author booty
-     * @date 2023/06/19 16:47
+     * @since 2023/06/19 16:47
      */
     @SneakyThrows
     public static String oAuth2UrlBase(String appId ,String redirectURL){
@@ -57,7 +57,7 @@ public class WebApi {
      * @param redirectURL 重定向url
      * @return {@code String }
      * @author booty
-     * @date 2023/06/19 16:46
+     * @since 2023/06/19 16:46
      */
     @SneakyThrows
     public static String oAuth2UrlUserInfo(String appId,String redirectURL){
@@ -77,7 +77,7 @@ public class WebApi {
      * @param state       状态  重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
      * @return {@code String }
      * @author booty
-     * @date 2023/06/06 16:03
+     * @since 2023/06/06 16:03
      */
     @SneakyThrows
     public static String oAuth2Url(String appId ,String redirectURL,String scope,String state){
@@ -107,7 +107,7 @@ public class WebApi {
      * @param code      代码
      * @return {@code UserAccessToken }
      * @author booty
-     * @date 2023/06/08 09:16
+     * @since 2023/06/08 09:16
      */
     public static UserAccessToken createUserAccessToken(String appId, String appSecret, String code){
         String url = GET_PERSONAL_TOKEN_URL.replace("APPID", appId).replace("SECRET", appSecret).replace("CODE",code);
@@ -143,7 +143,7 @@ public class WebApi {
      * @param openId 开放id
      * @return {@code ResponseBase }
      * @author booty
-     * @date 2023/06/08 10:51
+     * @since 2023/06/08 10:51
      */
     public static ResponseBase checkUserAccessToken(String token,String openId){
         String url = GET_CHECK_PERSONAL_TOKEN_URL.replace("ACCESS_TOKEN", token).replace("OPENID",openId);
@@ -168,7 +168,7 @@ public class WebApi {
      * @param oldToken 旧令牌
      * @return {@code UserAccessToken }
      * @author booty
-     * @date 2023/06/08 09:54
+     * @since 2023/06/08 09:54
      */
     public static UserAccessToken refreshUserAccessToken(String appId,String oldToken){
         String url = GET_PERSONAL_TOKEN_URL.replace("APPID", appId).replace("REFRESH_TOKEN", oldToken);
@@ -202,7 +202,7 @@ public class WebApi {
      * @param openId 开放id
      * @return {@code UserInfo }
      * @author booty
-     * @date 2023/06/08 10:44
+     * @since 2023/06/08 10:44
      */
     public static UserInfo getUserInfoByOpenId(String token,String openId){
         String url = GET_USER_INFO_URL.replace("ACCESS_TOKEN", token).replace("OPENID", openId);

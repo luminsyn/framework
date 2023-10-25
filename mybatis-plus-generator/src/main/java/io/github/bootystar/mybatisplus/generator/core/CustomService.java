@@ -7,13 +7,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 
 /**
- * @Author booty
- * @Date 2023/8/21 9:44
+ * @author booty
+ * @since 2023/8/21 9:44
  */
 public interface CustomService<T,V> extends IService<T> {
     <S> V insertByDto(S o);
@@ -21,6 +22,8 @@ public interface CustomService<T,V> extends IService<T> {
     <S> boolean updateByDto(S dto);
     V getVoById(Serializable id);
     <U> U getVoById(Serializable id, Class<U> clazz);
+    <S> V oneByDto(S dto);
+    <S,U> U oneByDto(S dto, Class<U> clazz);
     <S> List<V> listByDto(S dto);
     <S,U> List<U> listByDto(S dto, Class<U> clazz);
     <S> IPage<V> pageByDto(S dto, Long current, Long size);
@@ -35,17 +38,7 @@ public interface CustomService<T,V> extends IService<T> {
         try {
             ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
             Class<T> clazz = (Class) pt.getActualTypeArguments()[0];
-            t = clazz.newInstance();
-            Field[] fields = clazz.getDeclaredFields();
-            Map<String, Object> fileldMap = this.toMap(source);
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String name = field.getName();
-                Object o = fileldMap.get(name);
-                if (o != null) {
-                    field.set(t, o);
-                }
-            }
+            t = toTarget(source, clazz);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -58,17 +51,7 @@ public interface CustomService<T,V> extends IService<T> {
         try {
             ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
             Class<V> clazz = (Class) pt.getActualTypeArguments()[1];
-            v = clazz.newInstance();
-            Field[] fields = clazz.getDeclaredFields();
-            Map<String, Object> fileldMap = this.toMap(source);
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String name = field.getName();
-                Object o = fileldMap.get(name);
-                if (o != null) {
-                    field.set(v, o);
-                }
-            }
+            v = toTarget(source, clazz);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -76,28 +59,29 @@ public interface CustomService<T,V> extends IService<T> {
         return v;
     }
 
+    default <U> U toTarget(Object source, Class<U> clazz) {
+        U target = null;
+        try {
+            if (clazz==null){
+               return null;
+            }
+            target = clazz.newInstance();
+            this.copyProperties(source, target);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return target;
+    }
+
 
 
     default Map<String, Object> toMap(Object source) {
         if (source==null){
-            return new HashMap<String, Object>();
+            return new HashMap<>();
         }
-
         if (source instanceof Map) {
-            ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-            Class<T> clazz = (Class) pt.getActualTypeArguments()[0];
-            if (String.class.equals(clazz)) {
-                return (Map) source;
-            } else {
-                Map sourceMap = (Map) source;
-                LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-                sourceMap.forEach((k, v) -> {
-                    if (k != null && v != null) {
-                        map.put(k.toString(), v);
-                    }
-                });
-                return map;
-            }
+            return new HashMap<>((Map) source);
         }
         Map<String, Object> map = new LinkedHashMap<>();
         Class<?> clazz = source.getClass();
@@ -105,6 +89,16 @@ public interface CustomService<T,V> extends IService<T> {
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
+                int modifiers = field.getModifiers();
+                if (Modifier.isFinal(modifiers)){
+                    continue;
+                }
+                if (Modifier.isStatic(modifiers)){
+                    continue;
+                }
+                if (Modifier.isNative(modifiers)){
+                    continue;
+                }
                 String key = field.getName();
                 Object value = field.get(source);
                 if (value != null) {
@@ -119,28 +113,36 @@ public interface CustomService<T,V> extends IService<T> {
     }
 
 
-    default <U> U toTarget(Object source, Class<U> clazz) {
-        U target = null;
-        try {
-            if (clazz==null){
-                ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-                clazz = (Class) pt.getActualTypeArguments()[0];
+
+    default void copyProperties(Object source, Object target) {
+       if (source==null || target==null){
+           return;
+       }
+        Map<?, ?> map = this.toMap(source);
+        Field[] declaredFields = target.getClass().getDeclaredFields();
+        for (Field field : declaredFields) {
+            field.setAccessible(true);
+            int modifiers = field.getModifiers();
+            if (Modifier.isFinal(modifiers)){
+                continue;
             }
-            target = clazz.newInstance();
-            Field[] fields = clazz.getDeclaredFields();
-            Map<String, Object> fileldMap = this.toMap(source);
-            for (Field field : fields) {
-                field.setAccessible(true);
-                String name = field.getName();
-                Object o = fileldMap.get(name);
-                if (o != null) {
+            if (Modifier.isStatic(modifiers)){
+                continue;
+            }
+            if (Modifier.isNative(modifiers)){
+                continue;
+            }
+            String name = field.getName();
+            Object o = map.get(name);
+            if (o != null) {
+                try {
                     field.set(target, o);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
         }
-        return target;
     }
+
+
 }

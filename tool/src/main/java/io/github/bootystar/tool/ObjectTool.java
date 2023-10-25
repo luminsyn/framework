@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * 对象工具
  * @author booty
- * @date 2023/6/3 22:02
+ * @since 2023/6/3 22:02
  */
 public class ObjectTool {
 

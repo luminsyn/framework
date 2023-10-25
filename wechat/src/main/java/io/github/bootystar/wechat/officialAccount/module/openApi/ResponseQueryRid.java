@@ -9,8 +9,8 @@ import lombok.Data;
 
 /**
  * 查询rid信息
- * @Author booty
- * @Date 2023/6/8 17:14
+ * @author booty
+ * @since 2023/6/8 17:14
  */
 @Data
 public class ResponseQueryRid extends ResponseBase {

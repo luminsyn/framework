@@ -8,8 +8,8 @@ import io.github.bootystar.wechat.core.token.factory.DefaultStableAccessTokenFac
 
 /**
  * 基础api
- * @Author booty
- * @Date 2023/6/16 16:07
+ * @author booty
+ * @since 2023/6/16 16:07
  */
 public class ApiBase {
 
@@ -58,7 +58,7 @@ public class ApiBase {
      * 获取授权令牌的值
      * @return {@code AccessToken }
      * @author booty
-     * @date 2023/06/06 15:31
+     * @since 2023/06/06 15:31
      */
     public String getTokenValue() {
         if(stableToken){
@@ -72,7 +72,7 @@ public class ApiBase {
      *
      * @return {@code AccessToken }
      * @author booty
-     * @date 2023/06/16 16:03
+     * @since 2023/06/16 16:03
      */
     public AccessToken getAccessToken(){
         return tokenFactory.getAccessToken();
@@ -84,7 +84,7 @@ public class ApiBase {
      *
      * @return {@link AccessToken }
      * @author booty
-     * @date 2023/06/11 18:26
+     * @since 2023/06/11 18:26
      */
     public AccessToken getStableAccessToken() {
         return stableTokenFactory.getStableAccessToken();

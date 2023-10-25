@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 基础bean配置
- * @Author booty
- * @Date 2023/7/13 10:33
+ * @author booty
+ * @since 2023/7/13 10:33
  */
 @Configuration
 public class CustomMybatisPlusBeanConfig {
@@ -22,7 +22,7 @@ public class CustomMybatisPlusBeanConfig {
      *
      * @return {@code MybatisPlusInterceptor }
      * @author booty
-     * @date 2023/07/13 10:38
+     * @since 2023/07/13 10:38
      */
     @Bean
     @ConditionalOnMissingBean(MybatisPlusInterceptor.class)

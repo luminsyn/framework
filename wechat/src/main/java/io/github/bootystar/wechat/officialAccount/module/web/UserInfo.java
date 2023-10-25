@@ -10,8 +10,8 @@ import lombok.Data;
 /**
  *
  * 用户信息
- * @Author booty
- * @Date 2023/6/8 10:24
+ * @author booty
+ * @since 2023/6/8 10:24
  */
 @Data
 public class UserInfo extends ResponseBase {

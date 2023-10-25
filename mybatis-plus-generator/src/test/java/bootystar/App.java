@@ -1,32 +1,41 @@
 package bootystar;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
+
+
+import java.net.InetAddress;
 
 /**
- * @author booty
- * @since 2023/9/18 12:51
+ * @Author booty
+ * @Date 2023/9/14 15:42
  */
+@Slf4j
 @SpringBootApplication
 public class App {
+    public static void main(String[] args) throws Exception {
+        ConfigurableApplicationContext application = SpringApplication.run(App.class, args);
+        Environment env = application.getEnvironment();
+        String host= InetAddress.getLocalHost().getHostAddress();
+        String port=env.getProperty("server.port");
+        String context=env.getProperty("server.servlet.context-path");
+        if (context==null){
+            context="";
+        }
+        if (!context.startsWith("/")){
+            context="/"+context;
+        }
+        if (!context.endsWith("/")){
+            context=context+"/";
+        }
+        log.info("Application started doc at: http://"+host+":"+port+context+"swagger-ui/index.html");
 
-    @Bean
-    public MybatisPlusInterceptor optimisticLockerInnerInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
-        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
-        interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
-        return interceptor;
+//        ClassPathResource resource = new ClassPathResource("logback.xml");
+//        File file = resource.getFile();
+//        System.out.println(file.getAbsolutePath());
+//        System.out.println(file.exists());
     }
-
-    public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
-    }
-
 }

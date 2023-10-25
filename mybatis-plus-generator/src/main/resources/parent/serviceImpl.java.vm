@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+#if(${generateDelete})
+import java.io.Serializable;
+#end
 #end
 
 /**
@@ -55,6 +58,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}
         ${entity} entity = this.toEntity(dto);
 
         return super.updateById(entity);
+    }
+    #end
+    #if(${generateDelete})
+
+    @Override
+    public boolean removeById(Serializable id) {
+        // 删除=>如有必要, 在此处对id进行校验
+        return super.removeById(id);
     }
     #end
 

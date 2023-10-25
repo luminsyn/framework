@@ -6,8 +6,8 @@ import lombok.Data;
  * 点击菜单拉取消息时的事件推送
  * 消息类型，event
  * 事件类型，CLICK
- * @Author booty
- * @Date 2023/6/13 13:39
+ * @author booty
+ * @since 2023/6/13 13:39
  */
 @Data
 public class Click {

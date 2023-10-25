@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 /**
  * 默认令牌工厂
- * @Author booty
- * @Date 2023/6/15 16:09
+ * @author booty
+ * @since 2023/6/15 16:09
  */
 public class DefaultAccessTokenFactory implements AccessTokenFactory {
 
