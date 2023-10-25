@@ -99,7 +99,7 @@ public class ParentGenerator  {
         customConfigBuilder.generateSelect(true);
         customConfigBuilder.generateExport(true);
         customConfigBuilder.generateImport(true);
-        customConfigBuilder.serviceImplOverride(false);
+        customConfigBuilder.serviceImplOverride(true);
     }
 
 

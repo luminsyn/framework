@@ -158,14 +158,14 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete")
     #else
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(@PathVariable Serializable id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(Serializable id) {
     #else
-    public Object delete(@PathVariable Serializable id) {
+    public Object delete(Serializable id) {
     #end
         Boolean result = baseService.removeById(id);
     #if(${returnResultClass})
@@ -190,14 +190,14 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/get/{id}")
+    @PostMapping("/get")
     #else
-    @GetMapping("/get/{id}")
+    @GetMapping("/get")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(@PathVariable Serializable id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(Serializable id){
     #else
-    public Object get(@PathVariable Serializable id){
+    public Object get(Serializable id){
     #end
         ${entity}Vo result=baseService.getVoById(id);
     #if(${returnResultClass})
@@ -331,7 +331,7 @@ public class ${table.controllerName} {
             e.printStackTrace();
             if (e.getCause() instanceof ExcelDataConvertException) {
                 ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) e.getCause();
-                String msg= String.format("第%s行，第%s列数据格式不正确：%s",excelDataConvertException.getRowIndex() + 1,excelDataConvertException.getColumnIndex() + 1,excelDataConvertException.getCellData());
+                String msg= String.format("第%s行，第%s列数据格式不正确：%s",excelDataConvertException.getRowIndex() + 1,excelDataConvertException.getColumnIndex(),excelDataConvertException.getCellData());
                 throw new RuntimeException(msg);
             }
         }

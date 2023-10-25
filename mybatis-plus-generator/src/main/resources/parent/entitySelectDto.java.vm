@@ -16,6 +16,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 #if(${chainModel})
 import lombok.experimental.Accessors;
@@ -35,6 +38,9 @@ import java.io.Serializable;
  */
 #if(${entityLombokModel})
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
   #if(${chainModel})
 @Accessors(chain = true)
   #end

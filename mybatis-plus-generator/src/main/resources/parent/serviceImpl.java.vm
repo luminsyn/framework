@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 #if(${generateDelete})
 import java.io.Serializable;
 #end
+#if(${generateImport})
+import java.io.InputStream;
+#end
 #end
 
 /**
@@ -31,6 +34,12 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${entity},${entit
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity},${entity}Vo,${table.mapperName}> implements ${table.serviceName} {
 
 #if(${serviceImplOverride})
+
+    @Override
+    protected void voPostProcess(List<${entity}Vo> dataList) {
+        // 查询=>如有必要, 在此处对查询后的vo进行操作(赋值\连表\额外数据拼接), 所有查询的vo都会添加该操作
+
+    }
     #if(${generateInsert})
 
     @Override
@@ -68,19 +77,21 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}
         return super.removeById(id);
     }
     #end
-
-    @Override
-    protected void voPostProcess(List<${entity}Vo> dataList) {
-        // 查询=>如有必要, 在此处对查询后的vo进行操作(赋值\连表\额外数据拼接), 所有查询的vo都会添加该操作
-
-    }
     #if(${generateImport})
 
     @Override
-    protected <U> List<${entity}> processImportData(List<U> cachedDataList) {
-        // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
+    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+        List<U> cachedDataList = super.processImportData(is,clazz);
+        if (cachedDataList == null || cachedDataList.isEmpty()) return false;
+        List<${entity}> entityList = cachedDataList.stream()
+            .map(e->{
+                // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
+                ${entity} entity = this.toEntity(e);
 
-        return super.processImportData(cachedDataList);
+
+                return entity;
+            }).collect(Collectors.toList());
+        return super.saveBatch(entityList);
     }
     #end
 #end

@@ -43,7 +43,12 @@ public class Test2 {
                 .enableOrigins(true)
                 .generateDelete(true)
                 .voResultMap(true)
-                .serviceImplOverride(true)
+                .generateUpdate(false)
+                .generateExport(false)
+                .generateInsert(false)
+                .generateDelete(false)
+                .generateSelect(true)
+
 
         ;
         generator.strategyConfigBuilder()
@@ -68,6 +73,7 @@ public class Test2 {
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
+                .enableLombok()
                 .enableFileOverride()
         ;
 

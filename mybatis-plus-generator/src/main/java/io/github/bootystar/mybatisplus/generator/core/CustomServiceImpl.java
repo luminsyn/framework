@@ -147,6 +147,20 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
 
     @Override
     public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+        List<U> cachedDataList = this.processImportData(is,clazz);
+        if (cachedDataList == null || cachedDataList.isEmpty()) return false;
+        List<T> entityList = this.processImportData(cachedDataList);
+        return super.saveBatch(entityList);
+    }
+
+
+    protected <U> List<T> processImportData(List<U> cachedDataList) {
+        List<T> entityList = cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
+        // any children should implement this method if necessary
+        return entityList;
+    }
+
+    protected <U> List<U> processImportData(InputStream is, Class<U> clazz) {
         List<U> cachedDataList = new LinkedList<>();
         ReadListener<U> listener = new ReadListener<U>() {
             @Override
@@ -166,15 +180,7 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
             String msg = String.format("第%s行，第%s列数据格式不正确：%s", excelDataConvertException.getRowIndex() + 1, excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
             throw new RuntimeException(msg);
         }
-        List<T> result = this.processImportData(cachedDataList);
-        if (result == null || result.isEmpty()) return false;
-        return super.saveBatch(result);
-    }
-
-    protected <U> List<T> processImportData(List<U> cachedDataList) {
-        List<T> entityList = cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
-        // any children should implement this method if necessary
-        return entityList;
+        return cachedDataList;
     }
 
 }

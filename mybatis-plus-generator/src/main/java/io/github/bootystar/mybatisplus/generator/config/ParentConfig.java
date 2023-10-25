@@ -227,8 +227,6 @@ public class ParentConfig implements IConfig {
          */
         public Builder() {
             this.parentConfig = new ParentConfig();
-            // 默认重写方法
-            parentConfig.serviceImplOverride=true;
         }
 
         /**
