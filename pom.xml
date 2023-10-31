@@ -11,6 +11,7 @@
         <module>tool</module>
         <module>wechat</module>
         <module>mybatis-plus-generator</module>
+        <module>booty-spring-boot-starter</module>
     </modules>
 
     <properties>

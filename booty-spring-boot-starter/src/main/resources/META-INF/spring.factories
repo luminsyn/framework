@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.github.bootystar.autoconfigure.databind.ParamAutoConfiguration,\
+  io.github.bootystar.autoconfigure.mybatisplus.MybatisPlusInterceptorAutoConfiguration
+

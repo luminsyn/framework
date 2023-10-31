@@ -33,9 +33,5 @@ public class App {
         }
         log.info("Application started doc at: http://"+host+":"+port+context+"swagger-ui/index.html");
 
-//        ClassPathResource resource = new ClassPathResource("logback.xml");
-//        File file = resource.getFile();
-//        System.out.println(file.getAbsolutePath());
-//        System.out.println(file.exists());
     }
 }

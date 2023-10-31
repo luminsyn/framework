@@ -163,9 +163,9 @@ public class ${table.controllerName} {
     @DeleteMapping("/delete")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(Serializable id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(String id) {
     #else
-    public Object delete(Serializable id) {
+    public Object delete(String id) {
     #end
         Boolean result = baseService.removeById(id);
     #if(${returnResultClass})
@@ -195,9 +195,9 @@ public class ${table.controllerName} {
     @GetMapping("/get")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(Serializable id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(String id){
     #else
-    public Object get(Serializable id){
+    public Object get(String id){
     #end
         ${entity}Vo result=baseService.getVoById(id);
     #if(${returnResultClass})

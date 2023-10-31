@@ -25,7 +25,7 @@ public class Test2 {
 
         generator
                 .globalConfigBuilder()
-                .dateType(DateType.TIME_PACK)
+                .dateType(DateType.ONLY_DATE)
 //                .enableSwagger()
                 .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
@@ -45,6 +45,7 @@ public class Test2 {
                 .voResultMap(true)
                 .generateUpdate(false)
                 .generateExport(false)
+                .generateImport(false)
                 .generateInsert(false)
                 .generateDelete(false)
                 .generateSelect(true)
@@ -56,7 +57,6 @@ public class Test2 {
                 .enableFileOverride()
                 .enableActiveRecord()
                 .idType(IdType.ASSIGN_ID)
-
                 .enableTableFieldAnnotation()
                 .logicDeleteColumnName("deleted")
         ;
