@@ -20,11 +20,9 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>io.github.bootystar</groupId>
-            <artifactId>booty-spring-boot-starter</artifactId>
-            <version>0.0.5</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>

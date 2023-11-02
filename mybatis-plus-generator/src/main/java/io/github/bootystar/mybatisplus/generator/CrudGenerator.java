@@ -102,6 +102,7 @@ public class CrudGenerator{
         customConfigBuilder.updateExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.orderColumn("create_time",true);
         customConfigBuilder.requestBody(true);
+        customConfigBuilder.restStyle(true);
         customConfigBuilder.enableValidated(true);
     }
 

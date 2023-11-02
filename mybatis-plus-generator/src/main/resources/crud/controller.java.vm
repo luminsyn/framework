@@ -158,14 +158,22 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
+        #if(${restStyle})
+    @PostMapping("/delete/{id}")
+        #else
     @PostMapping("/delete")
+        #end
     #else
+        #if(${restStyle})
+    @DeleteMapping("/delete/{id}")
+        #else
     @DeleteMapping("/delete")
+        #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(String id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(#if(${restStyle})@PathVariable#end String id) {
     #else
-    public Object delete(String id) {
+    public Object delete(#if(${restStyle})@PathVariable#end String id) {
     #end
         Boolean result = baseService.removeById(id);
     #if(${returnResultClass})
@@ -190,14 +198,22 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
+        #if(${restStyle})
+    @PostMapping("/get/{id}")
+        #else
     @PostMapping("/get")
+        #end
     #else
+        #if(${restStyle})
+    @GetMapping("/get/{id}")
+        #else
     @GetMapping("/get")
+        #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(String id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(#if(${restStyle})@PathVariable#end String id){
     #else
-    public Object get(String id){
+    public Object get(#if(${restStyle})@PathVariable#end String id){
     #end
         ${entity}Vo result=baseService.getVoById(id);
     #if(${returnResultClass})

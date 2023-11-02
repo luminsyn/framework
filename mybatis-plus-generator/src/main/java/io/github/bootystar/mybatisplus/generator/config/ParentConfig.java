@@ -148,6 +148,10 @@ public class ParentConfig implements IConfig {
      */
     private Boolean serviceImplOverride = true;
 
+    /**
+     * rest样式
+     */
+    private Boolean restStyle = false;
 
     /**
      * 自定义文件
@@ -610,7 +614,18 @@ public class ParentConfig implements IConfig {
             return this;
         }
 
-
+        /**
+         * rest样式
+         *
+         * @param b b
+         * @return {@code ParentConfig.Builder }
+         * @author booty
+         * @since 2023/11/02
+         */
+        public ParentConfig.Builder restStyle(@NotNull Boolean b){
+            this.parentConfig.restStyle=b;
+            return this;
+        }
 
 
     }

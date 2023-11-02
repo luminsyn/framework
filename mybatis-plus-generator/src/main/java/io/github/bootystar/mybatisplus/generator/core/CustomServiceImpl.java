@@ -153,6 +153,10 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
         return super.saveBatch(entityList);
     }
 
+    @Override
+    public <U> void exportTemplate(OutputStream os, Class<U> clazz) {
+        EasyExcel.write(os, clazz).sheet().doWrite(Collections.emptyList());
+    }
 
     protected <U> List<T> processImportData(List<U> cachedDataList) {
         List<T> entityList = cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());

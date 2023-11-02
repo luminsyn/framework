@@ -39,16 +39,17 @@ public class Test2 {
                 .orderColumn("id_card", true)
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
-                .requestBody(true)
-                .enableOrigins(true)
-                .generateDelete(true)
-                .voResultMap(true)
-                .generateUpdate(false)
-                .generateExport(false)
-                .generateImport(false)
-                .generateInsert(false)
-                .generateDelete(false)
-                .generateSelect(true)
+                .restStyle(true)
+//                .requestBody(true)
+//                .enableOrigins(true)
+//                .generateDelete(true)
+//                .voResultMap(true)
+//                .generateUpdate(false)
+//                .generateExport(false)
+//                .generateImport(false)
+//                .generateInsert(false)
+//                .generateDelete(false)
+//                .generateSelect(true)
 
 
         ;
@@ -86,7 +87,7 @@ public class Test2 {
                 .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
         generator.globalConfigBuilder()
-                .enableSpringdoc()
+//                .enableSpringdoc()
 //                .enableSwagger()
                 ;
 

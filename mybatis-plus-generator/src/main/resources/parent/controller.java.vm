@@ -47,6 +47,7 @@ import ${basePackage}.${dtoPackage}.${entity}SelectDto;
 import ${basePackage}.${voPackage}.${entity}Vo;
 #end
 #if(${generateImport}||${generateExport})
+import ${javaApiPackage}.servlet.http.HttpServletResponse;
 import java.io.IOException;
 #end
 #if(${generateImport})
@@ -54,7 +55,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ${basePackage}.${dtoPackage}.${entity}ImportDto;
 #end
 #if(${generateExport})
-import ${javaApiPackage}.servlet.http.HttpServletResponse;
 import ${basePackage}.${dtoPackage}.${entity}ExportDto;
 #end
 
@@ -194,14 +194,22 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
+        #if(${restStyle})
+    @PostMapping("/delete/{id}")
+        #else
     @PostMapping("/delete")
+        #end
     #else
+        #if(${restStyle})
+    @DeleteMapping("/delete/{id}")
+        #else
     @DeleteMapping("/delete")
+        #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(String id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(#if(${restStyle})@PathVariable#end String id) {
     #else
-    public Object delete(String id) {
+    public Object delete(#if(${restStyle})@PathVariable#end String id) {
     #end
         Boolean result = baseService.removeById(id);
     #if(${returnResultClass})
@@ -227,14 +235,22 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
+        #if(${restStyle})
+    @PostMapping("/get/{id}")
+        #else
     @PostMapping("/get")
+        #end
     #else
+        #if(${restStyle})
+    @GetMapping("/get/{id}")
+        #else
     @GetMapping("/get")
+        #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(String id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}Vo>#end get(#if(${restStyle})@PathVariable#end String id){
     #else
-    public Object get(String id){
+    public Object get(#if(${restStyle})@PathVariable#end String id){
     #end
         ${entity}Vo result=baseService.getVoById(id);
     #if(${returnResultClass})
@@ -291,14 +307,22 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
+        #if(${restStyle})
+    @PostMapping("/page/{current}/{size}")
+        #else
     @PostMapping("/page")
+        #end
     #else
+        #if(${restStyle})
+    @GetMapping("/page/{current}/{size}")
+        #else
     @GetMapping("/page")
+        #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, Long current, Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,Long current, Long size){
+    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
     #end
         IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
     #if(${returnResultClass})
@@ -328,8 +352,8 @@ public class ${table.controllerName} {
     @GetMapping("/export")
     #end
     public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
         response.setCharacterEncoding("utf-8");
+        response.setContentType("application/vnd.ms-excel");
         response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
         response.addHeader("Pargam", "no-cache");
@@ -371,6 +395,32 @@ public class ${table.controllerName} {
     #else
         return result;
     #end
+    }
+
+    #if(${springdoc})
+    @Operation(summary = "下载excel导入模板")
+    #elseif(${swagger})
+    @ApiOperation(value = "下载excel导入模板")
+    #else
+    /**
+     * 下载excel导入模板
+     * @author ${author}
+     * @since ${nowTime}
+     */
+    #end
+    #if(${allPost})
+    @PostMapping("/exportTemplate")
+    #else
+    @GetMapping("/exportTemplate")
+    #end
+    public void exportTemplate(HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+        response.addHeader("Pargam", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        baseService.exportTemplate(response.getOutputStream(), ${entity}ImportDto.class);
     }
 #end
 

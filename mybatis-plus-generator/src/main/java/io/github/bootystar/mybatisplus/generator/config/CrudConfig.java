@@ -167,6 +167,11 @@ public class CrudConfig implements IConfig {
      */
     private Boolean fileOverride = false;
 
+    /**
+     * rest样式
+     */
+    private Boolean restStyle = false;
+
 
 
     /**
@@ -628,6 +633,19 @@ public class CrudConfig implements IConfig {
          */
         public Builder fileOverride(@NotNull Boolean b){
             this.customConfig.fileOverride=b;
+            return this;
+        }
+
+        /**
+         * rest样式
+         *
+         * @param b b
+         * @return {@code Builder }
+         * @author booty
+         * @since 2023/11/02
+         */
+        public Builder restStyle(@NotNull Boolean b){
+            this.customConfig.restStyle=b;
             return this;
         }
 

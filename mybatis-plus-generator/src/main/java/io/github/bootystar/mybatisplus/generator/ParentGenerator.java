@@ -93,6 +93,7 @@ public class ParentGenerator  {
         customConfigBuilder.updateExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.orderColumn("create_time",true);
         customConfigBuilder.requestBody(true);
+        customConfigBuilder.restStyle(true);
         customConfigBuilder.enableValidated(true);
         customConfigBuilder.generateInsert(true);
         customConfigBuilder.generateUpdate(true);

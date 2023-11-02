@@ -31,6 +31,7 @@ public interface CustomService<T,V> extends IService<T> {
     <S,U> void exportExcel(S dto, OutputStream os, Class<U> clazz);
     <S,U> void exportExcel(S dto, OutputStream os, Class<U> clazz, Collection<String> includeFields);
     <U> boolean importExcel(InputStream is, Class<U> clazz);
+    <U> void exportTemplate(OutputStream os, Class<U> clazz);
 
 
     default T toEntity(Object source) {
