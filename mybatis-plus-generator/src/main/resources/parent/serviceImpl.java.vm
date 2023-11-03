@@ -50,14 +50,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}
         super.save(entity);
         return toVo(entity);
     }
-
-    @Override
-    public <S> boolean insertBatchByDto(Collection<S> dtoList) {
-        // 批量新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
-        List<${entity}> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
-
-        return super.saveBatch(entityList);
-    }
+##
+##    @Override
+##    public <S> boolean insertBatchByDto(Collection<S> dtoList) {
+##        // 批量新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
+##        List<${entity}> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+##
+##        return super.saveBatch(entityList);
+##    }
     #end
     #if(${generateUpdate})
 

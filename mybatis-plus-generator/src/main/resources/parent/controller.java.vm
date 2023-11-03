@@ -118,33 +118,33 @@ public class ${table.controllerName} {
         return result;
     #end
     }
-
-    #if(${springdoc})
-    @Operation(summary = "批量新增")
-    #elseif(${swagger})
-    @ApiOperation(value = "批量新增")
-    #else
-    /**
-     * 批量新增
-     * @author ${author}
-     * @since ${nowTime}
-     * @param dtoList 新增入参对象列表
-     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
-     */
-    #end
-    @PostMapping("/insertBatch")
-    #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDto> dtoList){
-    #else
-    public Object insertBatch(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
-    #end
-        Boolean result = baseService.insertBatchByDto(dtoList);
-    #if(${returnResultClass})
-        return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
-    #else
-        return result;
-    #end
-    }
+##
+##    #if(${springdoc})
+##    @Operation(summary = "批量新增")
+##    #elseif(${swagger})
+##    @ApiOperation(value = "批量新增")
+##    #else
+##    /**
+##     * 批量新增
+##     * @author ${author}
+##     * @since ${nowTime}
+##     * @param dtoList 新增入参对象列表
+##     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
+##     */
+##    #end
+##    @PostMapping("/insertBatch")
+##    #if(${returnResultClass})
+##    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDto> dtoList){
+##    #else
+##    public Object insertBatch(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDto> dtoList){
+##    #end
+##        Boolean result = baseService.insertBatchByDto(dtoList);
+##    #if(${returnResultClass})
+##        return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
+##    #else
+##        return result;
+##    #end
+##    }
 #end
 #if(${generateUpdate})
 
@@ -279,9 +279,9 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
     #else
-    public Object list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public Object list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
     #end
         List<${entity}Vo> result=baseService.listByDto(dto);
     #if(${returnResultClass})
@@ -320,9 +320,9 @@ public class ${table.controllerName} {
         #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+    public Object page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
     #end
         IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
     #if(${returnResultClass})
@@ -351,7 +351,7 @@ public class ${table.controllerName} {
     #else
     @GetMapping("/export")
     #end
-    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, HttpServletResponse response) throws IOException {
+    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("Access-Control-Expose-Headers","Content-Disposition");

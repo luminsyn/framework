@@ -39,7 +39,9 @@ public class Test2 {
                 .orderColumn("id_card", true)
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
-                .restStyle(true)
+//                .restStyle(true)
+                .allPost(true)
+
 //                .requestBody(true)
 //                .enableOrigins(true)
 //                .generateDelete(true)

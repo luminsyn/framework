@@ -242,9 +242,9 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}Vo>>#end list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
     #else
-    public Object list(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public Object list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
     #end
         List<${entity}Vo> result=baseService.listByDto(dto);
     #if(${returnResultClass})
@@ -274,10 +274,10 @@ public class ${table.controllerName} {
     #end
 ##    @PostMapping("/page/{current}/{size}")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
 ##    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}Vo>>#end page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto, @PathVariable Long current, @PathVariable Long size){
     #else
-    public Object page(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public Object page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
     #end
 ##        IPage<${entity}Vo> result=baseService.pageByDto(dto,current,size);
         IPage<${entity}Vo> result=baseService.pageByDto(dto);
@@ -306,7 +306,7 @@ public class ${table.controllerName} {
     #else
     @GetMapping("/export")
     #end
-    public void export(#if(${requestBody})@RequestBody(required = false) #end${entity}SelectDto dto){
+    public void export(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDto dto){
         baseService.exportExcel(dto);
     }
     #end
