@@ -6,12 +6,10 @@
         <artifactId>common</artifactId>
         <groupId>io.github.bootystar</groupId>
         <version>${revision}</version>
-<!--        <version>0.0.3</version>-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-generator</artifactId>
-    <version>1.0.0</version>
 
 
     <properties>
