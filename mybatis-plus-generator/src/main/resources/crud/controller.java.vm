@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.*;
 #if(${importExcel})
 import org.springframework.web.multipart.MultipartFile;
 import ${basePackage}.${voPackage}.${entity}ImportVo;
-import ${basePackage}.${listenerPackage}.${entity}Listener;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import java.io.IOException;
+import java.util.LinkedList;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 #end
 #if(${enableOrigins})
@@ -328,30 +330,37 @@ public class ${table.controllerName} {
     #end
     @PostMapping("/import")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end importFromExcel(@RequestParam("excel") MultipartFile excel) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end importFromExcel(MultipartFile file) throws IOException {
     #else
-    public Object importFromExcel(@RequestParam("excel") MultipartFile excel) {
+    public Object importFromExcel(MultipartFile file) {
     #end
-        if (excel==null || excel.isEmpty()){
+        if (file==null || file.isEmpty()){
         #if(${returnResultClass})
             return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(false)#else null#end;
         #else
             return false;
         #end
         }
-        ${entity}Listener listener = new ${entity}Listener(this.baseService);
-        try {
-            // 解析
-            EasyExcel.read(excel.getInputStream(), ${entity}ImportVo.class, listener).sheet().doRead();
-        } catch (ExcelAnalysisException | IOException e) {
-            e.printStackTrace();
-            if (e.getCause() instanceof ExcelDataConvertException) {
-                ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) e.getCause();
-                String msg= String.format("第%s行，第%s列数据格式不正确：%s",excelDataConvertException.getRowIndex() + 1,excelDataConvertException.getColumnIndex(),excelDataConvertException.getCellData());
-                throw new RuntimeException(msg);
+        LinkedList<${entity}ImportVo> importVos = new LinkedList<>();
+        ReadListener<${entity}ImportVo> listener = new ReadListener<${entity}ImportVo>() {
+            @Override
+            public void invoke(${entity}ImportVo data, AnalysisContext context) {
+                importVos.add(data);
             }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+            }
+        };
+        try {
+            EasyExcel.read(
+            file.getInputStream(), ${entity}ImportVo.class, listener).sheet().doRead();
+        } catch (ExcelAnalysisException e) {
+            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) e.getCause();
+            String msg = String.format("第%s行，第%s列数据格式不正确：%s", excelDataConvertException.getRowIndex() + 1, excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
+            throw new RuntimeException(msg);
         }
-        Boolean result = listener.isSuccess();
+        Boolean result = baseService.importExcel(importVos);
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
     #else

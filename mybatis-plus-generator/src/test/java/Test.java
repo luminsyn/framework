@@ -47,11 +47,12 @@ public class Test {
                 .orderColumn("id_card", true)
                 .dtoPackage("entity.dto")
                 .voPackage("entity.vo")
-                .listenerPackage("entity.listener")
-                .requestBody(true)
                 .enableOrigins(true)
                 .fileOverride(true)
                 .voResultMap(true)
+                .restStyle(false)
+                .allPost(true)
+                .requestBody(true)
 
 //                .voResultMap(true)
         ;

@@ -47,11 +47,6 @@ public class CrudConfig implements IConfig {
      */
     private String voPackage="vo";
     /**
-     * 导入监听器包
-     */
-    private String listenerPackage="listener";
-
-    /**
      * 返回结果类
      */
     private String returnResultClass;
@@ -317,18 +312,7 @@ public class CrudConfig implements IConfig {
             return this;
         }
 
-        /**
-         * 导入监听器listener所在包
-         *
-         * @param packageName 包名
-         * @return {@code Builder }
-         * @author booty
-         * @since 2023/07/31 11:18
-         */
-        public Builder listenerPackage(@NotNull String packageName){
-            this.customConfig.listenerPackage=packageName;
-            return this;
-        }
+
 
         /**
          * 返回结果类

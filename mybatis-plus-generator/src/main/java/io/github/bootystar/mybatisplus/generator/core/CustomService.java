@@ -17,7 +17,7 @@ import java.util.*;
  * @since 2023/8/21 9:44
  */
 public interface CustomService<T,V> extends IService<T> {
-    <S> V insertByDto(S o);
+    <S> V insertByDto(S dto);
     <S> boolean insertBatchByDto(Collection<S> dtoList);
     <S> boolean updateByDto(S dto);
     V getVoById(Serializable id);

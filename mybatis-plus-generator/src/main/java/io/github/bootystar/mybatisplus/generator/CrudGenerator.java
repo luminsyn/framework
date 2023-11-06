@@ -124,7 +124,6 @@ public class CrudGenerator{
 
         String dtoPackage = customConfig.getDtoPackage().replaceAll("\\.", "\\" + File.separator);
         String voPackage = customConfig.getVoPackage().replaceAll("\\.", "\\" + File.separator);
-        String listenerPackage = customConfig.getListenerPackage().replaceAll("\\.", "\\" + File.separator);
 
         LinkedList<CustomFile> customFiles = new LinkedList<>();
         CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();
@@ -143,9 +142,7 @@ public class CrudGenerator{
         }
         if (customConfig.getImportExcel()){
             CustomFile importVo = new CustomFile.Builder().fileName("ImportVo.java").templatePath("/crud/entityImportVo.java.vm").packageName(voPackage).build();
-            CustomFile listener = new CustomFile.Builder().fileName("Listener.java").templatePath("/crud/listener.java.vm").packageName(listenerPackage).build();
             customFiles.add(importVo);
-            customFiles.add(listener);
         }
         customConfig.setCustomFiles(customFiles);
 
