@@ -5,8 +5,8 @@
     <parent>
         <artifactId>common</artifactId>
         <groupId>io.github.bootystar</groupId>
-<!--        <version>${revision}</version>-->
-        <version>0.0.3</version>
+        <version>${revision}</version>
+<!--        <version>0.0.3</version>-->
     </parent>
 
     <artifactId>wechat</artifactId>
