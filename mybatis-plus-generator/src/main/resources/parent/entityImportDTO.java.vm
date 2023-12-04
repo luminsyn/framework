@@ -1,30 +1,7 @@
-package ${basePackage}.${dtoPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
-#end
-#if(${enableValidated})
-#foreach($field in ${table.fields})
-    #if(${field.metaInfo.nullable}==false && ${field.keyFlag})
-import ${javaApiPackage}.validation.constraints.NotNull;
-    #if(${field.metaInfo.nullable}==false && ${field.keyFlag} && ${field.propertyType}=="String")
-import ${javaApiPackage}.validation.constraints.NotBlank;
-    #end
-    #break
-    #end
-#end
-#foreach($field in ${table.fields})
-    #if(${field.versionField})
-import ${javaApiPackage}.validation.constraints.NotNull;
-    #break
-    #end
-#end
-#foreach($field in ${table.fields})
-    #if(${field.propertyType}=="String")
-import ${javaApiPackage}.validation.constraints.Size;
-    #break
-    #end
-#end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,9 +15,11 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 #end
 #end
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
 
 /**
- * $!{table.comment}更新dto
+ * $!{table.comment}导入DTO
  *
  * @author ${author}
  * @since ${date}
@@ -52,19 +31,19 @@ import lombok.experimental.Accessors;
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}UpdateDto", description = "$!{table.comment}更新dto")
+##@Schema(name = "${entity}ImportDTO", description = "$!{table.comment}导入DTO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}UpdateDto对象", description = "$!{table.comment}更新dto")
+##@ApiModel(value = "${entity}ImportDTO对象", description = "$!{table.comment}导入DTO")
 ###end
-public class ${entity}UpdateDto {
+@ExcelIgnoreUnannotated
+public class ${entity}ImportDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-#if(($updateExcludeFields.contains(${field.propertyName})))
-#elseif(${field.logicDeleteField})
+#if(${field.logicDeleteField})
 #else
 
 #if("$!field.comment" != "")
@@ -78,33 +57,16 @@ public class ${entity}UpdateDto {
      */
   #end
 #end
-#if(${enableValidated})
-#if(${field.keyFlag})
-## 主键
-    @NotNull(message = "${field.comment}不能为空")
-    #if(${field.propertyType}=="String")
-    @NotBlank(message = "${field.comment}不能为空")
+    #if(!${field.keyFlag})
+    @ExcelProperty(value = "${field.comment}")
     #end
-#end
-## 乐观锁注解
-#if(${field.versionField})
-    @NotNull(message = "${field.comment}不能为空")
-    #if(${field.propertyType}=="String")
-    @NotBlank(message = "${field.comment}不能为空")
-    #end
-#end
-    #if(${field.propertyType} == "String")
-    @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
-    #end
-#end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
 #foreach($field in ${table.fields})
-#if($updateExcludeFields.contains(${field.propertyName}))
-#elseif(${field.logicDeleteField})
+#if(${field.logicDeleteField})
 #else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
@@ -117,7 +79,7 @@ public class ${entity}UpdateDto {
     }
 
   #if(${chainModel})
-    public ${entity} set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}ImportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -131,15 +93,13 @@ public class ${entity}UpdateDto {
 ## --foreach end---
 #end
 ## --end of #if(!${entityLombokModel})--
-
 #if(!${entityLombokModel})
 
     @Override
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
-  #if($updateExcludeFields.contains(${field.propertyName}))
-  #elseif(${field.logicDeleteField})
+  #if(${field.logicDeleteField})
   #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +

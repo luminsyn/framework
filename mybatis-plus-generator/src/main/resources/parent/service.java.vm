@@ -1,7 +1,7 @@
 package ${package.Service};
 
 import ${package.Entity}.${entity};
-import ${basePackage}.${voPackage}.${entity}Vo;
+import ${basePackage}.${VOPackage}.${entity}VO;
 import ${superServiceClassPackage};
 
 /**
@@ -11,9 +11,9 @@ import ${superServiceClassPackage};
  * @since ${date}
  */
 #if(${kotlin})
-interface ${table.serviceName} : ${superServiceClass}<${entity},${entity}Vo>
+interface ${table.serviceName} : ${superServiceClass}<${entity},${entity}VO>
 #else
-public interface ${table.serviceName} extends ${superServiceClass}<${entity},${entity}Vo> {
+public interface ${table.serviceName} extends ${superServiceClass}<${entity},${entity}VO> {
 
 
 

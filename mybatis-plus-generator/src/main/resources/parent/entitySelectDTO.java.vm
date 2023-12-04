@@ -1,4 +1,4 @@
-package ${basePackage}.${dtoPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -31,7 +31,7 @@ import java.io.Serializable;
 #end
 
 /**
- * $!{table.comment}查询dto
+ * $!{table.comment}查询DTO
  *
  * @author ${author}
  * @since ${date}
@@ -46,11 +46,11 @@ import java.io.Serializable;
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}SelectDto", description = "$!{table.comment}查询dto")
+##@Schema(name = "${entity}SelectDTO", description = "$!{table.comment}查询DTO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}SelectDto对象", description = "$!{table.comment}查询dto")
+##@ApiModel(value = "${entity}SelectDTO对象", description = "$!{table.comment}查询DTO")
 ###end
-public class ${entity}SelectDto {
+public class ${entity}SelectDTO {
 ###if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
@@ -161,7 +161,7 @@ public class ${entity}SelectDto {
     }
 
   #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -178,7 +178,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #else
     public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #end
@@ -195,7 +195,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #end
@@ -212,7 +212,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
     #end
@@ -228,7 +228,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
     #end
@@ -245,7 +245,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #else
     public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #end

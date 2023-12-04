@@ -1,4 +1,4 @@
-package ${basePackage}.${dtoPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -21,7 +21,7 @@ import com.alibaba.excel.annotation.write.style.*;
 import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 
 /**
- * $!{table.comment}导出dto
+ * $!{table.comment}导出DTO
  *
  * @author ${author}
  * @since ${date}
@@ -33,9 +33,9 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}ExportDto", description = "$!{table.comment}导出dto")
+##@Schema(name = "${entity}ExportDTO", description = "$!{table.comment}导出DTO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}ExportDto对象", description = "$!{table.comment}导出dto")
+##@ApiModel(value = "${entity}ExportDTO对象", description = "$!{table.comment}导出DTO")
 ###end
 @ExcelIgnoreUnannotated
 @HeadRowHeight(30)
@@ -43,7 +43,7 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 @HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL)
 @ColumnWidth(25)
 @ContentRowHeight(20)
-public class ${entity}ExportDto {
+public class ${entity}ExportDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
@@ -84,9 +84,9 @@ public class ${entity}ExportDto {
     }
 
   #if(${chainModel})
-    public ${entity}ExportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}ExportVO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
-    public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public VOid set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
         this.${field.propertyName} = ${field.propertyName};
   #if(${chainModel})

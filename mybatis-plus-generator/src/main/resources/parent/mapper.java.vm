@@ -1,11 +1,16 @@
 package ${package.Mapper};
 
 import ${package.Entity}.${entity};
-import ${basePackage}.${voPackage}.${entity}Vo;
+import ${basePackage}.${VOPackage}.${entity}VO;
 import ${superMapperClassPackage};
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
+import java.util.List;
+import java.util.Map;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * $!{table.comment} Mapper 接口
@@ -17,9 +22,12 @@ import ${mapperAnnotationClass.name};
 @${mapperAnnotationClass.simpleName}
 #end
 #if(${kotlin})
-interface ${table.mapperName} : ${superMapperClass}<${entity},${entity}Vo>
+interface ${table.mapperName} : ${superMapperClass}<${entity},${entity}VO>
 #else
-public interface ${table.mapperName} extends ${superMapperClass}<${entity},${entity}Vo> {
+public interface ${table.mapperName} extends ${superMapperClass}<${entity},${entity}VO> {
+
+    @Override
+    List<${entity}VO> listByMap(@Param("map") Map<String,Object> map, IPage<${entity}VO> page);
 
 }
 #end

@@ -1,4 +1,4 @@
-package ${basePackage}.${dtoPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -37,7 +37,7 @@ import lombok.experimental.Accessors;
 #end
 
 /**
- * $!{table.comment} 新增dto
+ * $!{table.comment} 新增DTO
  *
  * @author ${author}
  * @since ${date}
@@ -49,11 +49,11 @@ import lombok.experimental.Accessors;
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}InsertDto ", description = "$!{table.comment}新增对象")
+##@Schema(name = "${entity}InsertDTO ", description = "$!{table.comment}新增对象")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}InsertDto对象", description = "$!{table.comment}新增对象")
+##@ApiModel(value = "${entity}InsertDTO对象", description = "$!{table.comment}新增对象")
 ###end
-public class ${entity}InsertDto {
+public class ${entity}InsertDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;

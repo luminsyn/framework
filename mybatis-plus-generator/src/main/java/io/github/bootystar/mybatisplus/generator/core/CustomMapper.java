@@ -14,6 +14,6 @@ import java.util.Map;
  * @since 2023/8/20 21:36
  */
 public interface CustomMapper<T,V>  extends BaseMapper<T> {
-    List<V> listByDto(@Param("dto") Map<String,Object> dto, IPage<V> page);
+    List<V> listByMap(@Param("map") Map<String,Object> map, IPage<V> page);
 
 }

@@ -33,13 +33,13 @@ public class ParentConfig implements IConfig {
     //--------------返回结果相关配置---------------
 
     /**
-     * dto所在包
+     * DTO所在包
      */
-    private String dtoPackage="dto";
+    private String DTOPackage="dto";
     /**
-     * vo所在包
+     * VO所在包
      */
-    private String voPackage="vo";
+    private String VOPackage="vo";
 
     /**
      * 返回结果类
@@ -54,7 +54,7 @@ public class ParentConfig implements IConfig {
     /**
      * 返回结果是否支持泛型
      */
-    private Boolean returnResultGenericType;
+    private boolean returnResultGenericType;
 
     /**
      * 返回结果静态方法名
@@ -67,12 +67,12 @@ public class ParentConfig implements IConfig {
     /**
      * controller是否使用@RequestBody注解
      */
-    private boolean requestBody;
+    private boolean requestBody = true;
 
     /**
      * 是否添加参数校验
      */
-    private boolean enableValidated;
+    private boolean enableValidated = true;
     /**
      * 是否添加跨域注解
      */
@@ -81,7 +81,7 @@ public class ParentConfig implements IConfig {
     /**
      * 所有请求都使用post方法
      */
-    private boolean allPost =false;
+    private boolean allPost = false;
     /**
      * 请求基础url
      */
@@ -93,9 +93,9 @@ public class ParentConfig implements IConfig {
     private boolean fileOverride;
 
     /**
-     * vo是否生成ResultMap
+     * VO是否生成ResultMap
      */
-    private Boolean voResultMap;
+    private boolean VOResultMap;
 
     /**
      * 新增排除的字段
@@ -119,39 +119,39 @@ public class ParentConfig implements IConfig {
     private String javaApiPackage ="javax";
 
     /**
-     * 新增dto
+     * 新增DTO
      */
-    private Boolean generateInsert;
+    private boolean generateInsert = true;
     /**
-     * 更新dto
+     * 更新DTO
      */
-    private Boolean generateUpdate;
+    private boolean generateUpdate = true;
     /**
      * 生成删除方法
      */
-    private Boolean generateDelete;
+    private boolean generateDelete = true;
     /**
-     * 查询dto
+     * 查询DTO
      */
-    private Boolean generateSelect;
+    private boolean generateSelect = true;
     /**
-     * 导入dto
+     * 导入DTO
      */
-    private Boolean generateImport;
+    private boolean generateImport = true;
     /**
-     * 导出dto
+     * 导出DTO
      */
-    private Boolean generateExport;
+    private boolean generateExport = true;
 
     /**
      * 服务impl重写父类方法
      */
-    private Boolean serviceImplOverride = true;
+    private boolean serviceImplOverride = true;
 
     /**
      * rest样式
      */
-    private Boolean restStyle = false;
+    private boolean restStyle = true;
 
     /**
      * 自定义文件
@@ -265,28 +265,28 @@ public class ParentConfig implements IConfig {
         }
 
         /**
-         * dto所在包
+         * DTO所在包
          *
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
          * @since 2023/07/31 11:18
          */
-        public ParentConfig.Builder dtoPackage(@NotNull String packageName){
-            this.parentConfig.dtoPackage=packageName;
+        public ParentConfig.Builder DTOPackage(@NotNull String packageName){
+            this.parentConfig.DTOPackage=packageName;
             return this;
         }
 
         /**
-         * vo所在包
+         * VO所在包
          *
          * @param packageName 包名
          * @return {@code Builder }
          * @author booty
          * @since 2023/07/31 11:18
          */
-        public ParentConfig.Builder voPackage(@NotNull String packageName){
-            this.parentConfig.voPackage=packageName;
+        public ParentConfig.Builder VOPackage(@NotNull String packageName){
+            this.parentConfig.VOPackage=packageName;
             return this;
         }
 
@@ -412,15 +412,15 @@ public class ParentConfig implements IConfig {
 
 
         /**
-         * 是否创建voResultMap
+         * 是否创建VOResultMap
          *
          * @param b b
          * @return {@code Builder }
          * @author booty
          * @since 2023/07/17 15:16
          */
-        public ParentConfig.Builder voResultMap(@NotNull Boolean b){
-            this.parentConfig.voResultMap=b;
+        public ParentConfig.Builder VOResultMap(@NotNull Boolean b){
+            this.parentConfig.VOResultMap=b;
             return this;
         }
 

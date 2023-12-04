@@ -1,20 +1,22 @@
 package ${package.ServiceImpl};
 
 import ${package.Entity}.${entity};
-import ${basePackage}.${voPackage}.${entity}Vo;
+import ${basePackage}.${VOPackage}.${entity}VO;
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
 
 #if(${serviceImplOverride})
-import java.util.Collection;
+#if(${generateSelect})
 import java.util.List;
-import java.util.stream.Collectors;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+#end
 #if(${generateDelete})
 import java.io.Serializable;
 #end
 #if(${generateImport})
+import java.util.stream.Collectors;
 import java.io.InputStream;
 #end
 #end
@@ -27,34 +29,53 @@ import java.io.InputStream;
  */
 @Service
 #if(${kotlin})
-open class ${table.serviceImplName} : ${superServiceImplClass}<${entity},${entity}Vo,${table.mapperName}>() implements ${table.serviceName} {
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO>() implements ${table.serviceName} {
 
 }
 #else
-public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity},${entity}Vo,${table.mapperName}> implements ${table.serviceName} {
-
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO> implements ${table.serviceName} {
 #if(${serviceImplOverride})
 
+    #if(${generateSelect})
     @Override
-    protected void voPostProcess(List<${entity}Vo> dataList) {
-        // 查询=>如有必要, 在此处对查询后的vo进行操作(赋值\连表\额外数据拼接), 所有查询的vo都会添加该操作
+    protected void voPostProcess(List<${entity}VO> dataList) {
+        // 查询=>如有必要, 在此处对查询后的VO进行操作(赋值\连表\额外数据拼接), 所有查询的VO都会添加该操作
 
     }
+
+    @Override
+    public ${entity}VO voById(Serializable id){
+        return super.voById(id);
+    }
+
+    @Override
+    public <S> List<${entity}VO> listByDTO(S DTO){
+        List<${entity}VO> voList = this.baseMapper.listByMap(this.toMap(DTO), null);
+        this.voPostProcess(voList);
+        return voList;
+    }
+
+    @Override
+    public <S> IPage<${entity}VO> pageByDTO(S DTO, Long current, Long size){
+        return super.pageByDTO(DTO,current,size);
+    }
+    #end
+
     #if(${generateInsert})
 
     @Override
-    public <S> ${entity}Vo insertByDto(S dto) {
-        // 新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
-        ${entity} entity = this.toEntity(dto);
+    public <S> ${entity}VO insertByDTO(S DTO) {
+        // 新增=>如有必要 在此处强转DTO为传入参数类型进行参数校验
+        ${entity} entity = this.toEntity(DTO);
 
-        super.save(entity);
-        return toVo(entity);
+        ;
+        return toVO(entity);
     }
 ##
 ##    @Override
-##    public <S> boolean insertBatchByDto(Collection<S> dtoList) {
-##        // 批量新增=>如有必要 在此处强转dto为传入参数类型进行参数校验
-##        List<${entity}> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+##    public <S> boolean insertBatchByDTO(Collection<S> DTOList) {
+##        // 批量新增=>如有必要 在此处强转DTO为传入参数类型进行参数校验
+##        List<${entity}> entityList = DTOList.stream().map(this::toEntity).collect(Collectors.toList());
 ##
 ##        return super.saveBatch(entityList);
 ##    }
@@ -62,9 +83,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${entity}
     #if(${generateUpdate})
 
     @Override
-    public <S> boolean updateByDto(S dto) {
-        // 修改=>如有必要, 在此处强转dto为传入参数类型进行参数校验
-        ${entity} entity = this.toEntity(dto);
+    public <S> boolean updateByDTO(S DTO) {
+        // 修改=>如有必要, 在此处强转DTO为传入参数类型进行参数校验
+        ${entity} entity = this.toEntity(DTO);
 
         return super.updateById(entity);
     }

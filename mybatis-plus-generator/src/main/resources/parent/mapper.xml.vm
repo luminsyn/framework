@@ -26,9 +26,9 @@
     </resultMap>
 
 #end
-    #if(${voResultMap})
+    #if(${VOResultMap})
     <!-- vo查询映射结果 -->
-    <resultMap id="voMap" type="${basePackage}.${voPackage}.${entity}Vo">
+    <resultMap id="voMap" type="${basePackage}.${VOPackage}.${entity}VO">
         #foreach($field in ${table.fields})
             #if(${field.keyFlag})##生成主键排在第一位
         <id column="${field.name}" property="${field.propertyName}" />
@@ -58,62 +58,63 @@
 
 #end
 
-    <select id="listByDto"#if(${voResultMap}) resultMap="voMap"#else resultType="${basePackage}.${voPackage}.${entity}Vo"#end>
+    <select id="listByMap"#if(${voResultMap}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
         select
         a.${shift8}
         from
-        ${schemaName} ${table.name} a
+##         ${schemaName} ${table.name} a
+        ${table.name} a
         <where>
 #foreach($field in ${table.fields})
     #if(${field.logicDeleteField})
-            <if test="dto!=null">
+            <if test="map!=null">
                 and a.${field.columnName} = 0
             </if>
     #elseif(${field.keyFlag})
-            <if test="dto!=null and dto.primaryKey!=null">
-                and a.${field.columnName} = ${shift3}${shiftLeft}dto.primaryKey${shiftRight}
+            <if test="map!=null and map.primaryKey!=null">
+                and a.${field.columnName} = ${shift3}${shiftLeft}map.primaryKey${shiftRight}
             </if>
-            <if test="dto!=null and dto.${field.propertyName}!=null">
-                and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+            <if test="map!=null and map.${field.propertyName}!=null">
+                and a.${field.columnName} = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
             </if>
-            <if test="dto!=null and dto.${field.propertyName}List!=null and dto.${field.propertyName}List.size()>0">
+            <if test="map!=null and map.${field.propertyName}List!=null and map.${field.propertyName}List.size()>0">
                 and a.${field.columnName} in
-                <foreach collection="dto.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                <foreach collection="map.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                     ${shift3}${shiftLeft}prop${shiftRight}
                 </foreach>
             </if>
     #elseif($selectExcludeFields.contains(${field.propertyName}))
     #else
         #if(${field.propertyType} == "String")
-            <if test="dto!=null and dto.${field.propertyName}!=null and dto.${field.propertyName}.length()>0">
-                and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+            <if test="map!=null and map.${field.propertyName}!=null and map.${field.propertyName}.length()>0">
+                and a.${field.columnName} = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
             </if>
-            <if test="dto!=null and dto.${field.propertyName}Like !=null and dto.${field.propertyName}Like.length()>0">
-                and a.${field.columnName} like concat('${shift5}',${shift3}${shiftLeft}dto.${field.propertyName}Like${shiftRight},'${shift5}')
+            <if test="map!=null and map.${field.propertyName}Like !=null and map.${field.propertyName}Like.length()>0">
+                and a.${field.columnName} like concat('${shift5}',${shift3}${shiftLeft}map.${field.propertyName}Like${shiftRight},'${shift5}')
             </if>
         #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
-            <if test="dto!=null and dto.${field.propertyName}!=null">
-                and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+            <if test="map!=null and map.${field.propertyName}!=null">
+                and a.${field.columnName} = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
             </if>
-            <if test="dto!=null and dto.${field.propertyName}Start!=null">
-                and a.${field.columnName} &gt;= ${shift3}${shiftLeft}dto.${field.propertyName}Start${shiftRight}
+            <if test="map!=null and map.${field.propertyName}Start!=null">
+                and a.${field.columnName} &gt;= ${shift3}${shiftLeft}map.${field.propertyName}Start${shiftRight}
             </if>
-            <if test="dto!=null and dto.${field.propertyName}End!=null">
-                and a.${field.columnName} &lt;= ${shift3}${shiftLeft}dto.${field.propertyName}End${shiftRight}
+            <if test="map!=null and map.${field.propertyName}End!=null">
+                and a.${field.columnName} &lt;= ${shift3}${shiftLeft}map.${field.propertyName}End${shiftRight}
             </if>
         #elseif(${field.propertyType} == "Integer")
-            <if test="dto!=null and dto.${field.propertyName}!=null">
-                and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+            <if test="map!=null and map.${field.propertyName}!=null">
+                and a.${field.columnName} = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
             </if>
-            <if test="dto!=null and dto.${field.propertyName}List!=null and dto.${field.propertyName}List.size()>0">
+            <if test="map!=null and map.${field.propertyName}List!=null and map.${field.propertyName}List.size()>0">
                 and a.${field.columnName} in
-                <foreach collection="dto.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                <foreach collection="map.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                     ${shift3}${shiftLeft}prop${shiftRight}
                 </foreach>
             </if>
         #else
-            <if test="dto!=null and dto.${field.propertyName}!=null">
-                and a.${field.columnName} = ${shift3}${shiftLeft}dto.${field.propertyName}${shiftRight}
+            <if test="map!=null and map.${field.propertyName}!=null">
+                and a.${field.columnName} = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
             </if>
         #end
     #end

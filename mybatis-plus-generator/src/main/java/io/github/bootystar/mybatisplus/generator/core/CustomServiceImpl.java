@@ -6,6 +6,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,6 +14,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,32 +25,32 @@ import java.util.stream.Collectors;
  * @author booty
  * @since 2023/8/21 9:44
  */
-public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends ServiceImpl<M, T> implements CustomService<T,V> {
+public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {
 
     @Override
-    public <S> V insertByDto(S dto) {
-        T entity = this.toEntity(dto);
+    public <S> V insertByDTO(S DTO) {
+        T entity = this.toEntity(DTO);
         super.save(entity);
-        return this.toVo(entity);
+        return this.toVO(entity);
     }
 
     @Override
-    public <S> boolean insertBatchByDto(Collection<S> dtoList) {
-        List<T> entityList = dtoList.stream().map(this::toEntity).collect(Collectors.toList());
+    public <S> boolean insertBatchByDTO(Collection<S> DTOList) {
+        List<T> entityList = DTOList.stream().map(this::toEntity).collect(Collectors.toList());
         return super.saveBatch(entityList);
     }
 
     @Override
-    public <S> boolean updateByDto(S dto) {
-        T entity = this.toEntity(dto);
+    public <S> boolean updateByDTO(S DTO) {
+        T entity = this.toEntity(DTO);
         return super.updateById(entity);
     }
 
     @Override
-    public V getVoById(Serializable id) {
+    public V voById(Serializable id) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("primaryKey", id);
-        List<V> vs = this.listByDto(map);
+        List<V> vs = this.listByDTO(map);
         if (vs == null || vs.size()==0 ) {
             return null;
         }
@@ -57,14 +61,14 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
     }
 
     @Override
-    public <U> U getVoById(Serializable id, Class<U> clazz) {
-        V vo = getVoById(id);
+    public <U> U voById(Serializable id, Class<U> clazz) {
+        V vo = voById(id);
         return this.toTarget(vo, clazz);
     }
 
     @Override
-    public <S> V oneByDto(S dto) {
-        List<V> vs = listByDto(dto);
+    public <S> V oneByDTO(S DTO) {
+        List<V> vs = listByDTO(DTO);
         if (vs == null || vs.size()==0 ) {
             return null;
         }
@@ -75,8 +79,8 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
     }
 
     @Override
-    public <S, U> U oneByDto(S dto, Class<U> clazz) {
-        List<U> vs = listByDto(dto,clazz);
+    public <S, U> U oneByDTO(S DTO, Class<U> clazz) {
+        List<U> vs = listByDTO(DTO,clazz);
         if (vs == null || vs.size()==0 ) {
             return null;
         }
@@ -87,19 +91,19 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
     }
 
     @Override
-    public <S> List<V> listByDto(S dto) {
-        List<V> voList = this.baseMapper.listByDto(this.toMap(dto), null);
+    public <S> List<V> listByDTO(S DTO) {
+        List<V> voList = this.baseMapper.listByMap(this.toMap(DTO), null);
         this.voPostProcess(voList);
         return voList;
     }
 
     @Override
-    public <S,U> List<U> listByDto(S dto, Class<U> clazz) {
-        return this.listByDto(dto).stream().map(e->this.toTarget(e, clazz)).collect(Collectors.toList());
+    public <S,U> List<U> listByDTO(S DTO, Class<U> clazz) {
+        return this.listByDTO(DTO).stream().map(e->this.toTarget(e, clazz)).collect(Collectors.toList());
     }
 
     @Override
-    public <S> IPage<V> pageByDto(S dto, Long current, Long size) {
+    public <S> IPage<V> pageByDTO(S DTO, Long current, Long size) {
         if (current == null || current<1) {
             current=1L;
         }
@@ -107,15 +111,15 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
             size=10L;
         }
         Page<V> page = new Page<>(current, size);
-        List<V> voList = this.baseMapper.listByDto(this.toMap(dto), page);
+        List<V> voList = this.baseMapper.listByMap(this.toMap(DTO), page);
         this.voPostProcess(voList);
         page.setRecords(voList);
         return page;
     }
 
     @Override
-    public <S,U> IPage<U> pageByDto(S dto, Long current, Long size, Class<U> clazz) {
-        IPage<V> viPage = this.pageByDto(dto, current, size);
+    public <S,U> IPage<U> pageByDTO(S DTO, Long current, Long size, Class<U> clazz) {
+        IPage<V> viPage = this.pageByDTO(DTO, current, size);
         List<U> voList = viPage.getRecords().stream().map(e->this.toTarget(e,clazz)).collect(Collectors.toList());
         Page<U> uPage = new Page<>();
         uPage.setCurrent(viPage.getCurrent());
@@ -134,14 +138,14 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
     }
 
     @Override
-    public <S,U> void exportExcel(S dto, OutputStream os, Class<U> clazz) {
-        List<U> voList = listByDto(dto,clazz);
+    public <S,U> void exportExcel(S DTO, OutputStream os, Class<U> clazz) {
+        List<U> voList = listByDTO(DTO,clazz);
         EasyExcel.write(os, clazz).sheet().doWrite(voList);
     }
 
     @Override
-    public <S,U> void exportExcel(S dto, OutputStream os, Class<U> clazz, Collection<String> includeFields) {
-        List<U> voList = listByDto(dto,clazz);
+    public <S,U> void exportExcel(S DTO, OutputStream os, Class<U> clazz, Collection<String> includeFields) {
+        List<U> voList = listByDTO(DTO,clazz);
         EasyExcel.write(os, clazz).includeColumnFieldNames(includeFields).sheet().doWrite(voList);
     }
 
@@ -187,4 +191,116 @@ public abstract class CustomServiceImpl<T,V,M extends CustomMapper<T,V>> extends
         return cachedDataList;
     }
 
+    @Override
+    public T toEntity(Object source) {
+        T t = null;
+        try {
+            ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+            Class<T> clazz = (Class) pt.getActualTypeArguments()[1];
+            t = toTarget(source, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return t;
+    }
+
+    @Override
+    public V toVO(Object source) {
+        V v = null;
+        try {
+            ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+            Class<V> clazz = (Class) pt.getActualTypeArguments()[2];
+            v = toTarget(source, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return v;
+    }
+
+
+    @Override
+    public Map<String, Object> toMap(Object source) {
+        if (source==null){
+            return new HashMap<>();
+        }
+        if (source instanceof Map) {
+            return new HashMap<>((Map) source);
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        Class<?> clazz = source.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                if (unAccessibleFiled(field)){
+                    continue;
+                }
+                String key = field.getName();
+                Object value = field.get(source);
+                if (value != null) {
+                    map.put(key, value);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return map;
+    }
+
+    @Override
+    public void copyProp(Object source, Object target) {
+        if (source==null || target==null){
+            return;
+        }
+        Map<?, ?> map = this.toMap(source);
+        Field[] declaredFields = target.getClass().getDeclaredFields();
+        for (Field field : declaredFields) {
+            if (unAccessibleFiled(field)){
+                continue;
+            }
+            String name = field.getName();
+            Object o = map.get(name);
+            if (o != null) {
+                try {
+                    field.set(target, o);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public <U> U toTarget(Object source, Class<U> clazz) {
+        U target = null;
+        try {
+            if (clazz==null){
+                return null;
+            }
+            target = clazz.newInstance();
+            this.copyProp(source, target);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return target;
+    }
+
+
+    private static boolean unAccessibleFiled(Field field){
+        field.setAccessible(true);
+        int modifiers = field.getModifiers();
+        if (Modifier.isFinal(modifiers)){
+            return true;
+        }
+        if (Modifier.isStatic(modifiers)){
+            return true;
+        }
+        if (Modifier.isNative(modifiers)){
+            return true;
+        }
+        return false;
+    }
 }

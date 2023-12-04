@@ -10,7 +10,7 @@ import java.util.Collections;
  * @author booty
  * @since 2023/7/13 14:44
  */
-public class Test {
+public class Test1 {
 
 //    private static String url ="jdbc:mysql://localhost:3306/ds_wwsg_wm?useUnicode=true&characterEncoding=UTF-8";
     private static String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
@@ -45,8 +45,6 @@ public class Test {
                 .orderColumn("age",true)
                 .orderColumn("name", false)
                 .orderColumn("id_card", true)
-                .dtoPackage("entity.dto")
-                .voPackage("entity.vo")
                 .enableOrigins(true)
                 .fileOverride(true)
                 .voResultMap(true)
@@ -85,7 +83,7 @@ public class Test {
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
-                .entity("entity.pojo")
+                .entity("entity")
                 .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
         generator.globalConfigBuilder()

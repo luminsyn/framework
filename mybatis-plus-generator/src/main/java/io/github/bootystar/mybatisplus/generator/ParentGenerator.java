@@ -89,18 +89,10 @@ public class ParentGenerator  {
         customConfigBuilder.returnResultClass(Result.class);
         customConfigBuilder.returnResultGenericType(true);
         customConfigBuilder.returnResultDefaultStaticMethodName("success");
-        customConfigBuilder.insertExcludeFields(Arrays.asList("createTime","updateTime","version"));
+        customConfigBuilder.insertExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.updateExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.orderColumn("create_time",true);
-        customConfigBuilder.requestBody(true);
-        customConfigBuilder.restStyle(true);
-        customConfigBuilder.enableValidated(true);
-        customConfigBuilder.generateInsert(true);
-        customConfigBuilder.generateUpdate(true);
-        customConfigBuilder.generateSelect(true);
-        customConfigBuilder.generateExport(true);
-        customConfigBuilder.generateImport(true);
-        customConfigBuilder.serviceImplOverride(true);
+        customConfigBuilder.orderColumn("id",true);
     }
 
 
@@ -125,34 +117,34 @@ public class ParentGenerator  {
 
         ParentConfig customConfig=customConfigBuilder.build();
 
-        String dtoPackage = customConfig.getDtoPackage().replaceAll("\\.", "\\" + File.separator);
-        String voPackage = customConfig.getVoPackage().replaceAll("\\.", "\\" + File.separator);
+        String DTOPackage = customConfig.getDTOPackage().replaceAll("\\.", "\\" + File.separator);
+        String VOPackage = customConfig.getVOPackage().replaceAll("\\.", "\\" + File.separator);
         LinkedList<CustomFile> customFiles = new LinkedList<>();
 
 
-        if (customConfig.getGenerateInsert()){
-            CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/parent/entityInsertDto.java.vm").packageName(dtoPackage).build();
+        if (customConfig.isGenerateInsert()){
+            CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDTO.java").templatePath("/parent/entityInsertDTO.java.vm").packageName(DTOPackage).build();
             customFiles.add(InsertDto);
         }
-        if (customConfig.getGenerateUpdate()){
-            CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/parent/entityUpdateDto.java.vm").packageName(dtoPackage).build();
+        if (customConfig.isGenerateUpdate()){
+            CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDTO.java").templatePath("/parent/entityUpdateDTO.java.vm").packageName(DTOPackage).build();
             customFiles.add(updateDto);
         }
-       if (customConfig.getGenerateSelect()){
-           CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/parent/entitySelectDto.java.vm").packageName(dtoPackage).build();
+       if (customConfig.isGenerateSelect()){
+           CustomFile selectDto = new CustomFile.Builder().fileName("SelectDTO.java").templatePath("/parent/entitySelectDTO.java.vm").packageName(DTOPackage).build();
            customFiles.add(selectDto);
        }
-       if (customConfig.getGenerateExport()){
-           CustomFile exportDto = new CustomFile.Builder().fileName("ExportDto.java").templatePath("/parent/entityExportDto.java.vm").packageName(dtoPackage).build();
+       if (customConfig.isGenerateExport()){
+           CustomFile exportDto = new CustomFile.Builder().fileName("ExportDTO.java").templatePath("/parent/entityExportDTO.java.vm").packageName(DTOPackage).build();
            customFiles.add(exportDto);
        }
 
-        if (customConfig.getGenerateImport()){
-            CustomFile importDto = new CustomFile.Builder().fileName("ImportDto.java").templatePath("/parent/entityImportDto.java.vm").packageName(dtoPackage).build();
+        if (customConfig.isGenerateImport()){
+            CustomFile importDto = new CustomFile.Builder().fileName("ImportDTO.java").templatePath("/parent/entityImportDTO.java.vm").packageName(DTOPackage).build();
             customFiles.add(importDto);
         }
 
-        CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/parent/entityVo.java.vm").packageName(voPackage).build();
+        CustomFile vo = new CustomFile.Builder().fileName("VO.java").templatePath("/parent/entityVO.java.vm").packageName(VOPackage).build();
         customFiles.add(vo);
 
 
