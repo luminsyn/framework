@@ -15,7 +15,11 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 #end
 #end
-
+#if(${importOnVO}||${exportOnVO})
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.*;
+#end
 /**
  * $!{table.comment} VO
  *
@@ -33,6 +37,10 @@ import lombok.experimental.Accessors;
 ###elseif(${swagger})
 ##@ApiModel(value = "${entity}VO对象", description = "$!{table.comment}VO")
 ###end
+@ExcelIgnoreUnannotated
+@HeadRowHeight(30)
+@ColumnWidth(25)
+@ContentRowHeight(20)
 public class ${entity}VO {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
@@ -49,6 +57,31 @@ public class ${entity}VO {
      * ${field.comment}
      */
   #end
+#end
+    #if(${importOnVO}||${exportOnVO})
+    @ExcelProperty(value = "${field.comment}")
+    #end
+#if(${fieldAnnotationOnVO})
+    #if(${field.keyFlag})
+## 主键
+    #if(${field.keyIdentityFlag})
+    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
+    #elseif(!$null.isNull(${idType}) && "$!idType" != "")
+    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
+    #elseif(${field.convert})
+    @TableId("${field.annotationColumnName}")
+    #end
+## 普通字段
+    #elseif(${field.fill})
+## -----   存在字段填充设置   -----
+    #if(${field.convert})
+    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
+    #else
+    @TableField(fill = FieldFill.${field.fill})
+    #end
+    #elseif(${field.convert})
+    @TableField("${field.annotationColumnName}")
+    #end
 #end
     private ${field.propertyType} ${field.propertyName};
 #end

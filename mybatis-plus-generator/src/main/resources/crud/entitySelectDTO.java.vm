@@ -1,4 +1,4 @@
-package ${basePackage}.${dtoPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -16,10 +16,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 #if(${chainModel})
 import lombok.experimental.Accessors;
 #end
@@ -31,32 +31,32 @@ import java.io.Serializable;
 #end
 
 /**
- * $!{table.comment}查询dto
+ * $!{table.comment}查询DTO
  *
  * @author ${author}
  * @since ${date}
  */
 #if(${entityLombokModel})
-@Builder
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
   #if(${chainModel})
 @Accessors(chain = true)
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}", description = "$!{table.comment}")
+##@Schema(name = "${entity}SelectDTO", description = "$!{table.comment}查询DTO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+##@ApiModel(value = "${entity}SelectDTO对象", description = "$!{table.comment}查询DTO")
 ###end
-public class ${entity}SelectDto {
+public class ${entity}SelectDTO {
 ###if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
 ##
 ###end
-##
+
     #if(${springdoc})
     @Schema(description = "主键id")
     #elseif(${swagger})
@@ -67,39 +67,7 @@ public class ${entity}SelectDto {
      */
     #end
     private Serializable primaryKey;
-
-    #if(${springdoc})
-    @Schema(description = "当前页码(默认1)")
-    #elseif(${swagger})
-    @ApiModelProperty("当前页码(默认1)")
-    #else
-    /**
-     * 当前页码(默认1)
-     */
-    #end
-    private Long currentPage = 1L;
-
-    #if(${springdoc})
-    @Schema(description = "每页大小(默认:10,检索全部:-1)")
-    #elseif(${swagger})
-    @ApiModelProperty("每页大小(默认:10,检索全部:-1)")
-    #else
-    /**
-     * 每页大小(默认10,-1检索全部)
-     */
-    #end
-    private Long pageSize = 10L;
-
-    #if(${springdoc})
-    @Schema(description = "指定需要导出的字段,为空时导出全部")
-    #elseif(${swagger})
-    @ApiModelProperty("指定需要导出的字段,为空时导出全部")
-    #else
-    /**
-     * 指定需要导出的字段,为空时导出全部
-     */
-    #end
-    private List<String> propertyListExport;
+##
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
@@ -200,31 +168,6 @@ public class ${entity}SelectDto {
         return this;
     }
 
-    public Long getCurrentPage() {
-        return this.currentPage;
-    }
-
-    public ${entity}SelectDto setCurrentPage(Long currentPage) {
-        this.currentPage = currentPage;
-        return this;
-    }
-
-    public Long getPageSize() {
-        return this.pageSize;
-    }
-
-    public ${entity}SelectDto setPageSize(Long pageSize) {
-        this.pageSize = pageSize;
-        return this;
-    }
-
-    public List<String> getPropertyListExport() {
-        return this.propertyListExport;
-    }
-
-    public ${entity}SelectDto setPropertyListExport(List<String> propertyListExport) {
-        this.propertyListExport = propertyListExport;
-    }
     #else
 
     public Serializable getPrimaryKey() {
@@ -233,30 +176,6 @@ public class ${entity}SelectDto {
 
     public void setPrimaryKey(Serializable primaryKey) {
         this.primaryKey = primaryKey;
-    }
-
-    public Long getCurrentPage() {
-        return this.currentPage;
-    }
-
-    public void setCurrentPage(Long currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public Long getPageSize() {
-        return this.pageSize;
-    }
-
-    public void setPageSize(Long pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public List<String> getPropertyListExport() {
-        return this.propertyListExport;
-    }
-
-    public void setPropertyListExport(List<String> propertyListExport) {
-        this.propertyListExport = propertyListExport;
     }
 
     #end
@@ -274,7 +193,7 @@ public class ${entity}SelectDto {
     }
 
   #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -291,7 +210,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #else
     public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #end
@@ -308,7 +227,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #end
@@ -325,7 +244,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
     #end
@@ -341,7 +260,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
     #else
     public void set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
     #end
@@ -358,7 +277,7 @@ public class ${entity}SelectDto {
     }
 
     #if(${chainModel})
-    public ${entity}SelectDto set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
+    public ${entity}SelectDTO set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #else
     public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
     #end
@@ -388,10 +307,6 @@ public class ${entity}SelectDto {
     @Override
     public String toString() {
         return "${entity}{" +
-##                "primaryKey = " + primaryKey +
-##                "currentPage = " + currentPage +
-##                "pageSize = " + pageSize +
-##                "propertyList = " + propertyList +
   #foreach($field in ${table.fields})
   #if($selectExcludeFields.contains(${field.propertyName}))
   #elseif(${field.logicDeleteField})

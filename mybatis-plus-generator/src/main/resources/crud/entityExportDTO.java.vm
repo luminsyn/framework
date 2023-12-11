@@ -1,10 +1,9 @@
-package ${basePackage}.${voPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
 #end
 #if(${springdoc})
-import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
 ##import io.swagger.annotations.ApiModel;
@@ -16,18 +15,13 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 #end
 #end
-###if(${exportExcel})
-##import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-##import com.alibaba.excel.annotation.ExcelProperty;
-##import com.alibaba.excel.annotation.write.style.*;
-##import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
-###end
-#if(${voExtendsEntity})
-import ${package.Entity}.${entity};
-#end
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.*;
+import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 
 /**
- * $!{table.comment} 展示vo
+ * $!{table.comment}导出DTO
  *
  * @author ${author}
  * @since ${date}
@@ -39,11 +33,17 @@ import ${package.Entity}.${entity};
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}", description = "$!{table.comment}")
+##@Schema(name = "${entity}ExportDTO", description = "$!{table.comment}导出DTO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+##@ApiModel(value = "${entity}ExportDTO对象", description = "$!{table.comment}导出DTO")
 ###end
-public class ${entity}Vo#if(${voExtendsEntity}) extends ${entity}#end{
+@ExcelIgnoreUnannotated
+@HeadRowHeight(30)
+@HeadFontStyle(fontHeightInPoints = 12)
+@HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL)
+@ColumnWidth(25)
+@ContentRowHeight(20)
+public class ${entity}ExportDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
@@ -52,6 +52,7 @@ public class ${entity}Vo#if(${voExtendsEntity}) extends ${entity}#end{
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
 #else
+
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")
@@ -63,9 +64,7 @@ public class ${entity}Vo#if(${voExtendsEntity}) extends ${entity}#end{
      */
   #end
 #end
-###if(${exportExcel})
-##    @ExcelProperty(value = "${field.comment}")
-###end
+    @ExcelProperty(value = "${field.comment}")
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
@@ -85,9 +84,9 @@ public class ${entity}Vo#if(${voExtendsEntity}) extends ${entity}#end{
     }
 
   #if(${chainModel})
-    public ${entity}Vo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}ExportVO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
-    public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public VOid set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
         this.${field.propertyName} = ${field.propertyName};
   #if(${chainModel})
@@ -105,14 +104,14 @@ public class ${entity}Vo#if(${voExtendsEntity}) extends ${entity}#end{
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
-    #if(${field.logicDeleteField})
-    #else
+  #if(${field.logicDeleteField})
+  #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +
     #else
         ", ${field.propertyName} = " + ${field.propertyName} +
     #end
-    #end
+  #end
   #end
         "}";
     }

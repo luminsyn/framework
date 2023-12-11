@@ -2,6 +2,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
+import io.github.bootystar.mybatisplus.generator.ParentGenerator;
+import io.github.bootystar.mybatisplus.generator.core.CustomMapper;
+import io.github.bootystar.mybatisplus.generator.core.CustomService;
+import io.github.bootystar.mybatisplus.generator.core.CustomServiceImpl;
 
 import java.util.Collections;
 
@@ -22,47 +26,47 @@ public class Test1 {
 
         generator
                 .globalConfigBuilder()
-                .dateType(DateType.TIME_PACK)
+                .dateType(DateType.ONLY_DATE)
 //                .enableSwagger()
                 .outputDir(projectPath+ "/mybatis-plus-generator/src/test/java")
 
         ;  // 指定输出目录
         generator
                 .customConfigBuilder()
-//                .returnResultClass(ReturnResult.class)
-//                .returnResultGenericType(true)
-//                .returnResultDefaultStaticMethodName("success")
-//                .pageByDto(false)
-//                .exportExcel(true)
-//                .dtoPackage("dto")
-//                .voPackage("vo")
                 .jakartaApi(false)
-                .exportExtendsVo(true)
-                .voExtendsEntity(true)
-                .importExtendsEntity(true)
                 .enableValidated(true)
-//                .requestBody(true)
                 .orderColumn("age",true)
                 .orderColumn("name", false)
                 .orderColumn("id_card", true)
-                .enableOrigins(true)
-                .fileOverride(true)
-                .voResultMap(true)
-                .restStyle(false)
-                .allPost(true)
-                .requestBody(true)
+                .DTOPackage("entity.dto")
+                .VOPackage("entity.vo")
+                .exportOnVO(true)
+                .importOnVO(true)
+//                .VOFieldAnnotation(true)
+//                .VOResultMap(false)
+//                .restStyle(true)
+//                .allPost(true)
 
+//                .requestBody(true)
+//                .enableOrigins(true)
+//                .generateDelete(true)
 //                .voResultMap(true)
+//                .generateUpdate(false)
+                .generateExport(true)
+                .generateImport(true)
+//                .generateInsert(false)
+//                .generateDelete(false)
+//                .generateSelect(true)
+
+
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
+                .enableFileOverride()
                 .enableActiveRecord()
                 .idType(IdType.ASSIGN_ID)
-
                 .enableTableFieldAnnotation()
                 .logicDeleteColumnName("deleted")
-                .enableFileOverride()
-
         ;
 
         generator.strategyConfigBuilder()
@@ -71,25 +75,27 @@ public class Test1 {
             ;
 
         generator.strategyConfigBuilder()
-                .mapperBuilder().enableFileOverride()
+                .mapperBuilder()
+                .enableFileOverride()
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()
+                .enableLombok()
                 .enableFileOverride()
         ;
-
 
 
         generator
                 .packageConfigBuilder()
                 .parent("bootystar.test")
-                .entity("entity")
+                .entity("entity.pojo")
+//        .moduleName("v4")
                 .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/mybatis-plus-generator/src/test/resources/xml"))
         ;
         generator.globalConfigBuilder()
-                .enableSwagger()
 //                .enableSpringdoc()
-        ;
+//                .enableSwagger()
+                ;
 
         generator.execute("user");
     }

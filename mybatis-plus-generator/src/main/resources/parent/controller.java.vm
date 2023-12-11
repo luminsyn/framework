@@ -34,17 +34,18 @@ import ${superControllerClassPackage};
 ###if(${generateDelete}||${generateSelect})
 ##import java.io.Serializable;
 ###end
+import ${basePackage}.${VOPackage}.${entity}VO;
 #if(${generateInsert})
 import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
 #end
 #if(${generateUpdate})
 import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
 #end
+
 #if(${generateSelect})
 import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
-import ${basePackage}.${VOPackage}.${entity}VO;
 #end
 #if(${generateImport}||${generateExport})
 import ${javaApiPackage}.servlet.http.HttpServletResponse;
@@ -52,10 +53,14 @@ import java.io.IOException;
 #end
 #if(${generateImport})
 import org.springframework.web.multipart.MultipartFile;
+#if(!${importOnVO})
 import ${basePackage}.${DTOPackage}.${entity}ImportDTO;
 #end
+#end
 #if(${generateExport})
+#if(!${exportOnVO})
 import ${basePackage}.${DTOPackage}.${entity}ExportDTO;
+#end
 #end
 
 /**
@@ -358,7 +363,8 @@ public class ${table.controllerName} {
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
 ##        response.addHeader("Pargam", "no-cache");
 ##        response.addHeader("Cache-Control", "no-cache");
-        baseService.exportExcel(DTO,response.getOutputStream(), ${entity}ExportDTO.class);
+##        baseService.exportExcel(DTO,response.getOutputStream(), ${entity}ExportDTO.class);
+        baseService.exportExcel(DTO,response.getOutputStream(), #if(${exportOnVO})${entity}VO#else${entity}ExportDTO#end.class);
     }
 #end
 
@@ -389,7 +395,8 @@ public class ${table.controllerName} {
             return false;
         #end
         }
-        Boolean result = baseService.importExcel(file.getInputStream(), ${entity}ImportDTO.class);
+##        Boolean result = baseService.importExcel(file.getInputStream(), ${entity}ImportDTO.class);
+        Boolean result = baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     #if(${returnResultClass})
         return#if(${returnResultDefaultStaticMethodName}) ${returnResultClass}.${returnResultDefaultStaticMethodName}(result)#else null#end;
     #else
@@ -420,7 +427,7 @@ public class ${table.controllerName} {
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
 ##        response.addHeader("Pargam", "no-cache");
 ##        response.addHeader("Cache-Control", "no-cache");
-        baseService.exportTemplate(response.getOutputStream(), ${entity}ImportDTO.class);
+        baseService.exportTemplate(response.getOutputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     }
 #end
 

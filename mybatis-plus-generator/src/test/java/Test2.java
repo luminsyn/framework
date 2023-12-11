@@ -39,6 +39,10 @@ public class Test2 {
                 .orderColumn("id_card", true)
                 .DTOPackage("entity.dto")
                 .VOPackage("entity.vo")
+                .exportOnVO(true)
+                .importOnVO(true)
+//                .VOFieldAnnotation(true)
+//                .VOResultMap(false)
 //                .restStyle(true)
 //                .allPost(true)
 

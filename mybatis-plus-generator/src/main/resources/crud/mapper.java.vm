@@ -5,13 +5,12 @@ import ${superMapperClassPackage};
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
-#if(${pageByDto})
+import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import ${basePackage}.${dtoPackage}.${entity}SelectDto;
-import ${basePackage}.${voPackage}.${entity}Vo;
-#end
+import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+import ${basePackage}.${VOPackage}.${entity}VO;
+
 
 /**
  * $!{table.comment} Mapper 接口
@@ -27,8 +26,7 @@ interface ${table.mapperName} : ${superMapperClass}<${entity}>
 #else
 public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
 
-    #if(${pageByDto})
-    IPage<${entity}Vo> pageByDto(@Param("dto")${entity}SelectDto dto,Page<${entity}Vo> page);
-    #end
+    List<${entity}VO> listByMap(@Param("map") ${entity}SelectDTO map, IPage<${entity}VO> page);
+
 }
 #end

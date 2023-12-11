@@ -1,4 +1,4 @@
-package ${basePackage}.${voPackage};
+package ${basePackage}.${VOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -6,7 +6,7 @@ import ${pkg};
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-import io.swagger.annotations.ApiModel;
+##import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -15,14 +15,13 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 #end
 #end
-#if(${importExtendsEntity})
-import ${package.Entity}.${entity};
-#end
+#if(${importOnVO}||${exportOnVO})
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-
+import com.alibaba.excel.annotation.write.style.*;
+#end
 /**
- * $!{table.comment}导入vo
+ * $!{table.comment} VO
  *
  * @author ${author}
  * @since ${date}
@@ -34,20 +33,20 @@ import com.alibaba.excel.annotation.ExcelProperty;
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}", description = "$!{table.comment}")
+##@Schema(name = "${entity}VO", description = "$!{table.comment}VO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+##@ApiModel(value = "${entity}VO对象", description = "$!{table.comment}VO")
 ###end
 @ExcelIgnoreUnannotated
-public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
-#if(${entitySerialVersionUID})
-##
-##    private static final long serialVersionUID = 1L;
-#end
+@HeadRowHeight(30)
+@ColumnWidth(25)
+@ContentRowHeight(20)
+public class ${entity}VO {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
 #else
+
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")
@@ -59,9 +58,31 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
      */
   #end
 #end
-    #if(!${field.keyFlag})
+    #if(${importOnVO}||${exportOnVO})
     @ExcelProperty(value = "${field.comment}")
     #end
+#if(${fieldAnnotationOnVO})
+    #if(${field.keyFlag})
+## 主键
+    #if(${field.keyIdentityFlag})
+    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
+    #elseif(!$null.isNull(${idType}) && "$!idType" != "")
+    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
+    #elseif(${field.convert})
+    @TableId("${field.annotationColumnName}")
+    #end
+## 普通字段
+#elseif(${field.fill})
+## -----   存在字段填充设置   -----
+    #if(${field.convert})
+    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
+    #else
+    @TableField(fill = FieldFill.${field.fill})
+    #end
+    #elseif(${field.convert})
+    @TableField("${field.annotationColumnName}")
+    #end
+#end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
@@ -81,7 +102,7 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
     }
 
   #if(${chainModel})
-    public ${entity}ImportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}VO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -101,14 +122,14 @@ public class ${entity}ImportVo#if(${importExtendsEntity}) extends ${entity}#end{
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
-  #if(${field.logicDeleteField})
-  #else
+    #if(${field.logicDeleteField})
+    #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +
     #else
         ", ${field.propertyName} = " + ${field.propertyName} +
     #end
-  #end
+    #end
   #end
         "}";
     }

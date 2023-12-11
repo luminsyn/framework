@@ -2,8 +2,12 @@ package io.github.bootystar.mybatisplus.generator;
 
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
-import io.github.bootystar.mybatisplus.generator.config.CrudConfig;
+import io.github.bootystar.mybatisplus.generator.config.ParentConfig;
+import io.github.bootystar.mybatisplus.generator.core.CustomMapper;
+import io.github.bootystar.mybatisplus.generator.core.CustomService;
+import io.github.bootystar.mybatisplus.generator.core.CustomServiceImpl;
 import io.github.bootystar.mybatisplus.generator.core.Result;
+import lombok.Getter;
 
 import java.io.File;
 import java.util.Arrays;
@@ -12,10 +16,10 @@ import java.util.LinkedList;
 /**
  * @author booty
  * @since 2023/7/13 15:34
- * @see  com.baomidou.mybatisplus.generator.config.ConstVal;
+ * @see  ConstVal;
  */
 
-public class CrudGenerator{
+public class CrudGenerator {
 
     protected DataSourceConfig.Builder dataSourceConfigBuilder ;
 
@@ -28,7 +32,8 @@ public class CrudGenerator{
     protected InjectionConfig.Builder injectionConfigBuilder=new InjectionConfig.Builder();
 
     protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
-    protected CrudConfig.Builder customConfigBuilder = new CrudConfig.Builder();
+    @Getter
+    protected ParentConfig.Builder customConfigBuilder = new ParentConfig.Builder();
 
 
     public DataSourceConfig.Builder dataSourceConfigBuilder() {
@@ -54,38 +59,29 @@ public class CrudGenerator{
     public TemplateConfig.Builder templateConfigBuilder() {
         return templateConfigBuilder;
     }
-
-    public CrudConfig.Builder customConfigBuilder() {
+    public ParentConfig.Builder customConfigBuilder() {
         return customConfigBuilder;
     }
-
 
     public CrudGenerator(String url, String username, String password) {
         this.dataSourceConfigBuilder = new DataSourceConfig.Builder(url, username, password);
         init();
     }
 
+
     protected void init() {
         String projectPath = System.getProperty("user.dir");
-        // 全局设置
         globalConfigBuilder.author("booty").disableOpenDir().outputDir( projectPath+ "/src/main/java")
         ;
-        // 包名设置
         packageConfigBuilder.parent("io.github.bootystar")
         ;
-        // 策略设置
-        strategyConfigBuilder.controllerBuilder()
+        strategyConfigBuilder.controllerBuilder().enableRestStyle()
         ;
-
+        strategyConfigBuilder.mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+        ;
         strategyConfigBuilder.serviceBuilder()
         ;
 
-        strategyConfigBuilder.mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
-        ;
-
-        strategyConfigBuilder.entityBuilder()
-        ;
-        strategyConfigBuilder.controllerBuilder().enableRestStyle();
         templateConfigBuilder.controller("/crud/controller.java");
         templateConfigBuilder.service("/crud/service.java");
         templateConfigBuilder.serviceImpl("/crud/serviceImpl.java");
@@ -95,15 +91,10 @@ public class CrudGenerator{
         customConfigBuilder.returnResultClass(Result.class);
         customConfigBuilder.returnResultGenericType(true);
         customConfigBuilder.returnResultDefaultStaticMethodName("success");
-        customConfigBuilder.pageByDto(true);
-        customConfigBuilder.exportExcel(true);
-        customConfigBuilder.importExcel(true);
-        customConfigBuilder.insertExcludeFields(Arrays.asList("createTime","updateTime","version"));
+        customConfigBuilder.insertExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.updateExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.orderColumn("create_time",true);
-        customConfigBuilder.requestBody(true);
-        customConfigBuilder.restStyle(true);
-        customConfigBuilder.enableValidated(true);
+        customConfigBuilder.orderColumn("id",true);
     }
 
 
@@ -112,38 +103,54 @@ public class CrudGenerator{
         execute();
     }
 
-    public void execute() {
 
+    public void execute() {
         DataSourceConfig dataSourceConfig = dataSourceConfigBuilder.build();
         GlobalConfig globalConfig = globalConfigBuilder.build();
+
         StrategyConfig strategyConfig = strategyConfigBuilder.build();
+
         TemplateConfig templateConfig = templateConfigBuilder.build();
+
         InjectionConfig injectionConfig = injectionConfigBuilder.build();
+
         PackageConfig packageConfig = packageConfigBuilder.build();
-        CrudConfig customConfig = customConfigBuilder.build();
 
-        String dtoPackage = customConfig.getDtoPackage().replaceAll("\\.", "\\" + File.separator);
-        String voPackage = customConfig.getVoPackage().replaceAll("\\.", "\\" + File.separator);
 
+        ParentConfig customConfig=customConfigBuilder.build();
+
+        String DTOPackage = customConfig.getDTOPackage().replaceAll("\\.", "\\" + File.separator);
+        String VOPackage = customConfig.getVOPackage().replaceAll("\\.", "\\" + File.separator);
         LinkedList<CustomFile> customFiles = new LinkedList<>();
-        CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDto.java").templatePath("/crud/entityInsertDto.java.vm").packageName(dtoPackage).build();
-        customFiles.add(InsertDto);
-        CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDto.java").templatePath("/crud/entityUpdateDto.java.vm").packageName(dtoPackage).build();
-        customFiles.add(updateDto);
-        if (customConfig.getPageByDto()){
-            CustomFile selectDto = new CustomFile.Builder().fileName("SelectDto.java").templatePath("/crud/entitySelectDto.java.vm").packageName(dtoPackage).build();
-            customFiles.add(selectDto);
-            CustomFile vo = new CustomFile.Builder().fileName("Vo.java").templatePath("/crud/entityVo.java.vm").packageName(voPackage).build();
-            customFiles.add(vo);
-            if (customConfig.getExportExcel()){
-                CustomFile exportVo = new CustomFile.Builder().fileName("ExportVo.java").templatePath("/crud/entityExportVo.java.vm").packageName(voPackage).build();
-                customFiles.add(exportVo);
-            }
+
+
+        if (customConfig.isGenerateInsert()){
+            CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDTO.java").templatePath("/crud/entityInsertDTO.java.vm").packageName(DTOPackage).build();
+            customFiles.add(InsertDto);
         }
-        if (customConfig.getImportExcel()){
-            CustomFile importVo = new CustomFile.Builder().fileName("ImportVo.java").templatePath("/crud/entityImportVo.java.vm").packageName(voPackage).build();
-            customFiles.add(importVo);
+        if (customConfig.isGenerateUpdate()){
+            CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDTO.java").templatePath("/crud/entityUpdateDTO.java.vm").packageName(DTOPackage).build();
+            customFiles.add(updateDto);
         }
+       if (customConfig.isGenerateSelect()){
+           CustomFile selectDto = new CustomFile.Builder().fileName("SelectDTO.java").templatePath("/crud/entitySelectDTO.java.vm").packageName(DTOPackage).build();
+           customFiles.add(selectDto);
+       }
+       if (customConfig.isGenerateExport() && !customConfig.isExportOnVO()){
+           CustomFile exportDto = new CustomFile.Builder().fileName("ExportDTO.java").templatePath("/crud/entityExportDTO.java.vm").packageName(DTOPackage).build();
+           customFiles.add(exportDto);
+       }
+
+        if (customConfig.isGenerateImport() && !customConfig.isImportOnVO()){
+            CustomFile importDto = new CustomFile.Builder().fileName("ImportDTO.java").templatePath("/crud/entityImportDTO.java.vm").packageName(DTOPackage).build();
+            customFiles.add(importDto);
+        }
+
+        CustomFile vo = new CustomFile.Builder().fileName("VO.java").templatePath("/crud/entityVO.java.vm").packageName(VOPackage).build();
+        customFiles.add(vo);
+
+
+
         customConfig.setCustomFiles(customFiles);
 
         CustomGenerator customGenerator =
@@ -163,4 +170,8 @@ public class CrudGenerator{
 
         customGenerator.execute();
     }
+
+
+
+
 }

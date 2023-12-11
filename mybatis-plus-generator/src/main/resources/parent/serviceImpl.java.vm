@@ -7,7 +7,7 @@ import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
 
-#if(${serviceImplOverride})
+#if(${showServiceImplMethod})
 #if(${generateSelect})
 import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -34,7 +34,6 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 }
 #else
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO> implements ${table.serviceName} {
-#if(${serviceImplOverride})
 
     #if(${generateSelect})
     @Override
@@ -68,7 +67,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         // 新增=>如有必要 在此处强转DTO为传入参数类型进行参数校验
         ${entity} entity = this.toEntity(DTO);
 
-        ;
+        super.save(entity);
         return toVO(entity);
     }
 ##
@@ -115,7 +114,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return super.saveBatch(entityList);
     }
     #end
-#end
+
 
 }
 #end

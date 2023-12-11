@@ -95,7 +95,11 @@ public class ParentConfig implements IConfig {
     /**
      * VO是否生成ResultMap
      */
-    private boolean VOResultMap;
+    private boolean resultMapForVO;
+    /**
+     * VO是否生成字段注释
+     */
+    private boolean fieldAnnotationOnVO;
 
     /**
      * 新增排除的字段
@@ -144,11 +148,6 @@ public class ParentConfig implements IConfig {
     private boolean generateExport = true;
 
     /**
-     * 服务impl重写父类方法
-     */
-    private boolean serviceImplOverride = true;
-
-    /**
      * rest样式
      */
     private boolean restStyle = true;
@@ -157,6 +156,28 @@ public class ParentConfig implements IConfig {
      * 自定义文件
      */
     private List<CustomFile> customFiles;
+
+    /**
+     * 在vo上导出
+     */
+    private boolean exportOnVO;
+    /**
+     * 在vo上导入
+     */
+    private boolean importOnVO;
+
+
+    /**
+     * 显示 service impl方法
+     */
+    private boolean showServiceImplMethod = true;
+
+    /**
+     * 显示mapper方法
+     */
+    private boolean showMapperMethod = true;
+
+
 
 
 
@@ -255,7 +276,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/08/08 11:21
          */
-        public ParentConfig.Builder jakartaApi(@NotNull Boolean b){
+        public ParentConfig.Builder jakartaApi(boolean b){
             if (b){
                 this.parentConfig.javaApiPackage ="jakarta";
             }else{
@@ -340,7 +361,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/07/14 09:20
          */
-        public ParentConfig.Builder returnResultGenericType(@NotNull Boolean isGenericType){
+        public ParentConfig.Builder returnResultGenericType(boolean isGenericType){
             this.parentConfig.returnResultGenericType=isGenericType;
             return this;
         }
@@ -392,7 +413,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/07/23 22:01
          */
-        public ParentConfig.Builder requestBody(@NotNull Boolean b){
+        public ParentConfig.Builder requestBody(boolean b){
             this.parentConfig.requestBody=b;
             return this;
         }
@@ -405,7 +426,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/07/23 22:06
          */
-        public ParentConfig.Builder enableValidated(@NotNull Boolean b){
+        public ParentConfig.Builder enableValidated(boolean b){
             this.parentConfig.enableValidated=b;
             return this;
         }
@@ -419,8 +440,8 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/07/17 15:16
          */
-        public ParentConfig.Builder VOResultMap(@NotNull Boolean b){
-            this.parentConfig.VOResultMap=b;
+        public ParentConfig.Builder resultMapForVO(boolean b){
+            this.parentConfig.resultMapForVO=b;
             return this;
         }
 
@@ -447,7 +468,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/07/31 11:28
          */
-        public ParentConfig.Builder orderColumn(@NotNull String columnName, @NotNull Boolean isDesc){
+        public ParentConfig.Builder orderColumn(@NotNull String columnName, boolean isDesc){
             if (this.parentConfig.orderColumnMap==null){
                 this.parentConfig.orderColumnMap=new HashMap<>();
             }
@@ -465,7 +486,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/06 16:04
          */
-        public ParentConfig.Builder allPost(@NotNull Boolean b){
+        public ParentConfig.Builder allPost(boolean b){
             this.parentConfig.allPost=b;
             return this;
         }
@@ -478,7 +499,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/07 10:20
          */
-        public ParentConfig.Builder enableOrigins(@NotNull Boolean b){
+        public ParentConfig.Builder enableOrigins(boolean b){
             this.parentConfig.enableOrigins=b;
             return this;
         }
@@ -514,7 +535,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/18 09:37
          */
-        public ParentConfig.Builder fileOverride(@NotNull Boolean b){
+        public ParentConfig.Builder fileOverride(boolean b){
             this.parentConfig.fileOverride=b;
             return this;
         }
@@ -528,7 +549,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/18 09:37
          */
-        public ParentConfig.Builder generateInsert(@NotNull Boolean b){
+        public ParentConfig.Builder generateInsert(boolean b){
             this.parentConfig.generateInsert=b;
             return this;
         }
@@ -543,7 +564,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/18 09:36
          */
-        public ParentConfig.Builder generateUpdate(@NotNull Boolean b){
+        public ParentConfig.Builder generateUpdate(boolean b){
             this.parentConfig.generateUpdate=b;
             return this;
         }
@@ -556,7 +577,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/18 09:36
          */
-        public ParentConfig.Builder generateSelect(@NotNull Boolean b){
+        public ParentConfig.Builder generateSelect(boolean b){
             this.parentConfig.generateSelect=b;
             return this;
         }
@@ -569,7 +590,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/18 09:36
          */
-        public ParentConfig.Builder generateExport(@NotNull Boolean b){
+        public ParentConfig.Builder generateExport(boolean b){
             this.parentConfig.generateExport=b;
             return this;
         }
@@ -582,7 +603,7 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/09/18 09:36
          */
-        public ParentConfig.Builder generateImport(@NotNull Boolean b){
+        public ParentConfig.Builder generateImport(boolean b){
             this.parentConfig.generateImport=b;
             return this;
         }
@@ -595,24 +616,38 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/10/23
          */
-        public ParentConfig.Builder generateDelete(@NotNull Boolean b){
+        public ParentConfig.Builder generateDelete(boolean b){
             this.parentConfig.generateDelete=b;
             return this;
         }
 
 
         /**
-         * 服务impl重写父类方法
+         * 显示服务impl的父类方法
          *
          * @param b b
          * @return {@code ParentConfig.Builder }
          * @author booty
          * @since 2023/09/18 11:32
          */
-        public ParentConfig.Builder serviceImplOverride(@NotNull Boolean b){
-            this.parentConfig.serviceImplOverride=b;
+        public ParentConfig.Builder showServiceImplMethod(boolean b){
+            this.parentConfig.showServiceImplMethod=b;
             return this;
         }
+
+        /**
+         * 显示mapper的父类方法
+         *
+         * @param b b
+         * @return {@code ParentConfig.Builder }
+         * @author booty
+         * @since 2023/09/18 11:32
+         */
+        public ParentConfig.Builder showMapperMethod(boolean b){
+            this.parentConfig.showMapperMethod=b;
+            return this;
+        }
+
 
         /**
          * rest样式
@@ -622,13 +657,30 @@ public class ParentConfig implements IConfig {
          * @author booty
          * @since 2023/11/02
          */
-        public ParentConfig.Builder restStyle(@NotNull Boolean b){
+        public ParentConfig.Builder restStyle(boolean b){
             this.parentConfig.restStyle=b;
             return this;
         }
 
 
+        public ParentConfig.Builder exportOnVO(boolean b){
+            this.parentConfig.exportOnVO=b;
+            return this;
+        }
+
+        public ParentConfig.Builder importOnVO(boolean b){
+            this.parentConfig.importOnVO=b;
+            return this;
+        }
+
+        public ParentConfig.Builder fieldAnnotationOnVO(boolean b){
+            this.parentConfig.fieldAnnotationOnVO=b;
+            return this;
+        }
+
     }
+
+
 
 
 }

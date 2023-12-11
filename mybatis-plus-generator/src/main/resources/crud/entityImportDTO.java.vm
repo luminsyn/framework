@@ -1,4 +1,4 @@
-package ${basePackage}.${voPackage};
+package ${basePackage}.${DTOPackage};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
@@ -15,15 +15,11 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 #end
 #end
-#if(${exportExcel})
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.*;
-import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
-#end
 
 /**
- * $!{table.comment}导出vo
+ * $!{table.comment}导入DTO
  *
  * @author ${author}
  * @since ${date}
@@ -35,19 +31,12 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
   #end
 #end
 ###if(${springdoc})
-##@Schema(name = "${entity}", description = "$!{table.comment}")
+##@Schema(name = "${entity}ImportDTO", description = "$!{table.comment}导入DTO")
 ###elseif(${swagger})
-##@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+##@ApiModel(value = "${entity}ImportDTO对象", description = "$!{table.comment}导入DTO")
 ###end
-#if(${exportExcel})
 @ExcelIgnoreUnannotated
-@HeadRowHeight(30)
-@HeadFontStyle(fontHeightInPoints = 12)
-@HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL)
-@ColumnWidth(25)
-@ContentRowHeight(20)
-#end
-public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
+public class ${entity}ImportDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
@@ -56,6 +45,7 @@ public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
 #else
+
 #if("$!field.comment" != "")
   #if(${springdoc})
     @Schema(description = "${field.comment}")
@@ -67,9 +57,9 @@ public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
      */
   #end
 #end
-#if(${exportExcel})
+    #if(!${field.keyFlag})
     @ExcelProperty(value = "${field.comment}")
-#end
+    #end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
@@ -89,7 +79,7 @@ public class ${entity}ExportVo#if(${exportExtendsVo}) extends ${entity}Vo#end{
     }
 
   #if(${chainModel})
-    public ${entity}ExportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}ImportVo set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end

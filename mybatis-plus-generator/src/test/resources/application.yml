@@ -12,6 +12,8 @@ spring:
 mybatis-plus:
   mapper-locations: xml/*Mapper.xml
   mapper-base-package: bootystar.test.mapper
+  configuration:
+    map-underscore-to-camel-case: false
 logging:
   level:
     root: info

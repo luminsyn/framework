@@ -4,34 +4,35 @@ import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
-import ${basePackage}.${dtoPackage}.${entity}InsertDto;
-import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
-#if(${pageByDto})
-#if(${exportExcel})
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
+#if(${generateImport}||${generateExport})
+import java.util.Collections;
+import java.util.LinkedList;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.stream.Collectors;
 import com.alibaba.excel.EasyExcel;
-import ${javaApiPackage}.servlet.ServletOutputStream;
-import ${javaApiPackage}.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.io.UnsupportedEncodingException;
-import ${basePackage}.${voPackage}.${entity}ExportVo;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.exception.ExcelAnalysisException;
+import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.read.listener.ReadListener;
 #end
-import ${basePackage}.${dtoPackage}.${entity}SelectDto;
-import ${basePackage}.${voPackage}.${entity}Vo;
+#if(${generateInsert})
+import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
+#end
+#if(${generateUpdate})
+import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
+#end
+#if(${generateSelect})
+import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-#end
-#if(${importExcel})
-import java.util.ArrayList;
-import ${basePackage}.${voPackage}.${entity}ImportVo;
-#end
-
+import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+import ${basePackage}.${VOPackage}.${entity}VO;
 import java.io.Serializable;
-import java.util.List;
+#end
 
 /**
  * $!{table.comment} 服务实现类
@@ -41,141 +42,145 @@ import java.util.List;
  */
 @Service
 #if(${kotlin})
-open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>() implements ${table.serviceName} {
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName},${entity}>() implements ${table.serviceName} {
 
 }
 #else
-public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity}> implements ${table.serviceName} {
+#if(${showServiceImplMethod})
 
-    @Override
-    public ${entity} insertByDto(${entity}InsertDto dto){
-        ${entity} entity = new ${entity}();
-        BeanUtils.copyProperties(dto,entity);
-        // 字段检查,额外赋值
+    #if(${generateSelect})
+    protected void voPostProcess(List<${entity}VO> dataList) {
+        // 查询=>如有必要, 在此处对查询后的VO进行操作(赋值\连表\额外数据拼接), 所有查询的VO都会添加该操作
 
-        super.save(entity);
-        return entity;
     }
 
     @Override
-    public boolean updateByDto(${entity}UpdateDto dto){
+    public ${entity}VO voById(Serializable id){
+        ${entity}SelectDTO dto =  new ${entity}SelectDTO();
+        dto.setPrimaryKey(id);
+        return this.oneByDTO(dto);
+    }
+
+
+    @Override
+    public ${entity}VO oneByDTO(${entity}SelectDTO DTO) {
+        List<${entity}VO> vs = listByDTO(DTO);
+        if (vs == null || vs.size()==0 ) {
+            return null;
+        }
+        if(vs.size() > 1) {
+            throw new RuntimeException("error query => required one but found"+vs.size());
+        }
+        return vs.get(0);
+    }
+
+
+    @Override
+    public List<${entity}VO> listByDTO(${entity}SelectDTO DTO){
+        List<${entity}VO> voList = this.baseMapper.listByMap(DTO, null);
+        this.voPostProcess(voList);
+        return voList;
+    }
+
+    @Override
+    public IPage<${entity}VO> pageByDTO(${entity}SelectDTO DTO, Long current, Long size){
+        if (current == null || current<1) {
+            current=1L;
+        }
+        if (size == null) {
+            size=10L;
+        }
+        Page<${entity}VO> page = new Page<>(current, size);
+        List<${entity}VO> voList = this.baseMapper.listByMap(DTO, page);
+        this.voPostProcess(voList);
+        page.setRecords(voList);
+        return page;
+    }
+    #end
+
+    #if(${generateInsert})
+
+    @Override
+    public ${entity}VO insertByDTO(${entity}InsertDTO DTO) {
+        // 新增=>如有必要 在此处强转DTO为传入参数类型进行参数校验
         ${entity} entity = new ${entity}();
-        BeanUtils.copyProperties(dto,entity);
-        // 字段检查,额外赋值
+        BeanUtils.copyProperties(DTO, entity);
+        super.save(entity);
+
+        ${entity}VO vo = new ${entity}VO();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
+    }
+    #end
+    #if(${generateUpdate})
+
+    @Override
+    public boolean updateByDTO(${entity}UpdateDTO DTO) {
+        // 修改=>如有必要, 在此处强转DTO为传入参数类型进行参数校验
+        ${entity} entity = new ${entity}();
+        BeanUtils.copyProperties(DTO, entity);
 
         return super.updateById(entity);
     }
+    #end
+    #if(${generateDelete})
 
     @Override
-    public boolean removeById(Serializable id){
-        // 删除前检查
-
+    public boolean removeById(Serializable id) {
+        // 删除=>如有必要, 在此处对id进行校验
         return super.removeById(id);
     }
-
-    #if(${pageByDto})
-
-    @Override
-    public ${entity}Vo getVoById(Serializable id){
-        ${entity}SelectDto dto = new ${entity}SelectDto();
-        dto.setPrimaryKey(id);
-        dto.setPageSize(-1L);
-        IPage<${entity}Vo> result = this.pageByDto(dto);
-        List<${entity}Vo> records = result.getRecords();
-        return records!=null && records.size()>0 ? records.get(0) : null;
-    }
+    #end
+    #if(${generateExport})
 
     @Override
-    public List<${entity}Vo> listByDto(${entity}SelectDto dto){
-        dto.setPageSize(-1L);
-        IPage<${entity}Vo> result = this.pageByDto(dto);
-        List<${entity}Vo> records = result.getRecords();
-        return records;
+    public <U> void exportExcel(${entity}SelectDTO DTO, OutputStream os, Class<U> clazz) {
+        List<${entity}VO> voList = listByDTO(DTO);
+        EasyExcel.write(os, clazz).sheet().doWrite(voList);
     }
+    #end
+    #if(${generateImport})
 
     @Override
-    public IPage<${entity}Vo> pageByDto(${entity}SelectDto dto){
-        if(dto==null){
-            dto = new ${entity}SelectDto();
-        }
-        Page<${entity}Vo> page = new Page<>(dto.getCurrentPage(), dto.getPageSize());
-        if(dto.getPageSize()==-1L){
-            page.setSearchCount(false);
-        }
-        IPage<${entity}Vo> result = baseMapper.pageByDto(dto,page);
-        this.voPostProcess(result.getRecords());
-        return result;
-    }
-
-    /**
-     * vo后置处理操作
-     *
-     * @author ${author}
-     * @since ${nowTime}
-     * @param voList Vo列表
-     */
-    private void voPostProcess(List<${entity}Vo> voList){
-        if(voList==null || voList.size()==0){
-            return;
-        }
-        // 更新状态\数据拼接
-
-    }
-
-    #if(${exportExcel})
-    @Override
-    public void exportExcel(${entity}SelectDto dto){
-        if(dto==null){
-            dto = new ${entity}SelectDto();
-        }
-        dto.setPageSize(-1L);
-        IPage<${entity}Vo> result = this.pageByDto(dto);
-        List<${entity}Vo> records = result.getRecords();
-        String fileName= System.currentTimeMillis()+".xlsx";
-        try (ServletOutputStream outputStream = getResponse4excel(fileName).getOutputStream()){
-            if(dto.getPropertyListExport()!=null && dto.getPropertyListExport().size()>0){
-                EasyExcel.write(outputStream,${entity}ExportVo.class).includeColumnFieldNames(dto.getPropertyListExport()).sheet().doWrite(records);
-            }else{
-                EasyExcel.write(outputStream,${entity}ExportVo.class).sheet().doWrite(records);
+    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+        List<U> cachedDataList = new LinkedList<>();
+        ReadListener<U> listener = new ReadListener<U>() {
+            @Override
+            public void invoke(U data, AnalysisContext context) {
+                cachedDataList.add(data);
             }
-        }catch (Exception e){
-            e.printStackTrace();
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+                //do nothing
+            }
+        };
+        try {
+            EasyExcel.read(is, clazz, listener).sheet().doRead();
+        } catch (ExcelAnalysisException e) {
+            ExcelDataConvertException excelDataConvertException = (ExcelDataConvertException) e.getCause();
+            String msg = String.format("第%s行，第%s列数据格式不正确：%s", excelDataConvertException.getRowIndex() + 1, excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
+            throw new RuntimeException(msg);
         }
+        if (cachedDataList == null || cachedDataList.isEmpty()) return false;
+        List<${entity}> entityList = cachedDataList.stream()
+            .map(e->{
+                // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
+                ${entity} entity = new ${entity}();
+                BeanUtils.copyProperties(e, entity);
+
+                return entity;
+            }).collect(Collectors.toList());
+        return super.saveBatch(entityList);
     }
 
-    private static HttpServletResponse getResponse4excel(String fileName){
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletResponse response = requestAttributes.getResponse();
-        response.setContentType("application/vnd.ms-excel");
-        response.setCharacterEncoding("utf-8");
-        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
-        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-        response.addHeader("Pargam", "no-cache");
-        response.addHeader("Cache-Control", "no-cache");
-        return response;
-    }
-    #end
-    #end
-
-    #if(${importExcel})
     @Override
-    public boolean importExcel(List<${entity}ImportVo> importDtoList){
-        List<${entity}> insertList=new ArrayList<>(importDtoList.size());
-        for (${entity}ImportVo vo : importDtoList) {
-            // 数据校验, 默认参数赋值
-
-            #if(${importExcelEntity})
-            insertList.add(vo);
-            #else
-            ${entity} entity = new ${entity}();
-            BeanUtils.copyProperties(vo,entity);
-            insertList.add(entity);
-            #end
-        }
-        return saveBatch(insertList);
+    public <U> void exportTemplate(OutputStream os, Class<U> clazz) {
+        EasyExcel.write(os, clazz).sheet().doWrite(Collections.emptyList());
     }
-
     #end
+#end
 
 }
 #end

@@ -75,8 +75,10 @@ public class ParentGenerator  {
         ;
         packageConfigBuilder.parent("io.github.bootystar")
         ;
-        strategyConfigBuilder.controllerBuilder().enableRestStyle();
-        strategyConfigBuilder.mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class).superClass(CustomMapper.class);
+        strategyConfigBuilder.controllerBuilder().enableRestStyle()
+        ;
+        strategyConfigBuilder.mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class).superClass(CustomMapper.class)
+        ;
         strategyConfigBuilder.serviceBuilder().superServiceClass(CustomService.class).superServiceImplClass(CustomServiceImpl.class)
         ;
 
@@ -134,12 +136,12 @@ public class ParentGenerator  {
            CustomFile selectDto = new CustomFile.Builder().fileName("SelectDTO.java").templatePath("/parent/entitySelectDTO.java.vm").packageName(DTOPackage).build();
            customFiles.add(selectDto);
        }
-       if (customConfig.isGenerateExport()){
+       if (customConfig.isGenerateExport() && !customConfig.isExportOnVO()){
            CustomFile exportDto = new CustomFile.Builder().fileName("ExportDTO.java").templatePath("/parent/entityExportDTO.java.vm").packageName(DTOPackage).build();
            customFiles.add(exportDto);
        }
 
-        if (customConfig.isGenerateImport()){
+        if (customConfig.isGenerateImport() && !customConfig.isImportOnVO()){
             CustomFile importDto = new CustomFile.Builder().fileName("ImportDTO.java").templatePath("/parent/entityImportDTO.java.vm").packageName(DTOPackage).build();
             customFiles.add(importDto);
         }

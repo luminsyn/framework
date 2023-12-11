@@ -2,18 +2,26 @@ package ${package.Service};
 
 import ${package.Entity}.${entity};
 import ${superServiceClassPackage};
-import ${basePackage}.${dtoPackage}.${entity}InsertDto;
-import ${basePackage}.${dtoPackage}.${entity}UpdateDto;
-#if(${pageByDto})
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import ${basePackage}.${dtoPackage}.${entity}SelectDto;
-import ${basePackage}.${voPackage}.${entity}Vo;
+#if(${generateImport}||${generateExport})
+import java.io.InputStream;
+import java.io.OutputStream;
+#end
+#if(${generateInsert})
+import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
+#end
+#if(${generateUpdate})
+import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
+#end
+
+#if(${generateSelect})
 import java.util.List;
+import java.util.Collection;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+import ${basePackage}.${VOPackage}.${entity}VO;
 import java.io.Serializable;
 #end
-#if(${importExcel})
-import ${basePackage}.${voPackage}.${entity}ImportVo;
-#end
+
 
 /**
  * $!{table.comment} 服务类
@@ -26,25 +34,23 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 #else
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
-    ${entity} insertByDto(${entity}InsertDto dto);
 
-    boolean updateByDto(${entity}UpdateDto dto);
-    #if(${pageByDto})
-
-    ${entity}Vo getVoById(Serializable id);
-
-    List<${entity}Vo> listByDto(${entity}SelectDto dto);
-
-    IPage<${entity}Vo> pageByDto(${entity}SelectDto dto);
-
-    #if(${exportExcel})
-
-    void exportExcel(${entity}SelectDto dto);
+    #if(${generateInsert})
+    ${entity}VO insertByDTO(${entity}InsertDTO DTO);
     #end
+    #if(${generateUpdate})
+    boolean updateByDTO(${entity}UpdateDTO DTO);
     #end
-
-    #if(${importExcel})
-    boolean importExcel(List<${entity}ImportVo> importList);
+    #if(${generateSelect})
+    ${entity}VO voById(Serializable id);
+    ${entity}VO oneByDTO(${entity}SelectDTO DTO);
+    List<${entity}VO> listByDTO(${entity}SelectDTO DTO);
+    IPage<${entity}VO> pageByDTO(${entity}SelectDTO DTO, Long current, Long size);
+    <U> void exportExcel(${entity}SelectDTO DTO, OutputStream os, Class<U> clazz);
+    #end
+    #if(${generateImport})
+    <U> boolean importExcel(InputStream is, Class<U> clazz);
+    <U> void exportTemplate(OutputStream os, Class<U> clazz);
     #end
 
 }
