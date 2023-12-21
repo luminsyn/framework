@@ -37,10 +37,12 @@ import com.alibaba.excel.annotation.write.style.*;
 ###elseif(${swagger})
 ##@ApiModel(value = "${entity}VO对象", description = "$!{table.comment}VO")
 ###end
+#if(${importOnVO}||${exportOnVO})
 @ExcelIgnoreUnannotated
 @HeadRowHeight(30)
 @ColumnWidth(25)
 @ContentRowHeight(20)
+#end
 public class ${entity}VO {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
