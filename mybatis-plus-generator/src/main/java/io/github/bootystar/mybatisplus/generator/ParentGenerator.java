@@ -2,7 +2,7 @@ package io.github.bootystar.mybatisplus.generator;
 
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
-import io.github.bootystar.mybatisplus.generator.config.ParentConfig;
+import io.github.bootystar.mybatisplus.generator.config.child.ParentConfig;
 import io.github.bootystar.mybatisplus.generator.core.CustomMapper;
 import io.github.bootystar.mybatisplus.generator.core.CustomService;
 import io.github.bootystar.mybatisplus.generator.core.CustomServiceImpl;
@@ -32,7 +32,7 @@ public class ParentGenerator  {
     protected InjectionConfig.Builder injectionConfigBuilder=new InjectionConfig.Builder();
 
     protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
-    @Getter
+
     protected ParentConfig.Builder customConfigBuilder = new ParentConfig.Builder();
 
 
@@ -79,7 +79,7 @@ public class ParentGenerator  {
         ;
         strategyConfigBuilder.mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class).superClass(CustomMapper.class)
         ;
-        strategyConfigBuilder.serviceBuilder().superServiceClass(CustomService.class).superServiceImplClass(CustomServiceImpl.class)
+        strategyConfigBuilder.serviceBuilder().superServiceClass(CustomService.class).superServiceImplClass(CustomServiceImpl.class).formatServiceFileName("%sService")
         ;
 
         templateConfigBuilder.controller("/parent/controller.java");
@@ -95,6 +95,8 @@ public class ParentGenerator  {
         customConfigBuilder.updateExcludeFields(Arrays.asList("createTime","updateTime"));
         customConfigBuilder.orderColumn("create_time",true);
         customConfigBuilder.orderColumn("id",true);
+        customConfigBuilder.showServiceImplMethod(true);
+        customConfigBuilder.showMapperMethod(true);
     }
 
 

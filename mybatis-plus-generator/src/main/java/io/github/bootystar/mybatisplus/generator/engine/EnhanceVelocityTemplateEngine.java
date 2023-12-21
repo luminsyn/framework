@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.AbstractTemplateEngine;
 import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 import io.github.bootystar.mybatisplus.generator.config.IConfig;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
@@ -37,7 +36,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
     }
 
     @Override
-    protected void outputCustomFile(@NotNull List<CustomFile> customFiles, @NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+    protected void outputCustomFile(List<CustomFile> customFiles, TableInfo tableInfo, Map<String, Object> objectMap) {
         String entityName = tableInfo.getEntityName();
         String parentPath = getPathInfo(OutputFile.parent);
         Boolean fileOverride = customConfig.getFileOverride();
@@ -54,7 +53,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
     }
 
     @Override
-    public @NotNull Map<String, Object> getObjectMap(@NotNull ConfigBuilder config, @NotNull TableInfo tableInfo) {
+    public Map<String, Object> getObjectMap(ConfigBuilder config, TableInfo tableInfo) {
         Map<String, Object> objectMap = super.getObjectMap(config, tableInfo);
         if (customConfig!=null){
             Map<String, Object> customData = customConfig.renderData(tableInfo);
@@ -69,7 +68,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
 
     @Override
-    public @NotNull AbstractTemplateEngine batchOutput() {
+    public AbstractTemplateEngine batchOutput() {
         try {
             ConfigBuilder config = this.getConfigBuilder();
             List<TableInfo> tableInfoList = config.getTableInfoList();

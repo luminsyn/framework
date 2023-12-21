@@ -14,6 +14,4 @@ public interface IConfig {
     Map<String, Object>  renderData(TableInfo tableInfo);
     List<CustomFile> getCustomFiles();
     boolean getFileOverride();
-
-
 }

@@ -10,10 +10,10 @@ spring:
     username: root
     password: root
 mybatis-plus:
-  mapper-locations: xml/*Mapper.xml
+  mapper-locations: classpath:**/*Mapper.xml
   mapper-base-package: bootystar.test.mapper
   configuration:
-    map-underscore-to-camel-case: false
+    map-underscore-to-camel-case: true
 logging:
   level:
     root: info

@@ -14,7 +14,9 @@ public class String2LocalDateTimeConverter implements Converter<String, LocalDat
 
     @Override
     public LocalDateTime convert(String source) {
-        if (source == null || source.isEmpty()) return null;
+        if (source.isEmpty()) {
+            return null;
+        }
         int length = source.length();
         source = source.replace('T', ' ');
         switch (length) {

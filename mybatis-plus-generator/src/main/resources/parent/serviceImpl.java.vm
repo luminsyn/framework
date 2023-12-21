@@ -8,12 +8,14 @@ import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
 
 #if(${showServiceImplMethod})
-#if(${generateSelect})
-import java.util.List;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-#end
-#if(${generateDelete})
+#if(${generateDelete}||${generateSelect})
 import java.io.Serializable;
+#end
+#if(${generateImport}||${generateSelect})
+import java.util.List;
+#end
+#if(${generateSelect})
+import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 #if(${generateImport})
 import java.util.stream.Collectors;
@@ -35,6 +37,7 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 #else
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO> implements ${table.serviceName} {
 
+#if(${showServiceImplMethod})
     #if(${generateSelect})
     @Override
     protected void voPostProcess(List<${entity}VO> dataList) {
@@ -59,7 +62,6 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return super.pageByDTO(DTO,current,size);
     }
     #end
-
     #if(${generateInsert})
 
     @Override
@@ -114,7 +116,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return super.saveBatch(entityList);
     }
     #end
-
+#end
 
 }
 #end

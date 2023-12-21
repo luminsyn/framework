@@ -47,7 +47,6 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 }
 #else
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity}> implements ${table.serviceName} {
-#if(${showServiceImplMethod})
 
     #if(${generateSelect})
     protected void voPostProcess(List<${entity}VO> dataList) {
@@ -163,7 +162,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             String msg = String.format("第%s行，第%s列数据格式不正确：%s", excelDataConvertException.getRowIndex() + 1, excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
             throw new RuntimeException(msg);
         }
-        if (cachedDataList == null || cachedDataList.isEmpty()) return false;
+        if (cachedDataList.isEmpty()) return false;
         List<${entity}> entityList = cachedDataList.stream()
             .map(e->{
                 // 导入Excel=>如有必要, 在此处对导入前对Excel解析后的参数进行校验赋值
@@ -180,7 +179,6 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         EasyExcel.write(os, clazz).sheet().doWrite(Collections.emptyList());
     }
     #end
-#end
 
 }
 #end

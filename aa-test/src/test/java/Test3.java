@@ -1,16 +1,9 @@
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.metadata.Head;
-import com.alibaba.excel.metadata.data.WriteCellData;
-import com.alibaba.excel.metadata.property.ColumnWidthProperty;
-import com.alibaba.excel.write.handler.context.CellWriteHandlerContext;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.style.column.AbstractColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import org.apache.poi.ss.usermodel.Cell;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author booty
@@ -18,7 +11,8 @@ import java.util.List;
  */
 public class Test3 {
 
-    public static void main(String[] args) {
+    @Test
+    void test1() {
         List<List<String>> data =new LinkedList<>();
 
         LinkedList<String> header = new LinkedList<>();
@@ -48,5 +42,6 @@ public class Test3 {
                 .sheet("sheet1")
                 .doWrite(data2);
     }
+
 
 }

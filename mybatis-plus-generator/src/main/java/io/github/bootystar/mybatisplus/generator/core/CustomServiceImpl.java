@@ -6,10 +6,11 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.read.listener.ReadListener;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * @author booty
  * @since 2023/8/21 9:44
  */
+@Slf4j
 public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {
 
     @Override
@@ -219,6 +221,21 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         return v;
     }
 
+    @Override
+    public <U> U toTarget(Object source, Class<U> clazz) {
+        U target = null;
+        try {
+            if (clazz==null){
+                return null;
+            }
+            target = clazz.newInstance();
+            BeanUtils.copyProperties(source, target);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return target;
+    }
 
     @Override
     public Map<String, Object> toMap(Object source) {
@@ -226,7 +243,7 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
             return new HashMap<>();
         }
         if (source instanceof Map) {
-            return new HashMap<>((Map) source);
+            return (Map) source;
         }
         Map<String, Object> map = new LinkedHashMap<>();
         Class<?> clazz = source.getClass();
@@ -243,49 +260,10 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error toMap", e);
             throw new RuntimeException(e);
         }
         return map;
-    }
-
-    @Override
-    public void copyProp(Object source, Object target) {
-        if (source==null || target==null){
-            return;
-        }
-        Map<?, ?> map = this.toMap(source);
-        Field[] declaredFields = target.getClass().getDeclaredFields();
-        for (Field field : declaredFields) {
-            if (unAccessibleFiled(field)){
-                continue;
-            }
-            String name = field.getName();
-            Object o = map.get(name);
-            if (o != null) {
-                try {
-                    field.set(target, o);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    @Override
-    public <U> U toTarget(Object source, Class<U> clazz) {
-        U target = null;
-        try {
-            if (clazz==null){
-                return null;
-            }
-            target = clazz.newInstance();
-            this.copyProp(source, target);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-        return target;
     }
 
 

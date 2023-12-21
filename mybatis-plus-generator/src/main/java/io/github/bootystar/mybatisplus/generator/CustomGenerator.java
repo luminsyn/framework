@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import io.github.bootystar.mybatisplus.generator.config.IConfig;
 import io.github.bootystar.mybatisplus.generator.engine.EnhanceVelocityTemplateEngine;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +33,8 @@ import java.util.List;
  * @author booty
  * @since 2023/07/13 14:18
  */
+@Slf4j
 public class CustomGenerator {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomGenerator.class);
 
     /**
      * 配置信息
@@ -81,7 +80,7 @@ public class CustomGenerator {
      * @param dataSourceConfig 数据库配置
      * @since 3.5.0
      */
-    public CustomGenerator(@NotNull DataSourceConfig dataSourceConfig) {
+    public CustomGenerator(DataSourceConfig dataSourceConfig) {
         //这个是必须参数,其他都是可选的,后续去除默认构造更改成final
         this.dataSource = dataSourceConfig;
     }
@@ -93,7 +92,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator injection(@NotNull InjectionConfig injectionConfig) {
+    public CustomGenerator injection(InjectionConfig injectionConfig) {
         this.injection = injectionConfig;
         return this;
     }
@@ -105,7 +104,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator strategy(@NotNull StrategyConfig strategyConfig) {
+    public CustomGenerator strategy(StrategyConfig strategyConfig) {
         this.strategy = strategyConfig;
         return this;
     }
@@ -117,7 +116,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator packageInfo(@NotNull PackageConfig packageConfig) {
+    public CustomGenerator packageInfo(PackageConfig packageConfig) {
         this.packageInfo = packageConfig;
         return this;
     }
@@ -129,7 +128,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator template(@NotNull TemplateConfig templateConfig) {
+    public CustomGenerator template(TemplateConfig templateConfig) {
         this.template = templateConfig;
         return this;
     }
@@ -141,7 +140,7 @@ public class CustomGenerator {
      * @return this
      * @see 3.5.0
      */
-    public CustomGenerator global(@NotNull GlobalConfig globalConfig) {
+    public CustomGenerator global(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
         return this;
     }
@@ -153,13 +152,13 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator config(@NotNull ConfigBuilder configBuilder) {
+    public CustomGenerator config(ConfigBuilder configBuilder) {
         this.config = configBuilder;
         return this;
     }
 
 
-    public CustomGenerator custom(@NotNull IConfig config) {
+    public CustomGenerator custom(IConfig config) {
         this.custom = config;
         return this;
     }
@@ -169,7 +168,16 @@ public class CustomGenerator {
      * 生成代码
      */
     public void execute() {
-        logger.debug("==========================准备生成文件...==========================");
+        log.debug("this generator is based on mybatis-plus 3.5.3 please use mybatis-plus 3.5.3 or above on your project \n" +
+                "                                        )               )            )               )       \n" +
+                " (  (     (           (   (       )  ( /(      (     ( /(  (      ( /(            ( /( (     \n" +
+                " )\\))(   ))\\  (      ))\\  )(   ( /(  )\\()) (   )(    )\\()) )\\ )   )\\())  (    (   )\\()))\\ )  \n" +
+                "((_))\\  /((_) )\\ )  /((_)(()\\  )(_))(_))/  )\\ (()\\  ((_)\\ (()/(  ((_)\\   )\\   )\\ (_))/(()/(  \n" +
+                " (()(_)(_))  _(_/( (_))   ((_)((_)_ | |_  ((_) ((_) | |(_) )(_)) | |(_) ((_) ((_)| |_  )(_)) \n" +
+                "/ _` | / -_)| ' \\))/ -_) | '_|/ _` ||  _|/ _ \\| '_| | '_ \\| || | | '_ \\/ _ \\/ _ \\|  _|| || | \n" +
+                "\\__, | \\___||_||_| \\___| |_|  \\__,_| \\__|\\___/|_|   |_.__/ \\_, | |_.__/\\___/\\___/ \\__| \\_, | \n" +
+                "|___/                                                      |__/                        |__/  ");
+        log.debug("==========================准备生成文件...==========================");
         // 初始化配置
         if (null == config) {
             config = new ConfigBuilder(packageInfo, dataSource, strategy, template, globalConfig, injection);
@@ -178,8 +186,11 @@ public class CustomGenerator {
         templateEngine.setConfigBuilder(config);
         // 模板引擎初始化执行文件输出
         templateEngine.init(config).batchOutput().open();
-        logger.debug("==========================文件生成完成！！！==========================");
+        log.debug("==========================文件生成完成！！！==========================\n");
+
     }
+
+
 
 
 
@@ -189,8 +200,7 @@ public class CustomGenerator {
      * @param config 配置信息
      * @return ignore
      */
-    @NotNull
-    protected List<TableInfo> getAllTableInfoList(@NotNull ConfigBuilder config) {
+    protected List<TableInfo> getAllTableInfoList(ConfigBuilder config) {
         return config.getTableInfoList();
     }
 

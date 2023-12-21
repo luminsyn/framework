@@ -54,7 +54,7 @@ public class ParamAutoConfiguration {
         // 忽略无法转换的对象
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         // PrettyPrinter 格式化输出
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+//        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         // NULL不参与序列化
 //        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 

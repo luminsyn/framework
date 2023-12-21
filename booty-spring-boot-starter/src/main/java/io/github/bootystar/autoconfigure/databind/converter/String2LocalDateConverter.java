@@ -14,8 +14,9 @@ public class String2LocalDateConverter implements Converter<String, LocalDate> {
 
     @Override
     public LocalDate convert(String source) {
-        if (source == null || source.isEmpty())
+        if (source.isEmpty()) {
             return null;
+        }
         int length = source.length();
         switch (length) {
             case 4:

@@ -34,22 +34,30 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 #else
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
-
     #if(${generateInsert})
+
     ${entity}VO insertByDTO(${entity}InsertDTO DTO);
     #end
     #if(${generateUpdate})
+
     boolean updateByDTO(${entity}UpdateDTO DTO);
     #end
     #if(${generateSelect})
+
     ${entity}VO voById(Serializable id);
+
     ${entity}VO oneByDTO(${entity}SelectDTO DTO);
+
     List<${entity}VO> listByDTO(${entity}SelectDTO DTO);
+
     IPage<${entity}VO> pageByDTO(${entity}SelectDTO DTO, Long current, Long size);
+
     <U> void exportExcel(${entity}SelectDTO DTO, OutputStream os, Class<U> clazz);
     #end
     #if(${generateImport})
+
     <U> boolean importExcel(InputStream is, Class<U> clazz);
+
     <U> void exportTemplate(OutputStream os, Class<U> clazz);
     #end
 

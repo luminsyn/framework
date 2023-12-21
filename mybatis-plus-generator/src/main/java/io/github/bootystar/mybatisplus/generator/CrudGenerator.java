@@ -2,10 +2,9 @@ package io.github.bootystar.mybatisplus.generator;
 
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
-import io.github.bootystar.mybatisplus.generator.config.ParentConfig;
-import io.github.bootystar.mybatisplus.generator.core.CustomMapper;
-import io.github.bootystar.mybatisplus.generator.core.CustomService;
-import io.github.bootystar.mybatisplus.generator.core.CustomServiceImpl;
+import io.github.bootystar.mybatisplus.generator.config.ConfigBase;
+import io.github.bootystar.mybatisplus.generator.config.child.DefaultConfig;
+import io.github.bootystar.mybatisplus.generator.config.child.ParentConfig;
 import io.github.bootystar.mybatisplus.generator.core.Result;
 import lombok.Getter;
 
@@ -32,8 +31,8 @@ public class CrudGenerator {
     protected InjectionConfig.Builder injectionConfigBuilder=new InjectionConfig.Builder();
 
     protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
-    @Getter
-    protected ParentConfig.Builder customConfigBuilder = new ParentConfig.Builder();
+
+    protected DefaultConfig.Builder customConfigBuilder = new DefaultConfig.Builder();
 
 
     public DataSourceConfig.Builder dataSourceConfigBuilder() {
@@ -59,7 +58,7 @@ public class CrudGenerator {
     public TemplateConfig.Builder templateConfigBuilder() {
         return templateConfigBuilder;
     }
-    public ParentConfig.Builder customConfigBuilder() {
+    public DefaultConfig.Builder customConfigBuilder() {
         return customConfigBuilder;
     }
 
@@ -79,7 +78,7 @@ public class CrudGenerator {
         ;
         strategyConfigBuilder.mapperBuilder().mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
         ;
-        strategyConfigBuilder.serviceBuilder()
+        strategyConfigBuilder.serviceBuilder().formatServiceFileName("%sService")
         ;
 
         templateConfigBuilder.controller("/crud/controller.java");
@@ -117,7 +116,7 @@ public class CrudGenerator {
         PackageConfig packageConfig = packageConfigBuilder.build();
 
 
-        ParentConfig customConfig=customConfigBuilder.build();
+        DefaultConfig customConfig=customConfigBuilder.build();
 
         String DTOPackage = customConfig.getDTOPackage().replaceAll("\\.", "\\" + File.separator);
         String VOPackage = customConfig.getVOPackage().replaceAll("\\.", "\\" + File.separator);

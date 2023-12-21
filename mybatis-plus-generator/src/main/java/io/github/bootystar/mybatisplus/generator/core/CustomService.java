@@ -33,6 +33,5 @@ public interface CustomService<T,V> extends IService<T> {
     V toVO(Object source);
     <U> U toTarget(Object source, Class<U> clazz);
     Map<String, Object> toMap(Object source);
-    void copyProp(Object source, Object target);
 
 }

@@ -14,9 +14,10 @@ public class String2LocalTimeConverter implements Converter<String, LocalTime> {
 
     @Override
     public LocalTime convert(String source) {
-        if (source == null || source.isEmpty()) return null;
+        if (source.isEmpty()) {
+            return null;
+        }
         int length = source.length();
-        String pattern = "HH:mm:ss";
         switch (length) {
             case 2:
                 source += ":00:00";
