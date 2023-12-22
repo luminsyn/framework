@@ -178,7 +178,7 @@ public class CustomGenerator {
         templateEngine.setConfigBuilder(config);
         // 模板引擎初始化执行文件输出
         templateEngine.init(config).batchOutput().open();
-        log.debug("this generator is based on mybatis-plus 3.5.3 please use mybatis-plus 3.5.3 or above in your project \n" +
+        log.debug("files generated ,  enjoy it !!!\n" +
                 "                                        )               )            )               )       \n" +
                 " (  (     (           (   (       )  ( /(      (     ( /(  (      ( /(            ( /( (     \n" +
                 " )\\))(   ))\\  (      ))\\  )(   ( /(  )\\()) (   )(    )\\()) )\\ )   )\\())  (    (   )\\()))\\ )  \n" +
