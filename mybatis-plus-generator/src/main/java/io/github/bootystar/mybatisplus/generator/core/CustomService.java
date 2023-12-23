@@ -31,7 +31,5 @@ public interface CustomService<T,V> extends IService<T> {
     <U> void exportTemplate(OutputStream os, Class<U> clazz);
     T toEntity(Object source);
     V toVO(Object source);
-    <U> U toTarget(Object source, Class<U> clazz);
-    Map<String, Object> toMap(Object source);
 
 }

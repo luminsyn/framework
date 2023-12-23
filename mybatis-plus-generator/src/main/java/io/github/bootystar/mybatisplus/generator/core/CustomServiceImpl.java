@@ -221,7 +221,6 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         return v;
     }
 
-    @Override
     public <U> U toTarget(Object source, Class<U> clazz) {
         U target = null;
         try {
@@ -237,7 +236,6 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         return target;
     }
 
-    @Override
     public Map<String, Object> toMap(Object source) {
         if (source==null){
             return new HashMap<>();
