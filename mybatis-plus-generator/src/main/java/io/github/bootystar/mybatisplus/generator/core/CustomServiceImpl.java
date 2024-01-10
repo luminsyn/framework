@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author booty
- * @since 2023/8/21 9:44
+ *
  */
 @Slf4j
 public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {

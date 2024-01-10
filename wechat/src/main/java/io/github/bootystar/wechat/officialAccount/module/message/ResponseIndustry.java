@@ -11,7 +11,7 @@ import lombok.Data;
  *
  * 设置所属行业
  * @author booty
- * @since 2023/6/16 16:59
+ *
  */
 @Data
 public class ResponseIndustry extends ResponseBase {

@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 /**
  * 微信测试
  * @author booty
- * @since 2023/6/8 10:16
+ *
  */
 public class WechatTest {
 
     @Test
     void test1(){
-        OfficialAccountApi oa = new OfficialAccountApi("wxdcee357d389565c5","0b190801e72f9db76512c978f99e79f9");
+        OfficialAccountApi oa = new OfficialAccountApi("11","111");
         oa.setAccessTokenFactory(() -> {
             AccessToken accessToken = new AccessToken();
             accessToken.setAccess_token("69__qr46W9JAA4d6rqxoNtuL8IvAs6kFjn7KOiifB7oLX_iFkzqzz2Stv5GdSC5s_oYsSSU5Cq85LnTrNMPr0W36FEsEOr4wPWRAWlE_ccBoiNgWhL9k3BHdAoPSRUSGCdAJAYMI");

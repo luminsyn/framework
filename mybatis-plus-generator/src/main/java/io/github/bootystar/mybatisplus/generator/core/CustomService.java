@@ -11,7 +11,7 @@ import java.util.*;
 
 /**
  * @author booty
- * @since 2023/8/21 9:44
+ *
  */
 public interface CustomService<T,V> extends IService<T> {
     <S> V insertByDTO(S DTO);

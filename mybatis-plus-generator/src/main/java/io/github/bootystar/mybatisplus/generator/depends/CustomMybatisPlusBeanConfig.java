@@ -11,7 +11,7 @@
 ///**
 // * 基础bean配置
 // * @author booty
-// * @since 2023/7/13 10:33
+// *
 // */
 //@Configuration
 //public class CustomMybatisPlusBeanConfig {
@@ -22,7 +22,7 @@
 //     *
 //     * @return {@code MybatisPlusInterceptor }
 //     * @author booty
-//     * @since 2023/07/13 10:38
+//     *
 //     */
 //    @Bean
 //    @ConditionalOnMissingBean(MybatisPlusInterceptor.class)

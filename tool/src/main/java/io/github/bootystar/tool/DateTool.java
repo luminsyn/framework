@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 日期操作工具
  * @author booty
- * @since 2023/5/28 11:15
+ *
  */
 public class DateTool {
 
@@ -147,7 +147,7 @@ public class DateTool {
      * 日期字符串转Date
      * 格式：yyyy-MM-dd
      * @param source
-     * @return  返回指定日期00:00:00 对应的date对象
+     * @return  返回指定日期:00 对应的date对象
      */
     public  static Date string2Date(String source) {
         try {

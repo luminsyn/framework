@@ -5,7 +5,7 @@ import io.github.bootystar.wechat.core.ResponseBase;
 /**
  * 微信返回值异常信息
  * @author booty
- * @since 2023/6/8 10:05
+ *
  */
 public class ResponseException extends RuntimeException{
     private ResponseBase responseBase;

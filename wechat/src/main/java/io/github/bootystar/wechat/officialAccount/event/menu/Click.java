@@ -7,7 +7,7 @@ import lombok.Data;
  * 消息类型，event
  * 事件类型，CLICK
  * @author booty
- * @since 2023/6/13 13:39
+ *
  */
 @Data
 public class Click {

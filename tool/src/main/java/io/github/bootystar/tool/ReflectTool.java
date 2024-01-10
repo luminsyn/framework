@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @author booty
- * @since 2023/10/17 17:01
+ *
  */
 public class ReflectTool {
 
@@ -19,7 +19,7 @@ public class ReflectTool {
      * @param clazz 克拉兹
      * @return {@code List<Field> }
      * @author booty
-     * @since 2023/10/18 14:59
+     *
      */
     public static List<Field> getAllFields(Class<?> clazz){
         if (clazz==null){

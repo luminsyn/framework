@@ -5,7 +5,7 @@ import io.github.bootystar.mybatisplus.generator.config.ConfigBaseBuilder;
 
 /**
  * @author booty
- * @since 2023/12/19
+ *
  */
 public class DefaultConfig extends ConfigBase {
 

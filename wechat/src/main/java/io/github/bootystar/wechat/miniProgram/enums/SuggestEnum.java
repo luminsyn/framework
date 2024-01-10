@@ -2,7 +2,7 @@ package io.github.bootystar.wechat.miniProgram.enums;
 
 /**
  * @author booty
- * @since 2023/6/15 11:21
+ *
  */
 public enum SuggestEnum {
     /*

@@ -1,26 +1,19 @@
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
-import io.github.bootystar.mybatisplus.generator.ParentGenerator;
-import io.github.bootystar.mybatisplus.generator.core.CustomMapper;
-import io.github.bootystar.mybatisplus.generator.core.CustomService;
-import io.github.bootystar.mybatisplus.generator.core.CustomServiceImpl;
-
-import java.util.Collections;
 
 
 /**
  * @author booty
- * @since 2023/7/13 14:44
+ *
  */
-public class Test2 {
+public class ParentGenerator {
 
     private static String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
     private static String username ="root";
     private static String password ="root";
     public static void main(String[] args) {
         String projectPath = System.getProperty("user.dir");
-        ParentGenerator generator = new ParentGenerator(url, username, password);
+        io.github.bootystar.mybatisplus.generator.ParentGenerator generator = new io.github.bootystar.mybatisplus.generator.ParentGenerator(url, username, password);
 
         generator
                 .globalConfigBuilder()
@@ -78,12 +71,12 @@ public class Test2 {
         generator.strategyConfigBuilder()
                 .serviceBuilder()
                 .enableFileOverride()
-                .superServiceClass(CustomService.class)
-                .superServiceImplClass(CustomServiceImpl.class)
+
             ;
 
         generator.strategyConfigBuilder()
-                .mapperBuilder().superClass(CustomMapper.class).enableFileOverride()
+                .mapperBuilder()
+                .enableFileOverride()
         ;
         generator.strategyConfigBuilder()
                 .entityBuilder()

@@ -25,8 +25,8 @@
         </dependency>
         <dependency>
             <groupId>io.github.bootystar</groupId>
-            <artifactId>mybatis-plus-generator</artifactId>
-            <version>1.0.2</version>
+            <artifactId>booty-mybatis-plus-generator</artifactId>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

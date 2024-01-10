@@ -1,17 +1,12 @@
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import io.github.bootystar.mybatisplus.generator.CrudGenerator;
-
-
-import java.util.Collections;
 
 
 /**
  * @author booty
- * @since 2023/7/13 14:44
+ *
  */
-public class Test1 {
+public class CurdGenerator {
 
     private static String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
     private static String username ="root";

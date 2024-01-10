@@ -3,7 +3,7 @@ package io.github.bootystar.wechat.officialAccount.event.menu;
 /**
  * 弹出地理位置选择器的事件推送
  * @author booty
- * @since 2023/6/13 14:09
+ *
  */
 public class LocationSelect {
 

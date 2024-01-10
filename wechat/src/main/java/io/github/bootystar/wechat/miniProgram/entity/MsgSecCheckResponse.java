@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @author booty
- * @since 2023/6/15 11:02
+ *
  */
 @Data
 public class MsgSecCheckResponse extends ResponseBase {

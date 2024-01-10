@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 每个菜单的小按钮
  * @author booty
- * @since 2023/6/12 11:44
+ *
  */
 @Data
 public class MenuButton {
@@ -108,7 +108,7 @@ public class MenuButton {
      * @param name 名字
      * @return {@code MenuButton }
      * @author booty
-     * @since 2023/06/12 11:46
+     *
      */
     public static MenuButton createButtonInstance(MenuButtonTypeEnum type, String name){
         MenuButton button = new MenuButton();

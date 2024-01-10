@@ -5,7 +5,7 @@ package io.github.bootystar.wechat.officialAccount.event.menu;
  * 消息类型，event
  * 事件类型，pic_weixin
  * @author booty
- * @since 2023/6/13 14:07
+ *
  */
 public class PicWeChat {
 

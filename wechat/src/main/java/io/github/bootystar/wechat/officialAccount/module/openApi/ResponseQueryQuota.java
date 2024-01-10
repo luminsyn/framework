@@ -1,16 +1,12 @@
 package io.github.bootystar.wechat.officialAccount.module.openApi;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import io.github.bootystar.tool.HttpTool;
-import io.github.bootystar.wechat.core.exception.ResponseException;
 import io.github.bootystar.wechat.core.ResponseBase;
 import lombok.Data;
 
 /**
  * 接口调用配额查询
  * @author booty
- * @since 2023/6/8 14:48
+ *
  */
 @Data
 public class ResponseQueryQuota extends ResponseBase {

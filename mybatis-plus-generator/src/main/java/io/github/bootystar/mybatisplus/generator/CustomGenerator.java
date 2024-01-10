@@ -20,10 +20,7 @@ import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import io.github.bootystar.mybatisplus.generator.config.IConfig;
 import io.github.bootystar.mybatisplus.generator.engine.EnhanceVelocityTemplateEngine;
-
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -31,7 +28,7 @@ import java.util.List;
 /**
  * 自定义代码构造器
  * @author booty
- * @since 2023/07/13 14:18
+ *
  */
 @Slf4j
 public class CustomGenerator {
@@ -188,7 +185,16 @@ public class CustomGenerator {
         templateEngine.init(config).batchOutput().open();
 
         log.debug("==========================文件生成完成！！！==========================\n");
-
+        System.out.println(
+                "                                        )               )            )               )       \n" +
+                        " (  (     (           (   (       )  ( /(      (     ( /(  (      ( /(            ( /( (     \n" +
+                        " )\\))(   ))\\  (      ))\\  )(   ( /(  )\\()) (   )(    )\\()) )\\ )   )\\())  (    (   )\\()))\\ )  \n" +
+                        "((_))\\  /((_) )\\ )  /((_)(()\\  )(_))(_))/  )\\ (()\\  ((_)\\ (()/(  ((_)\\   )\\   )\\ (_))/(()/(  \n" +
+                        " (()(_)(_))  _(_/( (_))   ((_)((_)_ | |_  ((_) ((_) | |(_) )(_)) | |(_) ((_) ((_)| |_  )(_)) \n" +
+                        "/ _` | / -_)| ' \\))/ -_) | '_|/ _` ||  _|/ _ \\| '_| | '_ \\| || | | '_ \\/ _ \\/ _ \\|  _|| || | \n" +
+                        "\\__, | \\___||_||_| \\___| |_|  \\__,_| \\__|\\___/|_|   |_.__/ \\_, | |_.__/\\___/\\___/ \\__| \\_, | \n" +
+                        "|___/                                                      |__/                        |__/  \n");
+        System.out.println("Code Generator execute success!");
     }
 
 

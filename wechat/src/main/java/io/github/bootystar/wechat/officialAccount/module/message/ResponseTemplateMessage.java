@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 获得模板ID
  * @author booty
- * @since 2023/6/16 17:43
+ *
  */
 @Data
 public class ResponseTemplateMessage extends ResponseBase {

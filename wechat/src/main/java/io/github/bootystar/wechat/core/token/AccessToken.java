@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 /**
  * 微信accessToken
  * @author booty
- * @since 2023/6/4 10:25
+ *
  */
 @Data
 public class AccessToken extends ResponseBase {
@@ -43,7 +43,7 @@ public class AccessToken extends ResponseBase {
      * @param appSecret 应用程序秘密
      * @return {@code AccessToken }
      * @author booty
-     * @since 2023/06/06 15:30
+     *
      */
     public static AccessToken createAccessToken(String appId, String appSecret){
         String url = ACCESS_TOKEN_REQUEST_URL.replace("APPID", appId).replace("SECRET", appSecret);
@@ -77,7 +77,7 @@ public class AccessToken extends ResponseBase {
      * @param refresh   默认使用 false。1. force_refresh = false 时为普通调用模式，access_token 有效期内重复调用该接口不会更新 access_token；2. 当force_refresh = true 时为强制刷新模式，会导致上次获取的 access_token 失效，并返回新的 access_token
      * @return {@link AccessToken }
      * @author booty
-     * @since 2023/06/11 15:11
+     *
      */
     public static AccessToken createStableAccessToken(String appId, String appSecret,boolean refresh){
         JSONObject jsonObject = new JSONObject();

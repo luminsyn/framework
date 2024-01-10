@@ -4,7 +4,7 @@ package io.github.bootystar.wechat.officialAccount.event.message;
  * 在模版消息发送任务完成后，微信服务器会将是否送达成功作为通知
  * 送达成功时，推送的XML
  * @author booty
- * @since 2023/6/19 14:30
+ *
  */
 public class MsgSendSuccess{
     /*

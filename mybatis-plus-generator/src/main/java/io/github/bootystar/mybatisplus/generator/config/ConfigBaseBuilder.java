@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * @author booty
- * @since 2023/12/19
+ *
  */
 public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements IConfigBuilder<T> {
 
@@ -41,7 +41,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code Builder }
      * @author booty
-     * @since 2023/08/08 11:21
+     *
      */
     public U jakartaApi(boolean b) {
         if (b) {
@@ -58,7 +58,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param packageName 包名
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/31 11:18
+     *
      */
     public U DTOPackage(String packageName) {
         this.config.DTOPackage = packageName;
@@ -71,7 +71,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param packageName 包名
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/31 11:18
+     *
      */
     public U VOPackage(String packageName) {
         this.config.VOPackage = packageName;
@@ -84,7 +84,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param returnResultClass 返回结果类
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/13 16:12
+     *
      */
     public U returnResultClass(Class<?> returnResultClass) {
         if (returnResultClass == null) {
@@ -105,7 +105,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param fullClassName 返回结果类
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/13 16:12
+     *
      */
     public U returnResultClass(String fullClassName) {
         if (fullClassName == null) {
@@ -126,7 +126,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param isGenericType 是泛型类型
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/14 09:20
+     *
      */
     public U returnResultGenericType(boolean isGenericType) {
         this.config.returnResultGenericType = isGenericType;
@@ -139,7 +139,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param name 名字
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/14 09:20
+     *
      */
     public U returnResultDefaultStaticMethodName(String name) {
         this.config.returnResultDefaultStaticMethodName = name;
@@ -152,7 +152,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param fieldNames 字段名称
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/14 15:38
+     *
      */
     public U insertExcludeFields(List<String> fieldNames) {
         this.config.insertExcludeFields = fieldNames;
@@ -165,7 +165,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param fieldNames 字段名称
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/14 15:38
+     *
      */
     public U updateExcludeFields(List<String> fieldNames) {
         this.config.updateExcludeFields = fieldNames;
@@ -178,7 +178,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/23 22:01
+     *
      */
     public U requestBody(boolean b) {
         this.config.requestBody = b;
@@ -191,7 +191,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/23 22:06
+     *
      */
     public U enableValidated(boolean b) {
         this.config.enableValidated = b;
@@ -205,7 +205,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/17 15:16
+     *
      */
     public U resultMapForVO(boolean b) {
         this.config.resultMapForVO = b;
@@ -219,7 +219,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param map 地图
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/31 09:12
+     *
      */
     public U orderColumnMap(Map<String, Boolean> map) {
         this.config.orderColumnMap = map;
@@ -233,7 +233,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param isDesc     是desc
      * @return {@code Builder }
      * @author booty
-     * @since 2023/07/31 11:28
+     *
      */
     public U orderColumn(String columnName, boolean isDesc) {
         if (this.config.orderColumnMap == null) {
@@ -253,7 +253,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code Builder }
      * @author booty
-     * @since 2023/09/06 16:04
+     *
      */
     public U allPost(boolean b) {
         this.config.allPost = b;
@@ -266,7 +266,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code Builder }
      * @author booty
-     * @since 2023/09/07 10:20
+     *
      */
     public U enableOrigins(boolean b) {
         this.config.enableOrigins = b;
@@ -279,7 +279,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param url url
      * @return {@code Builder }
      * @author booty
-     * @since 2023/09/07 10:14
+     *
      */
     public U baseUrl(String url) {
         if (url == null || url.length() == 0) {
@@ -302,7 +302,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/09/18 09:37
+     *
      */
     public U fileOverride(boolean b) {
         this.config.fileOverride = b;
@@ -316,7 +316,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/09/18 09:37
+     *
      */
     public U generateInsert(boolean b) {
         this.config.generateInsert = b;
@@ -330,7 +330,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/09/18 09:36
+     *
      */
     public U generateUpdate(boolean b) {
         this.config.generateUpdate = b;
@@ -343,7 +343,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/09/18 09:36
+     *
      */
     public U generateSelect(boolean b) {
         this.config.generateSelect = b;
@@ -356,7 +356,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/09/18 09:36
+     *
      */
     public U generateExport(boolean b) {
         this.config.generateExport = b;
@@ -369,7 +369,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/09/18 09:36
+     *
      */
     public U generateImport(boolean b) {
         this.config.generateImport = b;
@@ -382,7 +382,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/10/23
+     *
      */
     public U generateDelete(boolean b) {
         this.config.generateDelete = b;
@@ -396,7 +396,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/11/02
+     *
      */
     public U restStyle(boolean b) {
         this.config.restStyle = b;
@@ -410,7 +410,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/12/19
+     *
      */
     public U exportOnVO(boolean b) {
         this.config.exportOnVO = b;
@@ -423,7 +423,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/12/19
+     *
      */
     public U importOnVO(boolean b) {
         this.config.importOnVO = b;
@@ -436,7 +436,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param b b
      * @return {@code U }
      * @author booty
-     * @since 2023/12/19
+     *
      */
     public U fieldAnnotationOnVO(boolean b) {
         this.config.fieldAnnotationOnVO = b;

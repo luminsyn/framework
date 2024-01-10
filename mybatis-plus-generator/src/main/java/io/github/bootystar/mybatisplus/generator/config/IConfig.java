@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * @author booty
- * @since 2023/9/15 16:54
+ *
  */
 public interface IConfig {
     Map<String, Object>  renderData(TableInfo tableInfo);

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author booty
- * @since 2023/10/30
+ *
  */
 @Configuration
 @ConditionalOnBean(MybatisPlusAutoConfiguration.class)

@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * 消息发送api
  * @author booty
- * @since 2023/6/19 15:52
+ * 
  */
 public class MessageApi {
 
@@ -33,7 +33,7 @@ public class MessageApi {
      * @param id2         副行业id
      * @return {@code ResponseBase }
      * @author booty
-     * @since 2023/06/19 08:58
+     * 
      */
     public static ResponseBase setIndustry(String accessToken, Integer id1,Integer id2){
         String url = POST_JSON_SET_INDUSTRY.replace("ACCESS_TOKEN", accessToken);
@@ -57,7 +57,7 @@ public class MessageApi {
      * @param accessToken 访问令牌
      * @return {@code Industry }
      * @author booty
-     * @since 2023/06/16 17:10
+     * 
      */
     public static ResponseIndustry getIndustry(String accessToken){
         String url = GET_QUERY_INDUSTRY.replace("ACCESS_TOKEN", accessToken);
@@ -97,7 +97,7 @@ public class MessageApi {
      * @param shortId     短id
      * @return {@code ResponseBase }
      * @author booty
-     * @since 2023/06/19 09:04
+     * 
      */
     public static ResponseTemplateMessage addTemplate(String accessToken, String shortId){
         String url = POST_JSON_ADD_TEMPLATE.replace("ACCESS_TOKEN", accessToken);
@@ -121,7 +121,7 @@ public class MessageApi {
      * @param accessToken 访问令牌
      * @return {@code Templates }
      * @author booty
-     * @since 2023/06/19 09:11
+     * 
      */
     public static ResponseTemplateMessage getAllPrivateTemplate(String accessToken){
         String url = GET_DELETE_TEMPLATE.replace("ACCESS_TOKEN", accessToken);
@@ -144,7 +144,7 @@ public class MessageApi {
      * @param templateId  模板id
      * @return {@code ResponseBase }
      * @author booty
-     * @since 2023/06/19 09:19
+     * 
      */
     public static ResponseBase deleteTemplate(String accessToken, String templateId){
         String url = POST_JSON_DELETE_TEMPLATE.replace("ACCESS_TOKEN", accessToken);
@@ -199,7 +199,7 @@ public class MessageApi {
      * @param keywords            关键字
      * @return {@code Map<?,?> }
      * @author booty
-     * @since 2023/06/19 11:35
+     * 
      */
     public static Map<?,?> getSendBody(String openId, String templateId, String url, String miniProgramOpenId, String miniProgramPagePath, String clientMsgId, String... keywords){
 
@@ -274,7 +274,7 @@ public class MessageApi {
      * @param keywordMap          防重入id
      * @return {@code Map<?,?> }
      * @author booty
-     * @since 2023/06/19 14:26
+     *
      */
     public static Map<?,?> getSendBody(String openId,String templateId, String url,String miniProgramOpenId,String miniProgramPagePath, String clientMsgId,  Map<?, ?> keywordMap){
         Map<String, Object> sendBody = new HashMap<>();
@@ -312,7 +312,7 @@ public class MessageApi {
      * @param sourceMap 源图
      * @return {@code Map<?,?> }
      * @author booty
-     * @since 2023/06/19 16:03
+     *
      */
     public static Map<?,?> generatorDataMap(Map<?, ?> sourceMap){
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
@@ -338,7 +338,7 @@ public class MessageApi {
      * @param params      完整消息体
      * @return {@code ResponseBase }
      * @author booty
-     * @since 2023/06/19 09:22
+     *
      */
     public static ResponseBase sendMsgByMap(String accessToken, Map<?,?> params){
         String url = POST_JSON_SEND_TEMPLATE.replace("ACCESS_TOKEN", accessToken);

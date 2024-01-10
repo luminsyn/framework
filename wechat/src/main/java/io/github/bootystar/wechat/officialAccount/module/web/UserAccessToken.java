@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 /**
  * 用户AccessToken
  * @author booty
- * @since 2023/6/4 10:25
+ *
  */
 @Data
 public class UserAccessToken extends ResponseBase {

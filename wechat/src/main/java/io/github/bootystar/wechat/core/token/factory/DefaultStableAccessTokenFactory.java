@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * 默认稳定令牌工厂
  * @author booty
- * @since 2023/6/16 15:41
+ *
  */
 public class DefaultStableAccessTokenFactory implements StableAccessTokenFactory {
 

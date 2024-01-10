@@ -7,7 +7,7 @@ import lombok.Data;
  * 件类型，scancode_push
  * 消息类型，event
  * @author booty
- * @since 2023/6/13 13:47
+ *
  */
 @Data
 public class ScanCodePush {

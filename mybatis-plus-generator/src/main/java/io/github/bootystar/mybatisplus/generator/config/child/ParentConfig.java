@@ -7,7 +7,7 @@ import lombok.Getter;
 
 /**
  * @author booty
- * @since 2023/9/15 14:49
+ *
  */
 @Data
 public class ParentConfig extends ConfigBase {
@@ -26,7 +26,7 @@ public class ParentConfig extends ConfigBase {
     /**
      * 构造器
      * @author booty
-     * @since 2023/12/19
+     *
      */
     public static class Builder extends ConfigBaseBuilder<ParentConfig, Builder> {
 
@@ -47,7 +47,7 @@ public class ParentConfig extends ConfigBase {
          * @param b b
          * @return {@code U }
          * @author booty
-         * @since 2023/09/18 11:32
+         *
          */
         public Builder showServiceImplMethod(boolean b) {
             this.config.showServiceImplMethod = b;
@@ -60,7 +60,7 @@ public class ParentConfig extends ConfigBase {
          * @param b b
          * @return {@code U }
          * @author booty
-         * @since 2023/09/18 11:32
+         *
          */
         public Builder showMapperMethod(boolean b) {
             this.config.showMapperMethod = b;

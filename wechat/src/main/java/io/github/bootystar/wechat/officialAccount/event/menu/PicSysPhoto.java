@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 弹出系统拍照发图的事件推送
  * @author booty
- * @since 2023/6/13 13:51
+ *
  */
 @Data
 public class PicSysPhoto {

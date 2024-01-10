@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 通用返回类型
  * @author booty
- * @since 2023/7/13 11:03
+ *
  */
 @Data
 public class Result<T> {
