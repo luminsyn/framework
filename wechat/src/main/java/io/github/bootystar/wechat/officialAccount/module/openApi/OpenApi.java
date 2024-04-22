@@ -116,7 +116,7 @@ public class OpenApi {
         }
          */
         ResponseQueryQuota queryQuota = JSON.parseObject(result, ResponseQueryQuota.class);
-        if (queryQuota.getErrcode()!=0){
+        if (queryQuota.getErrcode()!=null && queryQuota.getErrcode()!=0){
             throw new ResponseException(queryQuota);
         }
         return queryQuota;
@@ -156,7 +156,7 @@ public class OpenApi {
           }
          */
         ResponseQueryRid ridEntity = JSON.parseObject(result, ResponseQueryRid.class);
-        if (ridEntity.getErrcode()!=0){
+        if (ridEntity.getErrcode()!=null && ridEntity.getErrcode()!=0){
             throw new ResponseException(ridEntity);
         }
         return ridEntity;
