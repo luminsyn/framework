@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package.Mapper}.${table.mapperName}">
+
+#if(${enableCache})
+    <!-- 开启二级缓存 -->
+    <cache type="${cacheClassName}"/>
+
+#end
+#if(${baseResultMap})
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="${package.Entity}.${entity}">
+#foreach($field in ${table.fields})
+#if(${field.keyFlag})##生成主键排在第一位
+        <id column="${field.name}" property="${field.propertyName}" />
+#end
+#end
+#foreach($field in ${table.commonFields})##生成公共字段
+        <result column="${field.name}" property="${field.propertyName}" />
+#end
+#foreach($field in ${table.fields})
+#if(!${field.keyFlag})##生成普通字段
+        <result column="${field.name}" property="${field.propertyName}" />
+#end
+#end
+    </resultMap>
+
+#end
+    #if(${resultMapForVO})
+    <!-- vo查询映射结果 -->
+    <resultMap id="voMap" type="${basePackage}.${VOPackage}.${entity}VO">
+        #foreach($field in ${table.fields})
+            #if(${field.keyFlag})##生成主键排在第一位
+        <id column="${field.name}" property="${field.propertyName}" />
+            #end
+        #end
+        #foreach($field in ${table.commonFields})##生成公共字段
+        <result column="${field.name}" property="${field.propertyName}" />
+        #end
+        #foreach($field in ${table.fields})
+            #if(${field.keyFlag})##生成普通字段
+            #elseif(${field.logicDeleteField})
+            #else
+        <result column="${field.name}" property="${field.propertyName}" />
+            #end
+        #end
+    </resultMap>
+
+    #end
+#if(${baseColumnList})
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+#foreach($field in ${table.commonFields})
+        ${field.columnName},
+#end
+        ${table.fieldNames}
+    </sql>
+
+#end
+
+    <select id="listByMap"#if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
+        select
+        a.${shift8}
+        from
+##         ${schemaName} ${table.name} a
+        `${table.name}` a
+        <where>
+#foreach($field in ${table.fields})
+    #if(${field.logicDeleteField})
+        and a.`${field.columnName}` = 0
+    #end
+#end
+            <if test="map!=null">
+#foreach($field in ${table.fields})
+    #if(${field.logicDeleteField})
+##                and a.${field.columnName} = 0
+    #elseif(${field.keyFlag})
+                <if test="map.primaryKey!=null">
+                    and a.`${field.columnName}` = ${shift3}${shiftLeft}map.primaryKey${shiftRight}
+                </if>
+                <if test="map.${field.propertyName}!=null">
+                    and a.`${field.columnName}` = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
+                </if>
+                <if test="map.${field.propertyName}List!=null and map.${field.propertyName}List.size()>0">
+                    and a.`${field.columnName}` in
+                    <foreach collection="map.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                        ${shift3}${shiftLeft}prop${shiftRight}
+                    </foreach>
+                </if>
+    #elseif($selectExcludeFields.contains(${field.propertyName}))
+    #else
+        #if(${field.propertyType} == "String")
+                <if test="map.${field.propertyName}!=null and map.${field.propertyName}.length()>0">
+                    and a.`${field.columnName}` = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
+                </if>
+                <if test="map.${field.propertyName}Like !=null and map.${field.propertyName}Like.length()>0">
+                    and a.`${field.columnName}` like concat('${shift5}',${shift3}${shiftLeft}map.${field.propertyName}Like${shiftRight},'${shift5}')
+                </if>
+        #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
+                <if test="map.${field.propertyName}!=null">
+                    and a.`${field.columnName}` = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
+                </if>
+                <if test="map.${field.propertyName}Start!=null">
+                    and a.`${field.columnName}` &gt;= ${shift3}${shiftLeft}map.${field.propertyName}Start${shiftRight}
+                </if>
+                <if test="map.${field.propertyName}End!=null">
+                    and a.`${field.columnName}` &lt;= ${shift3}${shiftLeft}map.${field.propertyName}End${shiftRight}
+                </if>
+        #elseif(${field.propertyType} == "Integer"||${field.propertyType} == "Long")
+                <if test="map.${field.propertyName}!=null">
+                    and a.`${field.columnName}` = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
+                </if>
+                <if test="map.${field.propertyName}List!=null and map.${field.propertyName}List.size()>0">
+                    and a.`${field.columnName}` in
+                    <foreach collection="map.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                        ${shift3}${shiftLeft}prop${shiftRight}
+                    </foreach>
+                </if>
+        #else
+                <if test="map.${field.propertyName}!=null">
+                    and a.`${field.columnName}` = ${shift3}${shiftLeft}map.${field.propertyName}${shiftRight}
+                </if>
+        #end
+    #end
+#end
+## ----------  END 字段循环遍历  ----------
+            </if>
+        </where>
+        #if(${orderBySql})
+        order by ${orderBySql}
+        #end
+    </select>
+
+
+</mapper>

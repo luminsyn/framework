@@ -8,29 +8,34 @@
     <artifactId>common</artifactId>
     <version>${revision}</version>
     <modules>
-        <module>tool</module>
-        <module>wechat</module>
-        <module>mybatis-plus-generator</module>
+        <module>booty-helper</module>
+        <module>booty-wechat-api</module>
+        <module>booty-mybatis-plus-generator</module>
         <module>booty-spring-boot-starter</module>
     </modules>
 
     <properties>
         <!-- 全局版本控制，如果要修改版本号，修改此处即可-->
-<!--        <revision>1.0.2</revision>-->
-        <revision>1.0.2-SNAPSHOT</revision>
-
+        <revision>1.0.2</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-<!--        <java.version>1.8</java.version>-->
+        <java.version>1.8</java.version>
+        <spring.version>5.3.31</spring.version>
+        <springboot.version>2.7.18</springboot.version>
+        <easyexcel.version>3.3.3</easyexcel.version>
+        <minio.version>8.5.9</minio.version>
+        <mybatisplus.version>3.5.3</mybatisplus.version>
+        <velocity.engine.version>2.3</velocity.engine.version>
+        <fastjson2.version>2.0.25</fastjson2.version>
     </properties>
 
 
     <packaging>pom</packaging>
     <name>common</name>
-    <url>https://github.com/bootystar</url>
-    <description>bootystar's common utils</description>
+    <url>https://github.com/bootystar/common</url>
+    <description>project by bootystar</description>
     <!-- 开源签名证书 -->
     <licenses>
         <license>
@@ -49,7 +54,7 @@
     <developers>
         <developer>
             <name>bootystar</name>
-            <email>604647004@qq.com</email>
+            <email>bootystar@qq.com</email>
             <organization>https://github.com/bootystar</organization>
             <roles>
                 <role>Developer</role>
@@ -57,25 +62,23 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-
-
+    
     <dependencies>
         <!-- 全局单元测试 -->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter-engine</artifactId>-->
-<!--            <version>5.5.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.5.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
-
-
+    
     <profiles>
         <profile>
             <id>default</id>
@@ -95,6 +98,24 @@
             </distributionManagement>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <!--跳过GPG签名-->
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>flatten-maven-plugin</artifactId>
@@ -166,23 +187,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-<!--                        <configuration>-->
-<!--                            <skip>true</skip>-->
-<!--                        </configuration>-->
                     </plugin>
                 </plugins>
             </build>

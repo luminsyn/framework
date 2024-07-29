@@ -1,0 +1,66 @@
+package ${package.Service};
+
+import ${package.Entity}.${entity};
+import ${superServiceClassPackage};
+#if(${generateImport}||${generateExport})
+import java.io.InputStream;
+import java.io.OutputStream;
+#end
+#if(${generateInsert})
+import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
+#end
+#if(${generateUpdate})
+import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
+#end
+
+#if(${generateSelect})
+import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+import ${basePackage}.${VOPackage}.${entity}VO;
+import java.io.Serializable;
+#end
+
+
+/**
+ * $!{table.comment} 服务类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${kotlin})
+interface ${table.serviceName} : ${superServiceClass}<${entity}>
+#else
+public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+
+    #if(${generateInsert})
+
+    ${entity}VO insertByDTO(${entity}InsertDTO s);
+    #end
+    #if(${generateUpdate})
+
+    boolean updateByDTO(${entity}UpdateDTO s);
+    #end
+    #if(${generateSelect})
+
+    ${entity}VO voById(Serializable id);
+
+    ${entity}VO oneByDTO(${entity}SelectDTO s);
+
+    List<${entity}VO> listByDTO(${entity}SelectDTO s);
+
+    IPage<${entity}VO> pageByDTO(${entity}SelectDTO s, Long current, Long size);
+        #if(${generateExport})
+
+    <U> void exportExcel(${entity}SelectDTO s, OutputStream os, Class<U> clazz);
+        #end
+    #end
+    #if(${generateImport})
+
+    <U> boolean importExcel(InputStream is, Class<U> clazz);
+
+    <U> void exportTemplate(OutputStream os, Class<U> clazz);
+    #end
+
+}
+#end
