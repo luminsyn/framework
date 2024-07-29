@@ -17,5 +17,6 @@ mybatis-plus:
 logging:
   level:
     root: info
+    io.github.bootystar: debug
     bootystar.test.mapper: debug
 

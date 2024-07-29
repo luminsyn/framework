@@ -17,7 +17,7 @@ public class ParentGenerator {
 
         generator
                 .globalConfigBuilder()
-                .dateType(DateType.ONLY_DATE)
+                .dateType(DateType.TIME_PACK)
 //                .enableSwagger()
                 .outputDir(projectPath+ "/aa-test/src/main/java")
         ;
