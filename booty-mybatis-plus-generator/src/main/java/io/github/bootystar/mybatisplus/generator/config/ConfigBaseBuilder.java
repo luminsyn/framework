@@ -1,5 +1,6 @@
 package io.github.bootystar.mybatisplus.generator.config;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -435,6 +436,62 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
         this.config.returnResultMethodName= null;
         return this.builder;
     }
+
+    /**
+     * 指定controller分页的实体类以及静态方法或构造器
+     * 指定的方法需要接收{@link com.baomidou.mybatisplus.core.metadata.IPage} 作为参数
+     * 若未指定方法不为静态或构造器,会使用默认返回值替代
+     *
+     * @param methodReference 方法参考
+     * @return {@link U }
+     * @author booty
+     */
+    public U pageMethod(SFunction<IPage<?>, Object> methodReference){
+        try {
+            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
+            lambdaMethod.setAccessible(Boolean.TRUE);
+            SerializedLambda serializedLambda  = (SerializedLambda) lambdaMethod.invoke(methodReference);
+            String methodName = serializedLambda.getImplMethodName();
+            String fullClassName = serializedLambda.getImplClass().replace("/", ".");
+            Class<?> clazz = Class.forName(fullClassName);
+            TypeVariable<? extends Class<?>>[] typeParameters = clazz.getTypeParameters();
+            try {
+                Method returnMethod = clazz.getMethod(methodName);
+                int modifiers = returnMethod.getModifiers();
+                if (Modifier.isStatic(modifiers)){
+                    methodName=clazz.getSimpleName()+"."+methodName;
+                }else{
+                    log.warn("page method not a static method !!! may produce error code");
+                    methodName="new "+clazz.getSimpleName()+"."+methodName;
+                }
+            }catch (NoSuchMethodException e){
+                clazz.getConstructor(IPage.class);
+                methodName="new "+clazz.getSimpleName();
+            }
+            this.config.pageResultClassPackage=clazz.getPackage().getName();
+            this.config.pageResultClass=clazz.getSimpleName();
+            this.config.pageResultGenericType = typeParameters.length>0;
+            this.config.pageResultMethodName= methodName;
+        } catch (Exception e){
+            log.warn("can't resolve page method , use default page instead");
+        }
+        return this.builder;
+    }
+
+    /**
+     * 删除分页方法
+     *
+     * @return {@link U }
+     * @author booty
+     */
+    public U removePageMethod(){
+        this.config.pageResultClassPackage=null;
+        this.config.pageResultClass=null;
+        this.config.pageResultGenericType = false;
+        this.config.pageResultMethodName= null;
+        return this.builder;
+    }
+    
 
 
 }

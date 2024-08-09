@@ -151,6 +151,26 @@ public abstract class ConfigBase implements IConfig {
      */
     protected String returnResultMethodName;
 
+    /**
+     * 返回结果类所在包
+     */
+    protected String pageResultClassPackage;
+
+    /**
+     * 返回结果是否支持泛型
+     */
+    protected boolean pageResultGenericType;
+    /**
+     * 返回结果类
+     */
+    protected String pageResultClass;
+
+    /**
+     * 返回方法
+     */
+    protected String pageResultMethodName;
+    
+
     // ------------------controller相关配置----------------
 
     /**
