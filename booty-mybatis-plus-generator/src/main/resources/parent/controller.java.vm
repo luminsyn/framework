@@ -114,7 +114,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO DTO){
     #else
-    public ${entity}VO insert(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}InsertDTO DTO){
+    public ${entity}VO insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end ${entity}InsertDTO DTO){
     #end
 ##        ${entity}VO result = baseService.insertByDTO(DTO);
     #if(${returnResultClass})
@@ -174,7 +174,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO DTO){
     #else
-    public Boolean update(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}UpdateDTO DTO){
+    public Boolean update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end ${entity}UpdateDTO DTO){
     #end
 ##        Boolean result = baseService.updateByDTO(DTO);
     #if(${returnResultClass})

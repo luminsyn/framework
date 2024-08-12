@@ -173,7 +173,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO DTO){
     #else
-    public Boolean update(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end ${entity}UpdateDTO DTO){
+    public Boolean update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end ${entity}UpdateDTO DTO){
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.updateByDTO(DTO));
