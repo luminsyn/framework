@@ -1,11 +1,9 @@
-#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  io.github.bootystar.autoconfigure.databind.ParamAutoConfiguration,\
-#  io.github.bootystar.autoconfigure.mybatisplus.MybatisPlusInterceptorAutoConfiguration,\
-#  io.github.bootystar.autoconfigure.easyexcel.EasyExcelInitializer,\
-#  io.github.bootystar.autoconfigure.Prop,\
-#  io.github.bootystar.autoconfigure.minio.MinioAutoConfig
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.bootystar.autoconfigure.InitializingCustomConfig
+  io.github.bootystar.autoconfigure.Config4Minio,\
+  io.github.bootystar.autoconfigure.Config4EasyExcel,\
+  io.github.bootystar.autoconfigure.Config4MybatisPlus,\
+  io.github.bootystar.autoconfigure.Config4databind
+
 
 
 

@@ -6,8 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "booty.easy-excel")
 @Data
 public class EasyExcelProp {
-
     private Boolean enhancedConverter = true;
-
-
 }

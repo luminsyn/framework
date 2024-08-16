@@ -6,6 +6,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -29,11 +30,13 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {
+    
     @Override
-    public <S> V insertByDTO(S s) {
+    @SuppressWarnings("unchecked")
+    public <S,U> U insertByDTO(S s) {
         T entity = this.toEntity(s);
         super.save(entity);
-        return toVO(entity);
+        return (U)this.toVO(entity);
     }
 
     @Override
@@ -52,14 +55,7 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
     public V voById(Serializable id) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("primaryKey", id);
-        List<V> vs = this.listByDTO(map);
-        if (vs == null || vs.isEmpty()) {
-            return null;
-        }
-        if(vs.size() > 1) {
-            throw new RuntimeException("error query => required one but found"+vs.size());
-        }
-        return vs.get(0);
+        return this.oneByDTO(map);
     }
 
     @Override
@@ -75,21 +71,14 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
             return null;
         }
         if(vs.size() > 1) {
-            throw new RuntimeException("error query => required one but found"+vs.size());
+            log.warn("error query => required one but found{}", vs.size());
         }
         return vs.get(0);
     }
 
     @Override
     public <S, U> U oneByDTO(S s, Class<U> clazz) {
-        List<U> vs = listByDTO(s,clazz);
-        if (vs == null || vs.isEmpty()) {
-            return null;
-        }
-        if(vs.size() > 1) {
-            throw new RuntimeException("error query => required one but found"+vs.size());
-        }
-        return vs.get(0);
+        return this.toTarget(oneByDTO(s),clazz);
     }
 
     @Override
@@ -138,14 +127,18 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
 
     @Override
     public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz) {
-        List<U> voList = listByDTO(s,clazz);
-        EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
+        this.exportExcel(s, os, clazz, null);
     }
 
     @Override
     public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Collection<String> includeFields) {
         List<U> voList = listByDTO(s,clazz);
-        EasyExcel.write(os, clazz).includeColumnFieldNames(includeFields).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
+        ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
+        if (includeFields != null && !includeFields.isEmpty()) {
+            builder.includeColumnFieldNames(includeFields)
+            ;
+        }
+        builder.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
 
     @Override
@@ -155,18 +148,14 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
 
     @Override
     public <U> boolean importExcel(InputStream is, Class<U> clazz) {
-        List<U> cachedDataList = this.processImportData(is,clazz);
+        List<U> cachedDataList = this.importPreHandle(is,clazz);
         if (cachedDataList == null || cachedDataList.isEmpty()) return false;
-        List<T> entityList = this.processImportData(cachedDataList);
+        List<T> entityList = this.importPostHandle(cachedDataList);
         return super.saveBatch(entityList);
     }
 
-    protected <U> List<T> processImportData(List<U> cachedDataList) {
-        return cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
-    }
-
-    protected <U> List<U> processImportData(InputStream is, Class<U> clazz) {
-        List<U> cachedDataList = new LinkedList<>();
+    protected <U> List<U> importPreHandle(InputStream is, Class<U> clazz) {
+        List<U> cachedDataList = new ArrayList<>(128);
         ReadListener<U> listener = new ReadListener<U>() {
             @Override
             public void invoke(U data, AnalysisContext context) {
@@ -187,13 +176,19 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         }
         return cachedDataList;
     }
+    
+    protected <U> List<T> importPostHandle(List<U> cachedDataList) {
+        return cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
+    }
 
+    
     @Override
+    @SuppressWarnings("unchecked")
     public T toEntity(Object source) {
         T t = null;
         try {
             ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-            Class<T> clazz = (Class) pt.getActualTypeArguments()[1];
+            Class<T> clazz = (Class<T>) pt.getActualTypeArguments()[1];
             t = toTarget(source, clazz);
         } catch (Exception e) {
             log.error("toEntity failed =>",e);
@@ -203,11 +198,12 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public V toVO(Object source) {
         V v = null;
         try {
             ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-            Class<V> clazz = (Class) pt.getActualTypeArguments()[2];
+            Class<V> clazz = (Class<V>) pt.getActualTypeArguments()[2];
             v = toTarget(source, clazz);
         } catch (Exception e) {
             log.error("toVO failed =>",e);
@@ -217,12 +213,16 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <U> U toTarget(Object source, Class<U> clazz) {
+        if (source == null || clazz == null) {
+            return null;
+        }
+        if (clazz.isInstance(source)) {
+            return (U) source;
+        }
         U target = null;
         try {
-            if (clazz==null){
-                return null;
-            }
             target = clazz.newInstance();
             BeanUtils.copyProperties(source, target);
         } catch (Exception e) {
@@ -233,12 +233,13 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Object> toMap(Object source) {
         if (source==null){
             return new HashMap<>();
         }
         if (source instanceof Map) {
-            return (Map) source;
+            return (Map<String, Object>) source;
         }
         Map<String, Object> map = new LinkedHashMap<>();
         Class<?> clazz = source.getClass();
