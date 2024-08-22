@@ -12,6 +12,7 @@
         <module>booty-wechat-api</module>
         <module>booty-mybatis-plus-generator</module>
         <module>booty-spring-boot-starter</module>
+        <module>booty-all</module>
     </modules>
 
     <properties>

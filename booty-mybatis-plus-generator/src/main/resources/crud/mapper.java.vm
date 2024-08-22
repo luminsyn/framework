@@ -6,9 +6,9 @@ import ${superMapperClassPackage};
 import ${mapperAnnotationClass.name};
 #end
 import java.util.List;
+import java.util.Map;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
-import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
 import ${basePackage}.${VOPackage}.${entity}VO;
 
 
@@ -26,7 +26,7 @@ interface ${table.mapperName} : ${superMapperClass}<${entity}>
 #else
 public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
 
-    List<${entity}VO> listByMap(@Param("map") ${entity}SelectDTO map, IPage<${entity}VO> page);
+    List<${entity}VO> listByMap(@Param("map") Map<String,Object> map, IPage<${entity}VO> page);
 
 }
 #end

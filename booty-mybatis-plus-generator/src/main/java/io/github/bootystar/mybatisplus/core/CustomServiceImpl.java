@@ -32,11 +32,10 @@ import java.util.stream.Collectors;
 public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {
     
     @Override
-    @SuppressWarnings("unchecked")
-    public <S,U> U insertByDTO(S s) {
+    public <S> V insertByDTO(S s) {
         T entity = this.toEntity(s);
         super.save(entity);
-        return (U)this.toVO(entity);
+        return this.toVO(entity);
     }
 
     @Override
@@ -142,7 +141,7 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
     }
 
     @Override
-    public <U> void exportTemplate(OutputStream os, Class<U> clazz) {
+    public <U> void excelTemplate(OutputStream os, Class<U> clazz) {
         EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
     }
 
@@ -246,35 +245,20 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         Field[] fields = clazz.getDeclaredFields();
         try {
             for (Field field : fields) {
-                if (unAccessibleFiled(field)){
+                field.setAccessible(true);
+                int modifiers = field.getModifiers();
+                if (Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)){
                     continue;
-                }
+                } 
                 String key = field.getName();
                 Object value = field.get(source);
                 if (value != null) {
-                    map.put(key, value);
+                    map.put(key, value);   
                 }
             }
         } catch (Exception e) {
-            log.error("toMap failed =>",e);
             throw new RuntimeException(e);
         }
         return map;
-    }
-
-
-    private static boolean unAccessibleFiled(Field field){
-        field.setAccessible(true);
-        int modifiers = field.getModifiers();
-        if (Modifier.isFinal(modifiers)){
-            return true;
-        }
-        if (Modifier.isStatic(modifiers)){
-            return true;
-        }
-        if (Modifier.isNative(modifiers)){
-            return true;
-        }
-        return false;
     }
 }

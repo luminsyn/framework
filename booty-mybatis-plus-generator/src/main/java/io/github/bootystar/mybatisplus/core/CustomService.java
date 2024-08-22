@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public interface CustomService<T,V> extends IService<T> {
 
-    <S,U> U insertByDTO(S s);
+    <S> V insertByDTO(S s);
 
     <S> boolean insertBatchByDTO(Collection<S> sCollection);
 
@@ -43,7 +43,7 @@ public interface CustomService<T,V> extends IService<T> {
 
     <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Collection<String> includeFields);
 
-    <U> void exportTemplate(OutputStream os, Class<U> clazz);
+    <U> void excelTemplate(OutputStream os, Class<U> clazz);
 
     <U> boolean importExcel(InputStream is, Class<U> clazz);
 

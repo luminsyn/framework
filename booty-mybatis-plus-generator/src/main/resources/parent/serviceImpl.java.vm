@@ -6,20 +6,19 @@ import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
-
 #if(${showServiceImplMethod})
+#if(${generateSelect})
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import java.util.List;
+#end
 #if(${generateDelete}||${generateSelect})
 import java.io.Serializable;
 #end
-#if(${generateImport}||${generateSelect})
-import java.util.List;
-#end
-#if(${generateSelect})
-import com.baomidou.mybatisplus.core.metadata.IPage;
-#end
 #if(${generateImport})
-import java.util.stream.Collectors;
 import java.io.InputStream;
+#end
+#if(${generateExport})
+import java.io.OutputStream;
 #end
 #end
 
@@ -38,30 +37,6 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO> implements ${table.serviceName} {
 
 #if(${showServiceImplMethod})
-    #if(${generateSelect})
-    @Override
-    protected void voPostProcess(List<${entity}VO> dataList) {
-
-    }
-
-    @Override
-    public ${entity}VO voById(Serializable id){
-        return super.voById(id);
-    }
-
-    @Override
-    public <S> List<${entity}VO> listByDTO(S s){
-##        List<${entity}VO> voList = baseMapper.listByMap(toMap(DTO), null);
-##        this.voPostProcess(voList);
-##        return voList;
-        return super.listByDTO(s);
-    }
-
-    @Override
-    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size){
-        return super.pageByDTO(s,current,size);
-    }
-    #end
     #if(${generateInsert})
 
     @Override
@@ -92,20 +67,34 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return super.removeById(id);
     }
     #end
+    #if(${generateSelect})
+
+    @Override
+    public ${entity}VO voById(Serializable id){
+        return super.voById(id);
+    }
+
+    @Override
+    public <S> List<${entity}VO> listByDTO(S s){
+        return super.listByDTO(s);
+    }
+
+    @Override
+    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size){
+        return super.pageByDTO(s,current,size);
+    }
+    #end
+    #if(${generateExport})
+
+    @Override
+    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz) {
+        super.exportExcel(s, os, clazz);
+    }
+    #end
     #if(${generateImport})
 
     @Override
     public <U> boolean importExcel(InputStream is, Class<U> clazz) {
-##        List<U> cachedDataList = super.processImportData(is,clazz);
-##        if (cachedDataList == null || cachedDataList.isEmpty()) return false;
-##        List<${entity}> entityList = cachedDataList.stream()
-##            .map(e->{
-##                ${entity} entity = this.toEntity(e);
-##
-##
-##                return entity;
-##            }).collect(Collectors.toList());
-##        return super.saveBatch(entityList);
         return super.importExcel(is,clazz);
     }
     #end

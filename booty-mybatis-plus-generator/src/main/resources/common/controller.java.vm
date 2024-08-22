@@ -2,6 +2,11 @@ package ${package.Controller};
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
 #if(${enableOrigins})
 import org.springframework.web.bind.annotation.CrossOrigin;
 #end
@@ -21,12 +26,7 @@ import io.swagger.v3.oas.annotations.*;
 #elseif(${swagger})
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiModelProperty;
-#end
-#if(${restControllerStyle})
-import org.springframework.web.bind.annotation.RestController;
-#else
-import org.springframework.stereotype.Controller;
+##import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${superControllerClassPackage})
 import ${superControllerClassPackage};
@@ -41,11 +41,13 @@ import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
 #if(${generateUpdate})
 import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
 #end
-
 #if(${generateSelect})
 import java.util.List;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+    #if(${pageResultClass})
+import ${pageResultClassPackage}.${pageResultClass};
+    #end
 #end
 #if(${generateImport}||${generateExport})
 import ${javaApiPackage}.servlet.http.HttpServletResponse;
@@ -53,14 +55,17 @@ import java.io.IOException;
 #end
 #if(${generateImport})
 import org.springframework.web.multipart.MultipartFile;
-#if(!${importOnVO})
+    #if(!${importOnVO})
 import ${basePackage}.${DTOPackage}.${entity}ImportDTO;
-#end
+    #end
 #end
 #if(${generateExport})
-#if(!${exportOnVO})
+    #if(!${generateSelect})
+import java.util.Map;
+    #end
+    #if(!${exportOnVO})
 import ${basePackage}.${DTOPackage}.${entity}ExportDTO;
-#end
+    #end
 #end
 
 /**
@@ -106,21 +111,20 @@ public class ${table.controllerName} {
      * 新增
      * @author ${author}
      * @since ${nowTime}
-     * @param DTO 新增入参对象
+     * @param s 新增入参对象
      * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
      */
     #end
     @PostMapping("/insert")
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO DTO){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s){
     #else
-    public ${entity}VO insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end ${entity}InsertDTO DTO){
+    public ${entity}VO insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s){
     #end
-##        ${entity}VO result = baseService.insertByDTO(DTO);
     #if(${returnResultClass})
-        return ${returnResultMethodName}(baseService.insertByDTO(DTO));
+        return ${returnResultMethodName}(baseService.insertByDTO(s));
     #else
-        return baseService.insertByDTO(DTO);
+        return baseService.insertByDTO(s);
     #end
     }
 ##
@@ -133,17 +137,17 @@ public class ${table.controllerName} {
 ##     * 批量新增
 ##     * @author ${author}
 ##     * @since ${nowTime}
-##     * @param DTOList 新增入参对象列表
+##     * @param s 新增入参对象列表
 ##     * @return #if(${returnResultClass})${returnResultClass}#else Object#end
 ##     */
 ##    #end
 ##    @PostMapping("/insertBatch")
 ##    #if(${returnResultClass})
-##    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDTO> DTOList){
+##    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end insertBatch(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end List<${entity}InsertDTO> s){
 ##    #else
-##    public Boolean insertBatch(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDTO> DTOList){
+##    public Boolean insertBatch(#if(${requestBody})@RequestBody #end#if(${addValidated})@Validated #end List<${entity}InsertDTO> s){
 ##    #end
-##        Boolean result = baseService.insertBatchByDTO(DTOList);
+##        Boolean result = baseService.insertBatchByDTO(s);
 ##    #if(${returnResultClass})
 ##        return ${returnResultMethodName}(result);
 ##    #else
@@ -162,8 +166,8 @@ public class ${table.controllerName} {
      * 修改
      * @author ${author}
      * @since ${nowTime}
-     * @param DTO 修改入参对象
-     * @return #if(${returnResultClass})${returnResultClass}#else Boolean#end
+     * @param s 修改入参对象
+     * @return#if(${returnResultClass}) ${returnResultClass}#else Boolean#end
      */
     #end
     #if(${allPost})
@@ -172,18 +176,18 @@ public class ${table.controllerName} {
     @PutMapping("/update")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO DTO){
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s){
     #else
-    public Boolean update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end ${entity}UpdateDTO DTO){
+    public Boolean update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s){
     #end
-##        Boolean result = baseService.updateByDTO(DTO);
     #if(${returnResultClass})
-        return ${returnResultMethodName}(baseService.updateByDTO(DTO));
+        return ${returnResultMethodName}(baseService.updateByDTO(s));
     #else
-        return baseService.updateByDTO(DTO);
+        return baseService.updateByDTO(s);
     #end
     }
 #end
+#set ( $stringStr = "String" )
 #if(${generateDelete})
 
     #if(${springdoc})
@@ -213,11 +217,10 @@ public class ${table.controllerName} {
         #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(#if(${restStyle})@PathVariable#end String id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(#if(${restStyle})@PathVariable #end${stringStr} id) {
     #else
-    public Boolean delete(#if(${restStyle})@PathVariable#end String id) {
+    public Boolean delete(#if(${restStyle})@PathVariable String id#end${stringStr} id) {
     #end
-##        Boolean result = baseService.removeById(id);
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.removeById(id));
     #else
@@ -254,11 +257,10 @@ public class ${table.controllerName} {
         #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end get(#if(${restStyle})@PathVariable#end String id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end get(#if(${restStyle})@PathVariable#end${stringStr} id){
     #else
-    public ${entity}VO get(#if(${restStyle})@PathVariable#end String id){
+    public ${entity}VO get(#if(${restStyle})@PathVariable#end${stringStr} id){
     #end
-##        ${entity}VO result=baseService.voById(id);
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.voById(id));
     #else
@@ -275,7 +277,7 @@ public class ${table.controllerName} {
      * 列表
      * @author ${author}
      * @since ${nowTime}
-     * @param DTO 查询条件DTO
+     * @param s 查询条件DTO
      * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
      */
     #end
@@ -285,15 +287,14 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO DTO){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s){
     #else
-    public List<${entity}VO> list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO DTO){
+    public List<${entity}VO> list(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s){
     #end
-##        List<${entity}VO> result=baseService.listByDTO(DTO);
     #if(${returnResultClass})
-        return ${returnResultMethodName}(baseService.listByDTO(DTO));
+        return ${returnResultMethodName}(baseService.listByDTO(s));
     #else
-        return baseService.listByDTO(DTO);
+        return baseService.listByDTO(s);
     #end
     }
 
@@ -308,7 +309,7 @@ public class ${table.controllerName} {
      * @since ${nowTime}
      * @param current 页码
      * @param size 每页大小
-     * @param DTO 查询条件DTO
+     * @param s 查询条件DTO
      * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
      */
     #end
@@ -326,20 +327,35 @@ public class ${table.controllerName} {
         #end
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO DTO,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+        #if(${pageResultClass})
+    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+        #else
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){    
+        #end
     #else
-    public IPage<${entity}VO> page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO DTO,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+        #if(${pageResultClass})
+    public ${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+        #else
+    public IPage<${entity}VO> page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s,#if(${restStyle})@PathVariable#end Long current,#if(${restStyle})@PathVariable#end Long size){
+        #end
     #end
-##        IPage<${entity}VO> result=baseService.pageByDTO(DTO,current,size);
     #if(${returnResultClass})
-        return ${returnResultMethodName}(baseService.pageByDTO(DTO,current,size));
+        #if(${pageResultClass})
+        return ${returnResultMethodName}(${pageResultMethodName}(baseService.pageByDTO(s,current,size)));
+        #else
+        return ${returnResultMethodName}(baseService.pageByDTO(s,current,size));
+        #end
     #else
-        return baseService.pageByDTO(DTO,current,size);
+        #if(${pageResultClass})
+        return ${pageResultMethodName}(baseService.pageByDTO(s,current,size));    
+        #else
+        return baseService.pageByDTO(s,current,size);
+        #end
     #end
     }
 #end
-
-#if(${generateExport}&&${generateSelect})
+#if(${generateExport})
+#set($map = "Map<String,Object>")
     #if(${springdoc})
     @Operation(summary = "导出excel")
     #elseif(${swagger})
@@ -349,7 +365,7 @@ public class ${table.controllerName} {
      * 导出excel
      * @author ${author}
      * @since ${nowTime}
-     * @param DTO 查询条件DTO
+     * @param s 查询条件
      */
     #end
     #if(${allPost})
@@ -357,19 +373,22 @@ public class ${table.controllerName} {
     #else
     @GetMapping("/export")
     #end
-    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO DTO, HttpServletResponse response) throws IOException {
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/vnd.ms-excel");
-##        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
-        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+    #if(${generateSelect})
+    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, HttpServletResponse response) throws IOException {
+    #else
+    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${map} s, HttpServletResponse response) throws IOException {    
+    #end
+##        response.setCharacterEncoding("utf-8");
 ##        response.addHeader("Pargam", "no-cache");
 ##        response.addHeader("Cache-Control", "no-cache");
-##        baseService.exportExcel(DTO,response.getOutputStream(), ${entity}ExportDTO.class);
-        baseService.exportExcel(DTO,response.getOutputStream(), #if(${exportOnVO})${entity}VO#else${entity}ExportDTO#end.class);
+##        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+        response.setContentType("application/vnd.ms-excel");
+        baseService.exportExcel(s,response.getOutputStream(),#if(${exportOnVO})${entity}VO#else${entity}ExportDTO#end.class);
     }
-#end
-
+#end    
 #if(${generateImport})
+    
     #if(${springdoc})
     @Operation(summary = "导入excel")
     #elseif(${swagger})
@@ -396,12 +415,10 @@ public class ${table.controllerName} {
             return false;
         #end
         }
-##        Boolean result = baseService.importExcel(file.getInputStream(), ${entity}ImportDTO.class);
-##        Boolean result = baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class));
     #else
-        return baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
+        return baseService.importExcel(file.getInputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     #end
     }
 
@@ -417,18 +434,18 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/exportTemplate")
+    @PostMapping("/template")
     #else
-    @GetMapping("/exportTemplate")
+    @GetMapping("/template")
     #end
-    public void exportTemplate(HttpServletResponse response) throws IOException {
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/vnd.ms-excel");
-##        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
-        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+    public void template(HttpServletResponse response) throws IOException {
+##        response.setCharacterEncoding("utf-8");
 ##        response.addHeader("Pargam", "no-cache");
 ##        response.addHeader("Cache-Control", "no-cache");
-        baseService.exportTemplate(response.getOutputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
+##        response.setHeader("Access-Control-Expose-Headers","Content-Disposition");
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+        response.setContentType("application/vnd.ms-excel");
+        baseService.excelTemplate(response.getOutputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     }
 #end
 

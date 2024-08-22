@@ -3,12 +3,9 @@ package io.github.bootystar.mybatisplus.generator.config;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
+import io.github.bootystar.mybatisplus.util.LambdaUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,24 +37,9 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
     public T build() {
         return this.config;
     }
-
-    /**
-     * 使用jakarta的api
-     * (自java17起移除了javax包,使用jakarta替代)
-     *
-     * @param b b
-     * @return {@code Builder }
-     * @author booty
-     *
-     */
-    public U jakartaApi(boolean b) {
-        if (b) {
-            this.config.javaApiPackage = "jakarta";
-        } else {
-            this.config.javaApiPackage = "javax";
-        }
-        return this.builder;
-    }
+    
+    
+    //=============DTO VO =================
 
     /**
      * DTO所在包
@@ -111,43 +93,208 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
         return this.builder;
     }
 
-    /**
-     * controller是否使用@RequestBody注解
-     *
-     * @param b b
-     * @return {@code Builder }
-     * @author booty
-     *
-     */
-    public U requestBody(boolean b) {
-        this.config.requestBody = b;
-        return this.builder;
-    }
 
     /**
-     * 是否添加校验注解
+     * 开启文件覆盖(vo及dto)
      *
-     * @param b b
-     * @return {@code Builder }
+     * @return {@code U }
      * @author booty
      *
      */
-    public U enableValidated(boolean b) {
-        this.config.enableValidated = b;
+    public U enableFileOverride() {
+        this.config.fileOverride = true;
         return this.builder;
     }
 
 
+
     /**
-     * 是否创建VOResultMap
+     * 不在vo上导出(生成额外ExportDTO)
      *
-     * @param b b
+     * @return {@code U }
+     * @author booty
+     * @since 2023/12/19
+     */
+    public U disableExportOnVO() {
+        this.config.exportOnVO = false;
+        return this.builder;
+    }
+
+    /**
+     * 不在vo上导入(生成额外ImportDTO)
+     *
+     * @return {@code U }
+     * @author booty
+     * @since 2023/12/19
+     */
+    public U disableImportOnVO() {
+        this.config.importOnVO = false;
+        return this.builder;
+    }
+
+    /**
+     * vo上添加@Tablefield属性注释
+     *
+     * @return {@code U }
+     * @author booty
+     * @since 2023/12/19
+     */
+    public U enableFieldAnnotationOnVO() {
+        this.config.fieldAnnotationOnVO = true;
+        return this.builder;
+    }
+    
+    
+    
+
+//===========================controller======================
+    
+    /**
+     * controller请求前缀
+     *
+     * @param url url
      * @return {@code Builder }
      * @author booty
      *
      */
-    public U resultMapForVO(boolean b) {
-        this.config.resultMapForVO = b;
+    public U baseUrl(String url) {
+        if (url == null || url.length() == 0) {
+            this.config.baseUrl = url;
+            return this.builder;
+        }
+        if (!url.startsWith("/")) {
+            url = "/" + url;
+        }
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        this.config.baseUrl = url;
+        return this.builder;
+    }
+
+    /**
+     * controller请求不固定post(使用GET/POST/PUT/DELETE)
+     *
+     * @return {@code Builder }
+     * @author booty
+     *
+     */
+    public U disableAllPost() {
+        this.config.allPost = false;
+        return this.builder;
+    }
+
+    /**
+     * 跨域注解
+     *
+     * @return {@code Builder }
+     * @author booty
+     *
+     */
+    public U enableOrigins() {
+        this.config.enableOrigins =true;
+        return this.builder;
+    }
+
+    /**
+     * 使用jakarta的api
+     * (自java17起移除了javax包,使用jakarta替代)
+     *
+     * @return {@code Builder }
+     * @author booty
+     *
+     */
+    public U enableJakartaApi() {
+        this.config.javaApiPackage = "jakarta";
+        return this.builder;
+    }
+    
+    /**
+     * 启用路径参数(使用@PathVariable注解)
+     *
+     * @return {@code U }
+     * @author booty
+     * @since 2023/11/02
+     */
+    public U enableRestStyle() {
+        this.config.restStyle = true;
+        return this.builder;
+    }
+    
+
+    /**
+     * 启用消息体接收数据(使用@RequestBody注解)
+     *
+     * @return {@code Builder }
+     * @author booty
+     *
+     */
+    public U enableRequestBody() {
+        this.config.requestBody = true;
+        return this.builder;
+    }
+    
+
+    /**
+     * 禁用参数校验注解
+     *
+     * @return {@code Builder }
+     * @author booty
+     *
+     */
+    public U disableValidated() {
+        this.config.enableValidated = false;
+        return this.builder;
+    }
+
+
+    /**
+     * 指定controller的返回结果包装类及方法
+     * 指定的方法需要接收{@link java.lang.Object} 作为参数
+     * 建议静态方法或构造器,或返回自身的对象方法
+     *
+     * @param methodReference 方法引用
+     * @return {@link U }
+     * @author booty
+     */
+    public <R> U returnMethod(SFunction<Object, R> methodReference){
+        LambdaUtil.LambdaMethod lambdaMethod = LambdaUtil.lambdaMethodInfo(methodReference,Object.class);
+        this.config.returnResultClassPackage = lambdaMethod.getClassPackage();
+        this.config.returnResultClass = lambdaMethod.getClassSimpleName();
+        this.config.returnResultMethodName = lambdaMethod.getMethodNameFullStr();
+        this.config.returnResultGenericType = lambdaMethod.isGenericTypeClass();
+        return this.builder;
+    }
+    
+    /**
+     * 指定controller返回的分页包装类及方法
+     * 指定的方法需要接收{@link com.baomidou.mybatisplus.core.metadata.IPage} 作为参数
+     * 若未指定方法不为静态或构造器或返回自身的方法,会使用{@link com.baomidou.mybatisplus.core.metadata.IPage}替代
+     *
+     * @param methodReference 方法参考
+     * @return {@link U }
+     * @author booty
+     */
+    public <O,R> U pageMethod(SFunction<IPage<O>, R> methodReference){
+        LambdaUtil.LambdaMethod lambdaMethod = LambdaUtil.lambdaMethodInfo(methodReference,IPage.class);
+        this.config.pageResultClassPackage = lambdaMethod.getClassPackage();
+        this.config.pageResultClass = lambdaMethod.getClassSimpleName();
+        this.config.pageResultMethodName = lambdaMethod.getMethodNameFullStr();
+        this.config.pageResultGenericType = lambdaMethod.isGenericTypeClass();
+        return this.builder;
+    }
+    
+//==================mapper=======================
+
+    /**
+     * 创建VOResultMap字段映射
+     *
+     * @return {@code Builder }
+     * @author booty
+     *
+     */
+    public U enableResultMapForVO() {
+        this.config.resultMapForVO = true;
         return this.builder;
     }
 
@@ -185,312 +332,88 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
         return this.builder;
     }
 
+    
+
+    //============方法设置================
 
     /**
-     * controller全部使用post请求
+     * 不生成新增方法
      *
-     * @param b b
-     * @return {@code Builder }
-     * @author booty
-     *
-     */
-    public U allPost(boolean b) {
-        this.config.allPost = b;
-        return this.builder;
-    }
-
-    /**
-     * 跨域注解
-     *
-     * @param b b
-     * @return {@code Builder }
-     * @author booty
-     *
-     */
-    public U enableOrigins(boolean b) {
-        this.config.enableOrigins = b;
-        return this.builder;
-    }
-
-    /**
-     * controller请求前缀
-     *
-     * @param url url
-     * @return {@code Builder }
-     * @author booty
-     *
-     */
-    public U baseUrl(String url) {
-        if (url == null || url.length() == 0) {
-            this.config.baseUrl = url;
-            return this.builder;
-        }
-        if (!url.startsWith("/")) {
-            url = "/" + url;
-        }
-        if (url.endsWith("/")) {
-            url = url.substring(0, url.length() - 1);
-        }
-        this.config.baseUrl = url;
-        return this.builder;
-    }
-
-    /**
-     * 是否开启文件覆盖
-     *
-     * @param b b
      * @return {@code U }
      * @author booty
      *
      */
-    public U fileOverride(boolean b) {
-        this.config.fileOverride = b;
+    public U disableInsert() {
+        this.config.generateInsert = false;
         return this.builder;
     }
 
 
     /**
-     * 生成新增方法
+     * 不生成更新方法
      *
-     * @param b b
      * @return {@code U }
      * @author booty
      *
      */
-    public U generateInsert(boolean b) {
-        this.config.generateInsert = b;
+    public U disableUpdate() {
+        this.config.generateUpdate = false;
         return this.builder;
     }
 
-
     /**
-     * 生成更新方法
+     * 不生成查询方法
      *
-     * @param b b
      * @return {@code U }
      * @author booty
      *
      */
-    public U generateUpdate(boolean b) {
-        this.config.generateUpdate = b;
+    public U disableSelect() {
+        this.config.generateSelect = false;
         return this.builder;
     }
 
     /**
-     * 生成查询方法
+     * 不生成导出方法
      *
-     * @param b b
      * @return {@code U }
      * @author booty
      *
      */
-    public U generateSelect(boolean b) {
-        this.config.generateSelect = b;
+    public U disableExport() {
+        this.config.generateExport = false;
         return this.builder;
     }
 
     /**
-     * 生成导出方法
+     * 不生成导入方法
      *
-     * @param b b
      * @return {@code U }
      * @author booty
      *
      */
-    public U generateExport(boolean b) {
-        this.config.generateExport = b;
+    public U disableImport() {
+        this.config.generateImport = false;
         return this.builder;
     }
 
     /**
-     * 生成导入方法
+     * 不生成删除方法
      *
-     * @param b b
-     * @return {@code U }
-     * @author booty
-     *
-     */
-    public U generateImport(boolean b) {
-        this.config.generateImport = b;
-        return this.builder;
-    }
-
-    /**
-     * 生成删除
-     *
-     * @param b b
      * @return {@code U }
      * @author booty
      * @since 2023/10/23
      */
-    public U generateDelete(boolean b) {
-        this.config.generateDelete = b;
+    public U disableDelete() {
+        this.config.generateDelete = false;
         return this.builder;
     }
 
 
-    /**
-     * rest样式
-     *
-     * @param b b
-     * @return {@code U }
-     * @author booty
-     * @since 2023/11/02
-     */
-    public U restStyle(boolean b) {
-        this.config.restStyle = b;
-        return this.builder;
-    }
 
 
-    /**
-     * 在vo上导出
-     *
-     * @param b b
-     * @return {@code U }
-     * @author booty
-     * @since 2023/12/19
-     */
-    public U exportOnVO(boolean b) {
-        this.config.exportOnVO = b;
-        return this.builder;
-    }
 
-    /**
-     * 在vo上导入
-     *
-     * @param b b
-     * @return {@code U }
-     * @author booty
-     * @since 2023/12/19
-     */
-    public U importOnVO(boolean b) {
-        this.config.importOnVO = b;
-        return this.builder;
-    }
-
-    /**
-     * vo上添加属性注释
-     *
-     * @param b b
-     * @return {@code U }
-     * @author booty
-     * @since 2023/12/19
-     */
-    public U fieldAnnotationOnVO(boolean b) {
-        this.config.fieldAnnotationOnVO = b;
-        return this.builder;
-    }
-
-
-    /**
-     * 指定controller返回的实体类以及静态方法或构造器
-     * 若未指定方法不为静态或构造器,会使用默认返回值替代
-     *
-     * @param methodReference 方法引用
-     * @return {@link U }
-     * @author booty
-     */
-    public <Re,Obj> U returnMethod(SFunction<Re, Obj> methodReference){
-        try {
-            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
-            lambdaMethod.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda  = (SerializedLambda) lambdaMethod.invoke(methodReference);
-            String methodName = serializedLambda.getImplMethodName();
-            String fullClassName = serializedLambda.getImplClass().replace("/", ".");
-            Class<?> clazz = Class.forName(fullClassName);
-            TypeVariable<? extends Class<?>>[] typeParameters = clazz.getTypeParameters();
-            try {
-                Method returnMethod = clazz.getMethod(methodName);
-                int modifiers = returnMethod.getModifiers();
-                if (Modifier.isStatic(modifiers)){
-                    methodName=clazz.getSimpleName()+"."+methodName;
-                }else{
-                    log.warn("return method not a static method !!! may produce error code");
-                    methodName="new "+clazz.getSimpleName()+"."+methodName;
-                }
-            }catch (NoSuchMethodException e){
-                clazz.getConstructor(Object.class);
-                methodName="new "+clazz.getSimpleName();
-            }
-            this.config.returnResultClassPackage=clazz.getPackage().getName();
-            this.config.returnResultClass=clazz.getSimpleName();
-            this.config.returnResultGenericType = typeParameters.length>0;
-            this.config.returnResultMethodName= methodName;
-        } catch (Exception e){
-            log.warn("can't resolve return method , use default return instead");
-        }
-        return this.builder;
-    }
-
-    /**
-     * 删除返回方法
-     *
-     * @return {@link U }
-     * @author booty
-     */
-    public U removeReturnMethod(){
-        this.config.returnResultClassPackage=null;
-        this.config.returnResultClass=null;
-        this.config.returnResultGenericType = false;
-        this.config.returnResultMethodName= null;
-        return this.builder;
-    }
-
-    /**
-     * 指定controller分页的实体类以及静态方法或构造器
-     * 指定的方法需要接收{@link com.baomidou.mybatisplus.core.metadata.IPage} 作为参数
-     * 若未指定方法不为静态或构造器,会使用默认返回值替代
-     *
-     * @param methodReference 方法参考
-     * @return {@link U }
-     * @author booty
-     */
-    public U pageMethod(SFunction<IPage<?>, Object> methodReference){
-        try {
-            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
-            lambdaMethod.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda  = (SerializedLambda) lambdaMethod.invoke(methodReference);
-            String methodName = serializedLambda.getImplMethodName();
-            String fullClassName = serializedLambda.getImplClass().replace("/", ".");
-            Class<?> clazz = Class.forName(fullClassName);
-            TypeVariable<? extends Class<?>>[] typeParameters = clazz.getTypeParameters();
-            try {
-                Method returnMethod = clazz.getMethod(methodName);
-                int modifiers = returnMethod.getModifiers();
-                if (Modifier.isStatic(modifiers)){
-                    methodName=clazz.getSimpleName()+"."+methodName;
-                }else{
-                    log.warn("page method not a static method !!! may produce error code");
-                    methodName="new "+clazz.getSimpleName()+"."+methodName;
-                }
-            }catch (NoSuchMethodException e){
-                clazz.getConstructor(IPage.class);
-                methodName="new "+clazz.getSimpleName();
-            }
-            this.config.pageResultClassPackage=clazz.getPackage().getName();
-            this.config.pageResultClass=clazz.getSimpleName();
-            this.config.pageResultGenericType = typeParameters.length>0;
-            this.config.pageResultMethodName= methodName;
-        } catch (Exception e){
-            log.warn("can't resolve page method , use default page instead");
-        }
-        return this.builder;
-    }
-
-    /**
-     * 删除分页方法
-     *
-     * @return {@link U }
-     * @author booty
-     */
-    public U removePageMethod(){
-        this.config.pageResultClassPackage=null;
-        this.config.pageResultClass=null;
-        this.config.pageResultGenericType = false;
-        this.config.pageResultMethodName= null;
-        return this.builder;
-    }
+   
     
 
 

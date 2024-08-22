@@ -40,28 +40,26 @@ public class ParentConfig extends ConfigBase {
 
 
         /**
-         * 显示服务impl的父类方法
+         * 不生成服务impl的父类方法
          *
-         * @param b b
          * @return {@code U }
          * @author booty
          *
          */
-        public Builder showServiceImplMethod(boolean b) {
-            this.config.showServiceImplMethod = b;
+        public Builder disableServiceImplOverrideMethod() {
+            this.config.showServiceImplMethod = false;
             return this;
         }
 
         /**
-         * 显示mapper的父类方法
+         * 不生成mapper的父类方法
          *
-         * @param b b
          * @return {@code U }
          * @author booty
          *
          */
-        public Builder showMapperMethod(boolean b) {
-            this.config.showMapperMethod = b;
+        public Builder disableMapperOverrideMethod() {
+            this.config.showMapperMethod = false;
             return this;
         }
 

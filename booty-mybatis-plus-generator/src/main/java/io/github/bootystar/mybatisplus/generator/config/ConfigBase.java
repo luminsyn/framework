@@ -121,7 +121,9 @@ public abstract class ConfigBase implements IConfig {
 
 
 
-    //--------------返回结果相关配置---------------
+
+
+    //    ------------------ dto vo相关配置----------------
 
     /**
      * DTO所在包
@@ -131,7 +133,40 @@ public abstract class ConfigBase implements IConfig {
      * VO所在包
      */
     protected String VOPackage = "vo";
+    
+    /**
+     * 是否覆盖已有文件
+     */
+    protected boolean fileOverride;
 
+
+    /**
+     * VO是否生成字段注释
+     */
+    protected boolean fieldAnnotationOnVO;
+
+    /**
+     * 使用vo生出导出方法(不生成额外ExportDTO)
+     */
+    protected boolean exportOnVO = true;
+    /**
+     * 使用vo生出导入方法(不生成额外ImportDTO)
+     */
+    protected boolean importOnVO = true;
+
+    /**
+     * 新增排除的字段
+     */
+    protected Collection<String> insertExcludeFields;
+
+    /**
+     * 修改排除的字段
+     */
+    protected Collection<String> updateExcludeFields;
+
+    //--------------返回结果相关配置---------------
+    
+    
     /**
      * 返回结果类所在包
      */
@@ -176,7 +211,12 @@ public abstract class ConfigBase implements IConfig {
     /**
      * controller是否使用@RequestBody注解
      */
-    protected boolean requestBody = true;
+    protected boolean requestBody;
+
+    /**
+     * java api包
+     */
+    protected String javaApiPackage = "javax";
 
     /**
      * 是否添加参数校验
@@ -190,35 +230,19 @@ public abstract class ConfigBase implements IConfig {
     /**
      * 所有请求都使用post方法
      */
-    protected boolean allPost = false;
+    protected boolean allPost = true;
     /**
      * 请求基础url
      */
     protected String baseUrl;
-
     /**
-     * 是否覆盖已有文件
+     * rest样式
      */
-    protected boolean fileOverride;
-
-    /**
-     * VO是否生成ResultMap
-     */
-    protected boolean resultMapForVO;
-    /**
-     * VO是否生成字段注释
-     */
-    protected boolean fieldAnnotationOnVO;
-
-    /**
-     * 新增排除的字段
-     */
-    protected Collection<String> insertExcludeFields;
-
-    /**
-     * 修改排除的字段
-     */
-    protected Collection<String> updateExcludeFields;
+    protected boolean restStyle;
+    
+    
+    // ------------------mapper相关配置----------------
+    
 
     /**
      * 排序字段map
@@ -227,9 +251,12 @@ public abstract class ConfigBase implements IConfig {
     protected Map<String, Boolean> orderColumnMap;
 
     /**
-     * java api包
+     * VO是否生成ResultMap
      */
-    protected String javaApiPackage = "javax";
+    protected boolean resultMapForVO;
+    
+
+  //   ------------------ 生成相关配置----------------
 
     /**
      * 新增DTO
@@ -256,18 +283,7 @@ public abstract class ConfigBase implements IConfig {
      */
     protected boolean generateExport = true;
 
-    /**
-     * rest样式
-     */
-    protected boolean restStyle = true;
 
-    /**
-     * 使用vo生出导出方法(不生成额外ExportDTO)
-     */
-    protected boolean exportOnVO;
-    /**
-     * 使用vo生出导入方法(不生成额外ImportDTO)
-     */
-    protected boolean importOnVO;
+
 
 }
