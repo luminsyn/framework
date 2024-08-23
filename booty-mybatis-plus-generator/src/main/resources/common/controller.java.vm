@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 #if(${requestBody})
 import org.springframework.web.bind.annotation.RequestBody;
 #end
-#if(${enableValidated})
+#if(${enableValidated} && (${generateInsert}||${generateUpdate}))
 import org.springframework.validation.annotation.Validated;
 #end
 import ${package.Service}.${table.serviceName};

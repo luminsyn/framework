@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 #if(${importOnVO}||${exportOnVO})
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.*;
+##import com.alibaba.excel.annotation.write.style.*;
 #end
 /**
  * $!{table.comment} VO
@@ -39,9 +39,9 @@ import com.alibaba.excel.annotation.write.style.*;
 ###end
 #if(${importOnVO}||${exportOnVO})
 @ExcelIgnoreUnannotated
-@HeadRowHeight(30)
-@ColumnWidth(25)
-@ContentRowHeight(20)
+##@HeadRowHeight(30)
+##@ColumnWidth(25)
+##@ContentRowHeight(20)
 #end
 public class ${entity}VO {
 ## ----------  BEGIN 字段循环遍历  ----------

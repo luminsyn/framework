@@ -5,9 +5,13 @@ import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
+#if(${generateInsert}||${generateUpdate})
 import org.springframework.beans.BeanUtils;
+#end
+#if(${generateSelect}||${generateExport})
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+#end
 import java.util.*;
 #if(${generateImport}||${generateExport})
 import java.io.InputStream;
@@ -44,7 +48,8 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 }
 #else
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity}> implements ${table.serviceName} {
-
+    #if(${generateSelect}||${generateExport})
+        
     public Map<String, Object> toMap(Object source) {
         if (source==null) return new HashMap<>();
         if (source instanceof Map) return (Map<String, Object>) source;
@@ -64,8 +69,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             throw new RuntimeException(e);
         }
         return map;
-    }
-    
+    }        
+    #end
     #if(${generateInsert})
 
     @Override
@@ -111,7 +116,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public <S> ${entity}VO oneByDTO(S s) {
         List<${entity}VO> vs = listByDTO(s);
         if (vs == null || vs.size()==0 ) return null;
-        if(vs.size() > 1) throw new RuntimeException("error query => required one but found"+vs.size());
+        if(vs.size() > 1) throw new RuntimeException("error query => required 1 but found "+vs.size());
         return vs.get(0);
     }
 

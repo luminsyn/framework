@@ -9,7 +9,6 @@
         <groupId>io.github.bootystar</groupId>
         <version>${revision}</version>
     </parent>
-    <version>${revision}</version>
     <artifactId>booty-spring-boot-starter</artifactId>
     
     <dependencies>

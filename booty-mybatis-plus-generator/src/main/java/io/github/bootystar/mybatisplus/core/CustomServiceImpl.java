@@ -70,7 +70,7 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
             return null;
         }
         if(vs.size() > 1) {
-            log.warn("error query => required one but found{}", vs.size());
+            throw new RuntimeException("error query => required one but found "+vs.size());
         }
         return vs.get(0);
     }

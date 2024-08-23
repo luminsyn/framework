@@ -8,7 +8,6 @@
         <artifactId>common</artifactId>
         <version>${revision}</version>
     </parent>
-
     <artifactId>booty-all</artifactId>
 
     <properties>
@@ -31,11 +30,6 @@
         <dependency>
             <groupId>io.github.bootystar</groupId>
             <artifactId>booty-spring-boot-starter</artifactId>
-            <version>${revision}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bootystar</groupId>
-            <artifactId>booty-wechat-api</artifactId>
             <version>${revision}</version>
         </dependency>
     </dependencies>

@@ -17,8 +17,8 @@ import lombok.experimental.Accessors;
 #end
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.annotation.write.style.*;
-import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
+##import com.alibaba.excel.annotation.write.style.*;
+##import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 
 /**
  * $!{table.comment}导出DTO
@@ -38,11 +38,11 @@ import com.alibaba.excel.enums.poi.FillPatternTypeEnum;
 ##@ApiModel(value = "${entity}ExportDTO对象", description = "$!{table.comment}导出DTO")
 ###end
 @ExcelIgnoreUnannotated
-@HeadRowHeight(30)
-@HeadFontStyle(fontHeightInPoints = 12)
-@HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL)
-@ColumnWidth(25)
-@ContentRowHeight(20)
+##@HeadRowHeight(30)
+##@HeadFontStyle(fontHeightInPoints = 12)
+##@HeadStyle(fillPatternType = FillPatternTypeEnum.NO_FILL)
+##@ColumnWidth(25)
+##@ContentRowHeight(20)
 public class ${entity}ExportDTO {
 #if(${entitySerialVersionUID})
 ##
