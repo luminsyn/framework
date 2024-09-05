@@ -174,6 +174,7 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
             throw new RuntimeException(msg);
         }
         return cachedDataList;
+//        return EasyExcel.read(is).head(clazz).sheet().doReadSync();
     }
     
     protected <U> List<T> importPostHandle(List<U> cachedDataList) {
