@@ -27,7 +27,7 @@
         <springboot.version>2.7.18</springboot.version>
         <easyexcel.version>3.3.3</easyexcel.version>
         <minio.version>8.5.9</minio.version>
-        <mybatisplus.version>3.5.3</mybatisplus.version>
+        <mybatisplus.version>3.5.7</mybatisplus.version>
         <velocity.engine.version>2.3</velocity.engine.version>
         <fastjson2.version>2.0.25</fastjson2.version>
     </properties>

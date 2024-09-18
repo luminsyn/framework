@@ -17,9 +17,21 @@ public class CrudGenerator extends AbstractGenerator {
     public CrudGenerator(String url, String username, String password) {
         super(url, username, password);
         super.init();
-        templateConfigBuilder.mapper("/crud/mapper.java");
-        templateConfigBuilder.service("/crud/service.java");
-        templateConfigBuilder.serviceImpl("/crud/serviceImpl.java");
+//        // 自3.5.6废弃
+//        templateConfigBuilder
+//                .mapper("/crud/mapper.java")
+//                .service("/crud/service.java")
+//                .serviceImpl("/crud/serviceImpl.java")
+//        ;
+        
+        strategyConfigBuilder.serviceBuilder()
+                .serviceTemplate("/crud/service.java")
+                .serviceImplTemplate("/crud/serviceImpl.java")
+        ;
+        strategyConfigBuilder.mapperBuilder()
+                .mapperTemplate("/crud/mapper.java")
+        ;
+        
     }
     
 }

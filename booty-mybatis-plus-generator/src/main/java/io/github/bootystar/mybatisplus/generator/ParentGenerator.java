@@ -21,16 +21,25 @@ public class ParentGenerator extends AbstractGenerator{
     public ParentGenerator(String url, String username, String password) {
         super(url, username, password);
         super.init();
-        templateConfigBuilder.service("/parent/service.java");
-        templateConfigBuilder.serviceImpl("/parent/serviceImpl.java");
-        templateConfigBuilder.mapper("/parent/mapper.java");
+//        // 自3.5.6废弃
+//        templateConfigBuilder
+//                .service("/parent/service.java")
+//            .serviceImpl("/parent/serviceImpl.java")
+//            .mapper("/parent/mapper.java")
+//        ;
         strategyConfigBuilder.mapperBuilder()
                 .superClass(CustomMapper.class)
+                .mapperTemplate("/parent/mapper.java");
         ;
+        
         strategyConfigBuilder.serviceBuilder()
                     .superServiceClass(CustomService.class)
                     .superServiceImplClass(CustomServiceImpl.class)
+                .serviceImplTemplate("/parent/serviceImpl.java")
+                .serviceTemplate("/parent/service.java");
         ;
+     
+                
     }
 
 }

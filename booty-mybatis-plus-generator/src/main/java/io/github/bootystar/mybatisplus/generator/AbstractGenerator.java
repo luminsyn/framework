@@ -82,17 +82,27 @@ public abstract class AbstractGenerator {
         ;
         packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
         ;
+        
+//        // 自3.5.6废弃
+//        templateConfigBuilder
+//                .controller("/common/controller.java")
+//                .xml("/common/mapper.xml")
+//                .entity("/common/entity.java")
+//        ;
         strategyConfigBuilder.controllerBuilder()
+                .template("/common/controller.java")
                 .enableRestStyle()
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class);
+                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+                .mapperXmlTemplate("/common/mapper.xml")
+        ;
         strategyConfigBuilder.serviceBuilder()
                 .formatServiceFileName("%sService")
         ;
-        templateConfigBuilder.controller("/common/controller.java");
-        templateConfigBuilder.xml("/common/mapper.xml");
-        templateConfigBuilder.entity("/common/entity.java");
+        strategyConfigBuilder.entityBuilder()
+                        .javaTemplate("/common/entity.java")
+                ;
         customConfigBuilder().insertExcludeFields(Arrays.asList("createTime", "updateTime"));
         customConfigBuilder().updateExcludeFields(Arrays.asList("createTime", "updateTime"));
         customConfigBuilder().orderColumn("create_time", true);
