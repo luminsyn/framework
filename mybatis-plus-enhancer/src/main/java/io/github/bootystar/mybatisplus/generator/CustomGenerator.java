@@ -5,8 +5,7 @@ import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import io.github.bootystar.mybatisplus.generator.config.IConfig;
 import io.github.bootystar.mybatisplus.generator.engine.EnhanceVelocityTemplateEngine;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
@@ -16,9 +15,8 @@ import java.io.File;
  * @author booty
  */
 @Getter
+@Slf4j
 public class CustomGenerator {
-    private static final Logger log = LoggerFactory.getLogger(CustomGenerator.class);
-
     /**
      * 配置信息
      */

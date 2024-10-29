@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.core;
+package io.github.bootystar.mybatisplus.enhancer;
 
 
 import com.alibaba.excel.EasyExcel;
@@ -11,13 +11,12 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.bootystar.mybatisplus.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {
-    
+
     @Override
     public <S> V insertByDTO(S s) {
         T entity = this.toEntity(s);
@@ -181,37 +180,20 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
 
     
     @Override
-    @SuppressWarnings("unchecked")
     public T toEntity(Object source) {
-        T t = null;
-        try {
-            ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-            Class<T> clazz = (Class<T>) pt.getActualTypeArguments()[1];
-            t = toTarget(source, clazz);
-        } catch (Exception e) {
-            log.error("toEntity failed =>",e);
-            throw new RuntimeException(e);
-        }
-        return t;
+        ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+        Class<T> clazz = (Class<T>) pt.getActualTypeArguments()[1];
+        return toTarget(source, clazz);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public V toVO(Object source) {
-        V v = null;
-        try {
-            ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
-            Class<V> clazz = (Class<V>) pt.getActualTypeArguments()[2];
-            v = toTarget(source, clazz);
-        } catch (Exception e) {
-            log.error("toVO failed =>",e);
-            throw new RuntimeException(e);
-        }
-        return v;
+        ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+        Class<V> clazz = (Class<V>) pt.getActualTypeArguments()[2];
+        return toTarget(source, clazz);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <U> U toTarget(Object source, Class<U> clazz) {
         if (source == null || clazz == null) {
             return null;
@@ -219,45 +201,11 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         if (clazz.isInstance(source)) {
             return (U) source;
         }
-        U target = null;
-        try {
-            target = clazz.newInstance();
-            BeanUtils.copyProperties(source, target);
-        } catch (Exception e) {
-            log.error("toTarget failed =>",e);
-            throw new RuntimeException(e);
-        }
-        return target;
+        return ReflectUtil.copyProperties(source,ReflectUtil.newInstance(clazz));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, Object> toMap(Object source) {
-        if (source==null){
-            return new HashMap<>();
-        }
-        if (source instanceof Map) {
-            return (Map<String, Object>) source;
-        }
-        Map<String, Object> map = new LinkedHashMap<>();
-        Class<?> clazz = source.getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        try {
-            for (Field field : fields) {
-                field.setAccessible(true);
-                int modifiers = field.getModifiers();
-                if (Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)){
-                    continue;
-                } 
-                String key = field.getName();
-                Object value = field.get(source);
-                if (value != null) {
-                    map.put(key, value);   
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return map;
+        return ReflectUtil.objectToMap(source);
     }
 }

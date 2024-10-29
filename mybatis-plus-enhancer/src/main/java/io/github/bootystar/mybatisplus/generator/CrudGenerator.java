@@ -1,6 +1,5 @@
 package io.github.bootystar.mybatisplus.generator;
 
-import io.github.bootystar.mybatisplus.generator.config.ConfigBaseBuilder;
 import io.github.bootystar.mybatisplus.generator.config.child.DefaultConfig;
 
 /**

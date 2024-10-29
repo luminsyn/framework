@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import io.github.bootystar.mybatisplus.generator.config.ConfigBase;
 import io.github.bootystar.mybatisplus.generator.config.ConfigBaseBuilder;
-import io.github.bootystar.mybatisplus.generator.config.child.DefaultConfig;
 import org.apache.ibatis.type.JdbcType;
 
 import java.io.File;

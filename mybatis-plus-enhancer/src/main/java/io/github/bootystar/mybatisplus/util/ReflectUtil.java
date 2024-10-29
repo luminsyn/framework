@@ -3,18 +3,23 @@ package io.github.bootystar.mybatisplus.util;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.SneakyThrows;
 
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author booty
  */
 public abstract class ReflectUtil {
 
-    
+
     @Data
     @AllArgsConstructor
     public static class LambdaMethod{
@@ -86,5 +91,57 @@ public abstract class ReflectUtil {
             throw new IllegalStateException(msg);
         }
     }
-    
+
+    @SneakyThrows
+    public static <T> T newInstance(Class<T> clazz){
+        return clazz.getConstructor().newInstance();
+    }
+
+    public static Map<String, Field> fieldMap(Class<?> clazz){
+        Map<String, Field> map = new HashMap<>();
+        while (clazz!=null){
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                int modifiers = field.getModifiers();
+                if (Modifier.isStatic(modifiers)||Modifier.isFinal(modifiers)||Modifier.isNative(modifiers)) continue;
+                map.putIfAbsent(field.getName(), field);
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return map;
+    }
+
+    @SneakyThrows
+    public static <T> T copyProperties(Object source, T target) {
+        if (source == null || target == null || source.equals(target)) return target;
+        Map<String, Field> sourceMap = fieldMap(source.getClass());
+        Map<String, Field> targetMap = fieldMap(target.getClass());
+        for (Field field : sourceMap.values()) {
+            Object o = field.get(source);
+            if (o == null) continue;
+            Field targetFiled = targetMap.get(field.getName());
+            if (targetFiled != null && targetFiled.getType().isAssignableFrom(field.getType())) {
+                targetFiled.set(target, o);
+            }
+        }
+        return target;
+    }
+
+
+    @SneakyThrows
+    public static Map<String,Object> objectToMap(Object source) {
+        HashMap<String, Object> map = new HashMap<>();
+        if (source == null ) return map;
+        Collection<Field> fields = fieldMap(source.getClass()).values();
+        for (Field field : fields) {
+            Object o = field.get(source);
+            if (o == null) continue;
+            map.put(field.getName(), o);
+        }
+        return map;
+    }
+
+
+
 }

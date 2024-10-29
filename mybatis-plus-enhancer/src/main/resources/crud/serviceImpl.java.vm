@@ -55,12 +55,21 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         if (source instanceof Map) return (Map<String, Object>) source;
         Map<String, Object> map = new HashMap<>();
         Class<?> clazz = source.getClass();
-        Field[] fields = clazz.getDeclaredFields();
+        List<Field> fields = new ArrayList<>();
+        Class<?> currentClass = clazz;
+        while (currentClass != null) {
+            Field[] declaredFields = currentClass.getDeclaredFields();
+            for (Field field : declaredFields) {
+                field.setAccessible(true);
+                var modifiers = field.getModifiers();
+                if (Modifier.isStatic(modifiers)||Modifier.isFinal(modifiers)||Modifier.isNative(modifiers)) continue;
+                fields.add(field);
+            }
+            currentClass = currentClass.getSuperclass();
+        }
+
         try {
             for (Field field : fields) {
-                field.setAccessible(true);
-                int modifiers = field.getModifiers();
-                if (Modifier.isFinal(modifiers) || Modifier.isStatic(modifiers) || Modifier.isNative(modifiers)) continue;
                 String key = field.getName();
                 Object value = field.get(source);
                 if (value != null) map.put(key, value);

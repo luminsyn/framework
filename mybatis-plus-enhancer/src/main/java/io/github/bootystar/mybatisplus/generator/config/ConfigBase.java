@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import lombok.Data;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,8 @@ import java.util.stream.Collectors;
  * @author booty
  */
 @Data
+@Slf4j
 public abstract class ConfigBase implements IConfig {
-    private static final Logger log = LoggerFactory.getLogger(ConfigBase.class);
 
     //--------------常量---------------
     protected final String shift3 = "#";
