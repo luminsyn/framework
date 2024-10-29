@@ -5,16 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>common</artifactId>
+        <artifactId>frameworks</artifactId>
         <groupId>io.github.bootystar</groupId>
         <version>${revision}</version>
     </parent>
-    <artifactId>booty-spring-boot-starter</artifactId>
+    <artifactId>spring-boot-starter</artifactId>
+    <version>1.0.3</version>
     
     <dependencies>
         <dependency>
             <groupId>io.github.bootystar</groupId>
-            <artifactId>booty-helper</artifactId>
+            <artifactId>helper</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

@@ -3,7 +3,7 @@ package io.github.bootystar.mybatisplus.generator.config;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
-import io.github.bootystar.mybatisplus.util.LambdaUtil;
+import io.github.bootystar.mybatisplus.util.ReflectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -258,7 +258,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @author booty
      */
     public <R> U returnMethod(SFunction<Object, R> methodReference){
-        LambdaUtil.LambdaMethod lambdaMethod = LambdaUtil.lambdaMethodInfo(methodReference,Object.class);
+        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference,Object.class);
         this.config.returnResultClassPackage = lambdaMethod.getClassPackage();
         this.config.returnResultClass = lambdaMethod.getClassSimpleName();
         this.config.returnResultMethodName = lambdaMethod.getMethodNameFullStr();
@@ -276,7 +276,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @author booty
      */
     public <O,R> U pageMethod(SFunction<IPage<O>, R> methodReference){
-        LambdaUtil.LambdaMethod lambdaMethod = LambdaUtil.lambdaMethodInfo(methodReference,IPage.class);
+        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference,IPage.class);
         this.config.pageResultClassPackage = lambdaMethod.getClassPackage();
         this.config.pageResultClass = lambdaMethod.getClassSimpleName();
         this.config.pageResultMethodName = lambdaMethod.getMethodNameFullStr();

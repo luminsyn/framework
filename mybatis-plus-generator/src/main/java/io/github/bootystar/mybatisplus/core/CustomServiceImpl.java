@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -134,8 +133,7 @@ public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends
         List<U> voList = listByDTO(s,clazz);
         ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
         if (includeFields != null && !includeFields.isEmpty()) {
-            builder.includeColumnFieldNames(includeFields)
-            ;
+            builder.includeColumnFieldNames(includeFields);
         }
         builder.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }

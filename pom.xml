@@ -5,19 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.bootystar</groupId>
-    <artifactId>common</artifactId>
+    <artifactId>frameworks</artifactId>
     <version>${revision}</version>
     <modules>
-        <module>booty-helper</module>
-        <module>booty-wechat-api</module>
-        <module>booty-mybatis-plus-generator</module>
-        <module>booty-spring-boot-starter</module>
-        <module>booty-all</module>
+        <module>helper</module>
+        <module>wechat-api</module>
+        <module>mybatis-plus-generator</module>
+        <module>spring-boot-starter</module>
     </modules>
 
     <properties>
         <!-- 全局版本控制，如果要修改版本号，修改此处即可-->
-        <revision>1.0.21</revision>
+        <revision>1.0.3</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,9 +33,9 @@
 
 
     <packaging>pom</packaging>
-    <name>common</name>
-    <url>https://github.com/bootystar/common</url>
-    <description>project by bootystar</description>
+    <name>frameworks</name>
+    <url>https://github.com/bootystar/frameworks</url>
+    <description>simple frameworks</description>
     <!-- 开源签名证书 -->
     <licenses>
         <license>
@@ -47,9 +46,9 @@
     </licenses>
     <!-- 仓库信息 -->
     <scm>
-        <connection>scm:git@github.com:bootystar/common.git</connection>
-        <developerConnection>scm:git@github.com:bootystar/common.git</developerConnection>
-        <url>https://github.com/bootystar/common</url>
+        <connection>scm:git@github.com:bootystar/frameworks.git</connection>
+        <developerConnection>scm:git@github.com:bootystar/frameworks.git</developerConnection>
+        <url>https://github.com/bootystar/frameworks</url>
     </scm>
     <!-- 开发人员信息 -->
     <developers>
@@ -94,7 +93,7 @@
             </dependency>
             <dependency>
                 <groupId>io.github.bootystar</groupId>
-                <artifactId>booty-helper</artifactId>
+                <artifactId>helper</artifactId>
                 <version>${revision}</version>
                 <optional>true</optional>
             </dependency>

@@ -12,7 +12,7 @@ import java.lang.reflect.TypeVariable;
 /**
  * @author booty
  */
-public abstract class LambdaUtil {
+public abstract class ReflectUtil {
 
     
     @Data
@@ -72,7 +72,7 @@ public abstract class LambdaUtil {
                 }
                 isConstructor=true;
             }
-            return new LambdaUtil.LambdaMethod(
+            return new ReflectUtil.LambdaMethod(
                     clazz.getPackage().getName()
                     , clazz.getSimpleName()
                     , isGenericTypeClass

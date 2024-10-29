@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <artifactId>common</artifactId>
+        <artifactId>frameworks</artifactId>
         <groupId>io.github.bootystar</groupId>
         <version>${revision}</version>
     </parent>
-    <artifactId>booty-helper</artifactId>
+    <artifactId>helper</artifactId>
     
     <dependencies>
         <dependency>
