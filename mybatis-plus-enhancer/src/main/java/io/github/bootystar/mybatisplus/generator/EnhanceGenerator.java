@@ -1,24 +1,24 @@
 package io.github.bootystar.mybatisplus.generator;
 
-import io.github.bootystar.mybatisplus.core.CustomMapper;
-import io.github.bootystar.mybatisplus.core.CustomService;
-import io.github.bootystar.mybatisplus.core.CustomServiceImpl;
-import io.github.bootystar.mybatisplus.generator.config.child.ParentConfig;
+import io.github.bootystar.mybatisplus.enhancer.EnhanceMapper;
+import io.github.bootystar.mybatisplus.enhancer.EnhanceService;
+import io.github.bootystar.mybatisplus.enhancer.EnhanceServiceImpl;
+import io.github.bootystar.mybatisplus.generator.config.child.EnhanceConfig;
 
 /**
  * 继承实现型代码生成器
  *
  * @author booty
  */
-public class ParentGenerator extends AbstractGenerator{
+public class EnhanceGenerator extends AbstractGenerator{
 
-    protected ParentConfig.Builder customConfigBuilder = new ParentConfig.Builder();
+    protected EnhanceConfig.Builder customConfigBuilder = new EnhanceConfig.Builder();
 
-    public ParentConfig.Builder customConfigBuilder() {
+    public EnhanceConfig.Builder customConfigBuilder() {
         return customConfigBuilder;
     }
     
-    public ParentGenerator(String url, String username, String password) {
+    public EnhanceGenerator(String url, String username, String password) {
         super(url, username, password);
         super.init();
 //        // 自3.5.6废弃
@@ -28,13 +28,13 @@ public class ParentGenerator extends AbstractGenerator{
 //            .mapper("/parent/mapper.java")
 //        ;
         strategyConfigBuilder.mapperBuilder()
-                .superClass(CustomMapper.class)
+                .superClass(EnhanceMapper.class)
                 .mapperTemplate("/parent/mapper.java");
         ;
         
         strategyConfigBuilder.serviceBuilder()
-                    .superServiceClass(CustomService.class)
-                    .superServiceImplClass(CustomServiceImpl.class)
+                    .superServiceClass(EnhanceService.class)
+                    .superServiceImplClass(EnhanceServiceImpl.class)
                 .serviceImplTemplate("/parent/serviceImpl.java")
                 .serviceTemplate("/parent/service.java");
         ;

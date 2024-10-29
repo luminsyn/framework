@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.core;
+package io.github.bootystar.mybatisplus.enhancer;
 
 
 import com.alibaba.excel.EasyExcel;
@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.bootystar.mybatisplus.util.ReflectUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,8 +25,7 @@ import java.util.stream.Collectors;
  * 自定义Service实现类
  * @author booty
  */
-@Slf4j
-public abstract class CustomServiceImpl<M extends CustomMapper<T,V>,T,V> extends ServiceImpl<M, T> implements CustomService<T,V> {
+public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> extends ServiceImpl<M, T> implements EnhanceService<T,V> {
 
     @Override
     public <S> V insertByDTO(S s) {

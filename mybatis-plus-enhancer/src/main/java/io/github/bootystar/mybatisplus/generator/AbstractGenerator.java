@@ -163,8 +163,8 @@ public abstract class AbstractGenerator {
 
         customConfig.setCustomFiles(customFiles);
 
-        CustomGenerator customGenerator =
-                new CustomGenerator(dataSourceConfig)
+        BaseGenerator customGenerator =
+                new BaseGenerator(dataSourceConfig)
                         .global(globalConfig)
                         // 包配置
                         .packageInfo(packageConfig)

@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.core;
+package io.github.bootystar.mybatisplus.enhancer;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -15,7 +15,7 @@ import java.util.Map;
  * 自定义Service接口
  * @author booty
  */
-public interface CustomService<T,V> extends IService<T> {
+public interface EnhanceService<T,V> extends IService<T> {
 
     <S> V insertByDTO(S s);
 

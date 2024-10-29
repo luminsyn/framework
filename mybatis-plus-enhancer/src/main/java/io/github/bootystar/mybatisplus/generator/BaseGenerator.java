@@ -16,7 +16,7 @@ import java.io.File;
  */
 @Getter
 @Slf4j
-public class CustomGenerator {
+public class BaseGenerator {
     /**
      * 配置信息
      */
@@ -51,7 +51,7 @@ public class CustomGenerator {
      */
     private IConfig custom;
 
-    private CustomGenerator() {
+    private BaseGenerator() {
         // 不推荐使用
     }
 
@@ -61,7 +61,7 @@ public class CustomGenerator {
      * @param dataSourceConfig 数据库配置
      * @since 3.5.0
      */
-    public CustomGenerator(DataSourceConfig dataSourceConfig) {
+    public BaseGenerator(DataSourceConfig dataSourceConfig) {
         //这个是必须参数,其他都是可选的,后续去除默认构造更改成final
         this.dataSource = dataSourceConfig;
     }
@@ -73,7 +73,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator injection(InjectionConfig injectionConfig) {
+    public BaseGenerator injection(InjectionConfig injectionConfig) {
         this.injection = injectionConfig;
         return this;
     }
@@ -85,7 +85,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator strategy(StrategyConfig strategyConfig) {
+    public BaseGenerator strategy(StrategyConfig strategyConfig) {
         this.strategy = strategyConfig;
         return this;
     }
@@ -97,7 +97,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator packageInfo(PackageConfig packageConfig) {
+    public BaseGenerator packageInfo(PackageConfig packageConfig) {
         this.packageInfo = packageConfig;
         return this;
     }
@@ -109,7 +109,7 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator template(TemplateConfig templateConfig) {
+    public BaseGenerator template(TemplateConfig templateConfig) {
         this.template = templateConfig;
         return this;
     }
@@ -121,7 +121,7 @@ public class CustomGenerator {
      * @return this
      * @see 3.5.0
      */
-    public CustomGenerator global(GlobalConfig globalConfig) {
+    public BaseGenerator global(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
         return this;
     }
@@ -133,13 +133,13 @@ public class CustomGenerator {
      * @return this
      * @since 3.5.0
      */
-    public CustomGenerator config(ConfigBuilder configBuilder) {
+    public BaseGenerator config(ConfigBuilder configBuilder) {
         this.config = configBuilder;
         return this;
     }
 
 
-    public CustomGenerator custom(IConfig config) {
+    public BaseGenerator custom(IConfig config) {
         this.custom = config;
         return this;
     }

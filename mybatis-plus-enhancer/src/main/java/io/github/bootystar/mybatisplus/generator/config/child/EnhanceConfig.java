@@ -9,7 +9,7 @@ import lombok.Getter;
  * @author booty
  */
 @Getter
-public class ParentConfig extends ConfigBase {
+public class EnhanceConfig extends ConfigBase {
 
     /**
      * 显示 service impl方法
@@ -26,11 +26,11 @@ public class ParentConfig extends ConfigBase {
      * @author booty
      * @since 2023/12/19
      */
-    public static class Builder extends ConfigBaseBuilder<ParentConfig, Builder> {
+    public static class Builder extends ConfigBaseBuilder<EnhanceConfig, Builder> {
 
         @Override
-        protected ParentConfig initConfig() {
-            return new ParentConfig();
+        protected EnhanceConfig initConfig() {
+            return new EnhanceConfig();
         }
 
         @Override
