@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.bootystar</groupId>
-    <artifactId>frameworks</artifactId>
+    <artifactId>framework</artifactId>
     <version>${revision}</version>
     <modules>
         <module>helper</module>
@@ -33,9 +33,9 @@
 
 
     <packaging>pom</packaging>
-    <name>frameworks</name>
-    <url>https://github.com/bootystar/frameworks</url>
-    <description>simple frameworks</description>
+    <name>framework</name>
+    <url>https://github.com/bootystar/framework</url>
+    <description>simple framework</description>
     <!-- 开源签名证书 -->
     <licenses>
         <license>
@@ -46,9 +46,9 @@
     </licenses>
     <!-- 仓库信息 -->
     <scm>
-        <connection>scm:git@github.com:bootystar/frameworks.git</connection>
-        <developerConnection>scm:git@github.com:bootystar/frameworks.git</developerConnection>
-        <url>https://github.com/bootystar/frameworks</url>
+        <connection>scm:git@github.com:bootystar/framework.git</connection>
+        <developerConnection>scm:git@github.com:bootystar/framework.git</developerConnection>
+        <url>https://github.com/bootystar/framework</url>
     </scm>
     <!-- 开发人员信息 -->
     <developers>

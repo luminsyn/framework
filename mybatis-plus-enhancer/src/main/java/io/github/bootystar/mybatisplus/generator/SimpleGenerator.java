@@ -7,13 +7,13 @@ import io.github.bootystar.mybatisplus.generator.config.child.DefaultConfig;
  *
  * @author booty
  */
-public class CrudGenerator extends AbstractGenerator {
+public class SimpleGenerator extends AbstractGenerator {
     protected DefaultConfig.Builder customConfigBuilder = new DefaultConfig.Builder();
     public DefaultConfig.Builder customConfigBuilder() {
         return customConfigBuilder;
     }
 
-    public CrudGenerator(String url, String username, String password) {
+    public SimpleGenerator(String url, String username, String password) {
         super(url, username, password);
         super.init();
 //        // 自3.5.6废弃
@@ -24,11 +24,11 @@ public class CrudGenerator extends AbstractGenerator {
 //        ;
         
         strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/crud/service.java")
-                .serviceImplTemplate("/crud/serviceImpl.java")
+                .serviceTemplate("/simple/service.java")
+                .serviceImplTemplate("/simple/serviceImpl.java")
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/crud/mapper.java")
+                .mapperTemplate("/simple/mapper.java")
         ;
         
     }

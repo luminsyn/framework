@@ -92,11 +92,25 @@ public abstract class ReflectUtil {
         }
     }
 
+    /**
+     * 新建实例
+     *
+     * @param clazz 克拉兹
+     * @return {@link T }
+     * @author booty
+     */
     @SneakyThrows
     public static <T> T newInstance(Class<T> clazz){
         return clazz.getConstructor().newInstance();
     }
 
+    /**
+     * 指定类属性map
+     *
+     * @param clazz 类
+     * @return {@link Map }<{@link String }, {@link Field }>
+     * @author booty
+     */
     public static Map<String, Field> fieldMap(Class<?> clazz){
         Map<String, Field> map = new HashMap<>();
         while (clazz!=null){
@@ -112,6 +126,14 @@ public abstract class ReflectUtil {
         return map;
     }
 
+    /**
+     * 复制属性
+     *
+     * @param source 来源
+     * @param target 目标
+     * @return {@link T }
+     * @author booty
+     */
     @SneakyThrows
     public static <T> T copyProperties(Object source, T target) {
         if (source == null || target == null || source.equals(target)) return target;
@@ -129,10 +151,18 @@ public abstract class ReflectUtil {
     }
 
 
+    /**
+     * 对象转map
+     *
+     * @param source 来源
+     * @return {@link Map }<{@link String },{@link Object }>
+     * @author booty
+     */
     @SneakyThrows
     public static Map<String,Object> objectToMap(Object source) {
         HashMap<String, Object> map = new HashMap<>();
         if (source == null ) return map;
+        if (source instanceof Map) return (Map<String, Object>) source;
         Collection<Field> fields = fieldMap(source.getClass()).values();
         for (Field field : fields) {
             Object o = field.get(source);

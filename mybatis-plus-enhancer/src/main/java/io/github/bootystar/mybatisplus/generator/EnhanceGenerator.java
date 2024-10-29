@@ -29,14 +29,14 @@ public class EnhanceGenerator extends AbstractGenerator{
 //        ;
         strategyConfigBuilder.mapperBuilder()
                 .superClass(EnhanceMapper.class)
-                .mapperTemplate("/parent/mapper.java");
+                .mapperTemplate("/enhance/mapper.java");
         ;
         
         strategyConfigBuilder.serviceBuilder()
                     .superServiceClass(EnhanceService.class)
                     .superServiceImplClass(EnhanceServiceImpl.class)
-                .serviceImplTemplate("/parent/serviceImpl.java")
-                .serviceTemplate("/parent/service.java");
+                .serviceImplTemplate("/enhance/serviceImpl.java")
+                .serviceTemplate("/enhance/service.java");
         ;
      
                 

@@ -5,12 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>frameworks</artifactId>
+        <artifactId>framework</artifactId>
         <groupId>io.github.bootystar</groupId>
         <version>${revision}</version>
     </parent>
     <artifactId>spring-boot-starter</artifactId>
-    <version>1.0.3</version>
     
     <dependencies>
         <dependency>

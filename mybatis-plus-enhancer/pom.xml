@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <parent>
-        <artifactId>frameworks</artifactId>
+        <artifactId>framework</artifactId>
         <groupId>io.github.bootystar</groupId>
         <version>${revision}</version>
     </parent>
