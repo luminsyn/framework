@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhancer;
+package io.github.bootystar.mybatisplus.core;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;

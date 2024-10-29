@@ -1,8 +1,8 @@
 package io.github.bootystar.mybatisplus.generator;
 
-import io.github.bootystar.mybatisplus.enhancer.CustomMapper;
-import io.github.bootystar.mybatisplus.enhancer.CustomService;
-import io.github.bootystar.mybatisplus.enhancer.CustomServiceImpl;
+import io.github.bootystar.mybatisplus.core.CustomMapper;
+import io.github.bootystar.mybatisplus.core.CustomService;
+import io.github.bootystar.mybatisplus.core.CustomServiceImpl;
 import io.github.bootystar.mybatisplus.generator.config.child.ParentConfig;
 
 /**
