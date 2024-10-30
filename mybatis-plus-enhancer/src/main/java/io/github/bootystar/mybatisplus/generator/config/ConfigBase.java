@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -212,7 +210,7 @@ public abstract class ConfigBase implements IConfig {
     /**
      * controller是否使用@RequestBody注解
      */
-    protected boolean requestBody;
+    protected boolean requestBody = true;
 
     /**
      * java api包
@@ -231,15 +229,15 @@ public abstract class ConfigBase implements IConfig {
     /**
      * 所有请求都使用post方法
      */
-    protected boolean allPost = true;
+    protected boolean allPost = false;
     /**
      * 请求基础url
      */
     protected String baseUrl;
     /**
-     * rest样式
+     * restful样式
      */
-    protected boolean restStyle;
+    protected boolean restful;
     
     
     // ------------------mapper相关配置----------------

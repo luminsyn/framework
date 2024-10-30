@@ -6,7 +6,7 @@ import io.github.bootystar.mybatisplus.enhancer.EnhanceServiceImpl;
 import io.github.bootystar.mybatisplus.generator.config.child.EnhanceConfig;
 
 /**
- * 继承实现型代码生成器
+ * 继承实现生成器
  *
  * @author booty
  */

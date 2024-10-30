@@ -1,18 +1,21 @@
 package ${package.Service};
 
-import ${package.Entity}.${entity};
+#if(${generateSelect})
+import com.baomidou.mybatisplus.core.metadata.IPage;
+#end
 import ${superServiceClassPackage};
+import ${package.Entity}.${entity};
+#if(${generateInsert}||${generateSelect})
+import ${basePackage}.${VOPackage}.${entity}VO;
+#end
+
 #if(${generateImport}||${generateExport})
 import java.io.InputStream;
 import java.io.OutputStream;
 #end
-#if(${generateInsert}||${generateSelect})
-import ${basePackage}.${VOPackage}.${entity}VO;
-#end
 #if(${generateSelect})
-import java.util.List;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import java.io.Serializable;
+import java.util.List;
 #end
 
 
@@ -47,7 +50,7 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #end
     #if(${generateExport})
 
-    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz);
+    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size);
     #end
     #if(${generateImport})
 

@@ -173,14 +173,14 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
     }
 
     /**
-     * controller请求不固定post(使用GET/POST/PUT/DELETE)
-     *
+     * controller请求固定post请求
+     * 会关闭restful风格
      * @return {@code Builder }
      * @author booty
      *
      */
-    public U disableAllPost() {
-        this.config.allPost = false;
+    public U enableAllPost() {
+        this.config.allPost = true;
         return this.builder;
     }
 
@@ -210,27 +210,30 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
     }
     
     /**
-     * 启用路径参数(使用@PathVariable注解)
+     * 基础增删查改使用restful风格
+     * (使用GET/POST/PUT/DELETE)
+     * (enableAllPost后无效)
      *
      * @return {@code U }
      * @author booty
      * @since 2023/11/02
      */
-    public U enableRestStyle() {
-        this.config.restStyle = true;
+    public U enableRestful() {
+        this.config.restful = true;
         return this.builder;
     }
     
 
     /**
-     * 启用消息体接收数据(使用@RequestBody注解)
+     * 禁用消息体接收数据
+     * (不使用@RequestBody注解)
      *
      * @return {@code Builder }
      * @author booty
      *
      */
-    public U enableRequestBody() {
-        this.config.requestBody = true;
+    public U disableRequestBody() {
+        this.config.requestBody = false;
         return this.builder;
     }
     

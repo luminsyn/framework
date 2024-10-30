@@ -6,20 +6,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 
 /**
- * 自定义Service接口
  * @author booty
  */
 public interface EnhanceService<T,V> extends IService<T> {
 
     <S> V insertByDTO(S s);
-
-    <S> boolean insertBatchByDTO(Collection<S> sCollection);
 
     <S> boolean updateByDTO(S s);
 
@@ -39,9 +34,9 @@ public interface EnhanceService<T,V> extends IService<T> {
 
     <S,U> IPage<U> pageByDTO(S s, Long current, Long size, Class<U> clazz);
 
-    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz);
+    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, String... includeFields);
 
-    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Collection<String> includeFields);
+    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields);
 
     <U> void excelTemplate(OutputStream os, Class<U> clazz);
 
@@ -50,9 +45,5 @@ public interface EnhanceService<T,V> extends IService<T> {
     T toEntity(Object source);
 
     V toVO(Object source);
-
-    <U> U toTarget(Object source, Class<U> clazz);
-
-    Map<String, Object> toMap(Object source);
 
 }

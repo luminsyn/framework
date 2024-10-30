@@ -41,17 +41,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <S> ${entity}VO insertByDTO(S s) {
-##        ${entity} entity = this.toEntity(DTO);
-##        return super.save(entity);
         return super.insertByDTO(s);
     }
-##
-##    @Override
-##    public <S> boolean insertBatchByDTO(Collection<S> DTOList) {
-##        List<${entity}> entityList = DTOList.stream().map(this::toEntity).collect(Collectors.toList());
-##
-##        return super.saveBatch(entityList);
-##    }
+
     #end
     #if(${generateUpdate})
 
@@ -87,8 +79,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateExport})
 
     @Override
-    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz) {
-        super.exportExcel(s, os, clazz);
+    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
+        super.exportExcel(s,os,clazz,current,size,includeFields);
     }
     #end
     #if(${generateImport})

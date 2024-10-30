@@ -35,12 +35,6 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
     }
 
     @Override
-    public <S> boolean insertBatchByDTO(Collection<S> sCollection) {
-        List<T> entityList = sCollection.stream().map(this::toEntity).collect(Collectors.toList());
-        return super.saveBatch(entityList);
-    }
-
-    @Override
     public <S> boolean updateByDTO(S s) {
         T entity = this.toEntity(s);
         return super.updateById(entity);
@@ -121,16 +115,16 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
     }
 
     @Override
-    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz) {
-        this.exportExcel(s, os, clazz, null);
+    public <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, String... includeFields) {
+        this.exportExcel(s, os, clazz,1L,-1L, includeFields);
     }
 
     @Override
-    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Collection<String> includeFields) {
-        List<U> voList = listByDTO(s,clazz);
+    public <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
+        List<U> voList = this.pageByDTO(s,current,size,clazz).getRecords();
         ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
-        if (includeFields != null && !includeFields.isEmpty()) {
-            builder.includeColumnFieldNames(includeFields);
+        if (includeFields != null && includeFields.length > 0) {
+            builder.includeColumnFieldNames(Arrays.asList(includeFields));
         }
         builder.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
@@ -181,18 +175,17 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
     public T toEntity(Object source) {
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
         Class<T> clazz = (Class<T>) pt.getActualTypeArguments()[1];
-        return toTarget(source, clazz);
+        return this.toTarget(source, clazz);
     }
 
     @Override
     public V toVO(Object source) {
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
         Class<V> clazz = (Class<V>) pt.getActualTypeArguments()[2];
-        return toTarget(source, clazz);
+        return this.toTarget(source, clazz);
     }
 
-    @Override
-    public <U> U toTarget(Object source, Class<U> clazz) {
+    protected  <U> U toTarget(Object source, Class<U> clazz) {
         if (source == null || clazz == null) {
             return null;
         }
@@ -202,8 +195,7 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
         return ReflectUtil.copyProperties(source,ReflectUtil.newInstance(clazz));
     }
 
-    @Override
-    public Map<String, Object> toMap(Object source) {
+    protected Map<String, Object> toMap(Object source) {
         return ReflectUtil.objectToMap(source);
     }
 }

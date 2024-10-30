@@ -3,7 +3,7 @@ package io.github.bootystar.mybatisplus.generator;
 import io.github.bootystar.mybatisplus.generator.config.child.DefaultConfig;
 
 /**
- * 开放式CRUD代码生成器
+ * 代码注入生成器
  *
  * @author booty
  */
