@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhancer;
+package io.github.bootystar.mybatisplus.core;
 
 
 import com.alibaba.excel.EasyExcel;
@@ -11,7 +11,11 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.bootystar.mybatisplus.injection.AntiInjectException;
+import io.github.bootystar.mybatisplus.injection.Injectable;
+import io.github.bootystar.mybatisplus.injection.Injector;
 import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -60,7 +64,7 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
             return null;
         }
         if(vs.size() > 1) {
-            throw new RuntimeException("error query => required one but found "+vs.size());
+            throw new TooManyResultsException("error query => required one but found "+vs.size());
         }
         return vs.get(0);
     }
@@ -72,6 +76,18 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
 
     @Override
     public <S> List<V> listByDTO(S s) {
+        if (s instanceof Injector){
+            Injector injector = (Injector) s;
+            Class<T> entityClass = getEntityClass();
+            if (Injectable.class.isAssignableFrom(entityClass)){
+                Class<Injectable> injectableClass = (Class<Injectable>) entityClass;
+                List<V> voList = baseMapper.listByCondition(injector.init(injectableClass), null);
+                this.voPostProcess(voList);
+                return voList;
+            }else {
+                throw new AntiInjectException("entity class must implement Injectable interface");
+            }
+        }
         List<V> voList = this.baseMapper.listByMap(this.toMap(s), null);
         this.voPostProcess(voList);
         return voList;
@@ -91,6 +107,19 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
             size=10L;
         }
         Page<V> page = new Page<>(current, size);
+        if (s instanceof Injector){
+            Injector injector = (Injector) s;
+            Class<T> entityClass = getEntityClass();
+            if (Injectable.class.isAssignableFrom(entityClass)){
+                Class<Injectable> injectableClass = (Class<Injectable>) entityClass;
+                List<V> voList =baseMapper.listByCondition(injector.init(injectableClass), page);
+                this.voPostProcess(voList);
+                page.setRecords(voList);
+                return page;
+            }else {
+                throw new AntiInjectException("entity class must implement Injectable interface");
+            }
+        }
         List<V> voList = this.baseMapper.listByMap(this.toMap(s), page);
         this.voPostProcess(voList);
         page.setRecords(voList);
@@ -170,7 +199,7 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
         return cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
     }
 
-    
+
     @Override
     public T toEntity(Object source) {
         ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();

@@ -1,8 +1,8 @@
 package io.github.bootystar.mybatisplus.generator;
 
-import io.github.bootystar.mybatisplus.enhancer.EnhanceMapper;
-import io.github.bootystar.mybatisplus.enhancer.EnhanceService;
-import io.github.bootystar.mybatisplus.enhancer.EnhanceServiceImpl;
+import io.github.bootystar.mybatisplus.core.EnhanceMapper;
+import io.github.bootystar.mybatisplus.core.EnhanceService;
+import io.github.bootystar.mybatisplus.core.EnhanceServiceImpl;
 import io.github.bootystar.mybatisplus.generator.config.child.EnhanceConfig;
 
 /**

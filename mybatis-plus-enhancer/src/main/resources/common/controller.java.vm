@@ -270,21 +270,21 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/page")
+    @PostMapping({"/page","/page/{current}","/page/{current}/{size}"})
         #else
-    @GetMapping("/page")
+    @GetMapping({"/page","/page/{current}","/page/{current}/{size}"})
     #end
     #if(${returnResultClass})
             #if(${pageResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @RequestParam("current") Long current, @RequestParam("size") Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
                 #else
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @RequestParam("current") Long current, @RequestParam("size") Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
             #end
         #else
             #if(${pageResultClass})
-    public ${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @RequestParam("current") Long current, @RequestParam("size") Long size){
+    public ${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
                 #else
-    public IPage<${entity}VO> selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @RequestParam("current") Long current, @RequestParam("size") Long size){
+    public IPage<${entity}VO> selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
             #end
     #end
     #if(${returnResultClass})
@@ -320,14 +320,14 @@ public class ${table.controllerName} {
      */
     #end
     #if(${allPost})
-    @PostMapping("/export")
+    @PostMapping({"/export","/export/{current}","/export/{current}/{size}"})
         #else
-    @GetMapping("/export")
+    @GetMapping({"/export","/export/{current}","/export/{current}/{size}"})
     #end
     #if(${generateSelect})
-    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @RequestParam("current") Long current, @RequestParam("size") Long size, HttpServletResponse response) throws IOException {
+    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
         #else
-    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${map} s, @RequestParam("current") Long current, @RequestParam("size") Long size, HttpServletResponse response) throws IOException {
+    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${map} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
     #end
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
         response.setContentType("application/vnd.ms-excel");
@@ -335,6 +335,28 @@ public class ${table.controllerName} {
     }
 #end    
 #if(${generateImport})
+
+    #if(${springdoc})
+    @Operation(summary = "下载excel导入模板")
+        #elseif(${swagger})
+    @ApiOperation(value = "下载excel导入模板")
+        #else
+    /**
+     * 下载excel导入模板
+     * @author ${author}
+     * @since ${nowTime}
+     */
+    #end
+    #if(${allPost})
+    @PostMapping("/template")
+        #else
+    @GetMapping("/template")
+    #end
+    public void excelTemplate(HttpServletResponse response) throws IOException {
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+        response.setContentType("application/vnd.ms-excel");
+        baseService.excelTemplate(response.getOutputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
+    }
     
     #if(${springdoc})
     @Operation(summary = "导入excel")
@@ -368,28 +390,6 @@ public class ${table.controllerName} {
         return baseService.importExcel(file.getInputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     #end
     }
-
-    #if(${springdoc})
-    @Operation(summary = "下载excel导入模板")
-        #elseif(${swagger})
-    @ApiOperation(value = "下载excel导入模板")
-        #else
-    /**
-     * 下载excel导入模板
-     * @author ${author}
-     * @since ${nowTime}
-     */
-    #end
-    #if(${allPost})
-    @PostMapping("/template")
-        #else
-    @GetMapping("/template")
-    #end
-    public void excelTemplate(HttpServletResponse response) throws IOException {
-        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
-        response.setContentType("application/vnd.ms-excel");
-        baseService.excelTemplate(response.getOutputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
-    }
-    #end
+#end
 
 }

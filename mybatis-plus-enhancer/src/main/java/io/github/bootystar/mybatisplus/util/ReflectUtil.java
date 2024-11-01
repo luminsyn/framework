@@ -1,5 +1,8 @@
 package io.github.bootystar.mybatisplus.util;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -170,6 +173,55 @@ public abstract class ReflectUtil {
             map.put(field.getName(), o);
         }
         return map;
+    }
+
+
+    public static Map<String,String> fieldConvertMap(Class<?> clazz){
+        // 张三' OR '1' = '1';truncate table 'user11
+        Map<String, Field> fieldMap = fieldMap(clazz);
+        Map<String, String> result = new HashMap<>();
+        for (Field field : fieldMap.values()) {
+            String fieldName = field.getName();
+            String jdbcColumn= fieldName;
+            TableLogic tableLogic = field.getAnnotation(TableLogic.class);
+            if (tableLogic != null) {
+                continue;
+            }
+            TableId tableId = field.getAnnotation(TableId.class);
+            if (tableId != null) {
+                String value = tableId.value();
+                if (!value.isEmpty()) {
+                    jdbcColumn= value;
+                    if (!value.contains(".")){
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
+                    }
+                }
+                result.put(fieldName, jdbcColumn);
+                continue;
+            }
+            TableField tableField = field.getAnnotation(TableField.class);
+            if (tableField != null) {
+                boolean exist = tableField.exist();
+                String value = tableField.value();
+                if (!exist) {
+                    if (value.isEmpty()){
+                        continue;
+                    }
+                    result.put(fieldName, value);
+                    continue;
+                }
+                if (!value.isEmpty()) {
+                    jdbcColumn= value;
+                    if (!value.contains(".")){
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
+                    }
+                }
+                result.put(fieldName, jdbcColumn);
+                continue;
+            }
+            result.put(fieldName, String.format("a.`%s`",jdbcColumn));
+        }
+        return result;
     }
 
 
