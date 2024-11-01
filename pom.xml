@@ -8,10 +8,10 @@
     <artifactId>framework</artifactId>
     <version>${revision}</version>
     <modules>
-        <module>helper</module>
-        <module>wechat-api</module>
-        <module>mybatis-plus-enhancer</module>
-        <module>spring-boot-starter</module>
+        <module>bootystar-helper</module>
+        <module>wechat-tool</module>
+        <module>bootystar-mybatis-plus-enhancer</module>
+        <module>bootystar-spring-boot-starter</module>
     </modules>
 
     <properties>
@@ -93,7 +93,7 @@
             </dependency>
             <dependency>
                 <groupId>io.github.bootystar</groupId>
-                <artifactId>helper</artifactId>
+                <artifactId>bootystar-helper</artifactId>
                 <version>${revision}</version>
                 <optional>true</optional>
             </dependency>
