@@ -1,11 +1,18 @@
 package io.github.bootystar.mybatisplus.injection;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
+ * 条件
  * @author bootystar
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Condition {
     
     private static final String PATTERN = "(?i)(=|>|<|!=|>=|<=|like|not like|is null|is not null|in|not in)";

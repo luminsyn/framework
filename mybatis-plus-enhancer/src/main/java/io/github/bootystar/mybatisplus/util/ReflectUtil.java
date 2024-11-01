@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import io.github.bootystar.mybatisplus.injection.Injectable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -13,9 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author bootystar
@@ -116,7 +115,7 @@ public abstract class ReflectUtil {
      */
     public static Map<String, Field> fieldMap(Class<?> clazz){
         Map<String, Field> map = new HashMap<>();
-        while (clazz!=null){
+        while (clazz!=null && Object.class != clazz){
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
@@ -175,7 +174,41 @@ public abstract class ReflectUtil {
         return map;
     }
 
+    /**
+     * id字段
+     *
+     * @param clazz 克拉兹
+     * @return {@link String }
+     * @author bootystar
+     */
+    public static String idField(Class<?> clazz){
+        Map<String, Field> fieldMap = fieldMap(clazz);
+        Collection<Field> values = fieldMap.values();
+        ArrayList<String> fieldNames = new ArrayList<>();
+        for (Field field : values) {
+            String fieldName = field.getName();
+            String jdbcColumn= fieldName;
+            TableId tableId = field.getAnnotation(TableId.class);
+            if (tableId != null) {
+                String value = tableId.value();
+                if (!value.isEmpty()) {
+                    jdbcColumn= value;
+                }
+                return jdbcColumn;
+            }
+            fieldNames.add(fieldName);
+        }
+        return fieldNames.contains("id")?"id":null;
+    }
 
+
+    /**
+     * 实体类与数据库字段转换映射
+     *
+     * @param clazz 克拉兹
+     * @return {@link Map }<{@link String },{@link String }>
+     * @author bootystar
+     */
     public static Map<String,String> fieldConvertMap(Class<?> clazz){
         // 张三' OR '1' = '1';truncate table 'user11
         Map<String, Field> fieldMap = fieldMap(clazz);
@@ -223,6 +256,42 @@ public abstract class ReflectUtil {
         }
         return result;
     }
+
+
+    /**
+     * 获取实体类字段映射
+     * 当实体类实现{@link Injectable }接口后,会额外添加映射字段
+     *
+     * @param entityClass 实体类
+     * @return {@link Map }<{@link String }, {@link String }>
+     * @author bootystar
+     */
+    @SneakyThrows
+    public static Map<String, String> injectableFieldsMap(Class<?> entityClass) {
+        Map<String, String> map = ReflectUtil.fieldConvertMap(entityClass);
+        if (Injectable.class.isAssignableFrom(entityClass)){
+            Class<Injectable> injectable = (Class<Injectable>) entityClass;
+            Map<String, String> extraMap = injectable.getConstructor().newInstance().extraMap();
+            if (extraMap!=null && !extraMap.isEmpty()){
+                Iterator<Map.Entry<String, String>> it = extraMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, String> next = it.next();
+                    String fieldName = next.getKey();
+                    String jdbcColumn = next.getValue();
+                    if (jdbcColumn==null || jdbcColumn.isEmpty()) {
+                        continue;
+                    }
+                    if (!jdbcColumn.contains(".")){
+                        jdbcColumn= String.format("a.`%s`", jdbcColumn);
+                    }
+                    map.put(fieldName, jdbcColumn);
+                }
+            }
+        }
+        return map;
+    }
+
+
 
 
 

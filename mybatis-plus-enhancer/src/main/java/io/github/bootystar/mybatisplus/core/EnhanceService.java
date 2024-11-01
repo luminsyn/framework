@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -43,8 +44,12 @@ public interface EnhanceService<T,V> extends IService<T> {
 
     <U> boolean importExcel(InputStream is, Class<U> clazz);
 
+    Collection<String> injectableFields();
+
     T toEntity(Object source);
 
     V toVO(Object source);
+
+
 
 }

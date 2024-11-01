@@ -11,8 +11,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.bootystar.mybatisplus.injection.AntiInjectException;
-import io.github.bootystar.mybatisplus.injection.Injectable;
+import io.github.bootystar.mybatisplus.injection.Condition;
 import io.github.bootystar.mybatisplus.injection.Injector;
 import io.github.bootystar.mybatisplus.util.ReflectUtil;
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -27,34 +26,34 @@ import java.util.stream.Collectors;
 
 /**
  * service impl
+ *
  * @author bootystar
  */
-public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> extends ServiceImpl<M, T> implements EnhanceService<T,V> {
+public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T, V>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
 
     @Override
     public <S> V insertByDTO(S s) {
-        T entity = this.toEntity(s);
+        T entity = toEntity(s);
         super.save(entity);
-        return this.toVO(entity);
+        return toVO(entity);
     }
 
     @Override
     public <S> boolean updateByDTO(S s) {
-        T entity = this.toEntity(s);
+        T entity = toEntity(s);
         return super.updateById(entity);
     }
 
     @Override
     public V voById(Serializable id) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("primaryKey", id);
-        return this.oneByDTO(map);
+        String keyProperty = ReflectUtil.idField(getEntityClass());
+        return oneByDTO(new Injector().requiredCondition(Condition.builder().field(keyProperty).symbol("=").value(id).build()));
     }
 
     @Override
     public <U> U voById(Serializable id, Class<U> clazz) {
         V vo = voById(id);
-        return this.toTarget(vo, clazz);
+        return toTarget(vo, clazz);
     }
 
     @Override
@@ -63,80 +62,66 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
         if (vs == null || vs.isEmpty()) {
             return null;
         }
-        if(vs.size() > 1) {
-            throw new TooManyResultsException("error query => required one but found "+vs.size());
+        if (vs.size() > 1) {
+            throw new TooManyResultsException("error query => required one but found " + vs.size());
         }
         return vs.get(0);
     }
 
     @Override
     public <S, U> U oneByDTO(S s, Class<U> clazz) {
-        return this.toTarget(oneByDTO(s),clazz);
+        return toTarget(oneByDTO(s), clazz);
     }
 
     @Override
     public <S> List<V> listByDTO(S s) {
-        if (s instanceof Injector){
-            Injector injector = (Injector) s;
-            Class<T> entityClass = getEntityClass();
-            if (Injectable.class.isAssignableFrom(entityClass)){
-                Class<Injectable> injectableClass = (Class<Injectable>) entityClass;
-                List<V> voList = baseMapper.listByCondition(injector.init(injectableClass), null);
-                this.voPostProcess(voList);
-                return voList;
-            }else {
-                throw new AntiInjectException("entity class must implement Injectable interface");
-            }
-        }
-        List<V> voList = this.baseMapper.listByMap(this.toMap(s), null);
-        this.voPostProcess(voList);
-        return voList;
+        return doSelect(s, null);
     }
 
     @Override
-    public <S,U> List<U> listByDTO(S s, Class<U> clazz) {
-        return this.listByDTO(s).stream().map(e->this.toTarget(e, clazz)).collect(Collectors.toList());
+    public <S, U> List<U> listByDTO(S s, Class<U> clazz) {
+        return listByDTO(s).stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList());
     }
 
     @Override
     public <S> IPage<V> pageByDTO(S s, Long current, Long size) {
-        if (current == null || current<1) {
-            current=1L;
+        if (current == null || current < 1) {
+            current = 1L;
         }
         if (size == null) {
-            size=10L;
+            size = 10L;
         }
         Page<V> page = new Page<>(current, size);
-        if (s instanceof Injector){
-            Injector injector = (Injector) s;
-            Class<T> entityClass = getEntityClass();
-            if (Injectable.class.isAssignableFrom(entityClass)){
-                Class<Injectable> injectableClass = (Class<Injectable>) entityClass;
-                List<V> voList =baseMapper.listByCondition(injector.init(injectableClass), page);
-                this.voPostProcess(voList);
-                page.setRecords(voList);
-                return page;
-            }else {
-                throw new AntiInjectException("entity class must implement Injectable interface");
-            }
-        }
-        List<V> voList = this.baseMapper.listByMap(this.toMap(s), page);
-        this.voPostProcess(voList);
-        page.setRecords(voList);
+        doSelect(s, page);
         return page;
     }
 
     @Override
-    public <S,U> IPage<U> pageByDTO(S s, Long current, Long size, Class<U> clazz) {
-        IPage<V> viPage = this.pageByDTO(s, current, size);
-        List<U> voList = viPage.getRecords().stream().map(e->this.toTarget(e,clazz)).collect(Collectors.toList());
-        Page<U> uPage = new Page<>();
-        uPage.setCurrent(viPage.getCurrent());
-        uPage.setSize(viPage.getSize());
-        uPage.setTotal(viPage.getTotal());
-        uPage.setPages(viPage.getPages());
-        uPage.setRecords(voList);
-        return uPage;
+    public <S, U> IPage<U> pageByDTO(S s, Long current, Long size, Class<U> clazz) {
+        IPage<V> vp = pageByDTO(s, current, size);
+        List<U> us = vp.getRecords().stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList());
+        IPage<U> up = new Page<>(vp.getCurrent(),vp.getSize(),vp.getTotal());
+        up.setPages(vp.getPages());
+        up.setRecords(us);
+        return up;
+    }
+
+    protected <S> List<V> doSelect(S s, IPage<V> page) {
+        if (s instanceof Injector) {
+            Injector injector = (Injector) s;
+            List<V> vs = baseMapper.listByCondition(injector.init(getEntityClass()), page);
+            voPostProcess(vs);
+            if (page != null) {
+                page.setRecords(vs);
+            }
+            return vs;
+        }
+        List<V> vs = baseMapper.listByMap(toMap(s), page);
+        voPostProcess(vs);
+        if (page != null) {
+            page.setRecords(vs);
+        }
+        return vs;
     }
 
     protected void voPostProcess(List<V> dataList) {
@@ -145,12 +130,12 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
 
     @Override
     public <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, String... includeFields) {
-        this.exportExcel(s, os, clazz,1L,-1L, includeFields);
+        exportExcel(s, os, clazz, 1L, -1L, includeFields);
     }
 
     @Override
     public <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        List<U> voList = this.pageByDTO(s,current,size,clazz).getRecords();
+        List<U> voList = pageByDTO(s, current, size, clazz).getRecords();
         ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
         if (includeFields != null && includeFields.length > 0) {
             builder.includeColumnFieldNames(Arrays.asList(includeFields));
@@ -165,9 +150,9 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
 
     @Override
     public <U> boolean importExcel(InputStream is, Class<U> clazz) {
-        List<U> cachedDataList = this.importPreHandle(is,clazz);
+        List<U> cachedDataList = importPreHandle(is, clazz);
         if (cachedDataList == null || cachedDataList.isEmpty()) return false;
-        List<T> entityList = this.importPostHandle(cachedDataList);
+        List<T> entityList = importPostHandle(cachedDataList);
         return super.saveBatch(entityList);
     }
 
@@ -194,7 +179,7 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
         return cachedDataList;
 //        return EasyExcel.read(is).head(clazz).sheet().doReadSync();
     }
-    
+
     protected <U> List<T> importPostHandle(List<U> cachedDataList) {
         return cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
     }
@@ -202,26 +187,32 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T,V>,T,V> exten
 
     @Override
     public T toEntity(Object source) {
-        ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+        ParameterizedType pt = (ParameterizedType) getClass().getGenericSuperclass();
         Class<T> clazz = (Class<T>) pt.getActualTypeArguments()[1];
-        return this.toTarget(source, clazz);
+        return toTarget(source, clazz);
+//        return toTarget(source, super.getEntityClass());
     }
 
     @Override
     public V toVO(Object source) {
-        ParameterizedType pt = (ParameterizedType) this.getClass().getGenericSuperclass();
+        ParameterizedType pt = (ParameterizedType) getClass().getGenericSuperclass();
         Class<V> clazz = (Class<V>) pt.getActualTypeArguments()[2];
-        return this.toTarget(source, clazz);
+        return toTarget(source, clazz);
     }
 
-    protected  <U> U toTarget(Object source, Class<U> clazz) {
+    @Override
+    public Collection<String> injectableFields() {
+        return ReflectUtil.injectableFieldsMap(super.getEntityClass()).keySet();
+    }
+
+    protected <U> U toTarget(Object source, Class<U> clazz) {
         if (source == null || clazz == null) {
             return null;
         }
         if (clazz.isInstance(source)) {
             return (U) source;
         }
-        return ReflectUtil.copyProperties(source,ReflectUtil.newInstance(clazz));
+        return ReflectUtil.copyProperties(source, ReflectUtil.newInstance(clazz));
     }
 
     protected Map<String, Object> toMap(Object source) {
