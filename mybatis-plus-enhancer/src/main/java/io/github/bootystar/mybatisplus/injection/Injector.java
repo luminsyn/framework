@@ -65,7 +65,7 @@ public class Injector {
     }
 
     private void initCheck() {
-        if (!init) throw new AntiInjectException("injector not init, please call init first");
+        if (!init) throw new InjectException("injector not init, please call init first");
     }
 
     /**
@@ -78,25 +78,25 @@ public class Injector {
     public Injector init(Class<?> entityClass) {
         if (init) return this;
         if (entityClass == null) {
-            throw new AntiInjectException("entityClass class can not be null, please check your configuration");
+            throw new InjectException("entityClass class can not be null, please check your configuration");
         }
         Map<String, String> map = ReflectUtil.injectableFieldsMap(entityClass);
         if (map.isEmpty()) {
-            throw new AntiInjectException("entityClass has no field to convert, please check your configuration");
+            throw new InjectException("entityClass has no field to convert, please check your configuration");
         }
         if (connector == null || connector.isEmpty()) {
             connector = "and";
         }
         connector = connector.toLowerCase();
         if (!connector.matches("(?i)(and|or)")) {
-            throw new AntiInjectException("connector must be <and> or <or>, please check");
+            throw new InjectException("connector must be <and> or <or>, please check");
         }
         String className = entityClass.getName();
         log.debug("start create anti-injection conditions: source class {}", className);
         if (requiredConditions != null) {
             List<Condition> requiredCondition = replaceCondition(requiredConditions, map);
             if (requiredCondition.isEmpty()) {
-                throw new AntiInjectException("requiredCondition field or value has error , please check");
+                throw new InjectException("requiredCondition field or value has error , please check");
             }
         }
         if (conditions != null) {

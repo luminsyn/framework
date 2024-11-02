@@ -3,28 +3,31 @@ package io.github.bootystar.mybatisplus.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import io.github.bootystar.mybatisplus.core.EnhanceService;
+import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.injection.Injectable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.TypeVariable;
+import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author bootystar
  */
-public abstract class ReflectUtil {
+public abstract class ReflectUtil extends Reflector {
 
 
     @Data
     @AllArgsConstructor
-    public static class LambdaMethod{
+    public static class LambdaMethod {
         private String classPackage;
         private String classSimpleName;
         private boolean isGenericTypeClass;
@@ -42,13 +45,13 @@ public abstract class ReflectUtil {
      * @return {@link LambdaMethod }
      * @author bootystar
      */
-    public static LambdaMethod lambdaMethodInfo(SFunction<?, ?> methodReference,Class<?> parameterClass){
+    public static LambdaMethod lambdaMethodInfo(SFunction<?, ?> methodReference, Class<?> parameterClass) {
         String methodName = "";
-        String fullClassName= "";
+        String fullClassName = "";
         try {
             Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
             lambdaMethod.setAccessible(Boolean.TRUE);
-            SerializedLambda serializedLambda  = (SerializedLambda) lambdaMethod.invoke(methodReference);
+            SerializedLambda serializedLambda = (SerializedLambda) lambdaMethod.invoke(methodReference);
             fullClassName = serializedLambda.getImplClass().replace("/", ".");
             methodName = serializedLambda.getImplMethodName();
             String methodNameFullStr = methodName;
@@ -60,24 +63,24 @@ public abstract class ReflectUtil {
             try {
                 Method returnMethod = clazz.getMethod(methodNameFullStr, parameterClass);
                 Class<?> returnType = returnMethod.getReturnType();
-                if (!returnType.equals(clazz)){
+                if (!returnType.equals(clazz)) {
                     throw new NoSuchMethodException("no method found return self");
                 }
                 int modifiers = returnMethod.getModifiers();
-                if (Modifier.isStatic(modifiers)){
-                    isStaticMethod=true;
-                    methodNameFullStr=clazz.getSimpleName()+"."+methodNameFullStr;
-                }else{
+                if (Modifier.isStatic(modifiers)) {
+                    isStaticMethod = true;
+                    methodNameFullStr = clazz.getSimpleName() + "." + methodNameFullStr;
+                } else {
                     clazz.getConstructor();
-                    methodNameFullStr="new "+clazz.getSimpleName()+"()."+methodNameFullStr;
+                    methodNameFullStr = "new " + clazz.getSimpleName() + "()." + methodNameFullStr;
                 }
-            }catch (NoSuchMethodException e){
+            } catch (NoSuchMethodException e) {
                 clazz.getConstructor(parameterClass);
-                methodNameFullStr="new "+clazz.getSimpleName();
+                methodNameFullStr = "new " + clazz.getSimpleName();
                 if (isGenericTypeClass) {
                     methodNameFullStr += "<>";
                 }
-                isConstructor=true;
+                isConstructor = true;
             }
             return new ReflectUtil.LambdaMethod(
                     clazz.getPackage().getName()
@@ -88,91 +91,17 @@ public abstract class ReflectUtil {
                     , isStaticMethod
                     , isConstructor
             );
-        }catch (Exception e){
-            String msg= String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]",fullClassName,methodName,parameterClass.getName());
+        } catch (Exception e) {
+            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", fullClassName, methodName, parameterClass.getName());
             throw new IllegalStateException(msg);
         }
     }
 
-    /**
-     * 新建实例
-     *
-     * @param clazz 克拉兹
-     * @return {@link T }
-     * @author bootystar
-     */
-    @SneakyThrows
-    public static <T> T newInstance(Class<T> clazz){
-        return clazz.getConstructor().newInstance();
-    }
-
-    /**
-     * 指定类属性map
-     *
-     * @param clazz 类
-     * @return {@link Map }<{@link String }, {@link Field }>
-     * @author bootystar
-     */
-    public static Map<String, Field> fieldMap(Class<?> clazz){
-        Map<String, Field> map = new HashMap<>();
-        while (clazz!=null && Object.class != clazz){
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                int modifiers = field.getModifiers();
-                if (Modifier.isStatic(modifiers)||Modifier.isFinal(modifiers)||Modifier.isNative(modifiers)) continue;
-                map.putIfAbsent(field.getName(), field);
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return map;
-    }
-
-    /**
-     * 复制属性
-     *
-     * @param source 来源
-     * @param target 目标
-     * @return {@link T }
-     * @author bootystar
-     */
-    @SneakyThrows
-    public static <T> T copyProperties(Object source, T target) {
-        if (source == null || target == null || source.equals(target)) return target;
-        Map<String, Field> sourceMap = fieldMap(source.getClass());
-        Map<String, Field> targetMap = fieldMap(target.getClass());
-        for (Field field : sourceMap.values()) {
-            Object o = field.get(source);
-            if (o == null) continue;
-            Field targetFiled = targetMap.get(field.getName());
-            if (targetFiled != null && targetFiled.getType().isAssignableFrom(field.getType())) {
-                targetFiled.set(target, o);
-            }
-        }
-        return target;
-    }
 
 
-    /**
-     * 对象转map
-     *
-     * @param source 来源
-     * @return {@link Map }<{@link String },{@link Object }>
-     * @author bootystar
-     */
-    @SneakyThrows
-    public static Map<String,Object> objectToMap(Object source) {
-        HashMap<String, Object> map = new HashMap<>();
-        if (source == null ) return map;
-        if (source instanceof Map) return (Map<String, Object>) source;
-        Collection<Field> fields = fieldMap(source.getClass()).values();
-        for (Field field : fields) {
-            Object o = field.get(source);
-            if (o == null) continue;
-            map.put(field.getName(), o);
-        }
-        return map;
-    }
+
+
+
 
     /**
      * id字段
@@ -181,24 +110,24 @@ public abstract class ReflectUtil {
      * @return {@link String }
      * @author bootystar
      */
-    public static String idField(Class<?> clazz){
+    public static String idField(Class<?> clazz) {
         Map<String, Field> fieldMap = fieldMap(clazz);
         Collection<Field> values = fieldMap.values();
         ArrayList<String> fieldNames = new ArrayList<>();
         for (Field field : values) {
             String fieldName = field.getName();
-            String jdbcColumn= fieldName;
+            String jdbcColumn = fieldName;
             TableId tableId = field.getAnnotation(TableId.class);
             if (tableId != null) {
                 String value = tableId.value();
                 if (!value.isEmpty()) {
-                    jdbcColumn= value;
+                    jdbcColumn = value;
                 }
                 return jdbcColumn;
             }
             fieldNames.add(fieldName);
         }
-        return fieldNames.contains("id")?"id":null;
+        return fieldNames.contains("id") ? "id" : null;
     }
 
 
@@ -209,13 +138,13 @@ public abstract class ReflectUtil {
      * @return {@link Map }<{@link String },{@link String }>
      * @author bootystar
      */
-    public static Map<String,String> fieldConvertMap(Class<?> clazz){
+    public static Map<String, String> fieldConvertMap(Class<?> clazz) {
         // 张三' OR '1' = '1';truncate table 'user11
         Map<String, Field> fieldMap = fieldMap(clazz);
         Map<String, String> result = new HashMap<>();
         for (Field field : fieldMap.values()) {
             String fieldName = field.getName();
-            String jdbcColumn= fieldName;
+            String jdbcColumn = fieldName;
             TableLogic tableLogic = field.getAnnotation(TableLogic.class);
             if (tableLogic != null) {
                 continue;
@@ -224,8 +153,8 @@ public abstract class ReflectUtil {
             if (tableId != null) {
                 String value = tableId.value();
                 if (!value.isEmpty()) {
-                    jdbcColumn= value;
-                    if (!value.contains(".")){
+                    jdbcColumn = value;
+                    if (!value.contains(".")) {
                         jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
@@ -237,22 +166,22 @@ public abstract class ReflectUtil {
                 boolean exist = tableField.exist();
                 String value = tableField.value();
                 if (!exist) {
-                    if (value.isEmpty()){
+                    if (value.isEmpty()) {
                         continue;
                     }
                     result.put(fieldName, value);
                     continue;
                 }
                 if (!value.isEmpty()) {
-                    jdbcColumn= value;
-                    if (!value.contains(".")){
+                    jdbcColumn = value;
+                    if (!value.contains(".")) {
                         jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
                 result.put(fieldName, jdbcColumn);
                 continue;
             }
-            result.put(fieldName, String.format("a.`%s`",jdbcColumn));
+            result.put(fieldName, String.format("a.`%s`", jdbcColumn));
         }
         return result;
     }
@@ -269,20 +198,20 @@ public abstract class ReflectUtil {
     @SneakyThrows
     public static Map<String, String> injectableFieldsMap(Class<?> entityClass) {
         Map<String, String> map = ReflectUtil.fieldConvertMap(entityClass);
-        if (Injectable.class.isAssignableFrom(entityClass)){
+        if (Injectable.class.isAssignableFrom(entityClass)) {
             Class<Injectable> injectable = (Class<Injectable>) entityClass;
             Map<String, String> extraMap = injectable.getConstructor().newInstance().extraMap();
-            if (extraMap!=null && !extraMap.isEmpty()){
+            if (extraMap != null && !extraMap.isEmpty()) {
                 Iterator<Map.Entry<String, String>> it = extraMap.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry<String, String> next = it.next();
                     String fieldName = next.getKey();
                     String jdbcColumn = next.getValue();
-                    if (jdbcColumn==null || jdbcColumn.isEmpty()) {
+                    if (jdbcColumn == null || jdbcColumn.isEmpty()) {
                         continue;
                     }
-                    if (!jdbcColumn.contains(".")){
-                        jdbcColumn= String.format("a.`%s`", jdbcColumn);
+                    if (!jdbcColumn.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                     map.put(fieldName, jdbcColumn);
                 }
@@ -293,6 +222,89 @@ public abstract class ReflectUtil {
 
 
 
+
+
+    public static void main(String[] args) {
+        Type[] types = ReflectUtil.resolveTypeArguments(C.class);
+        System.out.println();
+
+        C<BaseGenerator, EnhanceService> c = new C<BaseGenerator, EnhanceService>();
+        Type[] types1 = ReflectUtil.resolveTypeArguments(c.getClass());
+        Type[] types2 = ReflectUtil.resolveTypeArguments(C.class, EnhanceService.class);
+
+        System.out.println();
+    }
+
+
+    static class C<BaseGenerator,B> extends Test<BaseGenerator>{
+
+    }
+
+    static class Test<S> implements EnhanceService<A, B> {
+
+        @Override
+        public <S> List<B> doSelect(S s, IPage<B> page) {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public boolean saveBatch(Collection<A> entityList, int batchSize) {
+            return false;
+        }
+
+        @Override
+        public boolean saveOrUpdateBatch(Collection<A> entityList, int batchSize) {
+            return false;
+        }
+
+        @Override
+        public boolean updateBatchById(Collection<A> entityList, int batchSize) {
+            return false;
+        }
+
+        @Override
+        public boolean saveOrUpdate(A entity) {
+            return false;
+        }
+
+        @Override
+        public A getOne(Wrapper<A> queryWrapper, boolean throwEx) {
+            return null;
+        }
+
+        @Override
+        public Optional<A> getOneOpt(Wrapper<A> queryWrapper, boolean throwEx) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Map<String, Object> getMap(Wrapper<A> queryWrapper) {
+            return Collections.emptyMap();
+        }
+
+        @Override
+        public <V> V getObj(Wrapper<A> queryWrapper, Function<? super Object, V> mapper) {
+            return null;
+        }
+
+        @Override
+        public BaseMapper<A> getBaseMapper() {
+            return null;
+        }
+
+        @Override
+        public Class<A> getEntityClass() {
+            return null;
+        }
+    }
+
+    class A {
+
+    }
+
+    class B {
+
+    }
 
 
 }

@@ -39,6 +39,6 @@ public class Condition {
         if (symbol.matches(PATTERN)) {
             return symbol.toLowerCase();
         }
-        throw new AntiInjectException("illegal symbol: " + symbol);
+        throw new InjectException("illegal symbol: " + symbol);
     }
 }

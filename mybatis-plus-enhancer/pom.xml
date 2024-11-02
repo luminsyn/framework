@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
-            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -29,8 +28,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
+<!--            <optional>true</optional>-->
         </dependency>
     </dependencies>
     
