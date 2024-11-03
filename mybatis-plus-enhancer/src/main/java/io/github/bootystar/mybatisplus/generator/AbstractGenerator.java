@@ -27,10 +27,6 @@ public abstract class AbstractGenerator {
 
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
 
-    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
-
-
-
     public DataSourceConfig.Builder dataSourceConfigBuilder() {
         return dataSourceConfigBuilder;
     }
@@ -51,9 +47,6 @@ public abstract class AbstractGenerator {
         return injectionConfigBuilder;
     }
 
-    public TemplateConfig.Builder templateConfigBuilder() {
-        return templateConfigBuilder;
-    }
 
     public abstract ConfigBaseBuilder<?, ?> customConfigBuilder();
 
@@ -82,12 +75,6 @@ public abstract class AbstractGenerator {
         packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
         ;
         
-//        // 自3.5.6废弃
-//        templateConfigBuilder
-//                .controller("/common/controller.java")
-//                .xml("/common/mapper.xml")
-//                .entity("/common/entity.java")
-//        ;
         strategyConfigBuilder.controllerBuilder()
                 .template("/common/controller.java")
                 .enableRestStyle()
@@ -121,7 +108,6 @@ public abstract class AbstractGenerator {
 
         StrategyConfig strategyConfig = strategyConfigBuilder.build();
 
-        TemplateConfig templateConfig = templateConfigBuilder.build();
 
         InjectionConfig injectionConfig = injectionConfigBuilder.build();
 
@@ -170,8 +156,6 @@ public abstract class AbstractGenerator {
                         .packageInfo(packageConfig)
                         // 策略配置
                         .strategy(strategyConfig)
-                        // 模板配置
-                        .template(templateConfig)
                         // 注入配置
                         .injection(injectionConfig)
                         // 自定义配置

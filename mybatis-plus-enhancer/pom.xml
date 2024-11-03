@@ -11,25 +11,55 @@
     </parent>
     <artifactId>mybatis-plus-enhancer</artifactId>
 
+    <properties>
+        <spring.version>5.3.39</spring.version>
+        <easyexcel.version>4.0.3</easyexcel.version>
+        <mybatisplus.version>3.5.8</mybatisplus.version>
+        <velocity.engine.version>2.4</velocity.engine.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
+            <version>${mybatisplus.version}</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
+            <version>${mybatisplus.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
+            <version>${velocity.engine.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-<!--            <optional>true</optional>-->
+            <version>${easyexcel.version}</version>
+            <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.15</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.22</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
     
 </project>

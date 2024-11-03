@@ -1,5 +1,6 @@
-package io.github.bootystar.mybatisplus.injection;
+package io.github.bootystar.mybatisplus.injection.entity;
 
+import io.github.bootystar.mybatisplus.injection.InjectException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,19 +27,11 @@ public class Condition {
      * 条件(=,>,<,!=,>=,<=,like,not like,is null,is not null,in,not in)
      * 默认=
      */
-    private String symbol;
+    private String symbol = "=";
     
     /**
      * 值
      */
     private Object value;
 
-
-    public String getSymbol() {
-        if (symbol == null || symbol.isEmpty()) return "=";
-        if (symbol.matches(PATTERN)) {
-            return symbol.toLowerCase();
-        }
-        throw new InjectException("illegal symbol: " + symbol);
-    }
 }

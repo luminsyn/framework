@@ -51,4 +51,25 @@ public interface EnhanceMapper<T,V>  extends BaseMapper<T> {
         </where>
      */
 
+    /*
+    <sql id="childFragment">
+      <foreach collection="children" item="child" open="(" close=")" separator=" OR ">
+        <if test="child.condition != null">
+          AND child.condition = #{child.condition}
+        </if>
+        <include refid="childFragment" />
+      </foreach>
+    </sql>
+
+    <select id="selectByExample" parameterType="Example" resultMap="BaseResultMap">
+      SELECT * FROM table
+      <where>
+        <if test="example.condition != null">
+          AND example.condition = #{example.condition}
+        </if>
+        <include refid="childFragment" />
+      </where>
+    </select>
+     */
+
 }

@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.injection;
+package io.github.bootystar.mybatisplus.injection.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,13 +19,8 @@ public class Sort {
      */
     private String field;
     /**
-     * 是否正序
+     * 是否正序(默认为false)
      */
-    private Boolean asc;
-
-    public Boolean getAsc() {
-        if (asc == null) return false;
-        return asc;
-    }
+    private Boolean asc = false;
 
 }

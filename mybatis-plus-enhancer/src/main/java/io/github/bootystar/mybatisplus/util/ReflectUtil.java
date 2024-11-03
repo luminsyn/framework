@@ -3,21 +3,16 @@ package io.github.bootystar.mybatisplus.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.core.EnhanceService;
-import io.github.bootystar.mybatisplus.generator.BaseGenerator;
 import io.github.bootystar.mybatisplus.injection.Injectable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.springframework.core.GenericTypeResolver;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * @author bootystar
@@ -96,12 +91,6 @@ public abstract class ReflectUtil extends Reflector {
             throw new IllegalStateException(msg);
         }
     }
-
-
-
-
-
-
 
     /**
      * id字段
@@ -197,7 +186,7 @@ public abstract class ReflectUtil extends Reflector {
      */
     @SneakyThrows
     public static Map<String, String> injectableFieldsMap(Class<?> entityClass) {
-        Map<String, String> map = ReflectUtil.fieldConvertMap(entityClass);
+        Map<String, String> map = fieldConvertMap(entityClass);
         if (Injectable.class.isAssignableFrom(entityClass)) {
             Class<Injectable> injectable = (Class<Injectable>) entityClass;
             Map<String, String> extraMap = injectable.getConstructor().newInstance().extraMap();
@@ -219,92 +208,5 @@ public abstract class ReflectUtil extends Reflector {
         }
         return map;
     }
-
-
-
-
-
-    public static void main(String[] args) {
-        Type[] types = ReflectUtil.resolveTypeArguments(C.class);
-        System.out.println();
-
-        C<BaseGenerator, EnhanceService> c = new C<BaseGenerator, EnhanceService>();
-        Type[] types1 = ReflectUtil.resolveTypeArguments(c.getClass());
-        Type[] types2 = ReflectUtil.resolveTypeArguments(C.class, EnhanceService.class);
-
-        System.out.println();
-    }
-
-
-    static class C<BaseGenerator,B> extends Test<BaseGenerator>{
-
-    }
-
-    static class Test<S> implements EnhanceService<A, B> {
-
-        @Override
-        public <S> List<B> doSelect(S s, IPage<B> page) {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public boolean saveBatch(Collection<A> entityList, int batchSize) {
-            return false;
-        }
-
-        @Override
-        public boolean saveOrUpdateBatch(Collection<A> entityList, int batchSize) {
-            return false;
-        }
-
-        @Override
-        public boolean updateBatchById(Collection<A> entityList, int batchSize) {
-            return false;
-        }
-
-        @Override
-        public boolean saveOrUpdate(A entity) {
-            return false;
-        }
-
-        @Override
-        public A getOne(Wrapper<A> queryWrapper, boolean throwEx) {
-            return null;
-        }
-
-        @Override
-        public Optional<A> getOneOpt(Wrapper<A> queryWrapper, boolean throwEx) {
-            return Optional.empty();
-        }
-
-        @Override
-        public Map<String, Object> getMap(Wrapper<A> queryWrapper) {
-            return Collections.emptyMap();
-        }
-
-        @Override
-        public <V> V getObj(Wrapper<A> queryWrapper, Function<? super Object, V> mapper) {
-            return null;
-        }
-
-        @Override
-        public BaseMapper<A> getBaseMapper() {
-            return null;
-        }
-
-        @Override
-        public Class<A> getEntityClass() {
-            return null;
-        }
-    }
-
-    class A {
-
-    }
-
-    class B {
-
-    }
-
 
 }

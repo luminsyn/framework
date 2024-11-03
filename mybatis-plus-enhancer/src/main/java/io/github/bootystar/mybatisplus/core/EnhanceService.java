@@ -6,20 +6,17 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.bootystar.mybatisplus.injection.Condition;
+import io.github.bootystar.mybatisplus.injection.entity.Condition;
 import io.github.bootystar.mybatisplus.injection.Injector;
 import io.github.bootystar.mybatisplus.util.ReflectUtil;
 import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.springframework.core.GenericTypeResolver;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-
 
 /**
  * service
@@ -34,12 +31,12 @@ public interface EnhanceService<T, V> extends IService<T> {
 
     @SuppressWarnings("unchecked")
     default Class<T> entityClass() {
-        return (Class<T>) ReflectUtil.resolveTypeArguments(getClass(), EnhanceService.class)[0];
+        return (Class<T>) Objects.requireNonNull(GenericTypeResolver.resolveTypeArguments(getClass(), EnhanceService.class))[0];
     }
 
     @SuppressWarnings("unchecked")
     default Class<V> voClass() {
-        return (Class<V>) ReflectUtil.resolveTypeArguments(getClass(), EnhanceService.class)[1];
+        return (Class<V>) Objects.requireNonNull(GenericTypeResolver.resolveTypeArguments(getClass(), EnhanceService.class))[1];
     }
 
     default T toEntity(Object source) {

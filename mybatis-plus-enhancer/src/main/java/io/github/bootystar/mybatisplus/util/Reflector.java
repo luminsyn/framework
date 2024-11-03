@@ -1,7 +1,10 @@
 package io.github.bootystar.mybatisplus.util;
 
 import lombok.SneakyThrows;
+import org.springframework.core.ResolvableType;
+import org.springframework.lang.Nullable;
 
+import java.io.Serializable;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -22,15 +25,6 @@ public abstract class Reflector {
         return clazz.getConstructor().newInstance();
     }
 
-    public static List<Class<?>> getParentClasses(Class<?> clazz) {
-        List<Class<?>> list = new ArrayList<>();
-        while (clazz != null && Object.class != clazz) {
-            list.add(clazz);
-            clazz = clazz.getSuperclass();
-        }
-        return list;
-    }
-
     /**
      * 指定类属性map
      *
@@ -40,7 +34,7 @@ public abstract class Reflector {
      */
     public static Map<String, Field> fieldMap(Class<?> clazz) {
         Map<String, Field> map = new HashMap<>();
-        while (clazz != null && Object.class != clazz) {
+        while (clazz != null && Object.class != clazz && !clazz.isInterface()) {
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
@@ -99,64 +93,6 @@ public abstract class Reflector {
             map.put(field.getName(), o);
         }
         return map;
-    }
-
-    public static Type[] resolveTypeArguments(Class<?> clazz) {
-        return resolveTypeArguments(clazz, null);
-    }
-
-
-    public static Type[] resolveTypeArguments(Class<?> clazz, Class<?> parent) {
-        if (clazz == null) {
-            throw new IllegalStateException("clazz cannot be null");
-        }
-        if (parent == null) {
-            TypeVariable<? extends Class<?>>[] parameters = clazz.getTypeParameters();
-            if (parameters.length > 0) {
-                return parameters;
-            }
-            throw new IllegalStateException("No type parameters found in " + clazz.getName());
-        }
-
-        boolean anInterface = parent.isInterface();
-        if (anInterface) {
-            Type[] interfaces = clazz.getGenericInterfaces();
-            for (Type t : interfaces) {
-                if (t instanceof ParameterizedType) {
-                    ParameterizedType pt = (ParameterizedType) t;
-                    Type rawType = pt.getRawType();
-                    if (rawType.equals(parent)) {
-                        Type[] arguments = pt.getActualTypeArguments();
-                        if (arguments == null || arguments.length == 0) {
-                            throw new IllegalStateException(clazz.getName() + " No type parameters found for " + parent.getName());
-                        }
-                        return arguments;
-                    }
-                }
-            }
-        }
-        boolean assignableFrom = parent.isAssignableFrom(clazz);
-        if (!assignableFrom) {
-            throw new IllegalStateException(clazz + " is not a child of " + parent);
-        }
-        // todo 递归搜索父类泛型实现
-        List<Class<?>> classes = getParentClasses(clazz);
-        for (Class<?> c : classes) {
-            if (parent.isAssignableFrom(c)) {
-                Type genericSuperclass = c.getGenericSuperclass();
-                if (genericSuperclass instanceof ParameterizedType) {
-                    ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-                    boolean equals = parameterizedType.getRawType().equals(parent);
-                    if (equals) {
-                        Type[] arguments = parameterizedType.getActualTypeArguments();
-                        if (arguments != null && arguments.length > 0) {
-                            return arguments;
-                        }
-                    }
-                }
-            }
-        }
-        throw new IllegalStateException(clazz.getName() + " No type parameters found for " + parent.getName());
     }
 
 }
