@@ -23,4 +23,12 @@ public class Sort {
      */
     private Boolean asc = false;
 
+
+    public Sort newInstance(){
+       Sort sort = new Sort();
+       sort.setField(this.field);
+       sort.setAsc(this.asc);
+       return sort;
+    }
+
 }

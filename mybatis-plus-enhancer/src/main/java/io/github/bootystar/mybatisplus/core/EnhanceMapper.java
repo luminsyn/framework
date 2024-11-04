@@ -15,9 +15,7 @@ import java.util.Map;
  */
 public interface EnhanceMapper<T,V>  extends BaseMapper<T> {
 
-    List<V> listByMap(@Param("map") Map<String,Object> map, IPage<V> page);
-
-    List<V> listByCondition(@Param("injector") Injector injector, @Param("page") IPage<V> page);
+    List<V> listByInjector(@Param("injector") Injector.SafetyInjector<T> injector, @Param("page") IPage<V> page);
 
     /*
     select *

@@ -41,11 +41,16 @@
             <version>${easyexcel.version}</version>
             <optional>true</optional>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-core</artifactId>-->
+<!--            <version>${spring.version}</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
+            <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
@@ -59,7 +64,6 @@
             <version>1.5.22</version>
             <optional>true</optional>
         </dependency>
-
     </dependencies>
     
 </project>

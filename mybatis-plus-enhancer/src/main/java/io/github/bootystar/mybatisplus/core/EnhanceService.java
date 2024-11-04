@@ -62,7 +62,7 @@ public interface EnhanceService<T, V> extends IService<T> {
     }
 
     default V voById(Serializable id) {
-        return oneByDTO(new Injector().requiredCondition(Condition.builder().field(ReflectUtil.idField(entityClass())).symbol("=").value(id).build()));
+        return oneByDTO(new Injector().requiredConditions(Condition.builder().field(ReflectUtil.idField(entityClass())).value(id).build()));
     }
 
     default <U> U voById(Serializable id, Class<U> clazz) {
