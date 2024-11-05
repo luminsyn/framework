@@ -1,9 +1,6 @@
 package io.github.bootystar.mybatisplus.injection.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * 条件
@@ -20,47 +17,57 @@ public class Condition {
      * 和上一个条件的关系(AND 或 OR)
      * 默认AND
      */
-    private String connector = "AND";
+    protected String connector = "AND";
 
     /**
      * 字段
      */
-    private String field;
+    protected String field;
     
     /**
      * 运算符(=,>,<,!=,>=,<=,LIKE,NOT LIKE,IS NULL,IS NOT NULL,IN,NOT IN)
      * 默认=
      */
-    private String operator = "=";
+    protected String operator = "=";
 
     /**
      * 值
      */
-    private Object value;
+    protected Object value;
+
+//    public Condition newInstance(){
+//        return new SafetyCondition(connector, field, operator, value);
+//    }
 
 
-    public void setOperator(String operator) {
-        if (operator == null || operator.isEmpty()) {
-            this.operator = "=";
-            return;
+    @Getter
+    public static final class ImmutableCondition extends Condition {
+        public ImmutableCondition() {
+            throw new UnsupportedOperationException("not support empty constructor");
         }
-        this.operator = operator.toUpperCase();
-    }
 
-    public void setConnector(String connector) {
-        if (connector == null || connector.isEmpty()) {
-            this.connector = "AND";
-            return;
+        public ImmutableCondition(String connector, String field, String operator, Object value) {
+            super(connector, field, operator, value);
         }
-        this.connector = connector.toUpperCase();
-    }
 
-    public Condition newInstance(){
-        Condition condition = new Condition();
-        condition.setConnector(connector);
-        condition.setField(field);
-        condition.setOperator(operator);
-        condition.setValue(value);
-        return condition;
+        @Override
+        public void setValue(Object value) {
+            throw new UnsupportedOperationException("not support set value");
+        }
+
+        @Override
+        public void setField(String field) {
+            throw new UnsupportedOperationException("not support set value");
+        }
+
+        @Override
+        public void setOperator(String operator) {
+            throw new UnsupportedOperationException("not support set value");
+        }
+
+        @Override
+        public void setConnector(String connector) {
+            throw new UnsupportedOperationException("not support set value");
+        }
     }
 }

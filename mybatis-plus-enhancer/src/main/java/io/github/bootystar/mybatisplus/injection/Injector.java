@@ -7,6 +7,7 @@ import io.github.bootystar.mybatisplus.injection.enums.Connector;
 import io.github.bootystar.mybatisplus.injection.enums.Operator;
 import io.github.bootystar.mybatisplus.util.ReflectUtil;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +22,11 @@ import java.util.*;
  * @author bootystar
  */
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-public class Injector {
+public class Injector extends RecursivelyCondition {
 
-    /**
-     * 自定义条件列表
-     */
-    protected RecursivelyCondition condition;
 
     /**
      * 排序条件列表
@@ -86,11 +84,10 @@ public class Injector {
      * @author bootystar
      */
     public Injector requiredConditions(List<Condition> conditions) {
-        RecursivelyCondition conditionO = this.condition;
+        RecursivelyCondition conditionO = getChild();
         RecursivelyCondition conditionN = new RecursivelyCondition();
-        this.condition = conditionN;
-        conditionN.setConnector(Connector.AND.keyword);
-        conditionN.setChildren(conditionO);
+        setChild(conditionN);
+        conditionN.setChild(conditionO);
         conditionN.setConditions(conditions);
         return this;
     }
@@ -147,17 +144,14 @@ public class Injector {
         if (conditions == null || conditions.isEmpty()) {
             return this;
         }
-        if (this.condition == null) {
-            this.condition = new RecursivelyCondition();
-        }
-        List<Condition> conditionsO = condition.getConditions();
+        List<Condition> conditionsO = getConditions();
         int size = conditionsO == null ? conditions.size() : conditionsO.size() + conditions.size();
         ArrayList<Condition> conditionsN = new ArrayList<>(size);
-        condition.setConditions(conditionsN);
         conditionsN.addAll(conditions);
         if (conditionsO != null) {
             conditionsN.addAll(conditionsO);
         }
+        setConditions(conditionsN);
         return this;
     }
 
@@ -182,48 +176,28 @@ public class Injector {
      * @author bootystar
      */
     @Getter
-    public static class SafetyInjector<T> {
+    public static final class SafetyInjector<T> extends RecursivelyCondition {
         /**
          * 实体类
          */
         private final Class<T> entityClass;
         /**
-         * 自定义条件列表
-         */
-        private RecursivelyCondition condition;
-        /**
          * 排序条件列表
          */
         private List<Sort> sorts;
 
+
+        private SafetyInjector(Class<T> entityClass) {
+            this.entityClass = entityClass;
+        }
+
         private SafetyInjector(Injector injector, Class<T> entityClass) {
             this.entityClass = entityClass;
-            // to avoid same object
-            convertConditions(injector);
-            convertSorts(injector);
-            // handle fields
-            antiInjection();
+            antiInjection(injector);
         }
 
-        private void convertConditions(Injector injector) {
-            RecursivelyCondition condition = injector.getCondition();
-            if (condition != null) {
-                this.condition = condition.newInstance();
-            }
-        }
 
-        private void convertSorts(Injector injector) {
-            List<Sort> sorts = injector.getSorts();
-            if (sorts != null) {
-                ArrayList<Sort> sortsN = new ArrayList<>(sorts.size());
-                for (Sort sort : sorts) {
-                    sortsN.add(sort.newInstance());
-                }
-                this.sorts = sortsN;
-            }
-        }
-
-        private void antiInjection() {
+        private void antiInjection(Injector injector) {
             if (entityClass == null) {
                 throw new InjectException("entityClass class can not be null, please check your configuration");
             }
@@ -234,53 +208,37 @@ public class Injector {
 
             String className = entityClass.getName();
             log.debug("start create anti-injection conditions: source class {}", className);
-            if (condition != null) {
-                replaceIterableCondition(condition, map);
-            }
-            if (sorts != null) {
-                replaceSorts(sorts, map);
-            }
-        }
-
-        private static void replaceIterableCondition(RecursivelyCondition condition, Map<String, String> map) {
-            if (condition == null) {
-                return;
-            }
-            List<Condition> conditions = condition.getConditions();
-            String connector = condition.getConnector();
-            if (connector == null || connector.isEmpty()) {
-                connector = Connector.AND.keyword;
-            }
-            replaceCondition(conditions, map);
-            RecursivelyCondition children = condition.getChildren();
-            if (conditions == null || conditions.isEmpty()) {
-                if (children != null && connector.equalsIgnoreCase("AND")) {
-                    throw new InjectException("current conditions is empty , can't use 'AND' to connect children");
+            SafetyInjector<T> childN = this;
+            RecursivelyCondition childO = injector;
+            while (childO.getConditions() != null && !childO.getConditions().isEmpty()) {
+                List<Condition> conditionsN = replaceCondition(childO.getConditions(), map);
+                if (conditionsN != null && !conditionsN.isEmpty()) {
+                    childN.conditions = conditionsN;
                 }
-                if (children != null) {
-                    condition.setConditions(children.getConditions());
-                    condition.setConnector(children.getConnector());
-                    condition.setChildren(children.getChildren());
-                    replaceIterableCondition(condition, map);
-                    return;
+                childO = childO.getChild();
+                if (childO == null) {
+                    break;
                 }
-                return;
+                SafetyInjector<T> child = new SafetyInjector<>(entityClass);
+                childN.child = child;
+                childN = child;
             }
-            replaceIterableCondition(children, map);
+            this.sorts = replaceSorts(injector.getSorts(), map);
         }
 
 
-        private static void replaceCondition(List<Condition> conditions, Map<String, String> map) {
+        private static List<Condition> replaceCondition(List<Condition> conditions, Map<String, String> map) {
             if (conditions == null || conditions.isEmpty()) {
-                return;
+                return null;
             }
             Iterator<Condition> cit = conditions.iterator();
+            ArrayList<Condition> list = new ArrayList<>();
             while (cit.hasNext()) {
-                Condition condition = cit.next();
-                String connector = condition.getConnector();
-                String field = condition.getField();
-                String operator = condition.getOperator();
-                Object value = condition.getValue();
+                Condition conditionO = cit.next();
+                String connector = conditionO.getConnector();
+                String field = conditionO.getField();
+                String operator = conditionO.getOperator();
+                Object value = conditionO.getValue();
 
                 if (connector == null || connector.isEmpty()) {
                     connector = Connector.AND.keyword;
@@ -292,58 +250,58 @@ public class Injector {
 
                 if (operator == null || operator.isEmpty()) {
                     operator = "=";
-                    condition.setOperator(operator);
                 }
                 if (!operator.matches("(?i)(=|>|<|!=|>=|<=|LIKE|NOT LIKE|IS NULL|IS NOT NULL|IN|NOT IN)")) {
                     throw new InjectException("illegal argument ,  operator can't be : " + operator);
                 }
 
                 if (field == null || field.isEmpty()) {
-                    cit.remove();
                     continue;
                 }
                 String jdbcColumn = map.get(field);
                 if (jdbcColumn == null) {
                     log.debug("condition field [{}] not exist in injectMap, it will be removed", field);
-                    cit.remove();
+                    continue;
                 }
-                condition.setField(jdbcColumn);
-
+                if (value == null && !operator.matches("(?i)(IS NULL|IS NOT NULl)")) {
+                    log.debug("condition field [{}] requires value but value is null, it will be removed", field);
+                    continue;
+                }
                 if (operator.matches("(?i)(IN|NOT IN)")) {
-                    if (value == null) {
-                        log.debug("condition field [{}] requires collection but value is null, it will be removed", field);
-                        cit.remove();
-                        continue;
-                    }
                     if (value instanceof Iterable) {
                         Iterable<?> iterable = (Iterable<?>) value;
                         if (!iterable.iterator().hasNext()) {
                             log.debug("condition field [{}] requires collection but value is empty, it will be removed", field);
-                            cit.remove();
                             continue;
                         }
+                    }else {
+                        log.debug("condition field [{}] requires collection but value is not iterable, it will be removed", field);
+                        continue;
                     }
                 }
-                if (value == null && !operator.matches("(?i)(IS NULL|IS NOT NULl)")) {
-                    log.debug("condition field [{}] requires value but value is null, it will be removed", field);
-                    cit.remove();
-                    continue;
+                if (value != null && operator.matches("(?i)(LIKE|NOT LIKE)")) {
+                    if (!(value instanceof String)) {
+                        throw new InjectException("condition field [{}] requires string value, but value is : " + value);
+                    }
+                    value = "%" + value + "%";
                 }
+                list.add(new Condition.ImmutableCondition(connector, jdbcColumn, operator, value));
             }
+            return list;
         }
 
-        private static void replaceSorts(List<Sort> sorts, Map<String, String> map) {
+        private static List<Sort> replaceSorts(List<Sort> sorts, Map<String, String> map) {
             if (sorts == null || sorts.isEmpty()) {
-                return;
+                return null;
             }
+            ArrayList<Sort> list = new ArrayList<>();
             Iterator<Sort> sit = sorts.iterator();
             while (sit.hasNext()) {
-                Sort sort = sit.next();
-                String field = sort.getField();
-                Boolean asc = sort.getAsc();
+                Sort sortO = sit.next();
+                String field = sortO.getField();
+                Boolean asc = sortO.getAsc();
                 if (asc == null) {
                     asc = false;
-                    sort.setAsc(asc);
                 }
                 if (field == null || field.isEmpty()) {
                     log.debug("sort field [{}] is null , it will be removed", field);
@@ -355,8 +313,9 @@ public class Injector {
                     log.debug("sort field [{}] not exist in injectMap , it will be removed", field);
                     sit.remove();
                 }
-                sort.setField(jdbcColumn);
+                list.add(new Sort.ImmutableSort(jdbcColumn, asc));
             }
+            return list;
         }
     }
 

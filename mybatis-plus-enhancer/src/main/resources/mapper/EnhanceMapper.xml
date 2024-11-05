@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.bootystar.mybatisplus.core.EnhanceSegment">
+
+    <sql id="conditionsFragment">
+        <if test="${conditions} != null and ${conditions}.size() > 0">
+            AND (
+            <trim prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+                <foreach collection="${conditions}" item="item" index="index">
+                    ${item.connector}
+                    <choose>
+                        <when test="item.operator.contains('IN'.toString())">
+                            ${item.field} ${item.operator}
+                            <foreach collection="item.value" item="val" separator="," open="(" close=")">
+                                #{val}
+                            </foreach>
+                        </when>
+                        <when test="item.operator.contains('IS'.toString())">
+                            ${item.field} ${item.operator}
+                        </when>
+                        <otherwise>
+                            ${item.field} ${item.operator} #{item.value}
+                        </otherwise>
+                    </choose>
+                </foreach>
+            </trim>
+            )
+        </if>
+    </sql>
+
+    <sql id="sortFragment">
+        <if test="injector.sorts != null and injector.sorts.size() > 0">
+            ORDER BY
+            <foreach collection="injector.sorts" item="item" separator=",">
+                ${item.field} <if test="item.asc == false"> DESC </if>
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="childFragment">
+        <include refid="conditionsFragment">
+            <property name="conditions" value="injector.conditions"/>
+        </include>
+        <if test="injector.child != null">
+            <include refid="conditionsFragment">
+                <property name="conditions" value="injector.child.conditions"/>
+            </include>
+            <if test="injector.child.child != null">
+                <include refid="conditionsFragment">
+                    <property name="conditions" value="injector.child.child.conditions"/>
+                </include>
+                <if test="injector.child.child.child != null">
+                    <include refid="conditionsFragment">
+                        <property name="conditions" value="injector.child.child.child .conditions"/>
+                    </include>
+                    <if test="injector.child.child.child.child != null">
+                        <include refid="conditionsFragment">
+                            <property name="conditions" value="injector.child.child.child.child.conditions"/>
+                        </include>
+                    </if>
+                </if>
+            </if>
+        </if>
+    </sql>
+
+
+
+</mapper>

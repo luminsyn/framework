@@ -1,63 +1,55 @@
 package io.github.bootystar.mybatisplus.injection.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 可递归的条件
+ * 递归条件
  *
  * @author bootystar
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RecursivelyCondition {
 
     /**
      * 条件
      */
-    private List<Condition> conditions;
-
-    /**
-     * 条件与子条件的关系(and 或 or)
-     * 默认and
-     */
-    private String connector = "AND";
+    protected List<Condition> conditions;
 
     /**
      * 子条件
+     * (满足父条件后的值才会筛选子条件)
      */
-    private RecursivelyCondition children;
+    protected RecursivelyCondition child;
 
 
-    public void setConnector(String connector) {
-        if (connector == null || connector.isEmpty()) {
-            this.connector = "AND";
-            return;
-        }
-        this.connector = connector.toUpperCase();
-    }
 
-    /**
-     * 获取拷贝的副本
-     *
-     * @return {@link RecursivelyCondition }
-     * @author bootystar
-     */
-    public RecursivelyCondition newInstance() {
-        RecursivelyCondition instance = new RecursivelyCondition();
-        ArrayList<Condition> conditionsN = new ArrayList<>();
-        if (conditions != null) {
-            for (Condition condition : conditions) {
-                conditionsN.add(condition.newInstance());
-            }
+    public static class ImmutableRecursivelyCondition extends RecursivelyCondition {
+        public ImmutableRecursivelyCondition(List<Condition> conditions, RecursivelyCondition child) {
+            super(conditions, child);
         }
-        instance.setConditions(conditionsN);
-        instance.setConnector(connector);
-        if (children != null){
-            instance.setChildren(children.newInstance());
+
+        public ImmutableRecursivelyCondition() {
+            throw new UnsupportedOperationException("not support empty constructor");
         }
-        return instance;
+
+        @Override
+        public void setConditions(List<Condition> conditions) {
+            throw new UnsupportedOperationException("not support set value");
+        }
+
+        @Override
+        public void setChild(RecursivelyCondition child) {
+            throw new UnsupportedOperationException("not support set value");
+        }
     }
 
 }

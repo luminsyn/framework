@@ -31,4 +31,25 @@ public class Sort {
        return sort;
     }
 
+
+    public static class ImmutableSort extends Sort{
+        public ImmutableSort() {
+            throw new UnsupportedOperationException("not support empty constructor");
+        }
+
+        public ImmutableSort(String field, Boolean asc) {
+            super(field, asc);
+        }
+
+        @Override
+        public void setField(String field) {
+            throw new UnsupportedOperationException("not support set value");
+        }
+
+        @Override
+        public void setAsc(Boolean asc) {
+            throw new UnsupportedOperationException("not support set value");
+        }
+    }
+
 }
