@@ -10,7 +10,7 @@
     <modules>
         <module>helper</module>
         <module>wechat-api</module>
-        <module>mybatis-plus-enhancer</module>
+        <module>mybatis-plus-generator</module>
         <module>spring-boot-starter</module>
     </modules>
 
