@@ -29,6 +29,11 @@ import ${superControllerClassPackage};
 import ${pageResultClassPackage}.${pageResultClass};
 #end
 #if(${generateSelect}||(${generateExport}&&${exportOnVO})||(${generateImport}&&${importOnVO}))
+    #if(${injector})
+import ${injectorClassFullName};
+    #else
+import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+    #end
 import ${basePackage}.${VOPackage}.${entity}VO;
 #end
 #if(${generateInsert})
@@ -36,9 +41,6 @@ import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
 #end
 #if(${generateUpdate})
 import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
-#end
-#if(${generateSelect})
-import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
 #end
 #if(${generateImport}&&!${importOnVO})
 import ${basePackage}.${DTOPackage}.${entity}ImportDTO;
@@ -243,9 +245,9 @@ public class ${table.controllerName} {
     @GetMapping("/list")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end selectList(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end selectList(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s){
     #else
-    public List<${entity}VO> selectList(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s){
+    public List<${entity}VO> selectList(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s){
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.listByDTO(s));
@@ -276,15 +278,15 @@ public class ${table.controllerName} {
     #end
     #if(${returnResultClass})
             #if(${pageResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
                 #else
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
             #end
         #else
             #if(${pageResultClass})
-    public ${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
+    public ${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
                 #else
-    public IPage<${entity}VO> selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
+    public IPage<${entity}VO> selectPage(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
             #end
     #end
     #if(${returnResultClass})
@@ -325,7 +327,7 @@ public class ${table.controllerName} {
     @GetMapping({"/export","/export/{current}","/export/{current}/{size}"})
     #end
     #if(${generateSelect})
-    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${entity}SelectDTO s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
+    public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end#if(${injector})${injectorClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
         #else
     public void exportExcel(#if(${requestBody}&&${allPost})@RequestBody(required = false) #end${map} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
     #end

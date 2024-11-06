@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.injection.Injectable;
+import io.github.bootystar.mybatisplus.base.injection.interfaces.Injectable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.springframework.core.GenericTypeResolver;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.*;

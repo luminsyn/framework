@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.AbstractTemplateEngine;
 import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
-import io.github.bootystar.mybatisplus.generator.config.IConfig;
+import io.github.bootystar.mybatisplus.config.base.IConfigurator;
 
 import java.io.File;
 import java.util.List;
@@ -21,14 +21,14 @@ import java.util.Optional;
  */
 public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
-    private IConfig customConfig;
+    private IConfigurator customConfig;
 
 
     public EnhanceVelocityTemplateEngine() {
     }
 
 
-    public EnhanceVelocityTemplateEngine(IConfig customConfig) {
+    public EnhanceVelocityTemplateEngine(IConfigurator customConfig) {
         this.customConfig = customConfig;
     }
 

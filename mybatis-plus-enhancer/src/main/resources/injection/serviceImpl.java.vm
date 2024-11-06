@@ -1,0 +1,117 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${basePackage}.${VOPackage}.${entity}VO;
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+#if(${sortsList})
+import ${sortClassFullName}
+#end
+import org.springframework.stereotype.Service;
+#if(${showServiceImplMethod}&&${generateSelect})
+import com.baomidou.mybatisplus.core.metadata.IPage;
+#end
+
+#if(${generateSelect}||${sortsList})
+import java.util.List;
+#end
+#if(${sortsList})
+import java.util.Arrays;
+#end
+#if(${showServiceImplMethod})
+#if((${generateDelete}||${generateSelect}))
+import java.io.Serializable;
+#end
+#if(${generateImport})
+import java.io.InputStream;
+#end
+#if(${generateExport})
+import java.io.OutputStream;
+#end
+#end
+
+
+/**
+ * $!{table.comment} 服务实现类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Service
+#if(${kotlin})
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO>() implements ${table.serviceName} {
+
+}
+#else
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO> implements ${table.serviceName} {
+
+    #if(${sortsList})
+    @Override
+    protected List<Sort> defaultSorts(){
+        return Arrays.asList(
+        #foreach($so in ${sortsList} )
+            new ${sortClassSimpleName}("${so.field}",${so.desc})#if($foreach.hasNext),#end
+        #end
+        );
+    }
+
+    #end
+#if(${showServiceImplMethod})
+    #if(${generateInsert})
+
+    @Override
+    public <S> ${entity}VO insertByDTO(S s) {
+        return super.insertByDTO(s);
+    }
+
+    #end
+    #if(${generateUpdate})
+
+    @Override
+    public <S> boolean updateByDTO(S s) {
+        return super.updateByDTO(s);
+    }
+    #end
+    #if(${generateDelete})
+
+    @Override
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
+    }
+    #end
+    #if(${generateSelect})
+
+    @Override
+    public ${entity}VO voById(Serializable id){
+        return super.voById(id);
+    }
+
+    @Override
+    public <S> List<${entity}VO> listByDTO(S s){
+        return super.listByDTO(s);
+    }
+
+    @Override
+    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size){
+        return super.pageByDTO(s,current,size);
+    }
+    #end
+    #if(${generateExport})
+
+    @Override
+    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
+        super.exportExcel(s,os,clazz,current,size,includeFields);
+    }
+    #end
+    #if(${generateImport})
+
+    @Override
+    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+        return super.importExcel(is,clazz);
+    }
+    #end
+#end
+
+}
+#end
