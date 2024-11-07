@@ -1,8 +1,10 @@
-package io.github.bootystar.mybatisplus.logic.injection.enums;
+package io.github.bootystar.mybatisplus.logic.splicing.enums;
 
 import lombok.AllArgsConstructor;
 
 /**
+ * SQL连接符
+ *
  * @author bootystar
  */
 @AllArgsConstructor

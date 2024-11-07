@@ -18,21 +18,14 @@ import java.util.stream.Collectors;
 
 /**
  * 配置基类
+ *
  * @author bootystar
  */
 @Data
 @Slf4j
 public abstract class ConfigBase implements IConfig {
 
-    //--------------常量---------------
-    protected final String shift3 = "#";
-    protected final String shift4 = "$";
-    protected final String shift5 = "%";
-    protected final String shift8 = "*";
-    protected final String shiftLeft = "{";
-    protected final String shiftRight = "}";
-
-    public ConfigBase(int generatorType) {
+    public ConfigBase(Class<? extends IConfig>  generatorType) {
         this.generatorType = generatorType;
     }
 
@@ -52,7 +45,7 @@ public abstract class ConfigBase implements IConfig {
                 data.put(field.getName(), field.get(this));
             }
         } catch (IllegalAccessException e) {
-            log.error("Generate Injection Field Error Please Report to Developer",e);
+            log.error("Generate Injection Field Error Please Report to Developer", e);
         }
         // 当前时间
         data.put("nowTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -85,7 +78,6 @@ public abstract class ConfigBase implements IConfig {
     }
 
 
-
     @Override
     public List<CustomFile> getCustomFiles() {
         return this.customFiles;
@@ -95,9 +87,6 @@ public abstract class ConfigBase implements IConfig {
     public boolean getFileOverride() {
         return this.fileOverride;
     }
-
-
-
 
 
     //    ------------------ dto vo相关配置----------------
@@ -110,7 +99,7 @@ public abstract class ConfigBase implements IConfig {
      * VO所在包
      */
     protected String VOPackage = "vo";
-    
+
     /**
      * 是否覆盖已有文件
      */
@@ -135,7 +124,7 @@ public abstract class ConfigBase implements IConfig {
     /**
      * 生成器类型
      */
-    protected int generatorType = 1;
+    protected Class<? extends IConfig> generatorType;
 
     /**
      * 新增排除的字段
@@ -148,8 +137,8 @@ public abstract class ConfigBase implements IConfig {
     protected Collection<String> updateExcludeFields;
 
     //--------------返回结果相关配置---------------
-    
-    
+
+
     /**
      * 返回结果类所在包
      */
@@ -187,7 +176,7 @@ public abstract class ConfigBase implements IConfig {
      * 返回方法
      */
     protected String pageResultMethodName;
-    
+
 
     // ------------------controller相关配置----------------
 
@@ -211,21 +200,23 @@ public abstract class ConfigBase implements IConfig {
     protected boolean enableOrigins;
 
     /**
-     * 所有请求都使用post方法
+     * 复杂查询使用post请求
      */
-    protected boolean allPost = false;
+    protected boolean postOnComplicatedSelect = false;
+
     /**
      * 请求基础url
      */
     protected String baseUrl;
+
     /**
      * restful样式
      */
     protected boolean restful;
-    
-    
+
+
     // ------------------mapper相关配置----------------
-    
+
 
     /**
      * 排序字段map
@@ -237,9 +228,13 @@ public abstract class ConfigBase implements IConfig {
      * VO是否生成ResultMap
      */
     protected boolean resultMapForVO;
-    
 
-  //   ------------------ 生成相关配置----------------
+
+
+    protected boolean mapperGenericTypeClassSimpleName;
+    protected boolean mapperGenericTypeClassFullName;
+
+    //   ------------------ 生成相关配置----------------
 
     /**
      * 新增DTO
@@ -265,8 +260,6 @@ public abstract class ConfigBase implements IConfig {
      * 导出DTO
      */
     protected boolean generateExport = true;
-
-
 
 
 }

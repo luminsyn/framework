@@ -24,7 +24,9 @@ import com.alibaba.excel.annotation.ExcelProperty;
  * $!{table.comment} VO
  *
  * @author ${author}
- * @since ${date}
+ * @see ${package.Entity}.${entity}
+ * @see ${package.Mapper}.${table.mapperName}
+ * @see ${package.ServiceImpl}.${table.serviceImplName}
  */
 #if(${entityLombokModel})
 @Data

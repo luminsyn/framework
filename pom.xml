@@ -6,7 +6,7 @@
 
     <groupId>io.github.bootystar</groupId>
     <artifactId>framework</artifactId>
-    <version>${revision}</version>
+    <version>1.0.0</version>
     <modules>
         <module>helper</module>
         <module>wechat-api</module>
@@ -16,19 +16,12 @@
 
     <properties>
         <!-- 全局版本控制，如果要修改版本号，修改此处即可-->
-        <revision>1.0.3</revision>
+<!--        <revision>1.0.3</revision>-->
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring.version>5.3.31</spring.version>
-        <springboot.version>2.7.18</springboot.version>
-        <easyexcel.version>3.3.3</easyexcel.version>
-        <minio.version>8.5.9</minio.version>
-        <mybatisplus.version>3.5.7</mybatisplus.version>
-        <velocity.engine.version>2.3</velocity.engine.version>
-        <fastjson2.version>2.0.25</fastjson2.version>
     </properties>
 
 
@@ -62,75 +55,7 @@
             <timezone>+8</timezone>
         </developer>
     </developers>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-    
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${springboot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>io.github.bootystar</groupId>
-                <artifactId>helper</artifactId>
-                <version>${revision}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>io.minio</groupId>
-                <artifactId>minio</artifactId>
-                <version>${minio.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easyexcel.version}</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatisplus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatisplus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-extension</artifactId>
-                <version>${mybatisplus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.velocity</groupId>
-                <artifactId>velocity-engine-core</artifactId>
-                <version>${velocity.engine.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    
+
     <profiles>
         <profile>
             <id>default</id>
@@ -168,33 +93,34 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>flatten-maven-plugin</artifactId>
-                        <version>1.5.0</version>
-                        <executions>
-                            <execution>
-                                <id>flatten</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>flatten</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>flatten.clean</id>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>clean</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <!-- 避免IDE将 .flattened-pom.xml 自动识别为功能模块 -->
-                            <updatePomFile>true</updatePomFile>
-                            <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                        </configuration>
-                    </plugin>
+<!--                    &lt;!&ndash;全局版本控制插件&ndash;&gt;-->
+<!--                    <plugin>-->
+<!--                        <groupId>org.codehaus.mojo</groupId>-->
+<!--                        <artifactId>flatten-maven-plugin</artifactId>-->
+<!--                        <version>1.5.0</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <id>flatten</id>-->
+<!--                                <phase>process-resources</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>flatten</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                            <execution>-->
+<!--                                <id>flatten.clean</id>-->
+<!--                                <phase>clean</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>clean</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                        <inherited>true</inherited>-->
+<!--                        <configuration>-->
+<!--                            &lt;!&ndash; 避免IDE将 .flattened-pom.xml 自动识别为功能模块 &ndash;&gt;-->
+<!--                            <updatePomFile>true</updatePomFile>-->
+<!--                            <flattenMode>resolveCiFriendliesOnly</flattenMode>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>

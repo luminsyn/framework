@@ -58,7 +58,7 @@
 
 #end
 
-    <select id="listByMap"#if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
+    <select id="listByGeneric"#if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
         SELECT
         a.*
         FROM
@@ -67,58 +67,55 @@
         <where>
 #foreach($field in ${table.fields})
     #if(${field.logicDeleteField})
-        AND a.`${field.columnName}` = 0
+            a.`${field.columnName}` = 0
     #end
 #end
-            <if test="map!=null">
+            <if test="generic != null">
 #foreach($field in ${table.fields})
     #if(${field.logicDeleteField})
 ##                AND a.${field.columnName} = 0
     #elseif(${field.keyFlag})
-                <if test="map.primaryKey!=null">
-                    AND a.`${field.columnName}` = #{map.primaryKey}
+                <if test="generic.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
                 </if>
-                <if test="map.${field.propertyName}!=null">
-                    AND a.`${field.columnName}` = #{map.${field.propertyName}}
-                </if>
-                <if test="map.${field.propertyName}List!=null and map.${field.propertyName}List.size()>0">
+                <if test="generic.${field.propertyName}List != null and generic.${field.propertyName}List.size() > 0">
                     AND a.`${field.columnName}` IN
-                    <foreach collection="map.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                    <foreach collection="generic.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                         #{prop}
                     </foreach>
                 </if>
     #elseif($selectExcludeFields.contains(${field.propertyName}))
     #else
         #if(${field.propertyType} == "String")
-                <if test="map.${field.propertyName}!=null and map.${field.propertyName}.length()>0">
-                    AND a.`${field.columnName}` = #{map.${field.propertyName}}
+                <if test="generic.${field.propertyName} != null and generic.${field.propertyName}.length()>0">
+                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
                 </if>
-                <if test="map.${field.propertyName}Like !=null and map.${field.propertyName}Like.length()>0">
-                    AND a.`${field.columnName}` LIKE CONCAT('%',#{map.${field.propertyName}Like},'%')
+                <if test="generic.${field.propertyName}Like  != null and generic.${field.propertyName}Like.length()>0">
+                    AND a.`${field.columnName}` LIKE CONCAT('%',#{generic.${field.propertyName}Like},'%')
                 </if>
         #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
-                <if test="map.${field.propertyName}!=null">
-                    AND a.`${field.columnName}` = #{map.${field.propertyName}}
+                <if test="generic.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
                 </if>
-                <if test="map.${field.propertyName}Start!=null">
-                    AND a.`${field.columnName}` &gt;= #{map.${field.propertyName}Start}
+                <if test="generic.${field.propertyName}Start != null">
+                    AND a.`${field.columnName}` &gt;= #{generic.${field.propertyName}Start}
                 </if>
-                <if test="map.${field.propertyName}End!=null">
-                    AND a.`${field.columnName}` &lt;= #{map.${field.propertyName}End}
+                <if test="generic.${field.propertyName}End != null">
+                    AND a.`${field.columnName}` &lt;= #{generic.${field.propertyName}End}
                 </if>
         #elseif(${field.propertyType} == "Integer"||${field.propertyType} == "Long")
-                <if test="map.${field.propertyName}!=null">
-                    AND a.`${field.columnName}` = #{map.${field.propertyName}}
+                <if test="generic.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
                 </if>
-                <if test="map.${field.propertyName}List!=null and map.${field.propertyName}List.size()>0">
+                <if test="generic.${field.propertyName}List != null and generic.${field.propertyName}List.size() > 0">
                     AND a.`${field.columnName}` IN
-                    <foreach collection="map.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                    <foreach collection="generic.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                         #{prop}
                     </foreach>
                 </if>
         #else
-                <if test="map.${field.propertyName}!=null">
-                    AND a.`${field.columnName}` = #{map.${field.propertyName}}
+                <if test="generic.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
                 </if>
         #end
     #end

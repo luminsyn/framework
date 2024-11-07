@@ -1,7 +1,39 @@
 package ${package.Controller};
 
-#if(${generateSelect})
+#if(${generateSelect}&&!${pageResultClass})
 import com.baomidou.mybatisplus.core.metadata.IPage;
+#end
+#if(${returnResultClass})
+import ${returnResultClassPackage}.${returnResultClass};
+#end
+import ${package.Service}.${table.serviceName};
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+#if(${generateSelect}&&${pageResultClass})
+import ${pageResultClassPackage}.${pageResultClass};
+#end
+#if(${generateSelect}||(${generateExport}&&${exportOnVO})||(${generateImport}&&${importOnVO}))
+import ${basePackage}.${VOPackage}.${entity}VO;
+#end
+#if(${generateSelect})
+    #if(${splicer})
+import ${splicerClassFullName};
+    #else
+import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
+    #end
+#end
+#if(${generateInsert})
+import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
+#end
+#if(${generateUpdate})
+import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
+#end
+#if(${generateImport}&&!${importOnVO})
+import ${basePackage}.${DTOPackage}.${entity}ImportDTO;
+#end
+#if(${generateExport}&&!${exportOnVO})
+import ${basePackage}.${DTOPackage}.${entity}ExportDTO;
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,56 +50,28 @@ import org.springframework.validation.annotation.Validated;
 #if(${generateImport})
 import org.springframework.web.multipart.MultipartFile;
 #end
-#if(${returnResultClass})
-import ${returnResultClassPackage}.${returnResultClass};
-#end
-import ${package.Service}.${table.serviceName};
-#if(${superControllerClassPackage})
-import ${superControllerClassPackage};
-#end
-#if(${generateSelect}&&${pageResultClass})
-import ${pageResultClassPackage}.${pageResultClass};
-#end
-#if(${generateSelect}||(${generateExport}&&${exportOnVO})||(${generateImport}&&${importOnVO}))
-    #if(${injection})
-import ${injectionClassFullName};
-    #else
-import ${basePackage}.${DTOPackage}.${entity}SelectDTO;
-    #end
-import ${basePackage}.${VOPackage}.${entity}VO;
-#end
-#if(${generateInsert})
-import ${basePackage}.${DTOPackage}.${entity}InsertDTO;
-#end
-#if(${generateUpdate})
-import ${basePackage}.${DTOPackage}.${entity}UpdateDTO;
-#end
-#if(${generateImport}&&!${importOnVO})
-import ${basePackage}.${DTOPackage}.${entity}ImportDTO;
-#end
-#if(${generateExport}&&!${exportOnVO})
-import ${basePackage}.${DTOPackage}.${entity}ExportDTO;
-#end
 
 #if(${generateImport}||${generateExport})
 import ${javaApiPackage}.servlet.http.HttpServletResponse;
+#end
+#if(${generateImport}||${generateExport})
 import java.io.IOException;
 #end
 #if(${generateSelect}||${generateDelete})
 import java.io.Serializable;
 #end
-import java.util.*;
+#if(${generateSelect})
+import java.util.List;
+#end
 
 /**
  * $!{table.comment}
  *
+ * @author ${author}
  * @see ${package.Entity}.${entity}
  * @see ${basePackage}.${VOPackage}.${entity}VO
  * @see ${package.Mapper}.${table.mapperName}
  * @see ${package.ServiceImpl}.${table.serviceImplName}
- *
- * @author ${author}
- * @since ${date}
  */
 #if(${springdoc})
 @Tag(name = "${table.comment}", description = "$!{table.comment}")
@@ -104,21 +108,21 @@ public class ${table.controllerName} {
     #else
     /**
      * 新增
-     * @author ${author}
-     * @since ${nowTime}
+     *
      * @param s 新增入参对象
      * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @author ${author}
      */
     #end
-    #if(!${allPost}&&${restful})
+    #if(${restful})
     @PostMapping("")
         #else
     @PostMapping("/insert")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s) {
         #else
-    public ${entity}VO insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s){
+    public ${entity}VO insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.insertByDTO(s));
@@ -136,21 +140,21 @@ public class ${table.controllerName} {
         #else
     /**
      * 修改
-     * @author ${author}
-     * @since ${nowTime}
+     *
      * @param s 修改入参对象
      * @return#if(${returnResultClass}) ${returnResultClass}#else Boolean#end
+     * @author ${author}
      */
     #end
-    #if(!${allPost}&&${restful})
+    #if(${restful})
     @PutMapping("")
         #else
     @PostMapping("/update")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s){
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s) {
         #else
-    public Boolean update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s){
+    public Boolean update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.updateByDTO(s));
@@ -159,7 +163,6 @@ public class ${table.controllerName} {
     #end
     }
 #end
-###set ( $stringStr = "String" )
 #if(${generateDelete})
 
     #if(${springdoc})
@@ -169,13 +172,13 @@ public class ${table.controllerName} {
         #else
     /**
      * 删除
-     * @author ${author}
-     * @since ${nowTime}
-     * @param id 主键ID|1
+     *
+     * @param id 主键id
      * @return #if(${returnResultClass})${returnResultClass}#else Boolean#end
+     * @author ${author}
      */
     #end
-    #if(!${allPost}&&${restful})
+    #if(${restful})
     @DeleteMapping("/{id}")
         #else
     @PostMapping("/delete/{id}")
@@ -201,23 +204,21 @@ public class ${table.controllerName} {
         #else
     /**
      * 根据id查询详情
-     * @author ${author}
-     * @since ${nowTime}
+     *
      * @param id 主键id
      * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @author ${author}
      */
     #end
-    #if(${allPost})
-    @PostMapping("/select/{id}")
-        #elseif(${restful})
+    #if(${restful})
     @GetMapping("/{id}")
         #else
     @GetMapping("/select/{id}")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectById(@PathVariable("id") Serializable id){
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectById(@PathVariable("id") Serializable id) {
         #else
-    public ${entity}VO selectById(@PathVariable("id") Serializable id){
+    public ${entity}VO selectById(@PathVariable("id") Serializable id) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.voById(id));
@@ -225,29 +226,25 @@ public class ${table.controllerName} {
         return baseService.voById(id);
     #end
     }
-    #if(${injection})
+    #if(${splicer})
 
     #if(${springdoc})
-    @Operation(summary = "查询可用属性列表")
+    @Operation(summary = "复杂查询可用字段列表")
     #elseif(${swagger})
-    @ApiOperation(value = "查询可用属性列表")
+    @ApiOperation(value = "复杂查询可用字段列表")
     #else
     /**
-     * 查询可用属性列表
-     * @author ${author}
-     * @since ${nowTime}
+     * 复杂查询可用字段列表
+     *
      * @return #if(${returnResultClass})${returnResultClass}#else List<String>#end
+     * @author ${author}
      */
     #end
-    #if(${allPost})
-    @PostMapping("/fields")
-    #else
     @GetMapping("/fields")
-    #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<String>>#end selectableFields(){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<String>>#end selectableFields() {
     #else
-    public List<String> selectableFields(){
+    public List<String> selectableFields() {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.selectableFields());
@@ -264,21 +261,21 @@ public class ${table.controllerName} {
         #else
     /**
      * 列表
-     * @author ${author}
-     * @since ${nowTime}
-     * @param s 查询条件DTO
+     *
+     * @param s 查询条件
      * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @author ${author}
      */
     #end
-    #if(${allPost})
+    #if(${postOnComplicatedSelect})
     @PostMapping("/list")
         #else
     @GetMapping("/list")
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s){
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
     #else
-    public List<${entity}VO> selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s){
+    public List<${entity}VO> selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.listByDTO(s));
@@ -293,80 +290,75 @@ public class ${table.controllerName} {
     @ApiOperation(value = "分页查询")
         #else
     /**
-     * 分页查询
-     * @author ${author}
-     * @since ${nowTime}
-     * @param current 页码(默认1)
-     * @param size 每页大小(默认10,-1为不限制)
-     * @param s 查询条件DTO
-     * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
-     */
-    #end
-    #if(${allPost})
-    @PostMapping({"/page","/page/{current}","/page/{current}/{size}"})
-        #else
-    @GetMapping({"/page","/page/{current}","/page/{current}/{size}"})
-    #end
-    #if(${returnResultClass})
-            #if(${pageResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
-                #else
-    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
-            #end
-        #else
-            #if(${pageResultClass})
-    public ${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectPage(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
-                #else
-    public IPage<${entity}VO> selectPage(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size){
-            #end
-    #end
-    #if(${returnResultClass})
-        #if(${pageResultClass})
-        return ${returnResultMethodName}(${pageResultMethodName}(baseService.pageByDTO(s,current,size)));
-            #else
-        return ${returnResultMethodName}(baseService.pageByDTO(s,current,size));
-        #end
-    #else
-        #if(${pageResultClass})
-        return ${pageResultMethodName}(baseService.pageByDTO(s,current,size));    
-            #else
-        return baseService.pageByDTO(s,current,size);
-        #end
-    #end
-    }
-#end
-#if(${generateExport})
-#set($map = "Map<String,Object>")
-
-    #if(${springdoc})
-    @Operation(summary = "导出excel")
-        #elseif(${swagger})
-    @ApiOperation(value = "导出excel")
-        #else
-    /**
-     * 导出excel
-     * @author ${author}
-     * @since ${nowTime}
+     * 分页查询(页码与大小均不传时采用默认值)
+     *
      * @param current 页码(默认1)
      * @param size 每页大小(默认10,-1为不限制)
      * @param s 查询条件
+     * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @author ${author}
      */
     #end
-    #if(${allPost})
-    @PostMapping({"/export","/export/{current}","/export/{current}/{size}"})
+    #if(${postOnComplicatedSelect})
+    @PostMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
         #else
-    @GetMapping({"/export","/export/{current}","/export/{current}/{size}"})
+    @GetMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
     #end
-    #if(${generateSelect})
-    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end#if(${injection})${injectionClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
+    #if(${returnResultClass})
+            #if(${pageResultClass})
+    public ${returnResultClass}#if(${returnResultGenericType})<${pageResultClass}#if(${returnResultGenericType})<${entity}VO>#end>#end page(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
+                #else
+    public ${returnResultClass}#if(${returnResultGenericType})<IPage<${entity}VO>>#end page(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
+            #end
         #else
-    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end${map} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
+            #if(${pageResultClass})
+    public ${pageResultClass}#if(${pageResultGenericType})<${entity}VO>#end selectPage(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
+                #else
+    public IPage<${entity}VO> selectPage(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
+            #end
     #end
-        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
-        response.setContentType("application/vnd.ms-excel");
-        baseService.exportExcel(s,response.getOutputStream(),#if(${exportOnVO})${entity}VO#else${entity}ExportDTO#end.class,current,size);
+    #if(${returnResultClass})
+        #if(${pageResultClass})
+        return ${returnResultMethodName}(${pageResultMethodName}(baseService.pageByDTO(s, current, size)));
+            #else
+        return ${returnResultMethodName}(baseService.pageByDTO(s, current, size));
+        #end
+    #else
+        #if(${pageResultClass})
+        return ${pageResultMethodName}(baseService.pageByDTO(s, current, size));
+            #else
+        return baseService.pageByDTO(s, current, size);
+        #end
+    #end
     }
-#end    
+    #if(${generateExport})
+
+    #if(${springdoc})
+    @Operation(summary = "导出excel")
+    #elseif(${swagger})
+    @ApiOperation(value = "导出excel")
+    #else
+    /**
+     * 导出excel(页码与大小均不传时导出全部)
+     *
+     * @param current 页码(默认1)
+     * @param size 每页大小(默认10)
+     * @param s 查询条件
+     * @author ${author}
+     */
+    #end
+    #if(${postOnComplicatedSelect})
+    @PostMapping({"/export", "/export/{current}", "/export/{current}/{size}"})
+    #else
+    @GetMapping({"/export", "/export/{current}", "/export/{current}/{size}"})
+    #end
+    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
+        response.setContentType("application/vnd.ms-excel");
+        baseService.exportExcel(s, response.getOutputStream(), #if(${exportOnVO})${entity}VO#else${entity}ExportDTO#end.class, current, size);
+    }
+    #end
+#end
 #if(${generateImport})
 
     #if(${springdoc})
@@ -376,8 +368,8 @@ public class ${table.controllerName} {
         #else
     /**
      * 下载excel导入模板
+     *
      * @author ${author}
-     * @since ${nowTime}
      */
     #end
     #if(${allPost})
@@ -386,9 +378,9 @@ public class ${table.controllerName} {
     @GetMapping("/template")
     #end
     public void excelTemplate(HttpServletResponse response) throws IOException {
-        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis()+".xlsx");
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
         response.setContentType("application/vnd.ms-excel");
-        baseService.excelTemplate(response.getOutputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
+        baseService.excelTemplate(response.getOutputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     }
     
     #if(${springdoc})
@@ -398,10 +390,10 @@ public class ${table.controllerName} {
         #else
     /**
      * 导入excel
-     * @author ${author}
-     * @since ${nowTime}
+     *
      * @param file excel文件
      * @return #if(${returnResultClass})${returnResultClass}#else Boolean#end
+     * @author ${author}
      */
     #end
     @PostMapping("/import")
@@ -410,7 +402,7 @@ public class ${table.controllerName} {
         #else
     public Boolean importExcel(@RequestParam("file") MultipartFile file) throws IOException {
     #end
-        if (file==null || file.isEmpty()){
+        if (file == null || file.isEmpty()) {
         #if(${returnResultClass})
             return ${returnResultMethodName}(false);
         #else
@@ -420,7 +412,7 @@ public class ${table.controllerName} {
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class));
     #else
-        return baseService.importExcel(file.getInputStream(),#if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
+        return baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
     #end
     }
 #end

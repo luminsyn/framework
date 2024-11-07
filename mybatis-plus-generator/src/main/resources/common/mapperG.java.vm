@@ -6,11 +6,10 @@ import ${mapperAnnotationClass.name};
 #if(${showMapperMethod})
 import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import ${injectionClassFullName};
 #end
+import ${superMapperClassPackage};
 import ${package.Entity}.${entity};
 import ${basePackage}.${VOPackage}.${entity}VO;
-import ${superMapperClassPackage};
 
 #if(${showMapperMethod})
 import java.util.List;
@@ -21,19 +20,18 @@ import java.util.List;
  * $!{table.comment} Mapper 接口
  *
  * @author ${author}
- * @since ${date}
  */
 #if(${mapperAnnotationClass})
 @${mapperAnnotationClass.simpleName}
 #end
 #if(${kotlin})
-interface ${table.mapperName} : ${superMapperClass}<${entity},${entity}VO>
+interface ${table.mapperName} : ${superMapperClass}<${entity}, ${entity}VO>
 #else
-public interface ${table.mapperName} extends ${superMapperClass}<${entity},${entity}VO> {
-
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}, ${entity}VO> {
     #if(${showMapperMethod})
+
     @Override
-    List<${entity}VO> listByInjection(@Param("injection") InjectionDTO.ImmutableInjection<${entity}> injection, @Param("page") IPage<${entity}VO> page);
+    <G> List<${entity}VO> listByGeneric(@Param("generic") G generic, @Param("page") IPage<${entity}VO> page);
     #end
 
 }

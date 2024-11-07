@@ -34,7 +34,9 @@ import java.io.Serializable;
  * $!{table.comment}查询DTO
  *
  * @author ${author}
- * @since ${date}
+ * @see ${package.Entity}.${entity}
+ * @see ${package.Mapper}.${table.mapperName}
+ * @see ${package.ServiceImpl}.${table.serviceImplName}
  */
 #if(${entityLombokModel})
 @Data

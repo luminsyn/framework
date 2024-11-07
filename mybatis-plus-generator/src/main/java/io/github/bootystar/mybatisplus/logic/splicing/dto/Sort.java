@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.logic.injection.dto;
+package io.github.bootystar.mybatisplus.logic.splicing.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 排序参数
+ *
  * @author bootystar
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SortDTO {
+public class Sort {
 
     /**
      * 字段
@@ -23,16 +25,7 @@ public class SortDTO {
      */
     private Boolean desc = false;
 
-
-    public SortDTO newInstance(){
-       SortDTO sort = new SortDTO();
-       sort.setField(this.field);
-       sort.setDesc(this.desc);
-       return sort;
-    }
-
-
-    public static class ImmutableSort extends SortDTO {
+    public static class ImmutableSort extends Sort {
         public ImmutableSort() {
             throw new UnsupportedOperationException("not support empty constructor");
         }

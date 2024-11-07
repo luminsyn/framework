@@ -3,8 +3,10 @@ package io.github.bootystar.mybatisplus.generator.base;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
+import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.config.base.ConfigBase;
 import io.github.bootystar.mybatisplus.config.base.ConfigBaseBuilder;
+import io.github.bootystar.mybatisplus.config.base.IConfig;
 import org.apache.ibatis.type.JdbcType;
 
 import java.io.File;
@@ -13,6 +15,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 /**
+ * 自定义配置代码生成器-抽象父类
+ *
  * @author bootystar
  */
 public abstract class AbstractGenerator {
@@ -26,6 +30,10 @@ public abstract class AbstractGenerator {
     protected StrategyConfig.Builder strategyConfigBuilder = new StrategyConfig.Builder();
 
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
+
+    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
+
+    public abstract ConfigBaseBuilder<?, ?> customConfigBuilder();
 
     public DataSourceConfig.Builder dataSourceConfigBuilder() {
         return dataSourceConfigBuilder;
@@ -43,12 +51,21 @@ public abstract class AbstractGenerator {
         return strategyConfigBuilder;
     }
 
+    /**
+     * 模板配置生成器
+     *
+     * @return {@link TemplateConfig.Builder }
+     * @author bootystar
+     * @deprecated 自MP3.5.6开始废弃使用, 3.5.6之后版本请使用{@link #strategyConfigBuilder()}
+     */
+    @Deprecated
+    public TemplateConfig.Builder templateConfigBuilder() {
+        return templateConfigBuilder;
+    }
+
     public InjectionConfig.Builder injectionConfigBuilder() {
         return injectionConfigBuilder;
     }
-
-
-    public abstract ConfigBaseBuilder<?, ?> customConfigBuilder();
 
     public AbstractGenerator(String url, String username, String password) {
         this.dataSourceConfigBuilder = new DataSourceConfig.Builder(url, username, password)
@@ -61,34 +78,45 @@ public abstract class AbstractGenerator {
                 })
         ;
     }
-    
-    public AbstractGenerator mapperPackage(String mapperPackage){
+
+    public AbstractGenerator mapperPackage(String mapperPackage) {
         String projectPath = System.getProperty("user.dir");
-        packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/"+mapperPackage));
+        packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/" + mapperPackage));
         return this;
     }
 
     protected void init() {
         String projectPath = System.getProperty("user.dir");
-        globalConfigBuilder.author("booty").disableOpenDir().outputDir(projectPath + "/src/main/java")
+        globalConfigBuilder.author("bootystar").disableOpenDir().outputDir(projectPath + "/src/main/java")
+        ;
+        // 兼容旧版
+        templateConfigBuilder
+                .entity("/common/entity.java")
+                .controller("/common/controller.java")
+                .service("/common/service.java")
+                .serviceImpl("/common/serviceImpl.java")
+                .mapper("/common/mapper.java")
+                .xml("/common/mapper.xml")
         ;
         packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
         ;
-        
+        strategyConfigBuilder.entityBuilder()
+                .javaTemplate("/common/entity.java")
+        ;
         strategyConfigBuilder.controllerBuilder()
                 .template("/common/controller.java")
                 .enableRestStyle()
         ;
+        strategyConfigBuilder.serviceBuilder()
+                .formatServiceFileName("%sService")
+                .serviceTemplate("/common/service.java")
+                .serviceImplTemplate("/common/serviceImpl.java")
+        ;
         strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
                 .mapperXmlTemplate("/common/mapper.xml")
+                .mapperTemplate("/common/mapper.java")
         ;
-        strategyConfigBuilder.serviceBuilder()
-                .formatServiceFileName("%sService")
-        ;
-        strategyConfigBuilder.entityBuilder()
-                        .javaTemplate("/common/entity.java")
-                ;
         customConfigBuilder().insertExcludeFields(Arrays.asList("createTime", "updateTime"));
         customConfigBuilder().updateExcludeFields(Arrays.asList("createTime", "updateTime"));
         customConfigBuilder().orderColumn("create_time", true);
@@ -120,6 +148,7 @@ public abstract class AbstractGenerator {
         String VOPackage = customConfig.getVOPackage().replaceAll("\\.", "\\" + File.separator);
         LinkedList<CustomFile> customFiles = new LinkedList<>();
 
+        Class<? extends IConfig> type = customConfig.getGeneratorType();
 
         if (customConfig.isGenerateInsert()) {
             CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDTO.java").templatePath("/common/entityInsertDTO.java.vm").packageName(DTOPackage).build();
@@ -129,9 +158,11 @@ public abstract class AbstractGenerator {
             CustomFile updateDto = new CustomFile.Builder().fileName("UpdateDTO.java").templatePath("/common/entityUpdateDTO.java.vm").packageName(DTOPackage).build();
             customFiles.add(updateDto);
         }
-        if (customConfig.isGenerateSelect() && customConfig.getGeneratorType()!=3) {
-            CustomFile selectDto = new CustomFile.Builder().fileName("SelectDTO.java").templatePath("/common/entitySelectDTO.java.vm").packageName(DTOPackage).build();
-            customFiles.add(selectDto);
+        if (customConfig.isGenerateSelect()) {
+            if (!type.equals(SplicingConfig.class)){
+                CustomFile selectDto = new CustomFile.Builder().fileName("SelectDTO.java").templatePath("/common/entitySelectDTO.java.vm").packageName(DTOPackage).build();
+                customFiles.add(selectDto);
+            }
         }
         if (customConfig.isGenerateExport() && !customConfig.isExportOnVO()) {
             CustomFile exportDto = new CustomFile.Builder().fileName("ExportDTO.java").templatePath("/common/entityExportDTO.java.vm").packageName(DTOPackage).build();
@@ -163,7 +194,6 @@ public abstract class AbstractGenerator {
 
         customGenerator.execute();
     }
-    
-    
-    
+
+
 }

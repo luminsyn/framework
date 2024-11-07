@@ -1,37 +1,31 @@
 package ${package.Mapper};
 
 import ${package.Entity}.${entity};
-import ${basePackage}.${VOPackage}.${entity}VO;
 import ${superMapperClassPackage};
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
-#if(${showMapperMethod})
 import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
-#end
+import ${basePackage}.${VOPackage}.${entity}VO;
 
 
 /**
  * $!{table.comment} Mapper 接口
  *
  * @author ${author}
- * @since ${date}
  */
 #if(${mapperAnnotationClass})
 @${mapperAnnotationClass.simpleName}
 #end
 #if(${kotlin})
-interface ${table.mapperName} : ${superMapperClass}<${entity},${entity}VO>
+interface ${table.mapperName} : ${superMapperClass}<${entity}>
 #else
-public interface ${table.mapperName} extends ${superMapperClass}<${entity},${entity}VO> {
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
 
-    #if(${showMapperMethod})
-    @Override
-    List<${entity}VO> listByMap(@Param("map") Map<String,Object> map, IPage<${entity}VO> page);
-    #end
+    <G> List<${entity}VO> listByGeneric(@Param("generic") G generic, IPage<${entity}VO> page);
 
 }
 #end

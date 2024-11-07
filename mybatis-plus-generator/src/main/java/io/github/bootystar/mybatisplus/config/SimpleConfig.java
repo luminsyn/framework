@@ -11,7 +11,7 @@ import io.github.bootystar.mybatisplus.config.base.ConfigBaseBuilder;
 public class SimpleConfig extends ConfigBase {
 
     public SimpleConfig() {
-        super(1);
+        super(SimpleConfig.class);
     }
 
     public static class Builder extends ConfigBaseBuilder<SimpleConfig, Builder> {

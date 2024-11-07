@@ -20,7 +20,8 @@ import lombok.experimental.Accessors;
  * $!{table.comment}
  *
  * @author ${author}
- * @since ${date}
+ * @see ${package.Mapper}.${table.mapperName}
+ * @see ${package.ServiceImpl}.${table.serviceImplName}
  */
 #if(${entityLombokModel})
 @Data

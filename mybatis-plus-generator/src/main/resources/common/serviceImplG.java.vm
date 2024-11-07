@@ -1,16 +1,17 @@
 package ${package.ServiceImpl};
-
+#if(${showServiceImplMethod}&&${generateSelect})
+import com.baomidou.mybatisplus.core.metadata.IPage;
+#end
+import ${superServiceImplClassPackage};
 import ${package.Entity}.${entity};
 import ${basePackage}.${VOPackage}.${entity}VO;
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
-import ${superServiceImplClassPackage};
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import java.util.List;
 #if(${showServiceImplMethod})
-#if((${generateDelete}||${generateSelect}))
+import java.util.List;
+#if(${generateDelete}||${generateSelect})
 import java.io.Serializable;
 #end
 #if(${generateImport})
@@ -21,20 +22,18 @@ import java.io.OutputStream;
 #end
 #end
 
-
 /**
  * $!{table.comment} 服务实现类
  *
  * @author ${author}
- * @since ${date}
  */
 @Service
 #if(${kotlin})
-open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO>() implements ${table.serviceName} {
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}, ${entity}VO>() implements ${table.serviceName} {
 
 }
 #else
-public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity},${entity}VO> implements ${table.serviceName} {
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity} ,${entity}VO> implements ${table.serviceName} {
 #if(${showServiceImplMethod})
 
     @Override
@@ -65,32 +64,32 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateSelect})
 
     @Override
-    public ${entity}VO voById(Serializable id){
+    public ${entity}VO voById(Serializable id) {
         return super.voById(id);
     }
 
     @Override
-    public <S> List<${entity}VO> listByDTO(S s){
+    public <S> List<${entity}VO> listByDTO(S s) {
         return super.listByDTO(s);
     }
 
     @Override
-    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size){
-        return super.pageByDTO(s,current,size);
+    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size) {
+        return super.pageByDTO(s, current, size);
     }
     #end
     #if(${generateExport})
 
     @Override
     public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        super.exportExcel(s,os,clazz,current,size,includeFields);
+        super.exportExcel(s, os, clazz, current, size, includeFields);
     }
     #end
     #if(${generateImport})
 
     @Override
     public <U> boolean importExcel(InputStream is, Class<U> clazz) {
-        return super.importExcel(is,clazz);
+        return super.importExcel(is, clazz);
     }
     #end
 #end

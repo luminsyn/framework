@@ -12,6 +12,7 @@ import java.io.File;
 
 /**
  * 自定义配置代码生成器
+ *
  * @author bootystar
  */
 @Getter
@@ -144,7 +145,8 @@ public class BaseGenerator {
         return this;
     }
 
-    private EnhanceVelocityTemplateEngine engine ;
+    private EnhanceVelocityTemplateEngine engine;
+
     /**
      * 生成代码
      */

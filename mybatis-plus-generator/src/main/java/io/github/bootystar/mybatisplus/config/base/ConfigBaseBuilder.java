@@ -12,33 +12,37 @@ import java.util.Map;
 
 /**
  * 配置构建器基类
+ *
  * @author bootystar
  */
 @Slf4j
-public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements IConfigBuilder<T> {
+@SuppressWarnings("unused")
+public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements IConfigBuilder<T> {
 
     protected T config;
     protected U builder;
 
     public ConfigBaseBuilder() {
-        config= initConfig();
-        builder= initBuilder();
+        config = initConfig();
+        builder = initBuilder();
     }
 
     protected abstract T initConfig();
+
     protected abstract U initBuilder();
 
     /**
      * 构建模板配置对象
      *
      * @return 模板配置对象
+     * @author bootystar
      */
     @Override
     public T build() {
         return this.config;
     }
-    
-    
+
+
     //=============DTO VO =================
 
     /**
@@ -47,7 +51,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param packageName 包名
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U DTOPackage(String packageName) {
         this.config.DTOPackage = packageName;
@@ -60,7 +63,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param packageName 包名
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U VOPackage(String packageName) {
         this.config.VOPackage = packageName;
@@ -73,7 +75,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param fieldNames 字段名称
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U insertExcludeFields(List<String> fieldNames) {
         this.config.insertExcludeFields = fieldNames;
@@ -86,7 +87,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param fieldNames 字段名称
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U updateExcludeFields(List<String> fieldNames) {
         this.config.updateExcludeFields = fieldNames;
@@ -99,7 +99,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     *
      */
     public U enableFileOverride() {
         this.config.fileOverride = true;
@@ -107,13 +106,11 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
     }
 
 
-
     /**
      * 不在vo上导出(生成额外ExportDTO)
      *
      * @return {@code U }
      * @author bootystar
-     * @since 2023/12/19
      */
     public U disableExportOnVO() {
         this.config.exportOnVO = false;
@@ -125,7 +122,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     * @since 2023/12/19
      */
     public U disableImportOnVO() {
         this.config.importOnVO = false;
@@ -137,25 +133,21 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     * @since 2023/12/19
      */
     public U enableFieldAnnotationOnVO() {
         this.config.fieldAnnotationOnVO = true;
         return this.builder;
     }
-    
-    
-    
+
 
 //===========================controller======================
-    
+
     /**
      * controller请求前缀
      *
      * @param url url
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U baseUrl(String url) {
         if (url == null || url.length() == 0) {
@@ -173,14 +165,12 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
     }
 
     /**
-     * controller请求固定post请求
-     * 会关闭restful风格
+     * 多条件复杂查询使用post请求
      * @return {@code Builder }
      * @author bootystar
-     *
      */
-    public U enableAllPost() {
-        this.config.allPost = true;
+    public U enablePostOnComplicatedSelect() {
+        this.config.postOnComplicatedSelect = true;
         return this.builder;
     }
 
@@ -189,10 +179,9 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U enableOrigins() {
-        this.config.enableOrigins =true;
+        this.config.enableOrigins = true;
         return this.builder;
     }
 
@@ -202,27 +191,24 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U enableJakartaApi() {
         this.config.javaApiPackage = "jakarta";
         return this.builder;
     }
-    
+
     /**
      * 基础增删查改使用restful风格
      * (使用GET/POST/PUT/DELETE)
-     * (enableAllPost后无效)
      *
      * @return {@code U }
      * @author bootystar
-     * @since 2023/11/02
      */
     public U enableRestful() {
         this.config.restful = true;
         return this.builder;
     }
-    
+
 
     /**
      * 禁用消息体接收数据
@@ -230,20 +216,18 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U disableRequestBody() {
         this.config.requestBody = false;
         return this.builder;
     }
-    
+
 
     /**
      * 禁用参数校验注解
      *
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U disableValidated() {
         this.config.enableValidated = false;
@@ -260,15 +244,15 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @return {@link U }
      * @author bootystar
      */
-    public <R> U returnMethod(SFunction<Object, R> methodReference){
-        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference,Object.class);
+    public <R> U returnMethod(SFunction<Object, R> methodReference) {
+        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference, Object.class);
         this.config.returnResultClassPackage = lambdaMethod.getClassPackage();
         this.config.returnResultClass = lambdaMethod.getClassSimpleName();
         this.config.returnResultMethodName = lambdaMethod.getMethodNameFullStr();
         this.config.returnResultGenericType = lambdaMethod.isGenericTypeClass();
         return this.builder;
     }
-    
+
     /**
      * 指定controller返回的分页包装类及方法
      * 指定的方法需要接收{@link com.baomidou.mybatisplus.core.metadata.IPage} 作为参数
@@ -278,15 +262,15 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @return {@link U }
      * @author bootystar
      */
-    public <O,R> U pageMethod(SFunction<IPage<O>, R> methodReference){
-        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference,IPage.class);
+    public <O, R> U pageMethod(SFunction<IPage<O>, R> methodReference) {
+        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference, IPage.class);
         this.config.pageResultClassPackage = lambdaMethod.getClassPackage();
         this.config.pageResultClass = lambdaMethod.getClassSimpleName();
         this.config.pageResultMethodName = lambdaMethod.getMethodNameFullStr();
         this.config.pageResultGenericType = lambdaMethod.isGenericTypeClass();
         return this.builder;
     }
-    
+
 //==================mapper=======================
 
     /**
@@ -294,7 +278,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U enableResultMapForVO() {
         this.config.resultMapForVO = true;
@@ -308,7 +291,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param map 地图
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U orderColumnMap(Map<String, Boolean> map) {
         this.config.orderColumnMap = map;
@@ -322,20 +304,18 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      * @param isDesc     是desc
      * @return {@code Builder }
      * @author bootystar
-     *
      */
     public U orderColumn(String columnName, boolean isDesc) {
         if (this.config.orderColumnMap == null) {
             this.config.orderColumnMap = new HashMap<>();
         }
-        if (columnName == null || columnName.length() == 0){
+        if (columnName == null || columnName.length() == 0) {
             return this.builder;
         }
         this.config.orderColumnMap.put(columnName, isDesc);
         return this.builder;
     }
 
-    
 
     //============方法设置================
 
@@ -344,7 +324,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     *
      */
     public U disableInsert() {
         this.config.generateInsert = false;
@@ -357,7 +336,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     *
      */
     public U disableUpdate() {
         this.config.generateUpdate = false;
@@ -369,7 +347,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     *
      */
     public U disableSelect() {
         this.config.generateSelect = false;
@@ -381,7 +358,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     *
      */
     public U disableExport() {
         this.config.generateExport = false;
@@ -393,7 +369,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     *
      */
     public U disableImport() {
         this.config.generateImport = false;
@@ -405,18 +380,11 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase ,U> implements ICon
      *
      * @return {@code U }
      * @author bootystar
-     * @since 2023/10/23
      */
     public U disableDelete() {
         this.config.generateDelete = false;
         return this.builder;
     }
-
-
-
-
-   
-    
 
 
 }

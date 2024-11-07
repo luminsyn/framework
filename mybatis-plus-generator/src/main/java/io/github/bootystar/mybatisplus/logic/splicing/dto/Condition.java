@@ -1,16 +1,17 @@
-package io.github.bootystar.mybatisplus.logic.injection.dto;
+package io.github.bootystar.mybatisplus.logic.splicing.dto;
 
 import lombok.*;
 
 /**
- * 条件
+ * 条件参数
+ *
  * @author bootystar
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConditionDTO {
+public class Condition {
 
     /**
      * 连接符
@@ -24,7 +25,7 @@ public class ConditionDTO {
      * 字段
      */
     protected String field;
-    
+
     /**
      * 运算符(=,>,<,!=,>=,<=,LIKE,NOT LIKE,IS NULL,IS NOT NULL,IN,NOT IN)
      * 默认=
@@ -37,7 +38,8 @@ public class ConditionDTO {
     protected Object value;
 
     @Getter
-    public static final class ImmutableCondition extends ConditionDTO {
+    public static final class ImmutableCondition extends Condition {
+
         public ImmutableCondition() {
             throw new UnsupportedOperationException("not support empty constructor");
         }

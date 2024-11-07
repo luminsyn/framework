@@ -1,9 +1,5 @@
 package ${package.ServiceImpl};
 
-import org.springframework.stereotype.Service;
-#if(${generateInsert}||${generateUpdate})
-import org.springframework.beans.BeanUtils;
-#end
 #if(${generateImport}||${generateExport})
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
@@ -19,6 +15,10 @@ import ${package.Mapper}.${table.mapperName};
 import ${package.Entity}.${entity};
 #if(${generateSelect}||${generateInsert})
 import ${basePackage}.${VOPackage}.${entity}VO;
+#end
+import org.springframework.stereotype.Service;
+#if(${generateInsert}||${generateUpdate})
+import org.springframework.beans.BeanUtils;
 #end
 
 #if(${generateSelect}||${generateDelete})
@@ -39,17 +39,17 @@ import java.lang.reflect.Modifier;
  * $!{table.comment} 服务实现类
  *
  * @author ${author}
- * @since ${date}
  */
 @Service
 #if(${kotlin})
-open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName},${entity}>() implements ${table.serviceName} {
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}>() implements ${table.serviceName} {
 
 }
 #else
-public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName},${entity}> implements ${table.serviceName} {
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
     #if(${generateSelect}||${generateExport})
-        
+
+    @SuppressWarnings("unchecked")
     public Map<String, Object> toMap(Object source) {
         if (source==null) return new HashMap<>();
         if (source instanceof Map) return (Map<String, Object>) source;
@@ -57,7 +57,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         Class<?> clazz = source.getClass();
         List<Field> fields = new ArrayList<>();
         Class<?> currentClass = clazz;
-        while (currentClass != null) {
+        while (currentClass != null && currentClass != Object.class && !currentClass.isInterface()) {
             Field[] declaredFields = currentClass.getDeclaredFields();
             for (Field field : declaredFields) {
                 field.setAccessible(true);
@@ -108,15 +108,11 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
     #end
     #if(${generateSelect})
-        
-    protected void voPostProcess(List<${entity}VO> dataList) {
-
-    }
 
     @Override
-    public ${entity}VO voById(Serializable id){
+    public ${entity}VO voById(Serializable id) {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("primaryKey", id);
+        map.put("id", id);
         return this.oneByDTO(map);
     }
 
@@ -124,24 +120,21 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public <S> ${entity}VO oneByDTO(S s) {
         List<${entity}VO> vs = listByDTO(s);
         if (vs == null || vs.size()==0 ) return null;
-        if(vs.size() > 1) throw new RuntimeException("error query => required 1 but found "+vs.size());
+        if(vs.size() > 1) throw new RuntimeException("error query => required 1 but found " + vs.size());
         return vs.get(0);
     }
 
     @Override
-    public <S> List<${entity}VO> listByDTO(S s){
-        List<${entity}VO> voList = this.baseMapper.listByMap(this.toMap(s), null);
-        voPostProcess(voList);
-        return voList;
+    public <S> List<${entity}VO> listByDTO(S s) {
+        return this.baseMapper.listByGeneric(this.toMap(s), null);
     }
 
     @Override
-    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size){
-        if (current == null || current<1) current=1L;
-        if (size == null) size=10L;
+    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size) {
+        if (current == null || current < 1) current = 1L;
+        if (size == null) size = 10L;
         Page<${entity}VO> page = new Page<>(current, size);
-        List<${entity}VO> voList = this.baseMapper.listByMap(this.toMap(s), page);
-        voPostProcess(voList);
+        List<${entity}VO> voList = baseMapper.listByGeneric(toMap(s), page);
         page.setRecords(voList);
         return page;
     }
@@ -150,7 +143,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        List<${entity}VO> voList = pageByDTO(s, current, size).getRecords();
+        List<${entity}VO> voList;
+        if (current == null && size == null) {
+            voList = listByDTO(s);
+        } else {
+            voList = pageByDTO(s, current, size).getRecords();
+        }
         ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
         if (includeFields != null && includeFields.length > 0) {
             builder.includeColumnFieldNames(Arrays.asList(includeFields));

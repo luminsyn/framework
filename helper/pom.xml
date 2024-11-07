@@ -7,20 +7,29 @@
     <parent>
         <artifactId>framework</artifactId>
         <groupId>io.github.bootystar</groupId>
-        <version>${revision}</version>
+        <version>1.0.0</version>
     </parent>
     <artifactId>helper</artifactId>
+    <version>1.0.3</version>
     
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
+            <version>4.0.3</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
+            <version>8.5.13</version>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.34</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     

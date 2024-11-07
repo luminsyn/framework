@@ -1,28 +1,20 @@
 package io.github.bootystar.mybatisplus.config;
 
-import com.baomidou.mybatisplus.generator.config.po.TableField;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import io.github.bootystar.mybatisplus.config.base.ConfigBase;
 import io.github.bootystar.mybatisplus.config.base.ConfigBaseBuilder;
-import io.github.bootystar.mybatisplus.logic.injection.dto.InjectionDTO;
-import io.github.bootystar.mybatisplus.logic.injection.dto.SortDTO;
+import io.github.bootystar.mybatisplus.logic.splicing.dto.Splicer;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * 父类生成器配置类
+ * SQL拼接配置类
  *
  * @author bootystar
  */
 @Getter
-public class InjectionConfig extends ConfigBase {
+public class SplicingConfig extends ConfigBase {
 
-    public InjectionConfig() {
-        super(3);
+    public SplicingConfig() {
+        super(SplicingConfig.class);
     }
 
 
@@ -37,40 +29,30 @@ public class InjectionConfig extends ConfigBase {
     protected boolean showMapperMethod = true;
 
     /**
-     * 注入器类名称
+     * 拼接器类名称
      */
-    protected String injectionClassSimpleName = InjectionDTO.class.getSimpleName();
+    protected String splicerClassSimpleName = Splicer.class.getSimpleName();
 
     /**
-     * 注入器全限定类名
+     * 拼接器全限定类名
      */
-    protected String injectionClassFullName = InjectionDTO.class.getName();
+    protected String splicerClassFullName = Splicer.class.getName();
 
     /**
-     * 排序字段名称
+     * 使用拼接器
      */
-    protected String sortClassSimpleName = SortDTO.class.getSimpleName();
-
-    /**
-     * 排序字段名称
-     */
-    protected String sortClassFullName = SortDTO.class.getName();
-
-    /**
-     * 使用注入器
-     */
-    protected boolean injection = true;
+    protected boolean splicer = true;
 
     /**
      * 构造器
+     *
      * @author bootystar
-     * @since 2023/12/19
      */
-    public static class Builder extends ConfigBaseBuilder<InjectionConfig, Builder> {
+    public static class Builder extends ConfigBaseBuilder<SplicingConfig, Builder> {
 
         @Override
-        protected InjectionConfig initConfig() {
-            return new InjectionConfig();
+        protected SplicingConfig initConfig() {
+            return new SplicingConfig();
         }
 
         @Override

@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.logic.injection.Injectable;
+import io.github.bootystar.mybatisplus.logic.splicing.SplicingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.springframework.core.GenericTypeResolver;
 
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.TypeVariable;
 import java.util.*;
 
 /**
@@ -177,7 +181,7 @@ public abstract class ReflectUtil extends Reflector {
 
     /**
      * 获取实体类字段映射
-     * 当实体类实现{@link Injectable }接口后,会额外添加映射字段
+     * 当实体类实现{@link SplicingEntity }接口后,会额外添加映射字段
      *
      * @param entityClass 实体类
      * @return {@link Map }<{@link String }, {@link String }>
@@ -186,8 +190,8 @@ public abstract class ReflectUtil extends Reflector {
     @SneakyThrows
     public static Map<String, String> injectableFieldsMap(Class<?> entityClass) {
         Map<String, String> map = fieldConvertMap(entityClass);
-        if (Injectable.class.isAssignableFrom(entityClass)) {
-            Class<Injectable> injectable = (Class<Injectable>) entityClass;
+        if (SplicingEntity.class.isAssignableFrom(entityClass)) {
+            Class<SplicingEntity> injectable = (Class<SplicingEntity>) entityClass;
             Map<String, String> extraMap = injectable.getConstructor().newInstance().extraMap();
             if (extraMap != null && !extraMap.isEmpty()) {
                 Iterator<Map.Entry<String, String>> it = extraMap.entrySet().iterator();
@@ -208,4 +212,16 @@ public abstract class ReflectUtil extends Reflector {
         return map;
     }
 
+
+    /**
+     * 解析超类泛型参数
+     *
+     * @param clazz      指定类
+     * @param superClass 超类
+     * @return {@link Class }
+     * @author bootystar
+     */
+    public static Class<?>[] resolveTypeArguments(Class<?> clazz, Class<?> superClass) {
+        return GenericTypeResolver.resolveTypeArguments(clazz, superClass);
+    }
 }

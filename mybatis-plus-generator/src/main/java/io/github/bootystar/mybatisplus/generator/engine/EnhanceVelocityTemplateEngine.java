@@ -16,8 +16,8 @@ import java.util.Optional;
 
 /**
  * 自定义Velocity引擎
- * @author bootystar
  *
+ * @author bootystar
  */
 public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
@@ -25,6 +25,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
 
     public EnhanceVelocityTemplateEngine() {
+
     }
 
 
@@ -52,15 +53,15 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
     @Override
     public Map<String, Object> getObjectMap(ConfigBuilder config, TableInfo tableInfo) {
         Map<String, Object> objectMap = super.getObjectMap(config, tableInfo);
-        if (customConfig!=null){
+        if (customConfig != null) {
             Map<String, Object> customData = customConfig.renderData(tableInfo);
-            if (customData!=null){
+            if (customData != null) {
                 objectMap.putAll(customData);
             }
         }
-        objectMap.put("basePackage",config.getPackageConfig().getParent());
+        objectMap.put("basePackage", config.getPackageConfig().getParent());
 
-        return objectMap ;
+        return objectMap;
     }
 
 
