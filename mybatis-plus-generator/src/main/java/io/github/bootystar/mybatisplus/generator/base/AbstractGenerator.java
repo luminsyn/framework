@@ -1,7 +1,9 @@
 package io.github.bootystar.mybatisplus.generator.base;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.config.base.ConfigBase;
@@ -87,7 +89,9 @@ public abstract class AbstractGenerator {
 
     protected void init() {
         String projectPath = System.getProperty("user.dir");
-        globalConfigBuilder.author("bootystar")
+        globalConfigBuilder
+                .author("bootystar")
+                .dateType(DateType.TIME_PACK)
                 .outputDir(projectPath + "/src/main/java")
         ;
         // 兼容旧版
@@ -102,6 +106,7 @@ public abstract class AbstractGenerator {
         packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
         ;
         strategyConfigBuilder.entityBuilder()
+                .idType(IdType.ASSIGN_ID)
                 .javaTemplate("/common/entity.java")
         ;
         strategyConfigBuilder.controllerBuilder()
