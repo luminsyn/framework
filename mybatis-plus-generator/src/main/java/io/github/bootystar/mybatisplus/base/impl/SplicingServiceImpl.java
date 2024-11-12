@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.bootystar.mybatisplus.base.GenericMapper;
 import io.github.bootystar.mybatisplus.base.GenericService;
+import io.github.bootystar.mybatisplus.easyexcel.EasyExcelConverterTool;
 import io.github.bootystar.mybatisplus.logic.splicing.dto.Condition;
 import io.github.bootystar.mybatisplus.logic.splicing.dto.Splicer;
 import io.github.bootystar.mybatisplus.logic.splicing.enums.Connector;
@@ -23,6 +24,10 @@ import java.util.Map;
  * @author bootystar
  */
 public abstract class SplicingServiceImpl<M extends GenericMapper<T, V>, T, V> extends ServiceImpl<M, T> implements GenericService<T, V> {
+
+    static {
+        EasyExcelConverterTool.init();
+    }
 
     @Override
     public List<String> selectableFields() {

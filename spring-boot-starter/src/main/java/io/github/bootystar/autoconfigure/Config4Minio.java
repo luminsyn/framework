@@ -16,14 +16,14 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @EnableConfigurationProperties(MinioProp.class)
-@ConditionalOnClass({MinioClient.class,MinioHelper.class})
+@ConditionalOnClass({MinioClient.class, MinioHelper.class})
 public class Config4Minio {
 
     @Bean
     @ConditionalOnMissingBean(MinioHelper.class)
-    public MinioHelper minioEnhancedClient(MinioProp minioProp ) {
+    public MinioHelper minioEnhancedClient(MinioProp minioProp) {
         Boolean enable = minioProp.getEnable();
-        if(!enable){
+        if (!enable) {
             return null;
         }
         MinioClient build = MinioClient.builder().endpoint(minioProp.getEndpoint())
@@ -32,5 +32,5 @@ public class Config4Minio {
         log.debug("MinioHelper Configured");
         return new MinioHelper(build, minioProp.getBucketName());
     }
-    
+
 }

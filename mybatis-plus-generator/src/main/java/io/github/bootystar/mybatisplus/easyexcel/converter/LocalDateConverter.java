@@ -1,4 +1,4 @@
-package io.github.bootystar.helper.easyexcel.converter;
+package io.github.bootystar.mybatisplus.easyexcel.converter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -7,20 +7,20 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Excel日期时间转换器
+ * Excel日期转换器
  *
  * @author bootystar
  */
-public class LocalDateTimeConverter implements Converter<LocalDateTime> {
-    private final DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+public class LocalDateConverter implements Converter<LocalDate> {
+    private static final DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Override
-    public Class<LocalDateTime> supportJavaTypeKey() {
-        return LocalDateTime.class;
+    public Class<LocalDate> supportJavaTypeKey() {
+        return LocalDate.class;
     }
 
     @Override
@@ -29,20 +29,19 @@ public class LocalDateTimeConverter implements Converter<LocalDateTime> {
     }
 
     @Override
-    public LocalDateTime convertToJavaData(ReadCellData cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public LocalDate convertToJavaData(ReadCellData cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         String cellValue = cellData.getStringValue();
         if (cellValue == null || cellValue.isEmpty()) {
             return null;
         }
-        return LocalDateTime.parse(cellValue, formatter);
+        return LocalDate.parse(cellValue, formatter);
     }
 
     @Override
-    public WriteCellData<String> convertToExcelData(LocalDateTime value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(LocalDate value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         if (value == null) {
             return new WriteCellData<>("");
         }
         return new WriteCellData<>(value.format(formatter));
     }
-
 }

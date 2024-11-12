@@ -7,12 +7,7 @@
     <groupId>io.github.bootystar</groupId>
     <artifactId>framework</artifactId>
     <version>1.0.0</version>
-    <modules>
-        <module>helper</module>
-        <module>wechat-api</module>
-        <module>mybatis-plus-generator</module>
-        <module>spring-boot-starter</module>
-    </modules>
+
 
     <properties>
         <!-- 全局版本控制，如果要修改版本号，修改此处即可-->

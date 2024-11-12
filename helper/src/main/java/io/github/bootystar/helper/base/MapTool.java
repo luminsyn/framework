@@ -7,25 +7,50 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 
 /**
- * 多边形判断工具
+ * 地图工具
  * @author bootystar
  */
-public abstract class ShapeTool {
+public abstract class MapTool {
 
+    /**
+     * 地球半径,单位 km
+     */
+    private static final double EARTH_RADIUS = 6378.137;
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Point {
-        /**
-         * 横坐标
-         */
-        private double x;
-        /**
-         * 纵坐标
-         */
-        private double y;
+    /**
+     * 获取距离(千米)
+     *
+     * @param longitude1 经度1
+     * @param latitude1  纬度1
+     * @param longitude2 经度2
+     * @param latitude2  纬度2
+     * @return double 距离(米)
+     * @author booty
+     * @since 2023/11/03
+     */
+    public static double getDistance(double longitude1, double latitude1, double longitude2, double latitude2) {
+        //==========================计算距离=============================
+        //用户位置经度
+        double userLongitude = Math.toRadians(longitude2);
+        //用户纬度
+        double userLatitude = Math.toRadians(latitude2);
+
+        double longitude = Math.toRadians(longitude1);
+        double latitude = Math.toRadians(latitude1);
+        // 纬度之差
+        double a = userLatitude - latitude;
+        // 经度之差
+        double b = userLongitude - longitude;
+        // 计算两点距离的公式
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(userLatitude) * Math.cos(latitude) * Math.pow(Math.sin(b / 2), 2)));
+        // 弧长乘地球半径, 返回单位: 千米
+        s = s * EARTH_RADIUS;
+        // 返回单位: 米
+        return s/1000;
     }
+
+
+
 
     /**
      * 判断点是否在多边形内(基本思路是用交点法)
@@ -33,6 +58,7 @@ public abstract class ShapeTool {
      * @param point          点
      * @param boundaryPoints 边界点
      * @return boolean
+     * @link <a href="https://blog.csdn.net/zheng12tian/article/details/40617445">...</a>
      * @author bootystar
      */
     public static boolean isPointInPolygon(Point point, Point[] boundaryPoints) {
@@ -74,34 +100,34 @@ public abstract class ShapeTool {
             /**
              * 如果点的y坐标在边P1P2的y坐标开区间范围之外，那么不相交。
              */
-            if (point.getY() < Math.min(point1.getY(), point2.getY())
-                    || point.getY() > Math.max(point1.getY(), point2.getY())) {
+            if (point.getLatitude() < Math.min(point1.getLatitude(), point2.getLatitude())
+                    || point.getLatitude() > Math.max(point1.getLatitude(), point2.getLatitude())) {
                 point1 = point2;
                 continue;
             }
             /**
              * 此处判断射线与边相交
              */
-            if (point.getY() > Math.min(point1.getY(), point2.getY())
+            if (point.getLatitude() > Math.min(point1.getLatitude(), point2.getLatitude())
                     // 如果点的y坐标在边P1P2的y坐标开区间内
-                    && point.getY() < Math.max(point1.getY(), point2.getY())) {
+                    && point.getLatitude() < Math.max(point1.getLatitude(), point2.getLatitude())) {
                 // 若边P1P2是垂直的
-                if (point1.getX() == point2.getX()) {
-                    if (point.getX() == point1.getX()) {
+                if (point1.getLongitude() == point2.getLongitude()) {
+                    if (point.getLongitude() == point1.getLongitude()) {
                         // 若点在垂直的边P1P2上，则点在多边形内
                         return true;
-                    } else if (point.getX() < point1.getX()) {
+                    } else if (point.getLongitude() < point1.getLongitude()) {
                         // 若点在在垂直的边P1P2左边，则点与该边必然有交点
                         ++intersectPointCount;
                     }
                 } else {// 若边P1P2是斜线
                     // 点point的x坐标在点P1和P2的左侧
-                    if (point.getX() <= Math.min(point1.getX(), point2.getX())) {
+                    if (point.getLongitude() <= Math.min(point1.getLongitude(), point2.getLongitude())) {
                         ++intersectPointCount;
                     }
                     // 点point的x坐标在点P1和P2的x坐标中间
-                    else if (point.getX() > Math.min(point1.getX(), point2.getX())
-                            && point.getX() < Math.max(point1.getX(), point2.getX())) {
+                    else if (point.getLongitude() > Math.min(point1.getLongitude(), point2.getLongitude())
+                            && point.getLongitude() < Math.max(point1.getLongitude(), point2.getLongitude())) {
                         double slopeDiff = getSlopeDiff(point, point1, point2);
                         if (slopeDiff > 0) {
                             // 由于double精度在计算时会有损失，故匹配一定的容差。经试验，坐标经度可以达到0.0001
@@ -117,7 +143,7 @@ public abstract class ShapeTool {
                 }
             } else {
                 // 边P1P2水平
-                if (point1.getY() == point2.getY()) {
+                if (point1.getLatitude() == point2.getLatitude()) {
                     if (checkPointInLine(point, point1, point2)) {
                         return true;
                     }
@@ -125,11 +151,11 @@ public abstract class ShapeTool {
                 /**
                  * 判断点通过多边形顶点
                  */
-                if (((point.getY() == point1.getY() && point.getX() < point1.getX()))
-                        || (point.getY() == point2.getY() && point.getX() < point2.getX())) {
-                    if (point2.getY() < point1.getY()) {
+                if (((point.getLatitude() == point1.getLatitude() && point.getLongitude() < point1.getLongitude()))
+                        || (point.getLatitude() == point2.getLatitude() && point.getLongitude() < point2.getLongitude())) {
+                    if (point2.getLatitude() < point1.getLatitude()) {
                         intersectPointWeights += -0.5;
-                    } else if (point2.getY() > point1.getY()) {
+                    } else if (point2.getLatitude() > point1.getLatitude()) {
                         intersectPointWeights += 0.5;
                     }
                 }
@@ -146,19 +172,19 @@ public abstract class ShapeTool {
 
     private static double getSlopeDiff(Point point, Point point1, Point point2) {
         double slopeDiff = 0.0d;
-        if (point1.getY() > point2.getY()) {
-            slopeDiff = (point.getY() - point2.getY()) / (point.getX() - point2.getX())
-                    - (point1.getY() - point2.getY()) / (point1.getX() - point2.getX());
+        if (point1.getLatitude() > point2.getLatitude()) {
+            slopeDiff = (point.getLatitude() - point2.getLatitude()) / (point.getLongitude() - point2.getLongitude())
+                    - (point1.getLatitude() - point2.getLatitude()) / (point1.getLongitude() - point2.getLongitude());
         } else {
-            slopeDiff = (point.getY() - point1.getY()) / (point.getX() - point1.getX())
-                    - (point2.getY() - point1.getY()) / (point2.getX() - point1.getX());
+            slopeDiff = (point.getLatitude() - point1.getLatitude()) / (point.getLongitude() - point1.getLongitude())
+                    - (point2.getLatitude() - point1.getLatitude()) / (point2.getLongitude() - point1.getLongitude());
         }
         return slopeDiff;
     }
 
     private static boolean checkPointInLine(Point point, Point point1, Point point2) {
-        if (point.getX() <= Math.max(point1.getX(), point2.getX())
-                && point.getX() >= Math.min(point1.getX(), point2.getX())) {
+        if (point.getLongitude() <= Math.max(point1.getLongitude(), point2.getLongitude())
+                && point.getLongitude() >= Math.min(point1.getLongitude(), point2.getLongitude())) {
             // 若点在水平的边P1P2上，则点在多边形内
             return true;
         }
@@ -178,8 +204,8 @@ public abstract class ShapeTool {
         Point southWestPoint = getSouthWestPoint(boundaryPoints);
         // 东北角点
         Point northEastPoint = getNorthEastPoint(boundaryPoints);
-        return (point.getX() >= southWestPoint.getX() && point.getX() <= northEastPoint.getX()
-                && point.getY() >= southWestPoint.getY() && point.getY() <= northEastPoint.getY());
+        return (point.getLongitude() >= southWestPoint.getLongitude() && point.getLongitude() <= northEastPoint.getLongitude()
+                && point.getLatitude() >= southWestPoint.getLatitude() && point.getLatitude() <= northEastPoint.getLatitude());
 
     }
 
@@ -191,10 +217,10 @@ public abstract class ShapeTool {
      * @author bootystar
      */
     private static Point getSouthWestPoint(Point[] vertexes) {
-        double minLng = vertexes[0].getX(), minLat = vertexes[0].getY();
+        double minLng = vertexes[0].getLongitude(), minLat = vertexes[0].getLatitude();
         for (Point bmapPoint : vertexes) {
-            double x = bmapPoint.getX();
-            double y = bmapPoint.getY();
+            double x = bmapPoint.getLongitude();
+            double y = bmapPoint.getLatitude();
             if (x < minLng) {
                 minLng = x;
             }
@@ -215,8 +241,8 @@ public abstract class ShapeTool {
     private static Point getNorthEastPoint(Point[] vertexes) {
         double maxLng = 0.0d, maxLat = 0.0d;
         for (Point bmapPoint : vertexes) {
-            double x = bmapPoint.getX();
-            double y = bmapPoint.getY();
+            double x = bmapPoint.getLongitude();
+            double y = bmapPoint.getLatitude();
             if (x > maxLng) {
                 maxLng = x;
             }
@@ -229,7 +255,19 @@ public abstract class ShapeTool {
 
 
 
-
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Point {
+        /**
+         * 经度
+         */
+        private double longitude;
+        /**
+         * 纬度
+         */
+        private double latitude;
+    }
 
 
 }

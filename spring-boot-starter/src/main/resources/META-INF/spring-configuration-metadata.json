@@ -65,12 +65,6 @@
       "type": "java.lang.String",
       "defaultValue": "defaultBucket",
       "description": "default bucket name"
-    },
-    {
-      "name": "booty.easy-excel.enhanced-converter",
-      "defaultValue": "true",
-      "type": "java.lang.Boolean",
-      "description": "add extra converter to EasyExcel"
     }
   ]
 }

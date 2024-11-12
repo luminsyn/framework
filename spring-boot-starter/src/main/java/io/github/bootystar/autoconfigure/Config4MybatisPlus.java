@@ -35,5 +35,5 @@ public class Config4MybatisPlus {
         log.debug("MybatisPlusInterceptor Configured");
         return interceptor;
     }
-    
+
 }

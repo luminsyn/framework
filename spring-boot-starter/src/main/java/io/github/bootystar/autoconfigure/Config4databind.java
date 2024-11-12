@@ -17,7 +17,6 @@ import io.github.bootystar.autoconfigure.databind.converter.String2LocalDateTime
 import io.github.bootystar.autoconfigure.databind.converter.String2LocalTimeConverter;
 import io.github.bootystar.autoconfigure.prop.DatabindProp;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -50,12 +49,12 @@ public class Config4databind {
 //        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         // NULL不参与序列化
 //        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        
-        if (prop.getTimePackSupport()){
+
+        if (prop.getTimePackSupport()) {
             String dateTimeFormat = prop.getDateTimeFormat();
             String dateFormat = prop.getDateFormat();
             String timeFormat = prop.getTimeFormat();
-            
+
             SimpleDateFormat oldFormatter = new SimpleDateFormat(dateTimeFormat);
             // 指定时区
             objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
@@ -64,7 +63,7 @@ public class Config4databind {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormat);
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateFormat);
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(timeFormat);
-            
+
             // java8日期日期处理
             JavaTimeModule javaTimeModule = new JavaTimeModule();
             javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
@@ -75,8 +74,8 @@ public class Config4databind {
             javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
             objectMapper.registerModule(javaTimeModule);
         }
-     
-        if (prop.getLongToString() || prop.getDoubleToString()){
+
+        if (prop.getLongToString() || prop.getDoubleToString()) {
             // long和Double转string, 避免前端精度丢失
             SimpleModule simpleModule = new SimpleModule();
             if (prop.getLongToString()) simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
@@ -108,5 +107,5 @@ public class Config4databind {
         log.debug("String2LocalTimeConverter Configured");
         return new String2LocalTimeConverter(prop.getTimeFormat());
     }
-    
+
 }

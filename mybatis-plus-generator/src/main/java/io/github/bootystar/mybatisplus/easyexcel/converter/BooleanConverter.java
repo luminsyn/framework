@@ -1,4 +1,4 @@
-package io.github.bootystar.helper.easyexcel.converter;
+package io.github.bootystar.mybatisplus.easyexcel.converter;
 
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
@@ -8,15 +8,16 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * Excel Double to String转换器
+ * Excel Boolean to String转换器
  *
  * @author bootystar
  */
-public class DoubleConverter implements Converter<Double> {
+public class BooleanConverter implements Converter<Boolean> {
+
 
     @Override
-    public Class<Double> supportJavaTypeKey() {
-        return Double.class;
+    public Class<Boolean> supportJavaTypeKey() {
+        return Boolean.class;
     }
 
     @Override
@@ -25,19 +26,19 @@ public class DoubleConverter implements Converter<Double> {
     }
 
     @Override
-    public Double convertToJavaData(ReadCellData cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public Boolean convertToJavaData(ReadCellData cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         String cellValue = cellData.getStringValue();
         if (cellValue == null || cellValue.isEmpty()) {
             return null;
         }
-        return Double.parseDouble(cellValue);
+        return "是".equals(cellValue);
     }
 
     @Override
-    public WriteCellData<String> convertToExcelData(Double value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(Boolean value, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         if (value == null) {
             return new WriteCellData<>("");
         }
-        return new WriteCellData<>(String.valueOf(value));
+        return new WriteCellData<>(value ? "是" : "否");
     }
 }
