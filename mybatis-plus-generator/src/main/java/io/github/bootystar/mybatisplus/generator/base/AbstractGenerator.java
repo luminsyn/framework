@@ -87,7 +87,8 @@ public abstract class AbstractGenerator {
 
     protected void init() {
         String projectPath = System.getProperty("user.dir");
-        globalConfigBuilder.author("bootystar").disableOpenDir().outputDir(projectPath + "/src/main/java")
+        globalConfigBuilder.author("bootystar")
+                .outputDir(projectPath + "/src/main/java")
         ;
         // 兼容旧版
         templateConfigBuilder
