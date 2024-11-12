@@ -47,6 +47,14 @@ public abstract class ConfigBase implements IConfig {
         } catch (IllegalAccessException e) {
             log.error("Generate Injection Field Error Please Report to Developer", e);
         }
+        Set<String> importPackages = tableInfo.getImportPackages();
+        Set<String> importPackages4DTO = new HashSet<>();
+        for (String importPackage : importPackages) {
+            if (!importPackage.startsWith("com.baomidou.mybatisplus.annotation")){
+                importPackages4DTO.add(importPackage);
+            }
+        }
+        data.put("importPackages4DTO", importPackages4DTO);
         // 当前时间
         data.put("nowTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 

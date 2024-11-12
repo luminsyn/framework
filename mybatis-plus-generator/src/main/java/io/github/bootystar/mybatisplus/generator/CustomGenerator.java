@@ -1,9 +1,9 @@
 package io.github.bootystar.mybatisplus.generator;
 
 
-import io.github.bootystar.mybatisplus.base.GenericMapper;
-import io.github.bootystar.mybatisplus.base.GenericService;
-import io.github.bootystar.mybatisplus.base.impl.CustomServiceImpl;
+import io.github.bootystar.mybatisplus.core.GenericMapper;
+import io.github.bootystar.mybatisplus.core.GenericService;
+import io.github.bootystar.mybatisplus.core.impl.CustomServiceImpl;
 import io.github.bootystar.mybatisplus.config.CustomConfig;
 import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
 

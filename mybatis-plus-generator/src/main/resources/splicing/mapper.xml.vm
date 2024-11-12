@@ -7,8 +7,8 @@
 
 #end
     <sql id="selectFragment">
-        <if test="generic != null">
-            <foreach collection="generic" item="gen">
+        <if test="param1 != null">
+            <foreach collection="param1" item="gen">
                 <if test="gen.conditions != null and gen.conditions.size() > 0">
                     <trim prefix="AND ( " suffix=" )" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
                         <foreach collection="gen.conditions" item="item" index="index">
@@ -35,8 +35,8 @@
     </sql>
 
     <sql id="sortFragment">
-        <if test="generic.sorts != null and generic.sorts.size() > 0">
-            <foreach collection="generic.sorts" item="item" separator=" , " open="ORDER BY ">
+        <if test="param1.sorts != null and param1.sorts.size() > 0">
+            <foreach collection="param1.sorts" item="item" separator=" , " open="ORDER BY ">
                 ${item.field}
                 <if test="item.desc == true">
                     DESC
@@ -111,7 +111,7 @@
             <include refid="selectFragment"/>
         </where>
         #if(${orderBySql})
-        <if test="generic.sorts == null or generic.sorts.size() == 0">
+        <if test="param1.sorts == null or param1.sorts.size() == 0">
         ORDER BY ${orderBySql}
         </if>
         #end

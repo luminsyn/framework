@@ -1,8 +1,8 @@
 package io.github.bootystar.mybatisplus.generator;
 
-import io.github.bootystar.mybatisplus.base.GenericMapper;
-import io.github.bootystar.mybatisplus.base.GenericService;
-import io.github.bootystar.mybatisplus.base.impl.SplicingServiceImpl;
+import io.github.bootystar.mybatisplus.core.GenericMapper;
+import io.github.bootystar.mybatisplus.core.GenericService;
+import io.github.bootystar.mybatisplus.core.impl.SplicingServiceImpl;
 import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
 
@@ -41,9 +41,6 @@ public class SplicingGenerator extends AbstractGenerator {
                 .mapperTemplate("/common/mapperG.java")
                 .mapperXmlTemplate("/splicing/mapper.xml")
         ;
-        // todo 临时必要项, 后续优化
-        strategyConfigBuilder.entityBuilder()
-                .enableTableFieldAnnotation();
 
     }
 

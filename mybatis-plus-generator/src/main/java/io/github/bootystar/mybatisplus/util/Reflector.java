@@ -1,12 +1,12 @@
 package io.github.bootystar.mybatisplus.util;
 
 import lombok.SneakyThrows;
-import org.springframework.core.ResolvableType;
-import org.springframework.lang.Nullable;
 
-import java.io.Serializable;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author bootystar

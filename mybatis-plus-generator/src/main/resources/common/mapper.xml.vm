@@ -70,52 +70,52 @@
             a.`${field.columnName}` = 0
     #end
 #end
-            <if test="generic != null">
+            <if test="param1 != null">
 #foreach($field in ${table.fields})
     #if(${field.logicDeleteField})
 ##                AND a.${field.columnName} = 0
     #elseif(${field.keyFlag})
-                <if test="generic.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
+                <if test="param1.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
                 </if>
-                <if test="generic.${field.propertyName}List != null and generic.${field.propertyName}List.size() > 0">
+                <if test="param1.${field.propertyName}List != null and param1.${field.propertyName}List.size() > 0">
                     AND a.`${field.columnName}` IN
-                    <foreach collection="generic.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                    <foreach collection="param1.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                         #{prop}
                     </foreach>
                 </if>
     #elseif($selectExcludeFields.contains(${field.propertyName}))
     #else
         #if(${field.propertyType} == "String")
-                <if test="generic.${field.propertyName} != null and generic.${field.propertyName}.length()>0">
-                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
+                <if test="param1.${field.propertyName} != null and param1.${field.propertyName}.length()>0">
+                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
                 </if>
-                <if test="generic.${field.propertyName}Like  != null and generic.${field.propertyName}Like.length()>0">
-                    AND a.`${field.columnName}` LIKE CONCAT('%',#{generic.${field.propertyName}Like},'%')
+                <if test="param1.${field.propertyName}Like  != null and param1.${field.propertyName}Like.length()>0">
+                    AND a.`${field.columnName}` LIKE CONCAT('%',#{param1.${field.propertyName}Like},'%')
                 </if>
         #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
-                <if test="generic.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
+                <if test="param1.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
                 </if>
-                <if test="generic.${field.propertyName}Start != null">
-                    AND a.`${field.columnName}` &gt;= #{generic.${field.propertyName}Start}
+                <if test="param1.${field.propertyName}Start != null">
+                    AND a.`${field.columnName}` &gt;= #{param1.${field.propertyName}Start}
                 </if>
-                <if test="generic.${field.propertyName}End != null">
-                    AND a.`${field.columnName}` &lt;= #{generic.${field.propertyName}End}
+                <if test="param1.${field.propertyName}End != null">
+                    AND a.`${field.columnName}` &lt;= #{param1.${field.propertyName}End}
                 </if>
         #elseif(${field.propertyType} == "Integer"||${field.propertyType} == "Long")
-                <if test="generic.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
+                <if test="param1.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
                 </if>
-                <if test="generic.${field.propertyName}List != null and generic.${field.propertyName}List.size() > 0">
+                <if test="param1.${field.propertyName}List != null and param1.${field.propertyName}List.size() > 0">
                     AND a.`${field.columnName}` IN
-                    <foreach collection="generic.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
+                    <foreach collection="param1.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                         #{prop}
                     </foreach>
                 </if>
         #else
-                <if test="generic.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{generic.${field.propertyName}}
+                <if test="param1.${field.propertyName} != null">
+                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
                 </if>
         #end
     #end

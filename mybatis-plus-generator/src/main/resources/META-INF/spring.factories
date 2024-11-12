@@ -1,7 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- io.github.bootystar.mybatisplus.autoconfigure.SpringProp
-
-
-
-
-

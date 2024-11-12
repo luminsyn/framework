@@ -1,6 +1,6 @@
 package ${basePackage}.${DTOPackage};
 
-#foreach($pkg in ${table.importPackages})
+#foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
 #if(${enableValidated})

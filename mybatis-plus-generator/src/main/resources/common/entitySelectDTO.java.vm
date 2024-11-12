@@ -1,6 +1,6 @@
 package ${basePackage}.${DTOPackage};
 
-#foreach($pkg in ${table.importPackages})
+#foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
 #foreach($field in ${table.fields})
@@ -26,9 +26,6 @@ import lombok.experimental.Accessors;
 #end
 
 import java.util.List;
-#if(!$table.importPackages.contains("java.io.Serializable"))
-import java.io.Serializable;
-#end
 
 /**
  * $!{table.comment}查询DTO

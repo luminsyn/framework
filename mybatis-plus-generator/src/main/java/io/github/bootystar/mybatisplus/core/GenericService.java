@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.base;
+package io.github.bootystar.mybatisplus.core;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
@@ -62,7 +62,7 @@ public interface GenericService<T, V> extends IService<T> {
     }
 
     default V voById(Serializable id) {
-        return oneByDTO(new Splicer().requiredConditions(Condition.builder().field(ReflectUtil.idField(entityClass())).value(id).build()));
+        return oneByDTO(new Splicer().requiredConditions(Condition.builder().field(ReflectUtil.idFieldPropertyName(entityClass())).value(id).build()));
     }
 
     default <U> U voById(Serializable id, Class<U> clazz) {

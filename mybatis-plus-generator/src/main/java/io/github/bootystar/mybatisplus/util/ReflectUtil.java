@@ -3,7 +3,12 @@ package io.github.bootystar.mybatisplus.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import io.github.bootystar.mybatisplus.easyexcel.EasyExcelConverterTool;
 import io.github.bootystar.mybatisplus.logic.splicing.SplicingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,13 +20,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.TypeVariable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author bootystar
  */
 public abstract class ReflectUtil extends Reflector {
 
+    static {
+        EasyExcelConverterTool.init();
+    }
 
     @Data
     @AllArgsConstructor
@@ -96,31 +107,21 @@ public abstract class ReflectUtil extends Reflector {
     }
 
     /**
-     * id字段
+     * id字段属性名
      *
      * @param clazz 克拉兹
      * @return {@link String }
      * @author bootystar
      */
-    public static String idField(Class<?> clazz) {
-        Map<String, Field> fieldMap = fieldMap(clazz);
-        Collection<Field> values = fieldMap.values();
-        ArrayList<String> fieldNames = new ArrayList<>();
-        for (Field field : values) {
-            String fieldName = field.getName();
-            String jdbcColumn = fieldName;
-            TableId tableId = field.getAnnotation(TableId.class);
-            if (tableId != null) {
-                String value = tableId.value();
-                if (!value.isEmpty()) {
-                    jdbcColumn = value;
-                }
-                return jdbcColumn;
-            }
-            fieldNames.add(fieldName);
+    public static String idFieldPropertyName(Class<?> clazz) {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
+        if (tableInfo == null) {
+            return null;
         }
-        return fieldNames.contains("id") ? "id" : null;
+        return tableInfo.getKeyProperty();
     }
+
+
 
 
     /**
@@ -131,9 +132,22 @@ public abstract class ReflectUtil extends Reflector {
      * @author bootystar
      */
     public static Map<String, String> fieldConvertMap(Class<?> clazz) {
-        // 张三' OR '1' = '1';truncate table 'user11
-        Map<String, Field> fieldMap = fieldMap(clazz);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
+        List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         Map<String, String> result = new HashMap<>();
+        for (TableFieldInfo fieldInfo : fieldList) {
+            Field field = fieldInfo.getField();
+            String fieldName = field.getName();
+            String jdbcColumn = fieldInfo.getColumn();
+            result.put(fieldName, String.format("a.`%s`", jdbcColumn));
+        }
+        TableFieldInfo logicDeleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
+        if (logicDeleteFieldInfo != null) {
+            String name = logicDeleteFieldInfo.getField().getName();
+            result.remove(name);
+        }
+        
+        Map<String, Field> fieldMap = fieldMap(clazz);
         for (Field field : fieldMap.values()) {
             String fieldName = field.getName();
             String jdbcColumn = fieldName;
@@ -150,7 +164,7 @@ public abstract class ReflectUtil extends Reflector {
                         jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
-                result.put(fieldName, jdbcColumn);
+                result.putIfAbsent(fieldName, jdbcColumn);
                 continue;
             }
             TableField tableField = field.getAnnotation(TableField.class);
@@ -161,7 +175,7 @@ public abstract class ReflectUtil extends Reflector {
                     if (value.isEmpty()) {
                         continue;
                     }
-                    result.put(fieldName, value);
+                    result.putIfAbsent(fieldName, value);
                     continue;
                 }
                 if (!value.isEmpty()) {
@@ -170,10 +184,10 @@ public abstract class ReflectUtil extends Reflector {
                         jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
-                result.put(fieldName, jdbcColumn);
+                result.putIfAbsent(fieldName, jdbcColumn);
                 continue;
             }
-            result.put(fieldName, String.format("a.`%s`", jdbcColumn));
+            result.putIfAbsent(fieldName, String.format("a.`%s`", jdbcColumn));
         }
         return result;
     }

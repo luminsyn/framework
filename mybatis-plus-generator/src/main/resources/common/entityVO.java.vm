@@ -1,7 +1,12 @@
 package ${basePackage}.${VOPackage};
-
-#foreach($pkg in ${table.importPackages})
+#if(${enableFieldAnnotationOnVO})
+        #foreach($pkg in ${table.importPackages})
 import ${pkg};
+        #end
+    #else
+        #foreach($pkg in ${importPackages4DTO})
+import ${pkg};
+        #end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
