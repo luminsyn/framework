@@ -28,7 +28,6 @@ import java.util.List;
 interface ${table.serviceName} : ${superServiceClass}<${entity}>
 #else
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
-
     #if(${generateInsert})
 
     <S> ${entity}VO insertByDTO(S s);
@@ -50,7 +49,6 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #if(${generateExport})
 
     <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields);
-
     #end
     #if(${generateImport})
 

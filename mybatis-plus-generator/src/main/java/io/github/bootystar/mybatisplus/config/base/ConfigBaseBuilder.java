@@ -49,7 +49,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * DTO所在包
      *
      * @param packageName 包名
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U DTOPackage(String packageName) {
@@ -61,7 +61,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * VO所在包
      *
      * @param packageName 包名
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U VOPackage(String packageName) {
@@ -73,7 +73,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 添加插入排除字段
      *
      * @param fieldNames 字段名称
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U insertExcludeFields(List<String> fieldNames) {
@@ -85,7 +85,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 添加更新排除字段
      *
      * @param fieldNames 字段名称
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U updateExcludeFields(List<String> fieldNames) {
@@ -146,7 +146,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * controller请求前缀
      *
      * @param url url
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U baseUrl(String url) {
@@ -167,7 +167,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     /**
      * 跨域注解
      *
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U enableOrigins() {
@@ -179,7 +179,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 使用jakarta的api
      * (自java17起移除了javax包,使用jakarta替代)
      *
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U enableJakartaApi() {
@@ -239,7 +239,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 禁用消息体接收数据
      * (不使用@RequestBody注解)
      *
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U disableRequestBody() {
@@ -250,7 +250,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     /**
      * 禁用参数校验注解
      *
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U disableValidated() {
@@ -260,7 +260,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
 
     /**
      * 多条件复杂查询使用post请求
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U enablePostOnComplicatedSelect() {
@@ -273,7 +273,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     /**
      * 创建VOResultMap字段映射
      *
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U enableResultMapForVO() {
@@ -287,7 +287,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 如需清空,传入new HashMap<>()或null即可清空
      *
      * @param map 地图
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U orderColumnMap(Map<String, Boolean> map) {
@@ -300,7 +300,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      *
      * @param columnName 列名
      * @param isDesc     是desc
-     * @return {@code Builder }
+     * @return this
      * @author bootystar
      */
     public U orderColumn(String columnName, boolean isDesc) {

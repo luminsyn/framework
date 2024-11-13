@@ -61,7 +61,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             Field[] declaredFields = currentClass.getDeclaredFields();
             for (Field field : declaredFields) {
                 field.setAccessible(true);
-                var modifiers = field.getModifiers();
+                int modifiers = field.getModifiers();
                 if (Modifier.isStatic(modifiers)||Modifier.isFinal(modifiers)||Modifier.isNative(modifiers)) continue;
                 fields.add(field);
             }
