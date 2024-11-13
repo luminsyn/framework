@@ -165,16 +165,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     }
 
     /**
-     * 多条件复杂查询使用post请求
-     * @return {@code Builder }
-     * @author bootystar
-     */
-    public U enablePostOnComplicatedSelect() {
-        this.config.postOnComplicatedSelect = true;
-        return this.builder;
-    }
-
-    /**
      * 跨域注解
      *
      * @return {@code Builder }
@@ -196,44 +186,6 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
         this.config.javaApiPackage = "jakarta";
         return this.builder;
     }
-
-    /**
-     * 基础增删查改使用restful风格
-     * (使用GET/POST/PUT/DELETE)
-     *
-     * @return {@code U }
-     * @author bootystar
-     */
-    public U enableRestful() {
-        this.config.restful = true;
-        return this.builder;
-    }
-
-
-    /**
-     * 禁用消息体接收数据
-     * (不使用@RequestBody注解)
-     *
-     * @return {@code Builder }
-     * @author bootystar
-     */
-    public U disableRequestBody() {
-        this.config.requestBody = false;
-        return this.builder;
-    }
-
-
-    /**
-     * 禁用参数校验注解
-     *
-     * @return {@code Builder }
-     * @author bootystar
-     */
-    public U disableValidated() {
-        this.config.enableValidated = false;
-        return this.builder;
-    }
-
 
     /**
      * 指定controller的返回结果包装类及方法
@@ -271,6 +223,51 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
         return this.builder;
     }
 
+    /**
+     * 基础增删查改使用restful风格
+     * (使用GET/POST/PUT/DELETE)
+     *
+     * @return {@code U }
+     * @author bootystar
+     */
+    public U enableRestful() {
+        this.config.restful = true;
+        return this.builder;
+    }
+
+    /**
+     * 禁用消息体接收数据
+     * (不使用@RequestBody注解)
+     *
+     * @return {@code Builder }
+     * @author bootystar
+     */
+    public U disableRequestBody() {
+        this.config.requestBody = false;
+        return this.builder;
+    }
+
+    /**
+     * 禁用参数校验注解
+     *
+     * @return {@code Builder }
+     * @author bootystar
+     */
+    public U disableValidated() {
+        this.config.enableValidated = false;
+        return this.builder;
+    }
+
+    /**
+     * 多条件复杂查询使用post请求
+     * @return {@code Builder }
+     * @author bootystar
+     */
+    public U enablePostOnComplicatedSelect() {
+        this.config.postOnComplicatedSelect = true;
+        return this.builder;
+    }
+
 //==================mapper=======================
 
     /**
@@ -287,6 +284,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     /**
      * 排序字段map
      * k=字段名 v=启用倒序
+     * 如需清空,传入new HashMap<>()或null即可清空
      *
      * @param map 地图
      * @return {@code Builder }
@@ -298,7 +296,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     }
 
     /**
-     * 添加排序字段
+     * 添加排序字段(不会清空已添加的)
      *
      * @param columnName 列名
      * @param isDesc     是desc

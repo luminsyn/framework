@@ -23,11 +23,11 @@ public class SplicingGenerator extends AbstractGenerator {
         super(url, username, password);
         super.init();
 
-        templateConfigBuilder
-                .service("/common/serviceG.java")
-                .serviceImpl("/common/serviceImplG.java")
-                .mapper("/common/mapperG.java")
-        ;
+//        templateConfigBuilder
+//                .service("/common/serviceG.java")
+//                .serviceImpl("/common/serviceImplG.java")
+//                .mapper("/common/mapperG.java")
+//        ;
 
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(GenericService.class)

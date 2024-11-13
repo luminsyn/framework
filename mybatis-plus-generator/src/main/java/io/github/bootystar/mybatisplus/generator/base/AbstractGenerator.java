@@ -33,7 +33,7 @@ public abstract class AbstractGenerator {
 
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
 
-    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
+//    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
 
     public abstract ConfigBaseBuilder<?, ?> customConfigBuilder();
 
@@ -53,17 +53,17 @@ public abstract class AbstractGenerator {
         return strategyConfigBuilder;
     }
 
-    /**
-     * 模板配置生成器
-     *
-     * @return {@link TemplateConfig.Builder }
-     * @author bootystar
-     * @deprecated 自MP3.5.6开始废弃使用, 3.5.6之后版本请使用{@link #strategyConfigBuilder()}
-     */
-    @Deprecated
-    public TemplateConfig.Builder templateConfigBuilder() {
-        return templateConfigBuilder;
-    }
+//    /**
+//     * 模板配置生成器
+//     *
+//     * @return {@link TemplateConfig.Builder }
+//     * @author bootystar
+//     * @deprecated 自MP3.5.6开始废弃使用, 3.5.6之后版本请使用{@link #strategyConfigBuilder()}
+//     */
+//    @Deprecated
+//    public TemplateConfig.Builder templateConfigBuilder() {
+//        return templateConfigBuilder;
+//    }
 
     public InjectionConfig.Builder injectionConfigBuilder() {
         return injectionConfigBuilder;
@@ -89,20 +89,24 @@ public abstract class AbstractGenerator {
 
     protected void init() {
         String projectPath = System.getProperty("user.dir");
+        String username = System.getProperty("user.name");
+        if (username == null || username.isEmpty()) {
+            username = "generator";
+        }
         globalConfigBuilder
-                .author("bootystar")
+                .author(username)
                 .dateType(DateType.TIME_PACK)
                 .outputDir(projectPath + "/src/main/java")
         ;
-        // 兼容旧版
-        templateConfigBuilder
-                .entity("/common/entity.java")
-                .controller("/common/controller.java")
-                .service("/common/service.java")
-                .serviceImpl("/common/serviceImpl.java")
-                .mapper("/common/mapper.java")
-                .xml("/common/mapper.xml")
-        ;
+//        // 兼容旧版
+//        templateConfigBuilder
+//                .entity("/common/entity.java")
+//                .controller("/common/controller.java")
+//                .service("/common/service.java")
+//                .serviceImpl("/common/serviceImpl.java")
+//                .mapper("/common/mapper.java")
+//                .xml("/common/mapper.xml")
+//        ;
         packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
         ;
         strategyConfigBuilder.entityBuilder()

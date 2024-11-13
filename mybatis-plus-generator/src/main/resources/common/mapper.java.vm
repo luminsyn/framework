@@ -1,16 +1,15 @@
 package ${package.Mapper};
 
-import ${package.Entity}.${entity};
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${superMapperClassPackage};
+import org.apache.ibatis.annotations.Param;
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
-import java.util.List;
-import java.util.Map;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
 import ${basePackage}.${VOPackage}.${entity}VO;
+import ${package.Entity}.${entity};
 
+import java.util.List;
 
 /**
  * $!{table.comment} Mapper 接口

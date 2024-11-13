@@ -110,7 +110,7 @@ public class ${table.controllerName} {
      * 新增
      *
      * @param s 新增入参对象
-     * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @return 是否成功
      * @author ${author}
      */
     #end
@@ -142,7 +142,7 @@ public class ${table.controllerName} {
      * 修改
      *
      * @param s 修改入参对象
-     * @return#if(${returnResultClass}) ${returnResultClass}#else Boolean#end
+     * @return 是否成功
      * @author ${author}
      */
     #end
@@ -174,7 +174,7 @@ public class ${table.controllerName} {
      * 删除
      *
      * @param id 主键id
-     * @return #if(${returnResultClass})${returnResultClass}#else Boolean#end
+     * @return 是否成功
      * @author ${author}
      */
     #end
@@ -206,7 +206,7 @@ public class ${table.controllerName} {
      * 根据id查询详情
      *
      * @param id 主键id
-     * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @return 查询结果
      * @author ${author}
      */
     #end
@@ -236,7 +236,7 @@ public class ${table.controllerName} {
     /**
      * 复杂查询可用字段列表
      *
-     * @return #if(${returnResultClass})${returnResultClass}#else List<String>#end
+     * @return 字段列表
      * @author ${author}
      */
     #end
@@ -263,7 +263,7 @@ public class ${table.controllerName} {
      * 列表
      *
      * @param s 查询条件
-     * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @return 查询结果
      * @author ${author}
      */
     #end
@@ -295,7 +295,7 @@ public class ${table.controllerName} {
      * @param current 页码(默认1)
      * @param size 每页大小(默认10,-1为不限制)
      * @param s 查询条件
-     * @return #if(${returnResultClass})${returnResultClass}#else ${entity}VO#end
+     * @return 查询结果
      * @author ${author}
      */
     #end
@@ -392,7 +392,7 @@ public class ${table.controllerName} {
      * 导入excel
      *
      * @param file excel文件
-     * @return #if(${returnResultClass})${returnResultClass}#else Boolean#end
+     * @return 是否成功
      * @author ${author}
      */
     #end
