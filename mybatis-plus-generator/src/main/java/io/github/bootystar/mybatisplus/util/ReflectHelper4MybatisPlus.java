@@ -6,13 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import io.github.bootystar.mybatisplus.logic.splicing.SplicingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.springframework.beans.BeanUtils;
-import org.springframework.core.GenericTypeResolver;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -232,6 +231,6 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
      * @author bootystar
      */
     public static Class<?>[] resolveTypeArguments(Class<?> clazz, Class<?> superClass) {
-        return GenericTypeResolver.resolveTypeArguments(clazz, superClass);
+        return GenericTypeUtils.resolveTypeArguments(clazz, superClass);
     }
 }
