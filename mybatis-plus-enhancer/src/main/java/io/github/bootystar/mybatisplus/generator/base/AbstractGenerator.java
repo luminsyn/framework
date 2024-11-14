@@ -131,6 +131,7 @@ public abstract class AbstractGenerator {
 
         StrategyConfig strategyConfig = strategyConfigBuilder.build();
 
+        TemplateConfig templateConfig = templateConfigBuilder.build();
 
         InjectionConfig injectionConfig = injectionConfigBuilder.build();
 
@@ -184,6 +185,8 @@ public abstract class AbstractGenerator {
                         .strategy(strategyConfig)
                         // 注入配置
                         .injection(injectionConfig)
+                        // 模板配置
+                        .template(templateConfig)
                         // 自定义配置
                         .custom(customConfig);
 
