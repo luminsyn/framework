@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.bootystar.mybatisplus.core.GenericMapper;
 import io.github.bootystar.mybatisplus.core.GenericService;
-import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public abstract class CustomServiceImpl<M extends GenericMapper<T, V>, T, V> ext
 
     @Override
     public <S> List<V> doSelect(S s, IPage<V> page) {
-        return getBaseMapper().listByGeneric(ReflectUtil.objectToMap(s), page);
+        return getBaseMapper().listByGeneric(ReflectHelper4MybatisPlus.objectToMap(s), page);
     }
 
 }

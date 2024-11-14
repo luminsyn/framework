@@ -9,7 +9,7 @@ import io.github.bootystar.mybatisplus.logic.splicing.dto.Condition;
 import io.github.bootystar.mybatisplus.logic.splicing.dto.Splicer;
 import io.github.bootystar.mybatisplus.logic.splicing.enums.Connector;
 import io.github.bootystar.mybatisplus.logic.splicing.enums.Operator;
-import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +26,7 @@ public abstract class SplicingServiceImpl<M extends GenericMapper<T, V>, T, V> e
 
     @Override
     public List<String> selectableFields() {
-        return new ArrayList<>(ReflectUtil.injectableFieldsMap(entityClass()).keySet());
+        return new ArrayList<>(ReflectHelper4MybatisPlus.injectableFieldsMap(entityClass()).keySet());
     }
 
     @Override

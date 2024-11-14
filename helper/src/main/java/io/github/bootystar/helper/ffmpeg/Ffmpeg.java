@@ -15,7 +15,7 @@ import static java.time.temporal.ChronoUnit.*;
 
 
 @Slf4j
-public class FfmpegHelper {
+public class Ffmpeg {
     private final String ffplay;
     private final String ffmpeg;
     private final String ffprobe;
@@ -31,7 +31,7 @@ public class FfmpegHelper {
      * @param tempMediaPath 临时文件保存路径
      * @author bootystar
      */
-    public FfmpegHelper(String ffplay, String ffmpeg, String ffprobe, String tempMediaPath) {
+    public Ffmpeg(String ffplay, String ffmpeg, String ffprobe, String tempMediaPath) {
         this.ffplay = ffplay;
         this.ffmpeg = ffmpeg;
         this.ffprobe = ffprobe;

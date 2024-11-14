@@ -3,7 +3,7 @@ package io.github.bootystar.mybatisplus.logic.splicing.dto;
 import io.github.bootystar.mybatisplus.logic.splicing.SplicingException;
 import io.github.bootystar.mybatisplus.logic.splicing.enums.Connector;
 import io.github.bootystar.mybatisplus.logic.splicing.enums.Operator;
-import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class Splicer extends ConditionR {
         if (entity == null) {
             throw new IllegalStateException("entity is null");
         }
-        Map<String, Field> fieldMap = ReflectUtil.fieldMap(entity.getClass());
+        Map<String, Field> fieldMap = ReflectHelper4MybatisPlus.fieldMap(entity.getClass());
         List<Condition> conditions = new ArrayList<>();
         for (Field field : fieldMap.values()) {
             Object value = field.get(entity);
@@ -100,7 +100,7 @@ public class Splicer extends ConditionR {
         if (entity == null) {
             throw new IllegalStateException("entity is null");
         }
-        Map<String, Field> fieldMap = ReflectUtil.fieldMap(entity.getClass());
+        Map<String, Field> fieldMap = ReflectHelper4MybatisPlus.fieldMap(entity.getClass());
         List<Condition> conditions = new ArrayList<>();
         for (Field field : fieldMap.values()) {
             Object value = field.get(entity);
@@ -195,7 +195,7 @@ public class Splicer extends ConditionR {
             if (entityClass == null) {
                 throw new SplicingException("entityClass class can not be null, please check your configuration");
             }
-            Map<String, String> map = ReflectUtil.injectableFieldsMap(entityClass);
+            Map<String, String> map = ReflectHelper4MybatisPlus.injectableFieldsMap(entityClass);
             if (map.isEmpty()) {
                 throw new SplicingException("entityClass has no field to convert, please check your configuration");
             }

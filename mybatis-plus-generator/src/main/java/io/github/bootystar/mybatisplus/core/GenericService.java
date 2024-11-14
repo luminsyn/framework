@@ -6,9 +6,10 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.github.bootystar.mybatisplus.util.ExcelHelper;
 import io.github.bootystar.mybatisplus.logic.splicing.dto.Condition;
 import io.github.bootystar.mybatisplus.logic.splicing.dto.Splicer;
-import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import java.io.InputStream;
@@ -26,17 +27,17 @@ import java.util.stream.Collectors;
 public interface GenericService<T, V> extends IService<T> {
 
     default List<String> selectableFields() {
-        return new ArrayList<>(ReflectUtil.fieldMap(entityClass()).keySet());
+        return new ArrayList<>(ReflectHelper4MybatisPlus.fieldMap(entityClass()).keySet());
     }
 
     @SuppressWarnings("unchecked")
     default Class<T> entityClass() {
-        return (Class<T>) Objects.requireNonNull(ReflectUtil.resolveTypeArguments(getClass(), GenericService.class))[0];
+        return (Class<T>) Objects.requireNonNull(ReflectHelper4MybatisPlus.resolveTypeArguments(getClass(), GenericService.class))[0];
     }
 
     @SuppressWarnings("unchecked")
     default Class<V> voClass() {
-        return (Class<V>) Objects.requireNonNull(ReflectUtil.resolveTypeArguments(getClass(), GenericService.class))[1];
+        return (Class<V>) Objects.requireNonNull(ReflectHelper4MybatisPlus.resolveTypeArguments(getClass(), GenericService.class))[1];
     }
 
     default T toEntity(Object source) {
@@ -48,7 +49,7 @@ public interface GenericService<T, V> extends IService<T> {
     }
 
     default <U> U toTarget(Object source, Class<U> clazz) {
-        return ReflectUtil.copyProperties(source, ReflectUtil.newInstance(clazz));
+        return ReflectHelper4MybatisPlus.copyProperties(source, ReflectHelper4MybatisPlus.newInstance(clazz));
     }
 
     default <S> V insertByDTO(S s) {
@@ -62,7 +63,7 @@ public interface GenericService<T, V> extends IService<T> {
     }
 
     default V voById(Serializable id) {
-        return oneByDTO(new Splicer().requiredConditions(Condition.builder().field(ReflectUtil.idFieldPropertyName(entityClass())).value(id).build()));
+        return oneByDTO(new Splicer().requiredConditions(Condition.builder().field(ReflectHelper4MybatisPlus.idFieldPropertyName(entityClass())).value(id).build()));
     }
 
     default <U> U voById(Serializable id, Class<U> clazz) {
@@ -118,7 +119,7 @@ public interface GenericService<T, V> extends IService<T> {
         } else {
             voList = pageByDTO(s, current, size).getRecords();
         }
-        ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
+        ExcelWriterBuilder builder = ExcelHelper.write(os, clazz);
         if (includeFields != null && includeFields.length > 0) {
             builder.includeColumnFieldNames(Arrays.asList(includeFields));
         }
@@ -126,7 +127,7 @@ public interface GenericService<T, V> extends IService<T> {
     }
 
     default <U> void excelTemplate(OutputStream os, Class<U> clazz) {
-        EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
+        ExcelHelper.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
     }
 
     default <U> boolean importExcel(InputStream is, Class<U> clazz) {

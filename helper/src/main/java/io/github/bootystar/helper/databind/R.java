@@ -8,7 +8,7 @@ import lombok.Data;
  * @author bootystar
  */
 @Data
-public class Result<T> {
+public class R<T> {
     public static final Integer UNAUTHORIZED = -1;
     public static final Integer SUCCESS = 1;
     public static final Integer FAILURE = 2;
@@ -18,67 +18,67 @@ public class Result<T> {
     private String msg;
     private T data;
 
-    public static <T> Result<T> success(String msg, T data) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> success(String msg, T data) {
+        R<T> result = new R<>();
         result.setCode(SUCCESS);
         result.setMsg(msg);
         result.setData(data);
         return result;
     }
 
-    public static <T> Result<T> success(T data) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> success(T data) {
+        R<T> result = new R<>();
         result.setCode(SUCCESS);
         result.setData(data);
         return result;
     }
 
-    public static <T> Result<T> success() {
-        Result<T> result = new Result<>();
+    public static <T> R<T> success() {
+        R<T> result = new R<>();
         result.setCode(SUCCESS);
         return result;
     }
 
-    public static <T> Result<T> failure(String msg) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> failure(String msg) {
+        R<T> result = new R<>();
         result.setCode(FAILURE);
         result.setMsg(msg);
         return result;
     }
 
-    public static <T> Result<T> failure(String msg, T data) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> failure(String msg, T data) {
+        R<T> result = new R<>();
         result.setCode(FAILURE);
         result.setMsg(msg);
         result.setData(data);
         return result;
     }
 
-    public static <T> Result<T> error(String msg) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> error(String msg) {
+        R<T> result = new R<>();
         result.setCode(ERROR);
         result.setMsg(msg);
         return result;
     }
 
-    public static <T> Result<T> error(String msg, T data) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> error(String msg, T data) {
+        R<T> result = new R<>();
         result.setCode(ERROR);
         result.setMsg(msg);
         result.setData(data);
         return result;
     }
 
-    public static <T> Result<T> unauthorized(String msg, T data) {
-        Result<T> result = new Result<>();
+    public static <T> R<T> unauthorized(String msg, T data) {
+        R<T> result = new R<>();
         result.setCode(UNAUTHORIZED);
         result.setMsg(msg);
         result.setData(data);
         return result;
     }
 
-    public static <T> Result<T> unauthorized() {
-        Result<T> result = new Result<>();
+    public static <T> R<T> unauthorized() {
+        R<T> result = new R<>();
         result.setCode(UNAUTHORIZED);
         result.setMsg("权限不足");
         return result;

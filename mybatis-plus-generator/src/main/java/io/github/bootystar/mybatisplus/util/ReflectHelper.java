@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author bootystar
  */
-public abstract class Reflector {
+public abstract class ReflectHelper {
 
     /**
      * 新建实例
@@ -82,6 +82,7 @@ public abstract class Reflector {
      * @author bootystar
      */
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     public static Map<String, Object> objectToMap(Object source) {
         HashMap<String, Object> map = new HashMap<>();
         if (source == null) return map;

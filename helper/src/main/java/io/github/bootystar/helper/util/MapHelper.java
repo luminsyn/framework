@@ -1,4 +1,4 @@
-package io.github.bootystar.helper.base;
+package io.github.bootystar.helper.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,21 @@ import java.util.Arrays;
  * 地图工具
  * @author bootystar
  */
-public abstract class MapTool {
+public abstract class MapHelper {
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Point {
+        /**
+         * 经度
+         */
+        private double longitude;
+        /**
+         * 纬度
+         */
+        private double latitude;
+    }
 
     /**
      * 地球半径,单位 km
@@ -18,17 +32,18 @@ public abstract class MapTool {
     private static final double EARTH_RADIUS = 6378.137;
 
     /**
-     * 获取距离(千米)
+     * 获取距离(米)
      *
-     * @param longitude1 经度1
-     * @param latitude1  纬度1
-     * @param longitude2 经度2
-     * @param latitude2  纬度2
-     * @return double 距离(米)
-     * @author booty
-     * @since 2023/11/03
+     * @param point1 point1
+     * @param point2 point2
+     * @return 距离(米)
+     * @author bootystar
      */
-    public static double getDistance(double longitude1, double latitude1, double longitude2, double latitude2) {
+    public static double getDistance(Point point1, Point point2) {
+        double longitude1 = point1.getLongitude();
+        double latitude1 = point1.getLatitude();
+        double longitude2 = point2.getLongitude();
+        double latitude2 = point2.getLatitude();
         //==========================计算距离=============================
         //用户位置经度
         double userLongitude = Math.toRadians(longitude2);
@@ -48,8 +63,6 @@ public abstract class MapTool {
         // 返回单位: 米
         return s/1000;
     }
-
-
 
 
     /**
@@ -252,22 +265,5 @@ public abstract class MapTool {
         }
         return new Point(maxLng, maxLat);
     }
-
-
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Point {
-        /**
-         * 经度
-         */
-        private double longitude;
-        /**
-         * 纬度
-         */
-        private double latitude;
-    }
-
 
 }

@@ -1,4 +1,4 @@
-package io.github.bootystar.helper.base;
+package io.github.bootystar.helper.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +11,7 @@ import java.util.Date;
  * @author bootystar
  *
  */
-public abstract class DateTool {
+public abstract class DateHelper {
 
     /**
      * 格式化

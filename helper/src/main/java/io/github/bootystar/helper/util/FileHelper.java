@@ -1,4 +1,4 @@
-package io.github.bootystar.helper.base;
+package io.github.bootystar.helper.util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,14 +14,15 @@ import java.nio.channels.FileChannel;
  *
  */
 @Slf4j
-public abstract class FileTool {
+public abstract class FileHelper {
 
-    
+
     /**
      * 删除目标文件夹内及其子文件夹所有指定文件
      *
      * @param source 目标文件夹
      * @param delete 需要删除的文件名
+     * @author bootystar
      */
     public static void deleteTargetFile(File source, String delete) {
         if (source==null || delete==null || delete.equals("")){
@@ -47,6 +48,7 @@ public abstract class FileTool {
      * 删除目标文件及文件夹内所有文件
      *
      * @param target 目标文件
+     * @author bootystar
      */
     public static void deleteFile(File target) {
         if (target==null){
@@ -66,8 +68,10 @@ public abstract class FileTool {
 
     /**
      * 复制文件
-     * @param source    源文件
-     * @param dest      输出文件
+     *
+     * @param source 源文件
+     * @param dest   输出文件
+     * @author bootystar
      */
     private static void copyFile(File source, File dest) {
         if (source==null ||source.isDirectory() || dest==null ||dest.isDirectory()){
@@ -87,8 +91,10 @@ public abstract class FileTool {
 
     /**
      * 复制文件夹
+     *
      * @param sourceDir 源文件夹
      * @param destDir   输出文件夹
+     * @author bootystar
      */
     public static void copyDir(File sourceDir, File destDir) {
         if (sourceDir==null || !sourceDir.isDirectory() ||destDir==null || !destDir.isDirectory() ) {

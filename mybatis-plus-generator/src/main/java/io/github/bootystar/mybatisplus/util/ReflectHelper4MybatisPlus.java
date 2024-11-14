@@ -3,16 +3,15 @@ package io.github.bootystar.mybatisplus.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.easyexcel.EasyExcelConverterTool;
 import io.github.bootystar.mybatisplus.logic.splicing.SplicingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.GenericTypeResolver;
 
 import java.lang.invoke.SerializedLambda;
@@ -26,13 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * mybatis-plus解析工具类
  * @author bootystar
  */
-public abstract class ReflectUtil extends Reflector {
-
-    static {
-        EasyExcelConverterTool.init();
-    }
+public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
 
     @Data
     @AllArgsConstructor
@@ -91,7 +87,7 @@ public abstract class ReflectUtil extends Reflector {
                 }
                 isConstructor = true;
             }
-            return new ReflectUtil.LambdaMethod(
+            return new ReflectHelper4MybatisPlus.LambdaMethod(
                     clazz.getPackage().getName()
                     , clazz.getSimpleName()
                     , isGenericTypeClass

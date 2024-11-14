@@ -8,18 +8,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 @Slf4j
-public class MinioHelper {
+public class Minio {
 
     protected String defaultBucket = "defaultBucket";
 
 
     protected MinioClient minioClient;
 
-    public MinioHelper(MinioClient minioClient) {
+    public Minio(MinioClient minioClient) {
         this.minioClient = minioClient;
         init();
     }
-    public MinioHelper(MinioClient minioClient, String defaultBucket) {
+    public Minio(MinioClient minioClient, String defaultBucket) {
         this.minioClient = minioClient;
         this.defaultBucket = defaultBucket;
         init();

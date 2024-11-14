@@ -3,7 +3,7 @@ package io.github.bootystar.mybatisplus.config.base;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
-import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -197,7 +197,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @author bootystar
      */
     public <R> U returnMethod(SFunction<Object, R> methodReference) {
-        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference, Object.class);
+        ReflectHelper4MybatisPlus.LambdaMethod lambdaMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, Object.class);
         this.config.returnResultClassPackage = lambdaMethod.getClassPackage();
         this.config.returnResultClass = lambdaMethod.getClassSimpleName();
         this.config.returnResultMethodName = lambdaMethod.getMethodNameFullStr();
@@ -215,7 +215,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @author bootystar
      */
     public <O, R> U pageMethod(SFunction<IPage<O>, R> methodReference) {
-        ReflectUtil.LambdaMethod lambdaMethod = ReflectUtil.lambdaMethodInfo(methodReference, IPage.class);
+        ReflectHelper4MybatisPlus.LambdaMethod lambdaMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, IPage.class);
         this.config.pageResultClassPackage = lambdaMethod.getClassPackage();
         this.config.pageResultClass = lambdaMethod.getClassSimpleName();
         this.config.pageResultMethodName = lambdaMethod.getMethodNameFullStr();

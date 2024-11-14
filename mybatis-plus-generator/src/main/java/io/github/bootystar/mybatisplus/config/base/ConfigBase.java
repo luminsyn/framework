@@ -4,7 +4,7 @@ package io.github.bootystar.mybatisplus.config.base;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import io.github.bootystar.mybatisplus.util.ReflectUtil;
+import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public abstract class ConfigBase implements IConfig {
         HashMap<String, Object> data = new HashMap<>();
         // 添加自定义字段
         try {
-            Collection<Field> fields = ReflectUtil.fieldMap(getClass()).values();
+            Collection<Field> fields = ReflectHelper4MybatisPlus.fieldMap(getClass()).values();
             for (Field field : fields) {
                 data.put(field.getName(), field.get(this));
             }
