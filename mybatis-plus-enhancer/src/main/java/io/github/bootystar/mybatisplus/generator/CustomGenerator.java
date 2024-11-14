@@ -23,23 +23,20 @@ public class CustomGenerator extends AbstractGenerator {
     public CustomGenerator(String url, String username, String password) {
         super(url, username, password);
         super.init();
-//        templateConfigBuilder
-//                .service("/common/serviceG.java")
-//                .serviceImpl("/common/serviceImplG.java")
-//                .mapper("/common/mapperG.java")
-//        ;
+        templateConfigBuilder
+                .service("/common/serviceG.java")
+                .serviceImpl("/common/serviceImplG.java")
+                .mapper("/common/mapperG.java")
+        ;
 
 
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(GenericService.class)
                 .superServiceImplClass(CustomServiceImpl.class)
-                .serviceTemplate("/common/serviceG.java")
-                .serviceImplTemplate("/common/serviceImplG.java")
         ;
 
         strategyConfigBuilder.mapperBuilder()
                 .superClass(GenericMapper.class)
-                .mapperTemplate("/common/mapperG.java")
         ;
 
     }

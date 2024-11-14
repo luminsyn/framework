@@ -13,9 +13,7 @@
     <version>1.0.3-SNAPSHOT</version>
 
     <properties>
-        <mybatisplus.version>3.5.8</mybatisplus.version>
-<!--        <spring.boot.version>2.7.18</spring.boot.version>-->
-<!--        <spring.version>5.3.31</spring.version>-->
+        <mybatisplus.version>3.5.3</mybatisplus.version>
     </properties>
 
     <dependencies>
@@ -28,7 +26,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
             <version>${mybatisplus.version}</version>
-<!--            <scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>

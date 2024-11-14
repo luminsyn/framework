@@ -151,17 +151,18 @@ public class BaseGenerator {
      * 生成代码
      */
     public void execute() {
-        log.debug("==========================准备生成文件...==========================");
-        // 初始化配置
-        if (null == config) {
-            config = new ConfigBuilder(packageInfo, dataSource, strategy, template, globalConfig, injection);
-        }
-        EnhanceVelocityTemplateEngine templateEngine = new EnhanceVelocityTemplateEngine(custom);
-        templateEngine.setConfigBuilder(config);
-        // 模板引擎初始化执行文件输出
-        templateEngine.init(config).batchOutput().open();
+        try {
+            log.debug("==========================准备生成文件...==========================");
+            // 初始化配置
+            if (null == config) {
+                config = new ConfigBuilder(packageInfo, dataSource, strategy, template, globalConfig, injection);
+            }
+            EnhanceVelocityTemplateEngine templateEngine = new EnhanceVelocityTemplateEngine(custom);
+            templateEngine.setConfigBuilder(config);
+            // 模板引擎初始化执行文件输出
+            templateEngine.init(config).batchOutput().open();
 
-        log.debug("==========================文件生成完成！！！==========================");
+            log.debug("==========================文件生成完成！！！==========================");
 //        System.out.println(
 //                "                                        )               )            )               )       \n" +
 //                        " (  (     (           (   (       )  ( /(      (     ( /(  (      ( /(            ( /( (     \n" +
@@ -171,18 +172,23 @@ public class BaseGenerator {
 //                        "/ _` | / -_)| ' \\))/ -_) | '_|/ _` ||  _|/ _ \\| '_| | '_ \\| || | | '_ \\/ _ \\/ _ \\|  _|| || | \n" +
 //                        "\\__, | \\___||_||_| \\___| |_|  \\__,_| \\__|\\___/|_|   |_.__/ \\_, | |_.__/\\___/\\___/ \\__| \\_, | \n" +
 //                        "|___/                                                      |__/                        |__/  \n");
-        System.out.println(
-                "___.                  __                   __                \n" +
-                "\\_ |__   ____   _____/  |_ ___.__. _______/  |______ _______ \n" +
-                " | __ \\ /  _ \\ /  _ \\   __<   |  |/  ___/\\   __\\__  \\\\_  __ \\\n" +
-                " | \\_\\ (  <_> |  <_> )  |  \\___  |\\___ \\  |  |  / __ \\|  | \\/\n" +
-                " |___  /\\____/ \\____/|__|  / ____/____  > |__| (____  /__|   \n" +
-                "     \\/                    \\/         \\/            \\/       "
-                );
+            System.out.println(
+                    "___.                  __                   __                \n" +
+                            "\\_ |__   ____   _____/  |_ ___.__. _______/  |______ _______ \n" +
+                            " | __ \\ /  _ \\ /  _ \\   __<   |  |/  ___/\\   __\\__  \\\\_  __ \\\n" +
+                            " | \\_\\ (  <_> |  <_> )  |  \\___  |\\___ \\  |  |  / __ \\|  | \\/\n" +
+                            " |___  /\\____/ \\____/|__|  / ____/____  > |__| (____  /__|   \n" +
+                            "     \\/                    \\/         \\/            \\/       "
+            );
 
-        System.out.println("execute success! check files in following folder:");
-        String path = config.getPathInfo().get(OutputFile.parent);
-        System.out.println(new File(path).getAbsolutePath());
+            System.out.println("execute success! check files in following folder:");
+            String path = config.getPathInfo().get(OutputFile.parent);
+            System.out.println(new File(path).getAbsolutePath());
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("生成失败, 依赖于mybatis-plus-extension 3.5.3, 请排查依赖版本冲突");
+        }
+
     }
 
 }

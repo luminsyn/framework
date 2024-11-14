@@ -33,7 +33,7 @@ public abstract class AbstractGenerator {
 
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
 
-//    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
+    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
 
     public abstract ConfigBaseBuilder<?, ?> customConfigBuilder();
 
@@ -53,17 +53,9 @@ public abstract class AbstractGenerator {
         return strategyConfigBuilder;
     }
 
-//    /**
-//     * 模板配置生成器
-//     *
-//     * @return {@link TemplateConfig.Builder }
-//     * @author bootystar
-//     * @deprecated 自MP3.5.6开始废弃使用, 3.5.6之后版本请使用{@link #strategyConfigBuilder()}
-//     */
-//    @Deprecated
-//    public TemplateConfig.Builder templateConfigBuilder() {
-//        return templateConfigBuilder;
-//    }
+    public TemplateConfig.Builder templateConfigBuilder() {
+        return templateConfigBuilder;
+    }
 
     public InjectionConfig.Builder injectionConfigBuilder() {
         return injectionConfigBuilder;
@@ -72,7 +64,7 @@ public abstract class AbstractGenerator {
     public AbstractGenerator(String url, String username, String password) {
         this.dataSourceConfigBuilder = new DataSourceConfig.Builder(url, username, password)
                 .typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
-                    // 兼容旧版本转换成Integer
+                    // 避免byte转换成Integer
                     if (JdbcType.TINYINT == metaInfo.getJdbcType()) {
                         return DbColumnType.INTEGER;
                     }
@@ -98,34 +90,27 @@ public abstract class AbstractGenerator {
                 .dateType(DateType.TIME_PACK)
                 .outputDir(projectPath + "/src/main/java")
         ;
-//        // 兼容旧版
-//        templateConfigBuilder
-//                .entity("/common/entity.java")
-//                .controller("/common/controller.java")
-//                .service("/common/service.java")
-//                .serviceImpl("/common/serviceImpl.java")
-//                .mapper("/common/mapper.java")
-//                .xml("/common/mapper.xml")
-//        ;
+        templateConfigBuilder
+                .entity("/common/entity.java")
+                .controller("/common/controller.java")
+                .service("/common/service.java")
+                .serviceImpl("/common/serviceImpl.java")
+                .mapper("/common/mapper.java")
+                .xml("/common/mapper.xml")
+        ;
         packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
         ;
         strategyConfigBuilder.entityBuilder()
                 .idType(IdType.ASSIGN_ID)
-                .javaTemplate("/common/entity.java")
         ;
         strategyConfigBuilder.controllerBuilder()
-                .template("/common/controller.java")
                 .enableRestStyle()
         ;
         strategyConfigBuilder.serviceBuilder()
                 .formatServiceFileName("%sService")
-                .serviceTemplate("/common/service.java")
-                .serviceImplTemplate("/common/serviceImpl.java")
         ;
         strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
-                .mapperXmlTemplate("/common/mapper.xml")
-                .mapperTemplate("/common/mapper.java")
         ;
         customConfigBuilder().insertExcludeFields(Arrays.asList("createTime", "updateTime"));
         customConfigBuilder().updateExcludeFields(Arrays.asList("createTime", "updateTime"));
