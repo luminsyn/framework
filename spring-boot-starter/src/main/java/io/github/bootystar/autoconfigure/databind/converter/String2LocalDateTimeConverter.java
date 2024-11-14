@@ -22,21 +22,27 @@ public class String2LocalDateTimeConverter implements Converter<String, LocalDat
         if (source.isEmpty()) {
             return null;
         }
-//        int length = source.length();
-//        source = source.replace('T', ' ');
-//        switch (length) {
-//            case 10:
-//                source += " 00:00:00";
-//                break;
-//            case 13:
-//                source += ":00:00";
-//                break;
-//            case 16:
-//                source += ":00";
-//                break;
-//            default:
-//                break;
-//        }
+        int length = source.length();
+        source = source.replace('T', ' ');
+        switch (length) {
+            case 4:
+                source += "-01-01 00:00:00";
+                break;
+            case 7:
+                source += "-01 00:00:00";
+                break;
+            case 10:
+                source += " 00:00:00";
+                break;
+            case 13:
+                source += ":00:00";
+                break;
+            case 16:
+                source += ":00";
+                break;
+            default:
+                break;
+        }
         return LocalDateTime.parse(source, formatter);
     }
 }

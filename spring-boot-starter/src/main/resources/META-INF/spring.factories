@@ -1,8 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.bootystar.autoconfigure.Config4Minio,\
-  io.github.bootystar.autoconfigure.Config4EasyExcel,\
   io.github.bootystar.autoconfigure.Config4MybatisPlus,\
-  io.github.bootystar.autoconfigure.Config4databind
+  io.github.bootystar.autoconfigure.Config4Databind
 
 
 

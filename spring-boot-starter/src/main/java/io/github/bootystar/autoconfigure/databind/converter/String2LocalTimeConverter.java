@@ -22,16 +22,16 @@ public class String2LocalTimeConverter implements Converter<String, LocalTime> {
         if (source.isEmpty()) {
             return null;
         }
-//        int length = source.length();
-//        switch (length) {
-//            case 2:
-//                source += ":00:00";
-//                break;
-//            case 5:
-//                source += ":00";
-//            default:
-//                break;
-//        }
+        int length = source.length();
+        switch (length) {
+            case 2:
+                source += ":00:00";
+                break;
+            case 5:
+                source += ":00";
+            default:
+                break;
+        }
         return LocalTime.parse(source, formatter);
     }
 

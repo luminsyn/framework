@@ -22,17 +22,17 @@ public class String2LocalDateConverter implements Converter<String, LocalDate> {
         if (source.isEmpty()) {
             return null;
         }
-//        int length = source.length();
-//        switch (length) {
-//            case 4:
-//                source += "-01-01";
-//                break;
-//            case 7:
-//                source += "-01";
-//                break;
-//            default:
-//                break;
-//        }
+        int length = source.length();
+        switch (length) {
+            case 4:
+                source += "-01-01";
+                break;
+            case 7:
+                source += "-01";
+                break;
+            default:
+                break;
+        }
         return LocalDate.parse(source, formatter);
     }
 }
