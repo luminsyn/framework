@@ -201,7 +201,7 @@ public class Splicer extends ConditionR {
             }
 
             String className = entityClass.getName();
-            log.debug("start field check source class {}", className);
+            log.debug("start field check ,  source class {}", className);
             ImmutableSplicer<T> childN = this;
             ConditionR childO = splicer;
             while (childO.getConditions() != null && !childO.getConditions().isEmpty()) {
