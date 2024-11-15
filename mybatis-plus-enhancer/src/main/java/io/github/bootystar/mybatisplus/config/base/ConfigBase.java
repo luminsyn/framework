@@ -210,7 +210,7 @@ public abstract class ConfigBase implements IConfig {
     /**
      * 复杂查询使用post请求
      */
-    protected boolean postOnComplicatedSelect = false;
+    protected boolean postOnComplicatedSelect = true;
 
     /**
      * 请求基础url
@@ -220,7 +220,7 @@ public abstract class ConfigBase implements IConfig {
     /**
      * restful样式
      */
-    protected boolean restful;
+    protected boolean restful = true;
 
 
     // ------------------mapper相关配置----------------

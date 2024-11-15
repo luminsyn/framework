@@ -224,14 +224,14 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     }
 
     /**
-     * 基础增删查改使用restful风格
+     * 禁止基础增删查改使用restful风格
      * (使用GET/POST/PUT/DELETE)
      *
      * @return {@code U }
      * @author bootystar
      */
-    public U enableRestful() {
-        this.config.restful = true;
+    public U disableRestful() {
+        this.config.restful = false;
         return this.builder;
     }
 
@@ -259,12 +259,13 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
     }
 
     /**
-     * 多条件复杂查询使用post请求
+     * 禁止多条件复杂查询使用post请求
+     *
      * @return this
      * @author bootystar
      */
-    public U enablePostOnComplicatedSelect() {
-        this.config.postOnComplicatedSelect = true;
+    public U disablePostOnComplicatedSelect() {
+        this.config.postOnComplicatedSelect = false;
         return this.builder;
     }
 

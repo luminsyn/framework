@@ -1,10 +1,24 @@
-# 生成器类型
-生成器所在包为
+# maven依赖
+```mvn
+<dependency>
+    <groupId>io.github.bootystar</groupId>
+    <artifactId>mybatis-plus-enhancer</artifactId>
+    <version>x.x.x</version>
+</dependency>
+```
+# 代码生成器
+
+代码生成器所在包为
 ```java
 import io.github.bootystar.mybatisplus.generator.*;
 ```
 
-不同类型的生成器及优缺点
+<font style="color:#ED740C;">代码生成器要求`mybatis-plus-extension`依赖高于`3.5.0`</font>
+
+<font style="color:#ED740C;">运行时`mybatis-plus`版本`3.3.0`至`3.5.9`均可使用(其他版本请自行测试)</font>
+
+<font style="color:#ED740C;">注意:`mybatis-plus 3.5.0`以上版本部分依赖不支持JDK8, 实际使用时请核对JDK版本与依赖版本</font>
+
 
 ## <font style="background-color:rgba(255, 255, 255, 0);">SimpleGenerator</font>
 + <font style="color:#ED740C;">兼容性好</font>
@@ -63,8 +77,8 @@ generator.customConfigBuilder()
 //        .enableOrigins() // 开启跨域
 //        .pageMethod(P::new) // 分页的封装方法
 //        .enableJakartaApi() // 开启Jakarta API(替换javax包, springboot3及之后版本默认使用Jakarta包)
-//        .enableRestful() // 开启restful风格
-        .enablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
+//        .disableRestful() // 禁止restful风格
+//        .disablePostOnComplicatedSelect() // 禁止复杂查询使用post请求
 ;
 
 
@@ -124,10 +138,10 @@ generator.customConfigBuilder()
         .returnMethod(R::new) // 返回值的封装方法
         .pageMethod(P::new) // 分页的封装方法
         .enableJakartaApi() // 开启Jakarta API(替换javax包, springboot3及之后版本默认使用Jakarta包)
-        .enableRestful() // 开启restful风格
+        .disableRestful() // 开启restful风格
         .disableRequestBody() // 禁用requestBody接收参数
         .disableValidated() // 禁用参数校验
-        .enablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
+        .disablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
 
         // mapper设置
         .enableResultMapForVO() // 开启VO的结果集封装
@@ -179,10 +193,10 @@ generator.customConfigBuilder()
         .returnMethod(R::new) // 返回值的封装方法
         .pageMethod(P::new) // 分页的封装方法
         .enableJakartaApi() // 开启Jakarta API(替换javax包, springboot3及之后版本默认使用Jakarta包)
-        .enableRestful() // 开启restful风格
+        .disableRestful() // 开启restful风格
         .disableRequestBody() // 禁用requestBody接收参数
         .disableValidated() // 禁用参数校验
-        .enablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
+        .disablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
 
         // mapper设置
         .enableResultMapForVO() // 开启VO的结果集封装
@@ -232,10 +246,8 @@ generator.execute("user");
 ## 继承的父类<font style="background-color:rgba(255, 255, 255, 0);">GenericService的</font>逻辑
 ![画板](https://cdn.nlark.com/yuque/0/2024/jpeg/12797324/1731468926109-e985a5a5-ec08-4b10-b84b-db7983736e0b.jpeg)
 
-## <font style="background-color:rgba(255, 255, 255, 0);">SplicingGenerator</font>
+### Splicer反注入自定义参数
 使用`io.github.bootystar.mybatisplus.logic.splicing.dto.Splicer`作为入参
-
-### Splicer功能
 + 调用`ImmutableSplicer()`会自动根据传入实体类反注入
 + 调用`requiredConditions()`会自动添加优先级更高的条件, 添加后的条件必定生效
 + 调用`addConditions()`会添加条件集
