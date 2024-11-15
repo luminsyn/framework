@@ -1,7 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   io.github.bootystar.autoconfigure.Config4MybatisPlus,\
-  io.github.bootystar.autoconfigure.Config4Databind
-
+  io.github.bootystar.autoconfigure.Config4Jackson, \
+  io.github.bootystar.autoconfigure.Config4Converter
 
 
 

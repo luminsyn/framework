@@ -1,5 +1,6 @@
 package io.github.bootystar.autoconfigure;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -8,16 +9,14 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import io.github.bootystar.autoconfigure.databind.converter.String2LocalDateConverter;
-import io.github.bootystar.autoconfigure.databind.converter.String2LocalDateTimeConverter;
-import io.github.bootystar.autoconfigure.databind.converter.String2LocalTimeConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -29,9 +28,8 @@ import java.util.TimeZone;
 
 
 @Slf4j
-@Configuration(proxyBeanMethods = false)
-@ConditionalOnClass(Jackson2ObjectMapperBuilderCustomizer.class)
-public class Config4Databind implements Ordered {
+@ConditionalOnClass({ObjectMapper.class, Jackson2ObjectMapperBuilderCustomizer.class})
+public class Config4Jackson implements Ordered {
 
     private static final String DEFAULT_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
@@ -39,26 +37,11 @@ public class Config4Databind implements Ordered {
 
     private static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
-    @Bean
-    public String2LocalDateTimeConverter string2LocalDateTimeConverter() {
-        return new String2LocalDateTimeConverter(DEFAULT_DATETIME_PATTERN);
-    }
 
     @Bean
-    public String2LocalDateConverter string2LocalDateConverter() {
-        return new String2LocalDateConverter(DEFAULT_DATE_FORMAT);
-    }
-
-    @Bean
-    public String2LocalTimeConverter string2LocalTimeConverter() {
-        return new String2LocalTimeConverter(DEFAULT_TIME_FORMAT);
-    }
-
-
-
-    @Bean
+    @ConditionalOnMissingBean(Jackson2ObjectMapperBuilderCustomizer.class)
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
-        log.debug("MappingJackson2HttpMessageConverter Configured");
+        log.debug("Jackson2ObjectMapperBuilderCustomizer Configured");
         return builder -> {
             builder
                     // 序列化时，对象为 null，是否抛异常
@@ -99,7 +82,6 @@ public class Config4Databind implements Ordered {
     public int getOrder() {
         return -1;
     }
-
 
 
 }

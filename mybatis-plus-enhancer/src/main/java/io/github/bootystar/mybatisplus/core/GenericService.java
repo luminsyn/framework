@@ -93,16 +93,15 @@ public interface GenericService<T, V> extends IService<T> {
         if (current == null || current < 1) current = 1L;
         if (size == null) size = 10L;
         IPage<V> page = new Page<>(current, size);
-        doSelect(s, page);
+        List<V> vs = doSelect(s, page);
+        page.setRecords(vs);
         return page;
     }
 
-    @SuppressWarnings("deprecation")
     default <S, U> IPage<U> pageByDTO(S s, Long current, Long size, Class<U> clazz) {
         IPage<V> vp = pageByDTO(s, current, size);
         List<U> us = vp.getRecords().stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList());
         IPage<U> up = new Page<>(vp.getCurrent(), vp.getSize(), vp.getTotal());
-        // 兼容旧版
         up.setPages(vp.getPages());
         up.setRecords(us);
         return up;
