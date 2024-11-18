@@ -1,9 +1,9 @@
 package io.github.bootystar.mybatisplus.generator;
 
+import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.core.GenericMapper;
 import io.github.bootystar.mybatisplus.core.GenericService;
 import io.github.bootystar.mybatisplus.core.impl.SplicingServiceImpl;
-import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
 
 /**
@@ -11,25 +11,36 @@ import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
  *
  * @author bootystar
  */
-public class SplicingGenerator extends AbstractGenerator {
-
-    protected SplicingConfig.Builder customConfigBuilder = new SplicingConfig.Builder();
-
-    public SplicingConfig.Builder customConfigBuilder() {
-        return customConfigBuilder;
-    }
+public class SplicingGenerator extends AbstractGenerator<SplicingConfig.Builder> {
 
     public SplicingGenerator(String url, String username, String password) {
-        super(url, username, password);
-        super.init();
+        super(url, username, password,new SplicingConfig.Builder());
+    }
 
+    @Override
+    protected void config4oldTemplate() {
         templateConfigBuilder
                 .service("/common/serviceG.java")
                 .serviceImpl("/common/serviceImplG.java")
                 .mapper("/common/mapperG.java")
                 .xml("/splicing/mapper.xml")
         ;
+    }
 
+//    @Override
+//    protected void config4newTemplate() {
+//        strategyConfigBuilder.serviceBuilder()
+//                .serviceTemplate("/common/serviceG.java")
+//                .serviceImplTemplate("/common/serviceImplG.java")
+//        ;
+//        strategyConfigBuilder.mapperBuilder()
+//                .mapperTemplate("/common/mapperG.java")
+//                .mapperXmlTemplate("/splicing/mapper.xml")
+//        ;
+//    }
+
+    @Override
+    protected void config4child() {
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(GenericService.class)
                 .superServiceImplClass(SplicingServiceImpl.class)
@@ -38,7 +49,5 @@ public class SplicingGenerator extends AbstractGenerator {
         strategyConfigBuilder.mapperBuilder()
                 .superClass(GenericMapper.class)
         ;
-
     }
-
 }

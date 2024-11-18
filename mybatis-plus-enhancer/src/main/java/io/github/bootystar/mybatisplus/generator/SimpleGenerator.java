@@ -8,18 +8,25 @@ import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
  *
  * @author bootystar
  */
-public class SimpleGenerator extends AbstractGenerator {
-
-    protected SimpleConfig.Builder customConfigBuilder = new SimpleConfig.Builder();
-
-    public SimpleConfig.Builder customConfigBuilder() {
-        return customConfigBuilder;
-    }
+public class SimpleGenerator extends AbstractGenerator<SimpleConfig.Builder> {
 
     public SimpleGenerator(String url, String username, String password) {
-        super(url, username, password);
-        super.init();
+        super(url, username, password,new SimpleConfig.Builder());
     }
 
 
+    @Override
+    protected void config4child() {
+
+    }
+
+    @Override
+    protected void config4oldTemplate() {
+
+    }
+
+//    @Override
+//    protected void config4newTemplate() {
+//
+//    }
 }

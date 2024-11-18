@@ -33,6 +33,14 @@
             <version>${mybatisplus.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!--mybatis-plus 3.5.9移除了IService接口, 单独集成到mybatis-plus-spring-->
+<!--        <dependency>-->
+<!--            <groupId>com.baomidou</groupId>-->
+<!--            <artifactId>mybatis-plus-spring</artifactId>-->
+<!--            <version>${mybatisplus.version}</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>

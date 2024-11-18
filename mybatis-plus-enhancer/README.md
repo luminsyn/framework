@@ -32,7 +32,7 @@
 import io.github.bootystar.mybatisplus.generator.*;
 ```
 
-<font style="color:#ED740C;">代码生成器要求`mybatis-plus-extension`依赖高于`3.5.0`</font>
+<font style="color:#ED740C;">代码生成器要求`mybatis-plus-extension`依赖高于`3.5.0`,`mybatis-plus-generator`依赖高于`3.5.3`</font>
 
 <font style="color:#ED740C;">运行时`mybatis-plus`版本`3.3.0`至`3.5.9`均可使用(其他版本请自行测试)</font>
 
