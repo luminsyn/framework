@@ -1,4 +1,23 @@
 # maven依赖
+仓库地址(按需配置,正式版本会同步到中央仓库)
+```mvn
+<repositories>
+    <repository>
+        <id>snapshot</id>
+        <name>snapshot</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>release</id>
+        <name>release</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+    </repository>
+</repositories>
+```
+依赖
 ```mvn
 <dependency>
     <groupId>io.github.bootystar</groupId>
@@ -17,7 +36,7 @@ import io.github.bootystar.mybatisplus.generator.*;
 
 <font style="color:#ED740C;">运行时`mybatis-plus`版本`3.3.0`至`3.5.9`均可使用(其他版本请自行测试)</font>
 
-<font style="color:#ED740C;">注意:`mybatis-plus 3.5.0`以上版本部分依赖不支持JDK8, 实际使用时请核对JDK版本与依赖版本</font>
+<font style="color:#ED740C;">注意:`mybatis-plus 3.5.0`以上部分版本的间接依赖不支持JDK8, 实际使用时请核对JDK版本与依赖版本, 详情参考MP官网</font>
 
 
 ## <font style="background-color:rgba(255, 255, 255, 0);">SimpleGenerator</font>
