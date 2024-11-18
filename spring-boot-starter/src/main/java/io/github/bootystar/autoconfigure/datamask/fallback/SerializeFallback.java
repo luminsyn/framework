@@ -10,28 +10,20 @@ public class SerializeFallback implements Function<Object,String> {
 
     @Override
     public String apply(Object o) {
-        return String.valueOf(o);
-    }
-
-    private SerializeFallback() {
-    }
-
-    public static SerializeFallback getInstance() {
-        return SingletonFallback.INSTANCE.getInstance();
-    }
-
-    private enum SingletonFallback {
-        INSTANCE;
-
-        private final SerializeFallback fallback;
-
-        SingletonFallback() {
-            fallback = new SerializeFallback();
+        if (o==null) return null;
+        String source = String.valueOf(o);
+        if (source == null || source.isEmpty()) return source;
+        if (source.length() == 1) return "*";
+        if (source.length() == 2) return source.charAt(0) + "*";
+        int index = source.length() / 3;
+        int last = source.length() % 3;
+        StringBuilder repeatedPart = new StringBuilder();
+        for (int i = 0; i < index + last; i++) {
+            repeatedPart.append("*");
         }
-
-        public SerializeFallback getInstance() {
-            return fallback;
-        }
+        return source.substring(0, index) + repeatedPart + source.substring(source.length() - index);
     }
+
+
 
 }
