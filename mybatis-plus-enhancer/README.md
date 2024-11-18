@@ -1,6 +1,6 @@
 # maven依赖
 仓库地址(按需配置,正式版本会同步到中央仓库)
-```mvn
+```xml
 <repositories>
     <repository>
         <id>snapshot</id>

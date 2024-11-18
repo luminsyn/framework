@@ -1,5 +1,23 @@
 # 封装的框架及工具
 <font style="color:#ED740C;">详细文档见各模块的下的`README`文档</font>
+maven仓库地址
+```xml
+<repositories>
+    <repository>
+        <id>snapshot</id>
+        <name>snapshot</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>release</id>
+        <name>release</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+    </repository>
+</repositories>
+```
 ## helper
 工具类及简化操作的实例化封装
 ## mybatis-plus-enhancer
