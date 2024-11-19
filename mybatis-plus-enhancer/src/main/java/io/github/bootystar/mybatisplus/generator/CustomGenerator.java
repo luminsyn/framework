@@ -19,27 +19,15 @@ public class CustomGenerator extends AbstractGenerator<CustomConfig.Builder> {
     }
 
     @Override
-    protected void config4oldTemplate() {
-        templateConfigBuilder
-                .service("/common/serviceG.java")
-                .serviceImpl("/common/serviceImplG.java")
-                .mapper("/common/mapperG.java")
-        ;
-    }
-
-//    @Override
-//    protected void config4newTemplate() {
-//        strategyConfigBuilder.serviceBuilder()
-//                .serviceTemplate("/common/serviceG.java")
-//                .serviceImplTemplate("/common/serviceImplG.java")
-//        ;
-//        strategyConfigBuilder.mapperBuilder()
-//                .mapperTemplate("/common/mapperG.java")
-//        ;
-//    }
-
-    @Override
     protected void config4child() {
+        strategyConfigBuilder.serviceBuilder()
+                .serviceTemplate("/common/serviceG.java")
+                .serviceImplTemplate("/common/serviceImplG.java")
+        ;
+        strategyConfigBuilder.mapperBuilder()
+                .mapperTemplate("/common/mapperG.java")
+        ;
+
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(GenericService.class)
                 .superServiceImplClass(CustomServiceImpl.class)
@@ -49,4 +37,5 @@ public class CustomGenerator extends AbstractGenerator<CustomConfig.Builder> {
                 .superClass(GenericMapper.class)
         ;
     }
+
 }

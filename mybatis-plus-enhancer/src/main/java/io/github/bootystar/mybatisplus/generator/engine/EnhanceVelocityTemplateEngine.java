@@ -22,13 +22,7 @@ import java.util.Optional;
  */
 public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
-    private IConfig customConfig;
-
-
-    public EnhanceVelocityTemplateEngine() {
-
-    }
-
+    private final IConfig customConfig;
 
     public EnhanceVelocityTemplateEngine(IConfig customConfig) {
         this.customConfig = customConfig;
@@ -38,7 +32,7 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
     protected void outputCustomFile(List<CustomFile> customFiles, TableInfo tableInfo, Map<String, Object> objectMap) {
         String entityName = tableInfo.getEntityName();
         String parentPath = getPathInfo(OutputFile.parent);
-        Boolean fileOverride = customConfig.getFileOverride();
+        boolean fileOverride = customConfig.getFileOverride();
         customFiles.forEach(file -> {
             String filePath = StringUtils.isNotBlank(file.getFilePath()) ? file.getFilePath() : parentPath;
             if (StringUtils.isNotBlank(file.getPackageName())) {
@@ -101,70 +95,70 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
     }
 
 
-    protected void outputEntity(TableInfo tableInfo, Map<String, Object> objectMap) {
-        String entityName = tableInfo.getEntityName();
-        String entityPath = this.getPathInfo(OutputFile.entity);
-        if (StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(entityPath)) {
-            this.getTemplateFilePath((template) -> {
-                return template.getEntity(this.getConfigBuilder().getGlobalConfig().isKotlin());
-            }).ifPresent((entity) -> {
-                String entityFile = String.format(entityPath + File.separator + "%s" + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(entityFile), objectMap, entity, this.getConfigBuilder().getStrategyConfig().entity().isFileOverride());
-            });
-        }
-
-    }
-
-    protected void outputMapper(TableInfo tableInfo, Map<String, Object> objectMap) {
-        String entityName = tableInfo.getEntityName();
-        String mapperPath = this.getPathInfo(OutputFile.mapper);
-        if (StringUtils.isNotBlank(tableInfo.getMapperName()) && StringUtils.isNotBlank(mapperPath)) {
-            this.getTemplateFilePath(TemplateConfig::getMapper).ifPresent((mapper) -> {
-                String mapperFile = String.format(mapperPath + File.separator + tableInfo.getMapperName() + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(mapperFile), objectMap, mapper, this.getConfigBuilder().getStrategyConfig().mapper().isFileOverride());
-            });
-        }
-
-        String xmlPath = this.getPathInfo(OutputFile.xml);
-        if (StringUtils.isNotBlank(tableInfo.getXmlName()) && StringUtils.isNotBlank(xmlPath)) {
-            this.getTemplateFilePath(TemplateConfig::getXml).ifPresent((xml) -> {
-                String xmlFile = String.format(xmlPath + File.separator + tableInfo.getXmlName() + ".xml", entityName);
-                this.outputFile(new File(xmlFile), objectMap, xml, this.getConfigBuilder().getStrategyConfig().mapper().isFileOverride());
-            });
-        }
-
-    }
-
-    protected void outputService(TableInfo tableInfo, Map<String, Object> objectMap) {
-        String entityName = tableInfo.getEntityName();
-        String servicePath = this.getPathInfo(OutputFile.service);
-        if (StringUtils.isNotBlank(tableInfo.getServiceName()) && StringUtils.isNotBlank(servicePath)) {
-            this.getTemplateFilePath(TemplateConfig::getService).ifPresent((service) -> {
-                String serviceFile = String.format(servicePath + File.separator + tableInfo.getServiceName() + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(serviceFile), objectMap, service, this.getConfigBuilder().getStrategyConfig().service().isFileOverride());
-            });
-        }
-
-        String serviceImplPath = this.getPathInfo(OutputFile.serviceImpl);
-        if (StringUtils.isNotBlank(tableInfo.getServiceImplName()) && StringUtils.isNotBlank(serviceImplPath)) {
-            this.getTemplateFilePath(TemplateConfig::getServiceImpl).ifPresent((serviceImpl) -> {
-                String implFile = String.format(serviceImplPath + File.separator + tableInfo.getServiceImplName() + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(implFile), objectMap, serviceImpl, this.getConfigBuilder().getStrategyConfig().service().isFileOverride());
-            });
-        }
-
-    }
-
-    protected void outputController(TableInfo tableInfo, Map<String, Object> objectMap) {
-        String controllerPath = this.getPathInfo(OutputFile.controller);
-        if (StringUtils.isNotBlank(tableInfo.getControllerName()) && StringUtils.isNotBlank(controllerPath)) {
-            this.getTemplateFilePath(TemplateConfig::getController).ifPresent((controller) -> {
-                String entityName = tableInfo.getEntityName();
-                String controllerFile = String.format(controllerPath + File.separator + tableInfo.getControllerName() + this.suffixJavaOrKt(), entityName);
-                this.outputFile(new File(controllerFile), objectMap, controller, this.getConfigBuilder().getStrategyConfig().controller().isFileOverride());
-            });
-        }
-    }
+//    protected void outputEntity(TableInfo tableInfo, Map<String, Object> objectMap) {
+//        String entityName = tableInfo.getEntityName();
+//        String entityPath = this.getPathInfo(OutputFile.entity);
+//        if (StringUtils.isNotBlank(entityName) && StringUtils.isNotBlank(entityPath)) {
+//            this.getTemplateFilePath((template) -> {
+//                return template.getEntity(this.getConfigBuilder().getGlobalConfig().isKotlin());
+//            }).ifPresent((entity) -> {
+//                String entityFile = String.format(entityPath + File.separator + "%s" + this.suffixJavaOrKt(), entityName);
+//                this.outputFile(new File(entityFile), objectMap, entity, this.getConfigBuilder().getStrategyConfig().entity().isFileOverride());
+//            });
+//        }
+//
+//    }
+//
+//    protected void outputMapper(TableInfo tableInfo, Map<String, Object> objectMap) {
+//        String entityName = tableInfo.getEntityName();
+//        String mapperPath = this.getPathInfo(OutputFile.mapper);
+//        if (StringUtils.isNotBlank(tableInfo.getMapperName()) && StringUtils.isNotBlank(mapperPath)) {
+//            this.getTemplateFilePath(TemplateConfig::getMapper).ifPresent((mapper) -> {
+//                String mapperFile = String.format(mapperPath + File.separator + tableInfo.getMapperName() + this.suffixJavaOrKt(), entityName);
+//                this.outputFile(new File(mapperFile), objectMap, mapper, this.getConfigBuilder().getStrategyConfig().mapper().isFileOverride());
+//            });
+//        }
+//
+//        String xmlPath = this.getPathInfo(OutputFile.xml);
+//        if (StringUtils.isNotBlank(tableInfo.getXmlName()) && StringUtils.isNotBlank(xmlPath)) {
+//            this.getTemplateFilePath(TemplateConfig::getXml).ifPresent((xml) -> {
+//                String xmlFile = String.format(xmlPath + File.separator + tableInfo.getXmlName() + ".xml", entityName);
+//                this.outputFile(new File(xmlFile), objectMap, xml, this.getConfigBuilder().getStrategyConfig().mapper().isFileOverride());
+//            });
+//        }
+//
+//    }
+//
+//    protected void outputService(TableInfo tableInfo, Map<String, Object> objectMap) {
+//        String entityName = tableInfo.getEntityName();
+//        String servicePath = this.getPathInfo(OutputFile.service);
+//        if (StringUtils.isNotBlank(tableInfo.getServiceName()) && StringUtils.isNotBlank(servicePath)) {
+//            this.getTemplateFilePath(TemplateConfig::getService).ifPresent((service) -> {
+//                String serviceFile = String.format(servicePath + File.separator + tableInfo.getServiceName() + this.suffixJavaOrKt(), entityName);
+//                this.outputFile(new File(serviceFile), objectMap, service, this.getConfigBuilder().getStrategyConfig().service().isFileOverride());
+//            });
+//        }
+//
+//        String serviceImplPath = this.getPathInfo(OutputFile.serviceImpl);
+//        if (StringUtils.isNotBlank(tableInfo.getServiceImplName()) && StringUtils.isNotBlank(serviceImplPath)) {
+//            this.getTemplateFilePath(TemplateConfig::getServiceImpl).ifPresent((serviceImpl) -> {
+//                String implFile = String.format(serviceImplPath + File.separator + tableInfo.getServiceImplName() + this.suffixJavaOrKt(), entityName);
+//                this.outputFile(new File(implFile), objectMap, serviceImpl, this.getConfigBuilder().getStrategyConfig().service().isFileOverride());
+//            });
+//        }
+//
+//    }
+//
+//    protected void outputController(TableInfo tableInfo, Map<String, Object> objectMap) {
+//        String controllerPath = this.getPathInfo(OutputFile.controller);
+//        if (StringUtils.isNotBlank(tableInfo.getControllerName()) && StringUtils.isNotBlank(controllerPath)) {
+//            this.getTemplateFilePath(TemplateConfig::getController).ifPresent((controller) -> {
+//                String entityName = tableInfo.getEntityName();
+//                String controllerFile = String.format(controllerPath + File.separator + tableInfo.getControllerName() + this.suffixJavaOrKt(), entityName);
+//                this.outputFile(new File(controllerFile), objectMap, controller, this.getConfigBuilder().getStrategyConfig().controller().isFileOverride());
+//            });
+//        }
+//    }
 
 
 //   3.5.6 OR Above

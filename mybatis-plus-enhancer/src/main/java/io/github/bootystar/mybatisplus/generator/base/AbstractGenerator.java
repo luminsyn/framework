@@ -35,7 +35,7 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
 
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
 
-    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
+//    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
 
     protected T customConfigBuilder;
 
@@ -59,9 +59,9 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
         return strategyConfigBuilder;
     }
 
-    public TemplateConfig.Builder templateConfigBuilder() {
-        return templateConfigBuilder;
-    }
+//    public TemplateConfig.Builder templateConfigBuilder() {
+//        return templateConfigBuilder;
+//    }
 
     public InjectionConfig.Builder injectionConfigBuilder() {
         return injectionConfigBuilder;
@@ -118,55 +118,36 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
         customConfigBuilder().orderColumn("id", true);
 
         // 模板配置
-        config4template();
+
+//        templateConfigBuilder
+//                .entity("/common/entity.java")
+//                .controller("/common/controller.java")
+//                .service("/common/service.java")
+//                .serviceImpl("/common/serviceImpl.java")
+//                .mapper("/common/mapper.java")
+//                .xml("/common/mapper.xml")
+//        ;
+
+        strategyConfigBuilder.entityBuilder()
+                .javaTemplate("/common/entity.java")
+        ;
+        strategyConfigBuilder.controllerBuilder()
+                .template("/common/controller.java")
+        ;
+        strategyConfigBuilder.serviceBuilder()
+                .serviceTemplate("/common/service.java")
+                .serviceImplTemplate("/common/serviceImpl.java")
+        ;
+        strategyConfigBuilder.mapperBuilder()
+                .mapperTemplate("/common/mapper.java")
+                .mapperXmlTemplate("/common/mapper.xml")
+        ;
 
         // 子类配置
         config4child();
     }
 
-    private void config4template() {
-        try {
-            templateConfigBuilder
-                    .entity("/common/entity.java")
-                    .controller("/common/controller.java")
-                    .service("/common/service.java")
-                    .serviceImpl("/common/serviceImpl.java")
-                    .mapper("/common/mapper.java")
-                    .xml("/common/mapper.xml")
-            ;
-            config4oldTemplate();
-        } catch (Exception e) {
-            // ignore
-            log.warn("com.baomidou.mybatisplus.generator.config.TemplateConfig is deprecated after 3.5.6 , if templates didn't work , please adapt the corresponding version");
-        }
-
-//        try {
-//            strategyConfigBuilder.entityBuilder()
-//                    .javaTemplate("/common/entity.java")
-//            ;
-//            strategyConfigBuilder.controllerBuilder()
-//                    .template("/common/controller.java")
-//            ;
-//            strategyConfigBuilder.serviceBuilder()
-//                    .serviceTemplate("/common/service.java")
-//                    .serviceImplTemplate("/common/serviceImpl.java")
-//            ;
-//            strategyConfigBuilder.mapperBuilder()
-//                    .mapperTemplate("/common/mapper.java")
-//                    .mapperXmlTemplate("/common/mapper.xml")
-//            ;
-//            config4newTemplate();
-//        } catch (Exception e) {
-//            // ignore
-//            log.warn("mybatis-plus version may lower than 3.5.6. if templates didn't work, please adapt the corresponding version");
-//        }
-    }
-
     protected abstract void config4child();
-
-    protected abstract void config4oldTemplate();
-
-//    protected abstract void config4newTemplate();
 
 
     public void execute(String... tableNames) {
@@ -183,7 +164,7 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
 
         StrategyConfig strategyConfig = strategyConfigBuilder.build();
 
-        TemplateConfig templateConfig = templateConfigBuilder.build();
+//        TemplateConfig templateConfig = templateConfigBuilder.build();
 
         InjectionConfig injectionConfig = injectionConfigBuilder.build();
 
@@ -237,8 +218,8 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
                         .strategy(strategyConfig)
                         // 注入配置
                         .injection(injectionConfig)
-                        // 模板配置
-                        .template(templateConfig)
+//                        // 模板配置
+//                        .template(templateConfig)
                         // 自定义配置
                         .custom(customConfig);
 

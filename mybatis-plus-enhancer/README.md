@@ -1,5 +1,6 @@
 # maven依赖
-仓库地址(按需配置,正式版本会同步到中央仓库)
+## 配置快照仓库地址
+按需配置,正式版本会同步到中央仓库
 ```xml
 <repositories>
     <repository>
@@ -17,27 +18,51 @@
     </repository>
 </repositories>
 ```
-依赖
+## 引入maven依赖
+
+<font style="color:#ED740C;">注:引入mybatis-plus相关依赖时无需指定版本</font>
+
 ```mvn
+<!--mybatis-plus-enhancer-->
 <dependency>
     <groupId>io.github.bootystar</groupId>
     <artifactId>mybatis-plus-enhancer</artifactId>
-    <version>x.x.x</version>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+
+<!-- spring boot3 引入可选模块 -->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+</dependency>
+
+<!-- spring boot2 引入可选模块 -->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+</dependency>
+
+
+<!-- jdk 11+ 引入可选模块 -->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-jsqlparser</artifactId>
+</dependency>
+
+<!-- jdk 8+ 引入可选模块 -->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
 </dependency>
 ```
+
+
 # 代码生成器
 
 代码生成器所在包为
 ```java
 import io.github.bootystar.mybatisplus.generator.*;
 ```
-
-<font style="color:#ED740C;">代码生成器要求`mybatis-plus-extension`依赖高于`3.5.0`,`mybatis-plus-generator`依赖高于`3.5.3`</font>
-
-<font style="color:#ED740C;">运行时`mybatis-plus`版本`3.3.0`至`3.5.9`均可使用(其他版本请自行测试)</font>
-
-<font style="color:#ED740C;">注意:`mybatis-plus 3.5.0`以上部分版本的间接依赖不支持JDK8, 实际使用时请核对JDK版本与依赖版本, 详情参考MP官网</font>
-
 
 ## <font style="background-color:rgba(255, 255, 255, 0);">SimpleGenerator</font>
 + <font style="color:#ED740C;">兼容性好</font>
@@ -90,6 +115,8 @@ String password ="root";
 //        CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
 SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
 
+// generator.mapperXmlResource("static/mapper"); // xml文件在resource目录下的路径
+
 generator.customConfigBuilder()
 //        .baseUrl("/api") // controller请求前缀
 //        .returnMethod(R::new) // 返回值的封装方法
@@ -103,14 +130,12 @@ generator.customConfigBuilder()
 
 // 以下为mybatis-plus generator官方提供配置,默认无需配置,若需配置请参考官方文档
 generator.globalConfigBuilder() // 全局配置
-//                .author("bootystar") // 默认作者名称, 建议修改
+//                .author("bootystar") // 作者名称
 //                .outputDir(System.getProperty("user.dir") + "/src/main/java") // 默认生成到项目目录下
 ;
 
 generator.packageConfigBuilder() //包设置
                 .parent("io.github.bootystar") // 父包名, 建议修改
-//                .xml("mapper") //xml文件所在包, 默认和mapper同包
-//                .pathInfo(new HashMap<>()) // 定义指定文件所在的指定目录, 若mapper文件在Resource下, 建议修改
 ;
 
 generator.strategyConfigBuilder().entityBuilder() //实体类设置
@@ -189,6 +214,8 @@ String password ="root";
 //        CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
 SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
 
+// generator.mapperXmlResource("static/mapper"); // xml文件在resource目录下的路径
+
 generator.customConfigBuilder()
         // 通用设置
         .DTOPackage("dto") // DTO包名, 默认dto
@@ -236,8 +263,6 @@ generator.globalConfigBuilder() // 全局配置
 
 generator.packageConfigBuilder() //包设置
 //                .parent("io.github.bootystar") // 父包名
-//                .xml("mapper") //xml文件所在包, 默认和mapper同包
-//                .pathInfo(new HashMap<>()) // 定义指定文件所在的指定目录, 若mapper文件在Resource下, 建议修改
 ;
 
 generator.strategyConfigBuilder().entityBuilder() //实体类设置

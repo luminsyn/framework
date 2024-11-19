@@ -14,19 +14,10 @@ public class SimpleGenerator extends AbstractGenerator<SimpleConfig.Builder> {
         super(url, username, password,new SimpleConfig.Builder());
     }
 
-
     @Override
     protected void config4child() {
 
     }
 
-    @Override
-    protected void config4oldTemplate() {
 
-    }
-
-//    @Override
-//    protected void config4newTemplate() {
-//
-//    }
 }
