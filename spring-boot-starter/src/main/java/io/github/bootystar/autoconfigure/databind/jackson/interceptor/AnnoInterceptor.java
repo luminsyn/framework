@@ -15,7 +15,7 @@ import java.util.function.Function;
 /**
  * @author bootystar
  */
-public class DataMaskInterceptor extends NopAnnotationIntrospector {
+public class AnnoInterceptor extends NopAnnotationIntrospector {
     private static final ConcurrentHashMap<Class<?>, JacksonSerializer<?>> SERIALIZER_CACHE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Class<?>, JacksonDeserializer<?>> DESERIALIZER_CACHE = new ConcurrentHashMap<>();
 

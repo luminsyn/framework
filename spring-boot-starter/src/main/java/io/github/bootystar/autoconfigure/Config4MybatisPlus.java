@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import io.github.bootystar.autoconfigure.mybatisplus.DbInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -25,8 +26,10 @@ public class Config4MybatisPlus {
     @ConditionalOnMissingBean(MybatisPlusInterceptor.class)
     @ConditionalOnBean(MybatisPlusAutoConfiguration.class)
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new DbInterceptor());
         log.debug("MybatisPlusInterceptor Configured");
-        return new MybatisPlusInterceptor();
+        return interceptor;
     }
 
     @ConditionalOnClass(PaginationInnerInterceptor.class)
