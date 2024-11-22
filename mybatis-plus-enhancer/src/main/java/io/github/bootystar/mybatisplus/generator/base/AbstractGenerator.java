@@ -82,15 +82,6 @@ public abstract class AbstractGenerator<B extends ConfigBaseBuilder<?, B>> {
         init();
     }
 
-    public AbstractGenerator<B> mapperXmlResource(String mapperXmlResource) {
-        String projectPath = System.getProperty("user.dir");
-        if (mapperXmlResource.startsWith("/")){
-            mapperXmlResource = mapperXmlResource.substring(1);
-        }
-        packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/" + mapperXmlResource));
-        return this;
-    }
-
     private void init() {
         String projectPath = System.getProperty("user.dir");
         String username = System.getProperty("user.name");
@@ -149,53 +140,12 @@ public abstract class AbstractGenerator<B extends ConfigBaseBuilder<?, B>> {
         config4child();
     }
 
-    protected abstract void config4child();
-
-
     /**
-     * 初始化一些常用配置项
-     * <p>
-     * 自定义:新增及修改排除createTime、updateTime属性, 排序默认使用create_time,id倒排
-     * 实体类:雪花算法id,逻辑删除字段deleted;禁用SerialVersionUID,启用lombok
-     * mapper: 无操作
-     * service: 去掉IService后缀的I
-     * controller: 启用restController
+     * 子类配置
      *
-     * @return {@link AbstractGenerator }<{@link B }>
      * @author bootystar
      */
-    public AbstractGenerator<B> initialize() {
-        customConfigBuilder()
-                .insertExcludeFields(Arrays.asList("createTime", "updateTime"))
-                .updateExcludeFields(Arrays.asList("createTime", "updateTime"))
-                .orderColumn("create_time", true)
-                .orderColumn("id", true)
-        ;
-
-        strategyConfigBuilder.entityBuilder()
-                .idType(IdType.ASSIGN_ID)
-                .logicDeleteColumnName("deleted")
-                .disableSerialVersionUID()
-                .enableLombok()
-        ;
-        strategyConfigBuilder.mapperBuilder()
-//                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
-        ;
-        strategyConfigBuilder.serviceBuilder()
-                .formatServiceFileName("%sService")
-        ;
-        strategyConfigBuilder.controllerBuilder()
-                .enableRestStyle()
-        ;
-        return this;
-    }
-
-    public void execute(String... tableNames) {
-        if (tableNames != null && tableNames.length > 0) {
-            strategyConfigBuilder.addInclude(Arrays.asList(tableNames));
-        }
-        execute();
-    }
+    protected abstract void config4child();
 
 
     private void execute() {
@@ -264,6 +214,103 @@ public abstract class AbstractGenerator<B extends ConfigBaseBuilder<?, B>> {
                         .custom(customConfig);
 
         customGenerator.execute();
+    }
+
+
+    /**
+     * 执行
+     *
+     * @param tableNames 表名(不填为全部)
+     * @author bootystar
+     */
+    public void execute(String... tableNames) {
+        if (tableNames != null && tableNames.length > 0) {
+            strategyConfigBuilder.addInclude(Arrays.asList(tableNames));
+        }
+        execute();
+    }
+
+
+
+    /**
+     * mapper.xml文件在项目根目录/src/main/resources/下的对应目录
+     *
+     * @param path 目录
+     * @return {@link AbstractGenerator }<{@link B }>
+     * @author bootystar
+     */
+    public AbstractGenerator<B> mapperXmlResource(String path) {
+        String projectPath = System.getProperty("user.dir");
+        if (path.startsWith("/")){
+            path = path.substring(1);
+        }
+        packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/" + path));
+        return this;
+    }
+
+    /**
+     * 初始化一些常用配置项
+     * <p>
+     * 自定义:新增及修改排除createTime、updateTime属性, 排序默认使用create_time,id倒排
+     * 实体类:雪花算法id,逻辑删除字段deleted;禁用SerialVersionUID,启用lombok
+     * mapper: 无操作
+     * service: 去掉IService后缀的I
+     * controller: 启用restController
+     *
+     * @return {@link AbstractGenerator }<{@link B }>
+     * @author bootystar
+     */
+    public AbstractGenerator<B> initialize() {
+        customConfigBuilder
+                .insertExcludeFields(Arrays.asList("createTime", "updateTime"))
+                .updateExcludeFields(Arrays.asList("createTime", "updateTime"))
+                .orderColumn("create_time", true)
+                .orderColumn("id", true)
+        ;
+
+        strategyConfigBuilder.entityBuilder()
+                .idType(IdType.ASSIGN_ID)
+                .logicDeleteColumnName("deleted")
+                .disableSerialVersionUID()
+                .enableLombok()
+        ;
+        strategyConfigBuilder.mapperBuilder()
+//                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+        ;
+        strategyConfigBuilder.serviceBuilder()
+                .formatServiceFileName("%sService")
+        ;
+        strategyConfigBuilder.controllerBuilder()
+                .enableRestStyle()
+        ;
+        return this;
+    }
+
+
+    /**
+     * 启用全局文件覆盖
+     *
+     * @return {@link AbstractGenerator }<{@link B }>
+     * @author bootystar
+     */
+    public AbstractGenerator<B> enableGlobalFileOverwrite() {
+        customConfigBuilder
+                .enableFileOverride()
+        ;
+
+        strategyConfigBuilder.entityBuilder()
+                .enableFileOverride()
+        ;
+        strategyConfigBuilder.mapperBuilder()
+                .enableFileOverride()
+        ;
+        strategyConfigBuilder.serviceBuilder()
+                .enableFileOverride()
+        ;
+        strategyConfigBuilder.controllerBuilder()
+                .enableFileOverride()
+        ;
+        return this;
     }
 
 

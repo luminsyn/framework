@@ -44,6 +44,9 @@ import io.swagger.annotations.ApiOperation;
 #end
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+#if(!${restControllerStyle})
+import org.springframework.stereotype.Controller;
+#end
 #if(${enableValidated} && (${generateInsert}||${generateUpdate}))
 import org.springframework.validation.annotation.Validated;
 #end
@@ -193,9 +196,9 @@ public class ${table.controllerName} {
     @ResponseBody
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end deleteById(@PathVariable("id") Serializable id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end delete(@PathVariable("id") Serializable id) {
         #else
-    public Boolean deleteById(@PathVariable("id") Serializable id) {
+    public Boolean delete(@PathVariable("id") Serializable id) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.removeById(id));
@@ -228,9 +231,9 @@ public class ${table.controllerName} {
     @ResponseBody
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectById(@PathVariable("id") Serializable id) {
+    public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end select(@PathVariable("id") Serializable id) {
         #else
-    public ${entity}VO selectById(@PathVariable("id") Serializable id) {
+    public ${entity}VO select(@PathVariable("id") Serializable id) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.voById(id));
@@ -257,9 +260,9 @@ public class ${table.controllerName} {
     @ResponseBody
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<String>>#end selectableFields() {
+    public ${returnResultClass}#if(${returnResultGenericType})<List<String>>#end fields() {
     #else
-    public List<String> selectableFields() {
+    public List<String> fields() {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.selectableFields());
@@ -291,9 +294,9 @@ public class ${table.controllerName} {
     @ResponseBody
     #end
     #if(${returnResultClass})
-    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
+    public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end list(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
     #else
-    public List<${entity}VO> selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
+    public List<${entity}VO> list(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
     #end
     #if(${returnResultClass})
         return ${returnResultMethodName}(baseService.listByDTO(s));
