@@ -12,7 +12,7 @@ import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
  *
  * @author bootystar
  */
-public class SplicingGenerator extends AbstractGenerator<SplicingConfig, SplicingConfig.Builder> {
+public class SplicingGenerator extends AbstractGenerator<SplicingConfig.Builder> {
 
     public SplicingGenerator(String url, String username, String password) {
         super(url, username, password, new SplicingConfig.Builder());

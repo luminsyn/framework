@@ -18,18 +18,7 @@ public class DbInterceptor implements InnerInterceptor {
 
     @Override
     public boolean willDoUpdate(Executor executor, MappedStatement ms, Object parameter) throws SQLException {
-        if (SqlCommandType.UPDATE == ms.getSqlCommandType() || SqlCommandType.INSERT == ms.getSqlCommandType()) {
-            // 直接入参
-            if (parameter instanceof  Object){
 
-            }
-            // wrapper入参
-            if (parameter instanceof Map) {
-                Map<String, Object> map = (Map)parameter;
-
-            }
-
-        }
         return InnerInterceptor.super.willDoUpdate(executor, ms, parameter);
     }
 

@@ -24,7 +24,7 @@ import java.util.LinkedList;
  */
 @Slf4j
 @SuppressWarnings("unused")
-public abstract class AbstractGenerator<C extends ConfigBase, B extends ConfigBaseBuilder<C, B>> {
+public abstract class AbstractGenerator<B extends ConfigBaseBuilder<?, B>> {
 
     protected DataSourceConfig.Builder dataSourceConfigBuilder;
 
@@ -38,9 +38,9 @@ public abstract class AbstractGenerator<C extends ConfigBase, B extends ConfigBa
 
 //    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
 
-    protected ConfigBaseBuilder<C, B> customConfigBuilder;
+    protected ConfigBaseBuilder<?, B> customConfigBuilder;
 
-    public ConfigBaseBuilder<C, B> customConfigBuilder() {
+    public ConfigBaseBuilder<?, B> customConfigBuilder() {
         return customConfigBuilder;
     }
 
@@ -82,8 +82,11 @@ public abstract class AbstractGenerator<C extends ConfigBase, B extends ConfigBa
         init();
     }
 
-    public AbstractGenerator<C, B> mapperXmlResource(String mapperXmlResource) {
+    public AbstractGenerator<B> mapperXmlResource(String mapperXmlResource) {
         String projectPath = System.getProperty("user.dir");
+        if (mapperXmlResource.startsWith("/")){
+            mapperXmlResource = mapperXmlResource.substring(1);
+        }
         packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/" + mapperXmlResource));
         return this;
     }
@@ -158,10 +161,10 @@ public abstract class AbstractGenerator<C extends ConfigBase, B extends ConfigBa
      * service: 去掉IService后缀的I
      * controller: 启用restController
      *
-     * @return {@link AbstractGenerator }<{@link C }, {@link B }>
+     * @return {@link AbstractGenerator }<{@link B }>
      * @author bootystar
      */
-    public AbstractGenerator<C, B> initialize() {
+    public AbstractGenerator<B> initialize() {
         customConfigBuilder()
                 .insertExcludeFields(Arrays.asList("createTime", "updateTime"))
                 .updateExcludeFields(Arrays.asList("createTime", "updateTime"))

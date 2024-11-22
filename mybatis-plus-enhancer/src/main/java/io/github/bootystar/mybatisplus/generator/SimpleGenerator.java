@@ -8,7 +8,7 @@ import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
  *
  * @author bootystar
  */
-public class SimpleGenerator extends AbstractGenerator<SimpleConfig, SimpleConfig.Builder> {
+public class SimpleGenerator extends AbstractGenerator<SimpleConfig.Builder> {
 
     public SimpleGenerator(String url, String username, String password) {
         super(url, username, password, new SimpleConfig.Builder());

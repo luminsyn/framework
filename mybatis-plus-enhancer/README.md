@@ -113,11 +113,14 @@ String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=
 String username ="root";
 String password ="root";
 
-//        SimpleGenerator generator = new SimpleGenerator(url, username, password).initialize(); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
-//        CustomGenerator generator = new CustomGenerator(url, username, password).initialize(); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
-SplicingGenerator generator = new SplicingGenerator(url, username, password).initialize(); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
+//        SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
+//        CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
+SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
 
-// generator.mapperXmlResource("static/mapper"); // xml文件在resource目录下的路径
+generator
+        .initialize() // 一键配置常用配置项
+//      .mapperXmlResource("static/mapper") // xml文件在resource目录下的路径(默认在mapper目录下)
+; 
 
 generator.customConfigBuilder()
 //        .baseUrl("/api") // controller请求前缀
@@ -157,6 +160,12 @@ String password ="root";
 //SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
 //CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
 SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
+
+generator
+        .initialize() // 一键配置常用配置项
+//      .mapperXmlResource("static/mapper") // xml文件在resource目录下的路径(也可通过包配置自行配置)
+; 
+
 
 generator.customConfigBuilder()
         // 通用设置
