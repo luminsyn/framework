@@ -20,8 +20,21 @@
 ```
 ## 引入maven依赖
 
-<font style="color:#ED740C;">注:引入mybatis-plus相关依赖时无需指定版本</font>
-
+使用`dependencyManagement`管理依赖,避免版本冲突
+```xml
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.bootystar</groupId>
+                <artifactId>mybatis-plus-enhancer</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+```
+按需引入相关依赖
 ```mvn
 <!--mybatis-plus-enhancer-->
 <dependency>
