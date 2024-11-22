@@ -119,6 +119,9 @@ public class ${table.controllerName} {
         #else
     @PostMapping("/insert")
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s) {
         #else
@@ -150,6 +153,9 @@ public class ${table.controllerName} {
     @PutMapping("")
         #else
     @PostMapping("/update")
+    #end
+    #if(!${restControllerStyle})
+    @ResponseBody
     #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s) {
@@ -183,6 +189,9 @@ public class ${table.controllerName} {
         #else
     @PostMapping("/delete/{id}")
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end deleteById(@PathVariable("id") Serializable id) {
         #else
@@ -215,6 +224,9 @@ public class ${table.controllerName} {
         #else
     @GetMapping("/select/{id}")
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<${entity}VO>#end selectById(@PathVariable("id") Serializable id) {
         #else
@@ -241,6 +253,9 @@ public class ${table.controllerName} {
      */
     #end
     @GetMapping("/fields")
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<List<String>>#end selectableFields() {
     #else
@@ -271,6 +286,9 @@ public class ${table.controllerName} {
     @PostMapping("/list")
         #else
     @GetMapping("/list")
+    #end
+    #if(!${restControllerStyle})
+    @ResponseBody
     #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<List<${entity}VO>>#end selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${splicer})${splicerClassSimpleName}#else${entity}SelectDTO#end s) {
@@ -303,6 +321,9 @@ public class ${table.controllerName} {
     @PostMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
         #else
     @GetMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
+    #end
+    #if(!${restControllerStyle})
+    @ResponseBody
     #end
     #if(${returnResultClass})
             #if(${pageResultClass})
@@ -397,6 +418,9 @@ public class ${table.controllerName} {
      */
     #end
     @PostMapping("/import")
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${returnResultClass})
     public ${returnResultClass}#if(${returnResultGenericType})<Boolean>#end importExcel(@RequestParam("file") MultipartFile file) throws IOException {
         #else

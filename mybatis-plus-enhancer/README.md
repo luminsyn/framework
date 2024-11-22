@@ -102,18 +102,20 @@ generator.execute("user");
 ```
 
 ## 推荐配置
-推荐修改`包名``xml文件路径``返回值的封装方法`
+使用`initialize()`方法一键配置常用配置项
 
-并根据项目实际修改`请求前缀``跨域``分页的封装方法``Jakarta包``restful风格``复杂查询使用post`
+推荐配置`包名`,`xml文件路径`,`返回值封装方法`,`分页封装方法`
+
+并根据项目实际修改`请求前缀`,`跨域注解`,`Jakarta包`,`restful风格`,`复杂查询使用post`
 
 ```java
 String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
 String username ="root";
 String password ="root";
 
-//        SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
-//        CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
-SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
+//        SimpleGenerator generator = new SimpleGenerator(url, username, password).initialize(); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
+//        CustomGenerator generator = new CustomGenerator(url, username, password).initialize(); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
+SplicingGenerator generator = new SplicingGenerator(url, username, password).initialize(); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
 
 // generator.mapperXmlResource("static/mapper"); // xml文件在resource目录下的路径
 
@@ -130,7 +132,7 @@ generator.customConfigBuilder()
 
 // 以下为mybatis-plus generator官方提供配置,默认无需配置,若需配置请参考官方文档
 generator.globalConfigBuilder() // 全局配置
-//                .author("bootystar") // 作者名称
+//                .author("bootystar") // 作者名称,会自动根据电脑用户名称获取
 //                .outputDir(System.getProperty("user.dir") + "/src/main/java") // 默认生成到项目目录下
 ;
 
@@ -138,9 +140,6 @@ generator.packageConfigBuilder() //包设置
                 .parent("io.github.bootystar") // 父包名, 建议修改
 ;
 
-generator.strategyConfigBuilder().entityBuilder() //实体类设置
-                .enableLombok() // 开启lombok,简化代码
-;
 
 // 生成指定表
 generator.execute("user");
@@ -163,8 +162,8 @@ generator.customConfigBuilder()
         // 通用设置
         .DTOPackage("dto") // DTO包名, 默认dto
         .VOPackage("vo") // VO包名, 默认vo
-        .insertExcludeFields(Arrays.asList("createTime", "updateTime")) // 新增DTO忽略的字段,默认添加了createTime和updateTime
-        .updateExcludeFields(Arrays.asList("createTime", "updateTime")) // 更新DTO忽略的字段,默认添加了createTime和updateTime
+        .insertExcludeFields(Arrays.asList("createTime", "updateTime")) // 新增DTO忽略的字段
+        .updateExcludeFields(Arrays.asList("createTime", "updateTime")) // 更新DTO忽略的字段
         .enableFileOverride() // 开启DTO\VO的文件覆盖
         .enableFieldAnnotationOnVO() // 在VO上添加@Tablefield属性注释
         .disableExportOnVO() // 禁用导出使用VO, 额外生成导出DTO
@@ -185,11 +184,11 @@ generator.customConfigBuilder()
         .disableRestful() // 开启restful风格
         .disableRequestBody() // 禁用requestBody接收参数
         .disableValidated() // 禁用参数校验
-        .disablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
+        .disablePostOnComplicatedSelect() // 禁止复杂查询使用post请求
 
         // mapper设置
         .enableResultMapForVO() // 开启VO的结果集封装
-        .orderColumnMap(new HashMap<>()) // 指定排序字段map集,默认已添加create_time和id, 如需清空,传入new HashMap<>()或null即可清空
+        .orderColumnMap(new HashMap<>()) // 指定排序字段map集,如需清空,传入new HashMap<>()或null即可清空
         .orderColumn("sort", true) // 添加排序字段(不会清空已添加的)
 
         // CustomGenerator和SplicingGenerator特有,SimpleGenerator无该配置项
@@ -257,16 +256,15 @@ generator.customConfigBuilder()
 
 // 以下为mybatis-plus generator官方提供配置,默认无需配置,若需配置请参考官方文档
 generator.globalConfigBuilder() // 全局配置
-//                .author("bootystar") // 默认作者名称
-//                .outputDir(System.getProperty("user.dir") + "/src/main/java") // 默认生成到项目目录下
+
 ;
 
 generator.packageConfigBuilder() //包设置
-//                .parent("io.github.bootystar") // 父包名
+
 ;
 
 generator.strategyConfigBuilder().entityBuilder() //实体类设置
-//                .enableLombok() // 开启lombok,简化代码
+
 ;
 generator.strategyConfigBuilder().controllerBuilder() // controller设置
 

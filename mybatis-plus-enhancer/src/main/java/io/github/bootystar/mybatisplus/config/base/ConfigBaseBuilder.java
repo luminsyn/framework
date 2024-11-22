@@ -17,19 +17,19 @@ import java.util.Map;
  */
 @Slf4j
 @SuppressWarnings("unused")
-public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements IConfigBuilder<T> {
+public abstract class ConfigBaseBuilder<C extends ConfigBase, B extends IConfigBuilder<C>> implements IConfigBuilder<C> {
 
-    protected T config;
-    protected U builder;
+    protected C config;
+    protected B builder;
 
     public ConfigBaseBuilder() {
         config = initConfig();
         builder = initBuilder();
     }
 
-    protected abstract T initConfig();
+    protected abstract C initConfig();
 
-    protected abstract U initBuilder();
+    protected abstract B initBuilder();
 
     /**
      * 构建模板配置对象
@@ -38,7 +38,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @author bootystar
      */
     @Override
-    public T build() {
+    public C build() {
         return this.config;
     }
 
@@ -52,7 +52,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U DTOPackage(String packageName) {
+    public B DTOPackage(String packageName) {
         this.config.DTOPackage = packageName;
         return this.builder;
     }
@@ -64,7 +64,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U VOPackage(String packageName) {
+    public B VOPackage(String packageName) {
         this.config.VOPackage = packageName;
         return this.builder;
     }
@@ -76,7 +76,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U insertExcludeFields(List<String> fieldNames) {
+    public B insertExcludeFields(List<String> fieldNames) {
         this.config.insertExcludeFields = fieldNames;
         return this.builder;
     }
@@ -88,7 +88,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U updateExcludeFields(List<String> fieldNames) {
+    public B updateExcludeFields(List<String> fieldNames) {
         this.config.updateExcludeFields = fieldNames;
         return this.builder;
     }
@@ -100,7 +100,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U enableFileOverride() {
+    public B enableFileOverride() {
         this.config.fileOverride = true;
         return this.builder;
     }
@@ -112,7 +112,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableExportOnVO() {
+    public B disableExportOnVO() {
         this.config.exportOnVO = false;
         return this.builder;
     }
@@ -123,7 +123,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableImportOnVO() {
+    public B disableImportOnVO() {
         this.config.importOnVO = false;
         return this.builder;
     }
@@ -134,7 +134,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U enableFieldAnnotationOnVO() {
+    public B enableFieldAnnotationOnVO() {
         this.config.fieldAnnotationOnVO = true;
         return this.builder;
     }
@@ -149,7 +149,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U baseUrl(String url) {
+    public B baseUrl(String url) {
         if (url == null || url.length() == 0) {
             this.config.baseUrl = url;
             return this.builder;
@@ -170,7 +170,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U enableOrigins() {
+    public B enableOrigins() {
         this.config.enableOrigins = true;
         return this.builder;
     }
@@ -182,7 +182,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U enableJakartaApi() {
+    public B enableJakartaApi() {
         this.config.javaApiPackage = "jakarta";
         return this.builder;
     }
@@ -193,10 +193,10 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 建议静态方法或构造器,或返回自身的对象方法
      *
      * @param methodReference 方法引用
-     * @return {@link U }
+     * @return {@link B }
      * @author bootystar
      */
-    public <R> U returnMethod(SFunction<Object, R> methodReference) {
+    public <R> B returnMethod(SFunction<Object, R> methodReference) {
         ReflectHelper4MybatisPlus.LambdaMethod lambdaMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, Object.class);
         this.config.returnResultClassPackage = lambdaMethod.getClassPackage();
         this.config.returnResultClass = lambdaMethod.getClassSimpleName();
@@ -211,10 +211,10 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * 若未指定方法不为静态或构造器或返回自身的方法,会使用{@link com.baomidou.mybatisplus.core.metadata.IPage}替代
      *
      * @param methodReference 方法参考
-     * @return {@link U }
+     * @return {@link B }
      * @author bootystar
      */
-    public <O, R> U pageMethod(SFunction<IPage<O>, R> methodReference) {
+    public <O, R> B pageMethod(SFunction<IPage<O>, R> methodReference) {
         ReflectHelper4MybatisPlus.LambdaMethod lambdaMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, IPage.class);
         this.config.pageResultClassPackage = lambdaMethod.getClassPackage();
         this.config.pageResultClass = lambdaMethod.getClassSimpleName();
@@ -230,7 +230,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableRestful() {
+    public B disableRestful() {
         this.config.restful = false;
         return this.builder;
     }
@@ -242,7 +242,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U disableRequestBody() {
+    public B disableRequestBody() {
         this.config.requestBody = false;
         return this.builder;
     }
@@ -253,7 +253,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U disableValidated() {
+    public B disableValidated() {
         this.config.enableValidated = false;
         return this.builder;
     }
@@ -264,7 +264,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U disablePostOnComplicatedSelect() {
+    public B disablePostOnComplicatedSelect() {
         this.config.postOnComplicatedSelect = false;
         return this.builder;
     }
@@ -277,7 +277,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U enableResultMapForVO() {
+    public B enableResultMapForVO() {
         this.config.resultMapForVO = true;
         return this.builder;
     }
@@ -291,7 +291,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U orderColumnMap(Map<String, Boolean> map) {
+    public B orderColumnMap(Map<String, Boolean> map) {
         this.config.orderColumnMap = map;
         return this.builder;
     }
@@ -304,7 +304,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return this
      * @author bootystar
      */
-    public U orderColumn(String columnName, boolean isDesc) {
+    public B orderColumn(String columnName, boolean isDesc) {
         if (this.config.orderColumnMap == null) {
             this.config.orderColumnMap = new HashMap<>();
         }
@@ -324,7 +324,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableInsert() {
+    public B disableInsert() {
         this.config.generateInsert = false;
         return this.builder;
     }
@@ -336,7 +336,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableUpdate() {
+    public B disableUpdate() {
         this.config.generateUpdate = false;
         return this.builder;
     }
@@ -347,7 +347,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableSelect() {
+    public B disableSelect() {
         this.config.generateSelect = false;
         return this.builder;
     }
@@ -358,7 +358,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableExport() {
+    public B disableExport() {
         this.config.generateExport = false;
         return this.builder;
     }
@@ -369,7 +369,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableImport() {
+    public B disableImport() {
         this.config.generateImport = false;
         return this.builder;
     }
@@ -380,7 +380,7 @@ public abstract class ConfigBaseBuilder<T extends ConfigBase, U> implements ICon
      * @return {@code U }
      * @author bootystar
      */
-    public U disableDelete() {
+    public B disableDelete() {
         this.config.generateDelete = false;
         return this.builder;
     }

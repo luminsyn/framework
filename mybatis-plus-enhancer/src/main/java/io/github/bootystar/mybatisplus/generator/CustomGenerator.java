@@ -12,7 +12,7 @@ import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
  *
  * @author booty
  */
-public class CustomGenerator extends AbstractGenerator<CustomConfig.Builder> {
+public class CustomGenerator extends AbstractGenerator<CustomConfig, CustomConfig.Builder> {
 
     public CustomGenerator(String url, String username, String password) {
         super(url, username, password, new CustomConfig.Builder());

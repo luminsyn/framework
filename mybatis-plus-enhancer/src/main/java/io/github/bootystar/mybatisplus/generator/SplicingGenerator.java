@@ -1,5 +1,6 @@
 package io.github.bootystar.mybatisplus.generator;
 
+import io.github.bootystar.mybatisplus.config.SimpleConfig;
 import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.core.GenericMapper;
 import io.github.bootystar.mybatisplus.core.GenericService;
@@ -11,10 +12,10 @@ import io.github.bootystar.mybatisplus.generator.base.AbstractGenerator;
  *
  * @author bootystar
  */
-public class SplicingGenerator extends AbstractGenerator<SplicingConfig.Builder> {
+public class SplicingGenerator extends AbstractGenerator<SplicingConfig, SplicingConfig.Builder> {
 
     public SplicingGenerator(String url, String username, String password) {
-        super(url, username, password,new SplicingConfig.Builder());
+        super(url, username, password, new SplicingConfig.Builder());
     }
 
     @Override

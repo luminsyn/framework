@@ -173,9 +173,9 @@ public class BaseGenerator {
             System.out.println("execute success! check files in following folder:");
             String path = config.getPathInfo().get(OutputFile.parent);
             System.out.println(new File(path).getAbsolutePath());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("生成失败, 依赖于mybatis-plus-extension 3.5.3, 请排查依赖版本与jdk版本");
+            System.out.println("生成失败, 请排查依赖版本与jdk版本");
         }
 
     }

@@ -23,7 +23,8 @@ import java.util.LinkedList;
  * @author bootystar
  */
 @Slf4j
-public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
+@SuppressWarnings("unused")
+public abstract class AbstractGenerator<C extends ConfigBase, B extends ConfigBaseBuilder<C, B>> {
 
     protected DataSourceConfig.Builder dataSourceConfigBuilder;
 
@@ -37,9 +38,9 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
 
 //    protected TemplateConfig.Builder templateConfigBuilder = new TemplateConfig.Builder();
 
-    protected T customConfigBuilder;
+    protected ConfigBaseBuilder<C, B> customConfigBuilder;
 
-    public T customConfigBuilder() {
+    public ConfigBaseBuilder<C, B> customConfigBuilder() {
         return customConfigBuilder;
     }
 
@@ -67,7 +68,7 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
         return injectionConfigBuilder;
     }
 
-    public AbstractGenerator(String url, String username, String password, T customConfigBuilder) {
+    public AbstractGenerator(String url, String username, String password, B customConfigBuilder) {
         this.dataSourceConfigBuilder = new DataSourceConfig.Builder(url, username, password)
                 .typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
                     // 避免byte转换成Integer
@@ -81,7 +82,7 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
         init();
     }
 
-    public AbstractGenerator<T> mapperXmlResource(String mapperXmlResource) {
+    public AbstractGenerator<C, B> mapperXmlResource(String mapperXmlResource) {
         String projectPath = System.getProperty("user.dir");
         packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/" + mapperXmlResource));
         return this;
@@ -98,27 +99,25 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
                 .dateType(DateType.TIME_PACK)
                 .outputDir(projectPath + "/src/main/java")
         ;
-        packageConfigBuilder.parent("io.github.bootystar").xml("mapper")
+        packageConfigBuilder
+                .parent("io.github.bootystar")
+                .xml("mapper")
         ;
         strategyConfigBuilder.entityBuilder()
-                .idType(IdType.ASSIGN_ID)
+//                .idType(IdType.ASSIGN_ID)
+//                .logicDeleteColumnName("deleted")
         ;
         strategyConfigBuilder.controllerBuilder()
-                .enableRestStyle()
+//                .enableRestStyle()
         ;
         strategyConfigBuilder.serviceBuilder()
-                .formatServiceFileName("%sService")
+//                .formatServiceFileName("%sService")
         ;
         strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
         ;
-        customConfigBuilder().insertExcludeFields(Arrays.asList("createTime", "updateTime"));
-        customConfigBuilder().updateExcludeFields(Arrays.asList("createTime", "updateTime"));
-        customConfigBuilder().orderColumn("create_time", true);
-        customConfigBuilder().orderColumn("id", true);
 
         // 模板配置
-
 //        templateConfigBuilder
 //                .entity("/common/entity.java")
 //                .controller("/common/controller.java")
@@ -149,6 +148,44 @@ public abstract class AbstractGenerator<T extends ConfigBaseBuilder<?, ?>> {
 
     protected abstract void config4child();
 
+
+    /**
+     * 初始化一些常用配置项
+     * <p>
+     * 自定义:新增及修改排除createTime、updateTime属性, 排序默认使用create_time,id倒排
+     * 实体类:雪花算法id,逻辑删除字段deleted;禁用SerialVersionUID,启用lombok
+     * mapper: 无操作
+     * service: 去掉IService后缀的I
+     * controller: 启用restController
+     *
+     * @return {@link AbstractGenerator }<{@link C }, {@link B }>
+     * @author bootystar
+     */
+    public AbstractGenerator<C, B> initialize() {
+        customConfigBuilder()
+                .insertExcludeFields(Arrays.asList("createTime", "updateTime"))
+                .updateExcludeFields(Arrays.asList("createTime", "updateTime"))
+                .orderColumn("create_time", true)
+                .orderColumn("id", true)
+        ;
+
+        strategyConfigBuilder.entityBuilder()
+                .idType(IdType.ASSIGN_ID)
+                .logicDeleteColumnName("deleted")
+                .disableSerialVersionUID()
+                .enableLombok()
+        ;
+        strategyConfigBuilder.mapperBuilder()
+//                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+        ;
+        strategyConfigBuilder.serviceBuilder()
+                .formatServiceFileName("%sService")
+        ;
+        strategyConfigBuilder.controllerBuilder()
+                .enableRestStyle()
+        ;
+        return this;
+    }
 
     public void execute(String... tableNames) {
         if (tableNames != null && tableNames.length > 0) {
