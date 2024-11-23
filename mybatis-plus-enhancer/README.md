@@ -18,6 +18,16 @@
     </repository>
 </repositories>
 ```
+若使用阿里云仓库, 需配置`!snapshots`以便拉取
+```xml
+<mirror>
+  <id>aliyunmaven</id>
+  <mirrorOf>*,!snapshots</mirrorOf>
+  <name>aliyun</name>
+  <url>https://maven.aliyun.com/repository/public</url>
+</mirror>
+```
+
 ## 引入maven依赖
 
 使用`dependencyManagement`管理依赖,避免版本冲突

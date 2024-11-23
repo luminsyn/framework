@@ -77,7 +77,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             throw new RuntimeException(e);
         }
         return map;
-    }        
+    }
+
+    public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
+        return getBaseMapper().listByGeneric(toMap(s), null);
+    }
+
     #end
     #if(${generateInsert})
 
@@ -126,7 +131,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <S> List<${entity}VO> listByDTO(S s) {
-        return this.baseMapper.listByGeneric(this.toMap(s), null);
+        return doSelect(s, page);
     }
 
     @Override
@@ -134,7 +139,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         if (current == null || current < 1) current = 1L;
         if (size == null) size = 10L;
         Page<${entity}VO> page = new Page<>(current, size);
-        List<${entity}VO> voList = baseMapper.listByGeneric(toMap(s), page);
+        List<${entity}VO> voList = doSelect(s, page);
         page.setRecords(voList);
         return page;
     }

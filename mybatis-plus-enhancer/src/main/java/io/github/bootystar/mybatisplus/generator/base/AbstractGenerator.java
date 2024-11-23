@@ -2,20 +2,24 @@ package io.github.bootystar.mybatisplus.generator.base;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.config.builder.*;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
+import com.sun.istack.internal.NotNull;
 import io.github.bootystar.mybatisplus.config.SplicingConfig;
 import io.github.bootystar.mybatisplus.config.base.ConfigBase;
 import io.github.bootystar.mybatisplus.config.base.ConfigBaseBuilder;
 import io.github.bootystar.mybatisplus.config.base.IConfig;
+import io.github.bootystar.mybatisplus.generator.SplicingGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 
 /**
  * 自定义配置代码生成器-抽象父类
@@ -311,6 +315,89 @@ public abstract class AbstractGenerator<B extends ConfigBaseBuilder<?, B>> {
                 .enableFileOverride()
         ;
         return this;
+    }
+
+    public LambdaChain<B> lambdaChain() {
+        return new LambdaChain<>(this);
+    }
+
+
+    public static class LambdaChain<B extends ConfigBaseBuilder<?, B>>{
+        private final AbstractGenerator<B> generator;
+
+        private LambdaChain(AbstractGenerator<B> generator) {
+            this.generator = generator;
+        }
+
+
+
+        public LambdaChain<B> global(Consumer<GlobalConfig.Builder> consumer) {
+            consumer.accept(generator.globalConfigBuilder());
+            return this;
+        }
+
+        public LambdaChain<B> strategy(Consumer<StrategyConfig.Builder> consumer) {
+            consumer.accept(generator.strategyConfigBuilder());
+            return this;
+        }
+
+        public LambdaChain<B> entity(Consumer<Entity.Builder > consumer) {
+            consumer.accept(generator.strategyConfigBuilder().entityBuilder());
+            return this;
+        }
+
+        public LambdaChain<B> mapper(Consumer<Mapper.Builder > consumer) {
+            consumer.accept(generator.strategyConfigBuilder().mapperBuilder());
+            return this;
+        }
+
+        public LambdaChain<B> service(Consumer<Service.Builder > consumer) {
+            consumer.accept(generator.strategyConfigBuilder().serviceBuilder());
+            return this;
+        }
+
+        public LambdaChain<B> controller(Consumer<Controller.Builder > consumer) {
+            consumer.accept(generator.strategyConfigBuilder().controllerBuilder());
+            return this;
+        }
+
+        public void execute() {
+            generator.execute();
+        }
+
+        public LambdaChain<B> custom(Consumer<ConfigBaseBuilder<?, B>> consumer) {
+            consumer.accept(generator.customConfigBuilder());
+            return this;
+        }
+
+        public LambdaChain<B> initialize() {
+            generator.initialize();
+            return this;
+        }
+
+        public LambdaChain<B> enableGlobalFileOverwrite() {
+            generator.enableGlobalFileOverwrite();
+            return this;
+        }
+
+        public void execute(String... tableNames) {
+            generator.execute(tableNames);
+        }
+
+    }
+
+    public static void main(String[] args) {
+        new SplicingGenerator("", "", "").lambdaChain()
+                .initialize()
+                .enableGlobalFileOverwrite()
+                .global(global -> global.author("bootystar"))
+                .strategy(strategy -> strategy.addInclude("t_user"))
+                .entity(entity -> entity.formatFileName("%s"))
+                .mapper(mapper -> mapper.formatMapperFileName("%sMapper"))
+                .service(service -> service.formatServiceFileName("%sService"))
+                .controller(controller -> controller.formatFileName("%sController"))
+                .custom(custom -> custom.insertExcludeFields(Arrays.asList("createTime", "updateTime")))
+                .execute("t_user");
     }
 
 
