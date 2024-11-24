@@ -103,6 +103,18 @@ public class ${entity}SelectDTO {
     #end
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
     private ${field.propertyType} ${field.propertyName}Like;
+    #if(${entityLombokModel})
+    #if(${chainModel})
+    public ${entity}SelectDTO set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
+    #else
+    public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
+    #end
+        this.${field.propertyName}Like = "%" + ${field.propertyName} + "%";
+    #if(${chainModel})
+        return this;
+    #end
+    }
+    #end
 ## 时间类型追加时间段查询
 #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
 
@@ -198,7 +210,7 @@ public class ${entity}SelectDTO {
     #else
     public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
     #end
-        this.${field.propertyName}Like = ${field.propertyName};
+        this.${field.propertyName}Like = "%" + ${field.propertyName} + "%";
     #if(${chainModel})
         return this;
     #end

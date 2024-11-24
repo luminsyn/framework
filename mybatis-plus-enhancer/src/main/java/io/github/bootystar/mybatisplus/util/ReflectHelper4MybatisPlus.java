@@ -8,23 +8,20 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.logic.splicing.SplicingEntity;
+import io.github.bootystar.mybatisplus.logic.dynamic.DynamicEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.TypeVariable;
+import java.lang.reflect.*;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
  * mybatis-plus解析工具类
+ *
  * @author bootystar
  */
 public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
@@ -36,9 +33,10 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
         private String classSimpleName;
         private boolean isGenericTypeClass;
         private String methodName;
-        private String methodNameFullStr;
         private boolean isStaticMethod;
         private boolean isConstructor;
+        private String prefix;
+        private String suffix;
     }
 
     /**
@@ -50,53 +48,50 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
      * @author bootystar
      */
     public static LambdaMethod lambdaMethodInfo(SFunction<?, ?> methodReference, Class<?> parameterClass) {
-        String methodName = "";
-        String fullClassName = "";
+        String methodName = "", className = "";
         try {
             Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
             lambdaMethod.setAccessible(Boolean.TRUE);
             SerializedLambda serializedLambda = (SerializedLambda) lambdaMethod.invoke(methodReference);
-            fullClassName = serializedLambda.getImplClass().replace("/", ".");
+            className = serializedLambda.getImplClass().replace("/", ".");
             methodName = serializedLambda.getImplMethodName();
-            String methodNameFullStr = methodName;
-            Class<?> clazz = Class.forName(fullClassName);
-            TypeVariable<? extends Class<?>>[] typeParameters = clazz.getTypeParameters();
-            boolean isStaticMethod = false;
-            boolean isConstructor = false;
-            boolean isGenericTypeClass = typeParameters.length > 0;
+            Class<?> clazz = Class.forName(className);
+            String classSimpleName = clazz.getSimpleName();
+            TypeVariable<? extends Class<?>>[] classTypeParameters = clazz.getTypeParameters();
+            boolean isStaticMethod = false, isConstructor = false, isGenericClass = classTypeParameters.length > 0, isGenericMethod = false;
             try {
-                Method returnMethod = clazz.getMethod(methodNameFullStr, parameterClass);
+                Method returnMethod = clazz.getMethod(methodName, parameterClass, Modifier.STATIC);
                 Class<?> returnType = returnMethod.getReturnType();
-                if (!returnType.equals(clazz)) {
-                    throw new NoSuchMethodException("no method found return self");
+                if (!returnType.equals(clazz) || !Modifier.isPublic(returnMethod.getModifiers())) {
+                    throw new NoSuchMethodException("no public method found which return instance of class itself");
                 }
-                int modifiers = returnMethod.getModifiers();
-                if (Modifier.isStatic(modifiers)) {
-                    isStaticMethod = true;
-                    methodNameFullStr = clazz.getSimpleName() + "." + methodNameFullStr;
-                } else {
-                    clazz.getConstructor();
-                    methodNameFullStr = "new " + clazz.getSimpleName() + "()." + methodNameFullStr;
-                }
-            } catch (NoSuchMethodException e) {
-                clazz.getConstructor(parameterClass);
-                methodNameFullStr = "new " + clazz.getSimpleName();
-                if (isGenericTypeClass) {
-                    methodNameFullStr += "<>";
-                }
+                isStaticMethod = Modifier.isStatic(returnMethod.getModifiers());
+                TypeVariable<Method>[] methodTypeParameters = returnMethod.getTypeParameters();
+                isGenericMethod = methodTypeParameters.length > 0;
+            } catch (Exception e) {
+                Constructor<?> constructor = clazz.getConstructor(parameterClass);
                 isConstructor = true;
+            }
+            String prefix = "", suffix = ")";
+            if (isStaticMethod) {
+                prefix = String.format("%s.%s(", classSimpleName, methodName);
+            } else if (isConstructor) {
+                prefix = String.format("new %s%s(", classSimpleName, isGenericClass ? "<>" : "");
+            } else {
+                prefix = String.format("new %s%s.%s(", classSimpleName, isGenericMethod ? "<>" : "",methodName);
             }
             return new ReflectHelper4MybatisPlus.LambdaMethod(
                     clazz.getPackage().getName()
                     , clazz.getSimpleName()
-                    , isGenericTypeClass
+                    , isGenericClass
                     , methodName
-                    , methodNameFullStr
                     , isStaticMethod
                     , isConstructor
+                    , prefix
+                    , suffix
             );
         } catch (Exception e) {
-            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", fullClassName, methodName, parameterClass.getName());
+            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", className, methodName, parameterClass.getName());
             throw new IllegalStateException(msg);
         }
     }
@@ -115,8 +110,6 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
         }
         return tableInfo.getKeyProperty();
     }
-
-
 
 
     /**
@@ -141,7 +134,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
             String name = logicDeleteFieldInfo.getField().getName();
             result.remove(name);
         }
-        
+
         Map<String, Field> fieldMap = fieldMap(clazz);
         for (Field field : fieldMap.values()) {
             String fieldName = field.getName();
@@ -190,22 +183,20 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
 
     /**
      * 获取实体类字段映射
-     * 当实体类实现{@link SplicingEntity }接口后,会额外添加映射字段
+     * 当实体类实现{@link DynamicEntity }接口后,会额外添加映射字段
      *
      * @param entityClass 实体类
      * @return {@link Map }<{@link String }, {@link String }>
      * @author bootystar
      */
     @SneakyThrows
-    public static Map<String, String> injectableFieldsMap(Class<?> entityClass) {
+    public static Map<String, String> dynamicFieldsMap(Class<?> entityClass) {
         Map<String, String> map = fieldConvertMap(entityClass);
-        if (SplicingEntity.class.isAssignableFrom(entityClass)) {
-            Class<SplicingEntity> injectable = (Class<SplicingEntity>) entityClass;
-            Map<String, String> extraMap = injectable.getConstructor().newInstance().extraMap();
+        if (DynamicEntity.class.isAssignableFrom(entityClass)) {
+            DynamicEntity instance = (DynamicEntity) entityClass.getConstructor().newInstance();
+            Map<String, String> extraMap = instance.extraMap();
             if (extraMap != null && !extraMap.isEmpty()) {
-                Iterator<Map.Entry<String, String>> it = extraMap.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry<String, String> next = it.next();
+                for (Map.Entry<String, String> next : extraMap.entrySet()) {
                     String fieldName = next.getKey();
                     String jdbcColumn = next.getValue();
                     if (jdbcColumn == null || jdbcColumn.isEmpty()) {

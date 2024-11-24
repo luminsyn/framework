@@ -2,7 +2,7 @@ package ${package.Mapper};
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${superMapperClassPackage};
-import org.apache.ibatis.annotations.Param;
+##import org.apache.ibatis.annotations.Param;
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
@@ -24,7 +24,7 @@ interface ${table.mapperName} : ${superMapperClass}<${entity}>
 #else
 public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
 
-    <G> List<${entity}VO> listByGeneric(@Param("generic") G generic, IPage<${entity}VO> page);
+    <S> List<${entity}VO> listByDTO(S s, IPage<${entity}VO> page);
 
 }
 #end

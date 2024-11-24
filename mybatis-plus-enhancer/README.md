@@ -321,7 +321,7 @@ generator.execute("user");
 ![画板](https://cdn.nlark.com/yuque/0/2024/jpeg/12797324/1731468926109-e985a5a5-ec08-4b10-b84b-db7983736e0b.jpeg)
 
 ### Splicer反注入自定义参数
-使用`io.github.bootystar.mybatisplus.logic.splicing.dto.Splicer`作为入参
+使用`io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper`作为入参
 + 调用`ImmutableSplicer()`会自动根据传入实体类反注入
 + 调用`requiredConditions()`会自动添加优先级更高的条件, 添加后的条件必定生效
 + 调用`addConditions()`会添加条件集
@@ -330,7 +330,7 @@ generator.execute("user");
 
 1. <font style="background-color:rgba(255, 255, 255, 0);">通过反射获取指定实体类的所有可用字段</font>
 2. <font style="background-color:rgba(255, 255, 255, 0);">检索mybatis-plus对应注解并处理数据库字段</font>
-3. <font style="background-color:rgba(255, 255, 255, 0);">若实体类实现了`io.github.bootystar.mybatisplus.logic.splicing.SplicingEntity`接口,根据实现方法添加额外字段</font>
+3. <font style="background-color:rgba(255, 255, 255, 0);">若实体类实现了`io.github.bootystar.mybatisplus.logic.dynamic.DynamicEntity`接口,根据实现方法添加额外字段</font>
 
 ### 自定义连表查询
 在mapper中添加需要连表的表名, 并添加别名

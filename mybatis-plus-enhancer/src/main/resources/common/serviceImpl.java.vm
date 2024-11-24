@@ -49,27 +49,20 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
     #if(${generateSelect}||${generateExport})
 
-    @SuppressWarnings("unchecked")
-    public Map<String, Object> toMap(Object source) {
-        if (source==null) return new HashMap<>();
-        if (source instanceof Map) return (Map<String, Object>) source;
-        Map<String, Object> map = new HashMap<>();
-        Class<?> clazz = source.getClass();
+    public Map<?, ?> toMap(Object source) {
+        if (source==null) return null;if (source instanceof Map) return (Map<?, ?>) source;
+        Map<Object, Object> map = new HashMap<>();
         List<Field> fields = new ArrayList<>();
-        Class<?> currentClass = clazz;
+        Class<?> currentClass = source.getClass();
         while (currentClass != null && currentClass != Object.class && !currentClass.isInterface()) {
-            Field[] declaredFields = currentClass.getDeclaredFields();
-            for (Field field : declaredFields) {
-                field.setAccessible(true);
-                int modifiers = field.getModifiers();
-                if (Modifier.isStatic(modifiers)||Modifier.isFinal(modifiers)||Modifier.isNative(modifiers)) continue;
-                fields.add(field);
-            }
+            Arrays.stream(currentClass.getDeclaredFields()).filter(f -> !Modifier.isStatic(f.getModifiers()))
+                    .filter(f -> !Modifier.isFinal(f.getModifiers())).filter(f -> !Modifier.isNative(f.getModifiers()))
+                    .peek(f -> f.setAccessible(true)).forEach(fields::add);
             currentClass = currentClass.getSuperclass();
         }
         try {
             for (Field field : fields) {
-                String key = field.getName();
+                Object key = field.getName();
                 Object value = field.get(source);
                 if (value != null) map.put(key, value);
             }
@@ -80,7 +73,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
 
     public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
-        return getBaseMapper().listByGeneric(toMap(s), null);
+        return getBaseMapper().listByDTO(toMap(s), null);
     }
 
     #end

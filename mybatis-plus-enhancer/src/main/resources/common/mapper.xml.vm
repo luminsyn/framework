@@ -58,7 +58,7 @@
 
 #end
 
-    <select id="listByGeneric"#if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
+    <select id="listByDTO"#if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
         SELECT
         a.*
         FROM
@@ -68,6 +68,7 @@
 #foreach($field in ${table.fields})
     #if(${field.logicDeleteField})
             a.`${field.columnName}` = 0
+    #break
     #end
 #end
             <if test="param1 != null">
@@ -84,14 +85,13 @@
                         #{prop}
                     </foreach>
                 </if>
-    #elseif($selectExcludeFields.contains(${field.propertyName}))
     #else
         #if(${field.propertyType} == "String")
                 <if test="param1.${field.propertyName} != null and param1.${field.propertyName}.length()>0">
                     AND a.`${field.columnName}` = #{param1.${field.propertyName}}
                 </if>
                 <if test="param1.${field.propertyName}Like  != null and param1.${field.propertyName}Like.length()>0">
-                    AND a.`${field.columnName}` LIKE CONCAT('%',#{param1.${field.propertyName}Like},'%')
+                    AND a.`${field.columnName}` LIKE #{param1.${field.propertyName}Like}
                 </if>
         #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
                 <if test="param1.${field.propertyName} != null">
