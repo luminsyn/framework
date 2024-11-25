@@ -21,12 +21,12 @@ public class DynamicSqlGenerator extends GeneratorBase<DynamicSqlConfig.Builder>
     @Override
     protected void config4child() {
         strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/common/serviceE.java")
-                .serviceImplTemplate("/common/serviceImplE.java")
+                .serviceTemplate("/common/service.enhance.java")
+                .serviceImplTemplate("/common/service.enhance.java")
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/common/mapperE.java")
-                .mapperXmlTemplate("/common/mapperDynamicSql.xml")
+                .mapperTemplate("/common/mapper.enhance.java")
+                .mapperXmlTemplate("/common/mapperXml.dynamic.xml")
         ;
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)

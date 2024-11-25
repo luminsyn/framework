@@ -1,13 +1,12 @@
 package io.github.bootystar.mybatisplus.generator.config.base;
 
-
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import io.github.bootystar.mybatisplus.logic.common.LambdaMethod;
+import io.github.bootystar.mybatisplus.logic.common.MethodInfo;
 import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import lombok.Data;
 import lombok.Setter;
@@ -54,11 +53,16 @@ public abstract class CustomConfigBase implements CustomConfig {
                 importPackages4DTO.add(importPackage);
             }
         }
+        data.put("importPackages4DTO", importPackages4DTO);
         // 当前时间
         data.put("nowTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         // 时间类型列表
-        List<JdbcType> jdbcTimeTypes = Arrays.asList(JdbcType.DATE, JdbcType.TIME, JdbcType.TIMESTAMP, JdbcType.DATETIMEOFFSET,// SQL Server 2008
+        List<JdbcType> jdbcTimeTypes = Arrays.asList(
+                JdbcType.DATE,
+                JdbcType.TIME,
+                JdbcType.TIMESTAMP,
+                JdbcType.DATETIMEOFFSET,// SQL Server 2008
                 JdbcType.TIME_WITH_TIMEZONE,// JDBC 4.2 JDK8
                 JdbcType.TIMESTAMP_WITH_TIMEZONE // JDBC 4.2 JDK8
         );
@@ -83,7 +87,6 @@ public abstract class CustomConfigBase implements CustomConfig {
         return this.fileOverride;
     }
 
-
     /**
      * 是否覆盖已有文件
      */
@@ -91,20 +94,16 @@ public abstract class CustomConfigBase implements CustomConfig {
 
     //------------------DTO相关配置----------------
 
+
     /**
      * DTO所在包
      */
     protected String package4DTO = "dto";
 
     /**
-     * 新增排除的字段
+     * 新增或修改时排除的字段
      */
-    protected Collection<String> insertExcludeColumns;
-
-    /**
-     * 修改排除的字段
-     */
-    protected Collection<String> updateExcludeColumns;
+    protected Collection<String> editExcludeColumns;
 
     //------------------VO相关配置----------------
 
@@ -123,24 +122,18 @@ public abstract class CustomConfigBase implements CustomConfig {
      */
     protected boolean importOnVO = true;
 
-    /**
-     * VO属性上添加{@link com.baomidou.mybatisplus.annotation.TableField}注解
-     */
-    protected boolean fieldAnnotationOnVO;
-
 
     // ------------------controller相关配置----------------
 
     /**
      * 返回结果方法
      */
-    protected LambdaMethod returnMethod;
+    protected MethodInfo returnMethod;
 
     /**
      * 分页结果方法
      */
-    protected LambdaMethod pageMethod;
-
+    protected MethodInfo pageMethod;
 
     /**
      * controller是否使用@RequestBody注解
@@ -179,19 +172,13 @@ public abstract class CustomConfigBase implements CustomConfig {
 
     // ------------------mapper相关配置----------------
 
-
     /**
      * 排序字段map
      * 字段名 -> 是否倒序
      */
     protected Map<String, Boolean> orderColumnMap;
 
-    /**
-     * VO是否生成ResultMap
-     */
-    protected boolean resultMapForVO;
-
-    //   ------------------ 生成相关配置----------------
+    // ------------------ 生成相关配置----------------
 
     /**
      * 新增DTO
@@ -282,26 +269,14 @@ public abstract class CustomConfigBase implements CustomConfig {
         }
 
         /**
-         * 添加插入排除字段
+         * 新增或修改时排除的字段
          *
          * @param columns 字段名称
          * @return this
          * @author bootystar
          */
-        public B insertExcludeColumns(List<String> columns) {
-            this.config.insertExcludeColumns = columns;
-            return this.builder;
-        }
-
-        /**
-         * 添加更新排除字段
-         *
-         * @param columns 字段名称
-         * @return this
-         * @author bootystar
-         */
-        public B updateExcludeColumns(List<String> columns) {
-            this.config.updateExcludeColumns = columns;
+        public B editExcludeColumns(String... columns) {
+            this.config.editExcludeColumns = Arrays.asList(columns);
             return this.builder;
         }
 
@@ -335,17 +310,6 @@ public abstract class CustomConfigBase implements CustomConfig {
          */
         public B disableImportOnVO() {
             this.config.importOnVO = false;
-            return this.builder;
-        }
-
-        /**
-         * VO属性上添加{@link com.baomidou.mybatisplus.annotation.TableField}注解
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B enableFieldAnnotationOnVO() {
-            this.config.fieldAnnotationOnVO = true;
             return this.builder;
         }
 
@@ -470,50 +434,30 @@ public abstract class CustomConfigBase implements CustomConfig {
 
         //==================mapper=======================
 
+
         /**
-         * 创建VOResultMap字段映射
+         * 清空排序字段
          *
-         * @return this
+         * @return {@link B }
          * @author bootystar
          */
-        public B enableResultMapForVO() {
-            this.config.resultMapForVO = true;
+        public B sortColumnClear() {
+            this.config.orderColumnMap.clear();
             return this.builder;
         }
 
         /**
-         * 排序字段map
-         * k=字段名 v=启用倒序
-         * 如需清空,传入new HashMap<>()或null即可清空
+         * 添加排序字段,越先添加优先级越高
          *
-         * @param map 地图
+         * @param columnName 字段名
+         * @param isDesc     是否倒排
          * @return this
          * @author bootystar
          */
-        public B orderColumnMap(Map<String, Boolean> map) {
-            this.config.orderColumnMap = map;
-            return this.builder;
-        }
-
-        /**
-         * 添加排序字段(不会清空已添加的)
-         *
-         * @param columnName 列名
-         * @param isDesc     是desc
-         * @return this
-         * @author bootystar
-         */
-        public B orderColumn(String columnName, boolean isDesc) {
-            if (this.config.orderColumnMap == null) {
-                this.config.orderColumnMap = new HashMap<>();
-            }
-            if (columnName == null || columnName.isEmpty()) {
-                return this.builder;
-            }
+        public B sortColumn(String columnName, boolean isDesc) {
             this.config.orderColumnMap.put(columnName, isDesc);
             return this.builder;
         }
-
 
         //============方法设置================
 
@@ -528,7 +472,6 @@ public abstract class CustomConfigBase implements CustomConfig {
             return this.builder;
         }
 
-
         /**
          * 不生成更新方法
          *
@@ -537,6 +480,17 @@ public abstract class CustomConfigBase implements CustomConfig {
          */
         public B disableUpdate() {
             this.config.generateUpdate = false;
+            return this.builder;
+        }
+
+        /**
+         * 不生成删除方法
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B disableDelete() {
+            this.config.generateDelete = false;
             return this.builder;
         }
 
@@ -573,16 +527,6 @@ public abstract class CustomConfigBase implements CustomConfig {
             return this.builder;
         }
 
-        /**
-         * 不生成删除方法
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B disableDelete() {
-            this.config.generateDelete = false;
-            return this.builder;
-        }
     }
     
 }

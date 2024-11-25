@@ -22,20 +22,15 @@ import java.util.function.Consumer;
  *
  * @author bootystar
  */
+@Getter
 @Slf4j
 @SuppressWarnings("unused")
 public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
-
     protected DataSourceConfig.Builder dataSourceConfigBuilder;
-    @Getter
     protected GlobalConfig.Builder globalConfigBuilder = new GlobalConfig.Builder();
-    @Getter
     protected PackageConfig.Builder packageConfigBuilder = new PackageConfig.Builder();
-    @Getter
     protected StrategyConfig.Builder strategyConfigBuilder = new StrategyConfig.Builder();
-    @Getter
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
-    @Getter
     protected CustomConfigBase.Builder<?, B> customConfigBuilder;
 
     public GeneratorBase(String url, String username, String password, B customConfigBuilder) {
@@ -53,28 +48,22 @@ public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
     }
 
     private void init() {
-        String projectPath = System.getProperty("user.dir");
-        String username = System.getProperty("user.name");
-        if (username == null || username.isEmpty()) {
-            username = "generator";
-        }
         globalConfigBuilder
-                .author(username)
                 .dateType(DateType.TIME_PACK)
-                .outputDir(projectPath + "/src/main/java")
+                .author(System.getProperty("user.name"))
+                .outputDir(System.getProperty("user.dir") + "/src/main/java")
         ;
         packageConfigBuilder
                 .parent("io.github.bootystar")
                 .xml("mapper")
         ;
-
         strategyConfigBuilder.entityBuilder()
                 .javaTemplate("/common/entity.java")
         ;
         strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
                 .mapperTemplate("/common/mapper.java")
-                .mapperXmlTemplate("/common/mapper.xml")
+                .mapperXmlTemplate("/common/mapperXml.xml")
         ;
         strategyConfigBuilder.serviceBuilder()
                 .serviceTemplate("/common/service.java")
@@ -128,8 +117,7 @@ public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
                 .packageInfo(packageConfig)
                 .strategy(strategyConfig)
                 .injection(injectionConfig)
-                .custom(customConfig)
-                ;
+                .custom(customConfig);
         customGenerator.execute();
     }
 
@@ -144,6 +132,11 @@ public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
             strategyConfigBuilder.addInclude(Arrays.asList(tableNames));
         }
         execute();
+    }
+
+    public GeneratorBase<B> dataSource(Consumer<DataSourceConfig.Builder> consumer) {
+        consumer.accept(dataSourceConfigBuilder);
+        return this;
     }
 
     public GeneratorBase<B> global(Consumer<GlobalConfig.Builder> consumer) {
@@ -215,10 +208,13 @@ public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
      */
     public GeneratorBase<B> initialize() {
         customConfigBuilder
-                .insertExcludeColumns(Arrays.asList("create_time", "update_time"))
-                .updateExcludeColumns(Arrays.asList("create_time", "update_time"))
-                .orderColumn("create_time", true)
-                .orderColumn("id", true)
+                .sortColumn("index", false)
+                .sortColumn("order", false)
+                .sortColumn("rank", false)
+                .sortColumn("seq", false)
+                .sortColumn("sort", false)
+                .sortColumn("create_time", true)
+                .sortColumn("id", true)
         ;
         strategyConfigBuilder.entityBuilder()
                 .idType(IdType.ASSIGN_ID)
@@ -227,7 +223,7 @@ public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
                 .enableLombok()
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
+//                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
         ;
         strategyConfigBuilder.serviceBuilder()
                 .formatServiceFileName("%sService")

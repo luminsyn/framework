@@ -65,7 +65,7 @@ public class ${entity}InsertDTO {
 #if(${field.keyFlag})
 #elseif(${field.versionField})
 #elseif(${field.logicDeleteField})
-#elseif($insertExcludeColumns.contains(${field.columnName}))
+#elseif($editExcludeColumns.contains(${field.columnName}))
 #else
 
   #if("$!field.comment" != "")

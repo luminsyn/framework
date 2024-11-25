@@ -65,7 +65,7 @@ public class ${entity}UpdateDTO {
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-#if(($updateExcludeColumns.contains(${field.columnName})))
+#if(($editExcludeColumns.contains(${field.columnName})))
 #elseif(${field.logicDeleteField})
 #else
 

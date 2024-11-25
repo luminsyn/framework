@@ -22,11 +22,11 @@ public class SubClassGenerator extends GeneratorBase<SubClassConfig.Builder> {
     @Override
     protected void config4child() {
         strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/common/serviceE.java")
-                .serviceImplTemplate("/common/serviceImplE.java")
+                .serviceTemplate("/common/service.enhance.java")
+                .serviceImplTemplate("/common/serviceImpl.enhance.java")
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/common/mapperE.java")
+                .mapperTemplate("/common/mapper.enhance.java")
         ;
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)

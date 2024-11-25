@@ -1,12 +1,6 @@
 package ${basePackage}.${VOPackage};
-#if(${enableFieldAnnotationOnVO})
-        #foreach($pkg in ${table.importPackages})
+#foreach($pkg in ${importPackages4DTO})
 import ${pkg};
-        #end
-    #else
-        #foreach($pkg in ${importPackages4DTO})
-import ${pkg};
-        #end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,6 +45,10 @@ import com.alibaba.excel.annotation.ExcelProperty;
 ##@ContentRowHeight(20)
 #end
 public class ${entity}VO {
+#if(${entitySerialVersionUID})
+##
+##    private static final long serialVersionUID = 1L;
+#end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})

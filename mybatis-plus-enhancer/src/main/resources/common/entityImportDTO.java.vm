@@ -46,6 +46,7 @@ public class ${entity}ImportDTO {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
+#elseif(($editExcludeColumns.contains(${field.columnName})))
 #else
 
 #if("$!field.comment" != "")

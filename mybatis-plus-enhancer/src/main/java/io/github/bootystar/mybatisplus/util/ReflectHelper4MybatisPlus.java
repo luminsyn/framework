@@ -8,10 +8,8 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.logic.common.LambdaMethod;
+import io.github.bootystar.mybatisplus.logic.common.MethodInfo;
 import io.github.bootystar.mybatisplus.logic.dynamic.DynamicEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.SneakyThrows;
 
 import java.lang.invoke.SerializedLambda;
@@ -33,16 +31,16 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
      *
      * @param methodReference lambda方法引用
      * @param parameterClass  参数类型
-     * @return {@link LambdaMethod }
+     * @return {@link MethodInfo }
      * @author bootystar
      */
-    public static LambdaMethod lambdaMethodInfo(SFunction<?, ?> methodReference, Class<?> parameterClass) {
-        String methodName = "" , className = "";
+    public static MethodInfo lambdaMethodInfo(SFunction<?, ?> methodReference, Class<?> parameterClass) {
+        String methodName = "", className = "";
         try {
-            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace" );
+            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
             lambdaMethod.setAccessible(Boolean.TRUE);
             SerializedLambda serializedLambda = (SerializedLambda) lambdaMethod.invoke(methodReference);
-            className = serializedLambda.getImplClass().replace("/" , "." );
+            className = serializedLambda.getImplClass().replace("/", ".");
             methodName = serializedLambda.getImplMethodName();
             Class<?> methodClass = Class.forName(className);
             TypeVariable<? extends Class<?>>[] classTypeParameters = methodClass.getTypeParameters();
@@ -52,7 +50,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 Class<?> returnType = returnMethod.getReturnType();
                 int modifiers = returnMethod.getModifiers();
                 if (!returnType.equals(methodClass) || !Modifier.isPublic(modifiers)) {
-                    throw new NoSuchMethodException("no public method found which return instance of class itself" );
+                    throw new NoSuchMethodException("no public method found which return instance of class itself");
                 }
                 isStaticMethod = Modifier.isStatic(modifiers);
                 TypeVariable<Method>[] methodTypeParameters = returnMethod.getTypeParameters();
@@ -61,7 +59,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 methodClass.getConstructor(parameterClass);
                 isConstructor = true;
             }
-            return new LambdaMethod(
+            return new MethodInfo(
                     methodClass.getPackage().getName()
                     , methodClass.getSimpleName()
                     , isGenericClass
@@ -71,14 +69,9 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                     , isGenericMethod
             );
         } catch (Exception e) {
-            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]" , className, methodName, parameterClass.getName());
+            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", className, methodName, parameterClass.getName());
             throw new IllegalStateException(msg);
         }
-    }
-
-    public static void main(String[] args) {
-        LambdaMethod lambdaMethod1 = lambdaMethodInfo(e -> e, Object.class);
-        System.out.println();
     }
 
     /**
@@ -112,7 +105,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
             Field field = fieldInfo.getField();
             String fieldName = field.getName();
             String jdbcColumn = fieldInfo.getColumn();
-            result.put(fieldName, String.format("a.`%s`" , jdbcColumn));
+            result.put(fieldName, String.format("a.`%s`", jdbcColumn));
         }
         TableFieldInfo logicDeleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
         if (logicDeleteFieldInfo != null) {
@@ -133,8 +126,8 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 String value = tableId.value();
                 if (!value.isEmpty()) {
                     jdbcColumn = value;
-                    if (!value.contains("." )) {
-                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
+                    if (!value.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
                 result.putIfAbsent(fieldName, jdbcColumn);
@@ -153,14 +146,14 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 }
                 if (!value.isEmpty()) {
                     jdbcColumn = value;
-                    if (!value.contains("." )) {
-                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
+                    if (!value.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
                 result.putIfAbsent(fieldName, jdbcColumn);
                 continue;
             }
-            result.putIfAbsent(fieldName, String.format("a.`%s`" , jdbcColumn));
+            result.putIfAbsent(fieldName, String.format("a.`%s`", jdbcColumn));
         }
         return result;
     }
@@ -187,8 +180,8 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                     if (jdbcColumn == null || jdbcColumn.isEmpty()) {
                         continue;
                     }
-                    if (!jdbcColumn.contains("." )) {
-                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
+                    if (!jdbcColumn.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                     map.put(fieldName, jdbcColumn);
                 }
