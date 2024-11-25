@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import io.github.bootystar.mybatisplus.logic.common.LambdaMethod;
 import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import lombok.Data;
 import lombok.Setter;
@@ -127,48 +128,19 @@ public abstract class CustomConfigBase implements CustomConfig {
      */
     protected boolean fieldAnnotationOnVO;
 
-    //--------------返回结果相关配置---------------
-
-    /**
-     * 返回结果类所在包
-     */
-    protected String returnResultClassPackage;
-
-    /**
-     * 返回结果是否支持泛型
-     */
-    protected boolean returnResultGenericType;
-    /**
-     * 返回结果类
-     */
-    protected String returnResultClass;
-
-    /**
-     * 返回方法
-     */
-    protected String returnResultMethodName;
-
-    /**
-     * 返回结果类所在包
-     */
-    protected String pageResultClassPackage;
-
-    /**
-     * 返回结果是否支持泛型
-     */
-    protected boolean pageResultGenericType;
-    /**
-     * 返回结果类
-     */
-    protected String pageResultClass;
-
-    /**
-     * 返回方法
-     */
-    protected String pageResultMethodName;
-
 
     // ------------------controller相关配置----------------
+
+    /**
+     * 返回结果方法
+     */
+    protected LambdaMethod returnMethod;
+
+    /**
+     * 分页结果方法
+     */
+    protected LambdaMethod pageMethod;
+
 
     /**
      * controller是否使用@RequestBody注解
@@ -426,35 +398,29 @@ public abstract class CustomConfigBase implements CustomConfig {
 
         /**
          * 指定controller的返回结果包装类及方法
+         * <p>
+         * 指定的方法需要支持泛型或接收{@link java.lang.Object} 作为参数
          *
          * @param methodReference 方法引用
          * @return {@link B }
          * @author bootystar
          */
         public <R> B returnMethod(SFunction<Object, R> methodReference) {
-            ReflectHelper4MybatisPlus.LambdaMethod lambdaMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, Object.class);
-            this.config.returnResultClassPackage = lambdaMethod.getClassPackage();
-            this.config.returnResultClass = lambdaMethod.getClassSimpleName();
-            this.config.returnResultMethodName = lambdaMethod.getMethodNameFullStr();
-            this.config.returnResultGenericType = lambdaMethod.isGenericTypeClass();
+            this.config.returnMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, Object.class);
             return this.builder;
         }
 
         /**
          * 指定controller返回的分页包装类及方法
-         * 指定的方法需要接收{@link com.baomidou.mybatisplus.core.metadata.IPage} 作为参数
-         * 若未指定方法不为静态或构造器或返回自身的方法,会使用{@link com.baomidou.mybatisplus.core.metadata.IPage}替代
+         * <p>
+         * 指定的方法需要支持泛型或接收{@link com.baomidou.mybatisplus.core.metadata.IPage} 作为参数
          *
          * @param methodReference 方法参考
          * @return {@link B }
          * @author bootystar
          */
         public <O, R> B pageMethod(SFunction<IPage<O>, R> methodReference) {
-            ReflectHelper4MybatisPlus.LambdaMethod lambdaMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, IPage.class);
-            this.config.pageResultClassPackage = lambdaMethod.getClassPackage();
-            this.config.pageResultClass = lambdaMethod.getClassSimpleName();
-            this.config.pageResultMethodName = lambdaMethod.getMethodNameFullStr();
-            this.config.pageResultGenericType = lambdaMethod.isGenericTypeClass();
+            this.config.pageMethod = ReflectHelper4MybatisPlus.lambdaMethodInfo(methodReference, IPage.class);
             return this.builder;
         }
 

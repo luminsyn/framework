@@ -100,7 +100,6 @@ public abstract class GeneratorBase<B extends CustomConfigBase.Builder<?, B>> {
         String DTOPackage = customConfig.getPackage4DTO().replaceAll("\\.", "\\" + File.separator);
         String VOPackage = customConfig.getPackage4VO().replaceAll("\\.", "\\" + File.separator);
         ArrayList<CustomFile> customFiles = new ArrayList<>(8);
-        Class<? extends CustomConfig> type = customConfig.getGeneratorType();
         if (customConfig.isGenerateInsert()) {
             CustomFile InsertDto = new CustomFile.Builder().fileName("InsertDTO.java").templatePath("/common/entityInsertDTO.java.vm").packageName(DTOPackage).build();
             customFiles.add(InsertDto);
