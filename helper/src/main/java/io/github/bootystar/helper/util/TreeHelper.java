@@ -1,170 +1,160 @@
 package io.github.bootystar.helper.util;
 
-import lombok.Data;
-import org.apache.poi.ss.formula.functions.T;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * 树状工具助手
+ *
  * @author bootystar
  */
-public abstract class TreeHelper {
-
+public class TreeHelper<T, R> {
+    private final Function<T, R> idGetter;
+    private final Function<T, R> parentIdGetter;
+    private final BiConsumer<T, ? super List<T>> childElementSetter;
 
     /**
-     * 构建树状关联关系
+     * 创建树助手
      *
-     * @param idGetter       id getter
-     * @param parentIdGetter 父id getter
-     * @param childrenSetter 子元素列表setter
-     * @param sourceList     元素列表
-     * @return {@link List }<{@link T }> 元素列表
+     * @param idGetter           id getter
+     * @param parentIdGetter     父id getter
+     * @param childElementSetter 子元素setter
+     * @return {@link TreeHelper }<{@link T }, {@link R }>
      * @author bootystar
      */
-    public static <T> List<T> buildRelation(Function<T, ?> idGetter, Function<T, ?> parentIdGetter, BiConsumer<T, ? super List<T>> childrenSetter, Collection<T> sourceList) {
-        if (idGetter == null || parentIdGetter == null || childrenSetter == null || sourceList == null || sourceList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        ArrayList<T> ts = new ArrayList<>(sourceList);
-        Iterator<T> it = ts.iterator();
-        while (it.hasNext()) {
-            T t = it.next();
-            childrenSetter.accept(t, findChildren(idGetter, parentIdGetter, ts, t));
-            it.remove();
-        }
-        return new ArrayList<>(sourceList);
+    public static <T, R> TreeHelper<T, R> of(Function<T, R> idGetter, Function<T, R> parentIdGetter, BiConsumer<T, ? super List<T>> childElementSetter) {
+        return new TreeHelper<>(idGetter, parentIdGetter, childElementSetter);
     }
 
+    /**
+     * 树助手
+     *
+     * @param idGetter           id getter
+     * @param parentIdGetter     父id getter
+     * @param childElementSetter 子元素setter
+     * @author bootystar
+     */
+    private TreeHelper(Function<T, R> idGetter, Function<T, R> parentIdGetter, BiConsumer<T, ? super List<T>> childElementSetter) {
+        if (idGetter == null || parentIdGetter == null || childElementSetter == null) {
+            throw new IllegalArgumentException("arguments can not be null");
+        }
+        this.idGetter = idGetter;
+        this.parentIdGetter = parentIdGetter;
+        this.childElementSetter = childElementSetter;
+    }
+
+    /**
+     * 建立关系
+     *
+     * @param elements 源列表
+     * @return {@link List }<{@link ? } {@link extends } {@link T }>
+     * @author bootystar
+     */
+    public List<? extends T> buildRelation(Collection<? extends T> elements) {
+        ArrayList<T> ts = new ArrayList<>(elements);
+        ts.forEach(e -> childElementSetter.accept(e, findDirectChildrenByNode(ts, e)));
+        return ts;
+    }
 
     /**
      * 构建根目录树
      *
-     * @param sourceList     源数据列表
-     * @param idGetter       id getter
-     * @param parentIdGetter 父id getter
-     * @param childrenSetter 子元素列表setter
-     * @return {@link List }<{@link T }> 根元素列表
+     * @param elements 元素
+     * @return {@link List }<{@link T }>
      * @author bootystar
      */
-    public static <T> List<T> buildRootTree(Function<T, ?> idGetter, Function<T, ?> parentIdGetter, BiConsumer<T, ? super List<T>> childrenSetter, Collection<T> sourceList) {
-        List<T> ts = buildRelation(idGetter, parentIdGetter, childrenSetter, sourceList);
-        if (ts.isEmpty()) {
-            return Collections.emptyList();
-        }
-        ArrayList<T> roots = new ArrayList<>();
-        for (T t : ts) {
-            if (parentIdGetter.apply(t) == null) {
-                roots.add(t);
-            }
-        }
-        return roots;
+    public List<? extends T> treeRoot(Collection<? extends T> elements) {
+        return buildRelation(elements).stream().filter(e -> parentIdGetter.apply(e) == null).collect(Collectors.toList());
     }
 
     /**
-     * 构建当前节点对应树
+     * 构建以指定id节点作为根节点的树
      *
-     * @param idGetter       id getter
-     * @param parentIdGetter 父id getter
-     * @param childrenSetter 子元素列表setter
-     * @param sourceList     源列表
-     * @param currentNode    当前节点
-     * @return {@link T }    当前节点的树
+     * @param elements 元素
+     * @param id       id
+     * @return {@link T }
      * @author bootystar
      */
-    public static <T> T buildCurrentNodeTree(Function<T, ?> idGetter, Function<T, ?> parentIdGetter, BiConsumer<T, ? super List<T>> childrenSetter, Collection<T> sourceList, T currentNode) {
-        buildRelation(idGetter, parentIdGetter, childrenSetter, sourceList);
-        return currentNode;
+    public T treeById(Collection<? extends T> elements, R id) {
+        return buildRelation(elements).stream().filter(e -> Objects.equals(idGetter.apply(e), id)).findFirst().orElse(null);
     }
 
-
     /**
-     * 检索当前元素的直接子元素
+     * 构建以当前节点作为根节点的树
      *
-     * @param idGetter       id getter
-     * @param parentIdGetter 父id getter
-     * @param sourceList     源列表
-     * @param currentNode    当前元素
-     * @return {@link List }<{@link T }> 直接子元素列表
+     * @param elements 元素
+     * @param node     节点
+     * @return {@link T }
      * @author bootystar
      */
-    public static <T> List<T> findChildren(Function<T, ?> idGetter, Function<T, ?> parentIdGetter, Collection<T> sourceList, T currentNode) {
-        if (idGetter == null || parentIdGetter == null || sourceList == null || sourceList.isEmpty() || currentNode == null) {
-            return null;
-        }
-        Object id = idGetter.apply(currentNode);
-        return sourceList.stream()
-                .filter(c -> Objects.equals(id, parentIdGetter.apply(c)))
-                .collect(Collectors.toCollection(ArrayList::new));
+    public T treeByNode(Collection<? extends T> elements, T node) {
+        return treeById(elements, idGetter.apply(node));
     }
 
-
     /**
-     * 检索当前元素的所有子元素
+     * 获取指定id节点对应的子集
      *
-     * @param idGetter       id getter
-     * @param parentIdGetter 父id getter
-     * @param sourceList     源列表
-     * @param currentNode    当前元素
-     * @return {@link List }<{@link T }> 所有子元素列表
+     * @param elements 元素
+     * @param id       id
+     * @return {@link List }<{@link T }>
      * @author bootystar
      */
-    public static <T> List<T> findAllChildren(Function<T, ?> idGetter, Function<T, ?> parentIdGetter, Collection<T> sourceList, T currentNode) {
-        if (idGetter == null || parentIdGetter == null || sourceList == null || sourceList.isEmpty() || currentNode == null) {
-            return null;
-        }
-        ArrayList<T> ts = new ArrayList<>(sourceList);
-        List<T> children = findChildren(idGetter, parentIdGetter, ts, currentNode);
+    public List<T> findDirectChildrenById(Collection<? extends T> elements, R id) {
+        return elements.stream().filter(c -> Objects.equals(id, parentIdGetter.apply(c))).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取当前节点对应的子集
+     *
+     * @param elements 元素
+     * @param node     节点
+     * @return {@link List }<{@link T }>
+     * @author bootystar
+     */
+    public List<T> findDirectChildrenByNode(Collection<? extends T> elements, T node) {
+        return elements.stream().filter(c -> Objects.equals(idGetter.apply(node), parentIdGetter.apply(c))).collect(Collectors.toList());
+    }
+
+    /**
+     * 检索指定id对应的所有子节点
+     *
+     * @param elements 元素
+     * @param id       id
+     * @return {@link List }<{@link T }>
+     * @author bootystar
+     */
+    public List<T> findAllChildrenById(Collection<? extends T> elements, R id) {
+        ArrayList<T> all = new ArrayList<>(elements);
+        List<T> children = findDirectChildrenById(all, id);
         if (children == null || children.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
         ArrayList<T> result = new ArrayList<>(children);
         for (T child : children) {
-            List<T> allChildren = findAllChildren(idGetter, parentIdGetter, ts, child);
+            List<T> allChildren = this.findAllChildrenById(all, idGetter.apply(child));
             if (allChildren == null || allChildren.isEmpty()) {
                 continue;
             }
-            ts.removeAll(allChildren);
             result.addAll(allChildren);
         }
         return result;
     }
 
-    public static void main(String[] args) {
-        ArrayList<ABC> list = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            ABC abc = new ABC();
-            abc.setId(i + "");
-            list.add(abc);
-            for (int j = 3; j < 6; j++) {
-                ABC abc1 = new ABC();
-                abc1.setId(i + "" + j);
-                abc1.setPid(i + "");
-                list.add(abc1);
-                for (int k = 6; k < 9; k++) {
-                    ABC abc2 = new ABC();
-                    abc2.setId(i + "" + j + k);
-                    abc2.setPid(i + "" + j);
-                    list.add(abc2);
-                }
-            }
-        }
-
-        List<ABC> ts = buildRootTree(ABC::getId, ABC::getPid, ABC::setChildren, list);
-        List<ABC> allChildren = findAllChildren(ABC::getId, ABC::getPid, list, ts.get(1));
-        ABC abc = buildCurrentNodeTree(ABC::getId, ABC::getPid, ABC::setChildren, list, ts.get(2));
-        System.out.println();
+    /**
+     * 检索指定节点对应的所有子节点
+     *
+     * @param elements 元素
+     * @param node     节点
+     * @return {@link List }<{@link T }>
+     * @author bootystar
+     */
+    public List<T> findAllChildrenByNode(Collection<? extends T> elements, T node) {
+        return findAllChildrenById(elements, idGetter.apply(node));
     }
-
-    @Data
-    public static class ABC {
-        private String id;
-        private String pid;
-        private List<ABC> children;
-
-    }
-
 
 }
