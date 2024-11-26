@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class ExtraFieldConfig extends CustomConfigEnhance {
     {
-        this.showServiceImplMethod = true;
+        this.enableServiceImplMethod = true;
         // todo SelectDTO Class
     }
 

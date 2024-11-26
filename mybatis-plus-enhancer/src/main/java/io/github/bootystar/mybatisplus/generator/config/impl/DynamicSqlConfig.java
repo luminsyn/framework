@@ -1,6 +1,8 @@
 package io.github.bootystar.mybatisplus.generator.config.impl;
 
 import io.github.bootystar.mybatisplus.generator.config.base.CustomConfigEnhance;
+import io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper;
+import io.github.bootystar.mybatisplus.logic.info.ClassInfo;
 import lombok.Getter;
 
 /**
@@ -12,8 +14,8 @@ import lombok.Getter;
 public class DynamicSqlConfig extends CustomConfigEnhance {
 
     {
-        this.showServiceImplMethod = true;
-        // todo SelectDTO Class
+        this.enableServiceImplMethod = true;
+        entitySelectDTO = new ClassInfo(SqlHelper.class);
     }
 
     public static class Builder extends CustomConfigEnhance.Builder<DynamicSqlConfig, DynamicSqlConfig.Builder> {

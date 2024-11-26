@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.logic.common.MethodInfo;
+import io.github.bootystar.mybatisplus.logic.info.MethodInfo;
 import io.github.bootystar.mybatisplus.logic.dynamic.DynamicEntity;
 import lombok.SneakyThrows;
 
@@ -35,41 +35,28 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
      * @author bootystar
      */
     public static MethodInfo lambdaMethodInfo(SFunction<?, ?> methodReference, Class<?> parameterClass) {
-        String methodName = "", className = "";
+        String methodName = "" , className = "";
         try {
-            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
+            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace" );
             lambdaMethod.setAccessible(Boolean.TRUE);
             SerializedLambda serializedLambda = (SerializedLambda) lambdaMethod.invoke(methodReference);
-            className = serializedLambda.getImplClass().replace("/", ".");
+            className = serializedLambda.getImplClass().replace("/" , "." );
             methodName = serializedLambda.getImplMethodName();
             Class<?> methodClass = Class.forName(className);
-            TypeVariable<? extends Class<?>>[] classTypeParameters = methodClass.getTypeParameters();
-            boolean isStaticMethod = false, isConstructor = false, isGenericClass = classTypeParameters.length == 1, isGenericMethod = false;
             try {
                 Method returnMethod = methodClass.getMethod(methodName, parameterClass);
                 Class<?> returnType = returnMethod.getReturnType();
                 int modifiers = returnMethod.getModifiers();
                 if (!returnType.equals(methodClass) || !Modifier.isPublic(modifiers)) {
-                    throw new NoSuchMethodException("no public method found which return instance of class itself");
+                    throw new NoSuchMethodException("no public method found which return instance of class itself" );
                 }
-                isStaticMethod = Modifier.isStatic(modifiers);
-                TypeVariable<Method>[] methodTypeParameters = returnMethod.getTypeParameters();
-                isGenericMethod = methodTypeParameters.length == 1;
+                return new MethodInfo(returnMethod);
             } catch (Exception e) {
-                methodClass.getConstructor(parameterClass);
-                isConstructor = true;
+                Constructor<?> constructor = methodClass.getConstructor(parameterClass);
+                return new MethodInfo(constructor);
             }
-            return new MethodInfo(
-                    methodClass.getPackage().getName()
-                    , methodClass.getSimpleName()
-                    , isGenericClass
-                    , methodName
-                    , isStaticMethod
-                    , isConstructor
-                    , isGenericMethod
-            );
         } catch (Exception e) {
-            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", className, methodName, parameterClass.getName());
+            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]" , className, methodName, parameterClass.getName());
             throw new IllegalStateException(msg);
         }
     }
@@ -105,7 +92,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
             Field field = fieldInfo.getField();
             String fieldName = field.getName();
             String jdbcColumn = fieldInfo.getColumn();
-            result.put(fieldName, String.format("a.`%s`", jdbcColumn));
+            result.put(fieldName, String.format("a.`%s`" , jdbcColumn));
         }
         TableFieldInfo logicDeleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
         if (logicDeleteFieldInfo != null) {
@@ -126,8 +113,8 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 String value = tableId.value();
                 if (!value.isEmpty()) {
                     jdbcColumn = value;
-                    if (!value.contains(".")) {
-                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
+                    if (!value.contains("." )) {
+                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
                     }
                 }
                 result.putIfAbsent(fieldName, jdbcColumn);
@@ -146,14 +133,14 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 }
                 if (!value.isEmpty()) {
                     jdbcColumn = value;
-                    if (!value.contains(".")) {
-                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
+                    if (!value.contains("." )) {
+                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
                     }
                 }
                 result.putIfAbsent(fieldName, jdbcColumn);
                 continue;
             }
-            result.putIfAbsent(fieldName, String.format("a.`%s`", jdbcColumn));
+            result.putIfAbsent(fieldName, String.format("a.`%s`" , jdbcColumn));
         }
         return result;
     }
@@ -180,8 +167,8 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                     if (jdbcColumn == null || jdbcColumn.isEmpty()) {
                         continue;
                     }
-                    if (!jdbcColumn.contains(".")) {
-                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
+                    if (!jdbcColumn.contains("." )) {
+                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
                     }
                     map.put(fieldName, jdbcColumn);
                 }

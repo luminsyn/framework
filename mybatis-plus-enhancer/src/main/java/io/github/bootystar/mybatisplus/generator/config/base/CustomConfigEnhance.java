@@ -12,14 +12,19 @@ import lombok.Getter;
 public abstract class CustomConfigEnhance extends CustomConfig {
 
     /**
-     * 显示 service impl方法
+     * 显示子类重写的方法
      */
-    protected boolean showServiceImplMethod = true;
+    protected boolean enableServiceImplMethod = true;
+
+    /**
+     * 重写方法中显示注释
+     */
+    protected boolean enableServiceImplMethodComment = true;
 
     /**
      * 显示mapper方法
      */
-    protected boolean showMapperMethod = true;
+    protected boolean enableMapperMethod = true;
 
     /**
      * 构造器
@@ -29,15 +34,27 @@ public abstract class CustomConfigEnhance extends CustomConfig {
     public static abstract class Builder<C extends CustomConfigEnhance, B extends CustomConfigEnhance.Builder<C, B>> extends CustomConfig.Builder<C, B> implements IConfigBuilder<C> {
 
         /**
-         * 不生成服务impl的父类方法
+         * 不生成service实现类的重写方法
          *
          * @return {@code U }
          * @author bootystar
          */
         public B disableServiceImplOverrideMethod() {
-            this.config.showServiceImplMethod = false;
+            this.config.enableServiceImplMethod = false;
             return builder;
         }
+
+        /**
+         * 不生成service实现类的重写方法中的注释信息
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B disableServiceImplOverrideMethodComment() {
+            this.config.enableServiceImplMethodComment = false;
+            return builder;
+        }
+
 
         /**
          * 不生成mapper的父类方法
@@ -46,9 +63,13 @@ public abstract class CustomConfigEnhance extends CustomConfig {
          * @author bootystar
          */
         public B disableMapperOverrideMethod() {
-            this.config.showMapperMethod = false;
+            this.config.enableMapperMethod = false;
             return builder;
         }
+
+
+
+
     }
 
 }

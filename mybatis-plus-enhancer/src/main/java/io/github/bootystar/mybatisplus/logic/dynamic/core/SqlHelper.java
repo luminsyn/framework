@@ -1,6 +1,9 @@
 package io.github.bootystar.mybatisplus.logic.dynamic.core;
 
 import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,12 +20,26 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuppressWarnings("unused")
+/*
+@Schema(name = "${entity}", description = "$!{table.comment}")
+@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
+ */
+@Schema(name = "${entity}", description = "$!{table.comment}")
+@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
 public class SqlHelper extends ConditionTree {
 
     /**
      * 排序条件列表
      */
+    @Schema(description = "${field.comment}")
+    @ApiModelProperty("${field.comment}")
     protected List<? extends Sort> sorts;
+    /*
+#if(${springdoc})
+@Schema(description = "${field.comment}")
+#elseif(${swagger})
+@ApiModelProperty("${field.comment}")
+     */
 
     /**
      * 添加前置条件

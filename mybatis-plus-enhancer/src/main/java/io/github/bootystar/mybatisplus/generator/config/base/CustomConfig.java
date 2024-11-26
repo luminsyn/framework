@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import io.github.bootystar.mybatisplus.logic.common.MethodInfo;
+import io.github.bootystar.mybatisplus.logic.info.ClassInfo;
+import io.github.bootystar.mybatisplus.logic.info.MethodInfo;
 import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import lombok.Data;
 import lombok.Getter;
@@ -86,6 +87,11 @@ public abstract class CustomConfig {
 
     //------------------DTO相关配置----------------
 
+    protected ClassInfo entitySelectDTO;
+    protected ClassInfo entityInsertDTO;
+    protected ClassInfo entityUpdateDTO;
+    protected ClassInfo entityExportDTO;
+    protected ClassInfo entityImportDTO;
 
     /**
      * DTO所在包
@@ -98,6 +104,8 @@ public abstract class CustomConfig {
     protected Collection<String> editExcludeColumns;
 
     //------------------VO相关配置----------------
+
+    protected ClassInfo entityVO;
 
     /**
      * VO所在包
@@ -168,7 +176,7 @@ public abstract class CustomConfig {
      * 排序字段map
      * 字段名 -> 是否倒序
      */
-    protected Map<String, Boolean> orderColumnMap;
+    protected Map<String, Boolean> orderColumnMap = new LinkedHashMap<>();
 
     // ------------------ 生成相关配置----------------
 

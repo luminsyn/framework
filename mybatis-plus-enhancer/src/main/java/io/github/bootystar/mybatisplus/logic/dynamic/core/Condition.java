@@ -37,4 +37,14 @@ public class Condition {
      */
     protected Object value;
 
+    public Condition(String field, Object value) {
+        this.field = field;
+        this.value = value;
+    }
+
+    public Condition(String field, String operator, Object value) {
+        this.field = field;
+        this.operator = operator;
+        this.value = value;
+    }
 }

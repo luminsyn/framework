@@ -26,7 +26,7 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
     /**
      * 排序条件列表
      */
-    protected final List<? extends Sort> sorts;
+    private final List<? extends Sort> sorts;
 
     public UnmodifiableSqlHelper(SqlHelper baseHelper, Class<T> entityClass) {
         if (entityClass == null || baseHelper == null) {

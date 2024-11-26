@@ -21,7 +21,7 @@ import java.util.Map;
  *
  * @author bootystar
  */
-public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
+public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, UnmodifiableSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
 
     @Override
     public List<String> queryFields() {
@@ -29,6 +29,7 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V>, T, V>
     }
 
     @Override
+    @SuppressWarnings("unchecked" )
     public <S> List<V> doSelect(S s, IPage<V> page) {
         if (s == null) {
             return getBaseMapper().listByDTO(null, page);
@@ -39,10 +40,10 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V>, T, V>
         }
         if (s instanceof UnmodifiableSqlHelper<?>) {
             UnmodifiableSqlHelper<?> unmodifiableSqlHelper = (UnmodifiableSqlHelper<?>) s;
-            if (entityClass().equals(unmodifiableSqlHelper.getEntityClass())) {
-                return getBaseMapper().listByDTO(unmodifiableSqlHelper, page);
+            if (!entityClass().equals(unmodifiableSqlHelper.getEntityClass())) {
+                throw new UnsupportedOperationException("not support this type of sqlHelper: " + unmodifiableSqlHelper.getEntityClass().getName());
             }
-            throw new UnsupportedOperationException("not support this type of sqlHelper: " + unmodifiableSqlHelper.getEntityClass().getName());
+            return getBaseMapper().listByDTO((UnmodifiableSqlHelper<T>) unmodifiableSqlHelper, page);
         }
         SqlHelper sqlHelper = new SqlHelper();
         if (s instanceof Map) {
@@ -53,7 +54,7 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V>, T, V>
                 Map.Entry<?, ?> next = iterator.next();
                 Object key = next.getKey();
                 Object value = next.getValue();
-                Condition dto = new Condition(SqlKeyword.AND.keyword, key.toString(), SqlKeyword.EQ.keyword, value);
+                Condition dto = new Condition(key.toString(), value);
                 conditions.add(dto);
             }
             sqlHelper.addConditions(conditions);
@@ -61,7 +62,7 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V>, T, V>
             sqlHelper.addConditions(s, SqlKeyword.EQ.keyword);
         }
         if (sqlHelper.getConditions() == null || sqlHelper.getConditions().isEmpty()) {
-            throw new IllegalStateException(String.format("no conditions from %s for entity %s", s.getClass().getName(), entityClass().getName()));
+            throw new IllegalStateException(String.format("no conditions from %s for entity %s" , s.getClass().getName(), entityClass().getName()));
         }
         return getBaseMapper().listByDTO(sqlHelper.unmodifiable(entityClass()), page);
     }
