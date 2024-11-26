@@ -9,26 +9,24 @@ import lombok.Getter;
  * @author bootystar
  */
 @Getter
-public class DynamicSqlConfig extends CustomConfigEnhance {
-
+public class ExtraFieldConfig extends CustomConfigEnhance {
     {
         this.showServiceImplMethod = true;
         // todo SelectDTO Class
     }
 
-    public static class Builder extends CustomConfigEnhance.Builder<DynamicSqlConfig, DynamicSqlConfig.Builder> {
+    public static class Builder extends CustomConfigEnhance.Builder<ExtraFieldConfig, ExtraFieldConfig.Builder> {
+
         @Override
-        protected DynamicSqlConfig initConfig() {
-            return new DynamicSqlConfig();
+        protected ExtraFieldConfig initConfig() {
+            return new ExtraFieldConfig();
         }
 
         @Override
-        protected DynamicSqlConfig.Builder initBuilder() {
+        protected ExtraFieldConfig.Builder initBuilder() {
             return this;
         }
     }
-
-
 }
 
 

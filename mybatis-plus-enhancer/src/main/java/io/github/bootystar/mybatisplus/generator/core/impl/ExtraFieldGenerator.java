@@ -1,11 +1,11 @@
-package io.github.bootystar.mybatisplus.generator.impl;
+package io.github.bootystar.mybatisplus.generator.core.impl;
 
 
 import io.github.bootystar.mybatisplus.core.EnhanceMapper;
 import io.github.bootystar.mybatisplus.core.EnhanceService;
 import io.github.bootystar.mybatisplus.core.impl.ExtraFieldServiceImpl;
-import io.github.bootystar.mybatisplus.generator.base.GeneratorBase;
-import io.github.bootystar.mybatisplus.generator.config.impl.SubClassConfig;
+import io.github.bootystar.mybatisplus.generator.config.impl.ExtraFieldConfig;
+import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
 
 /**
  * 额外属性型生成器
@@ -13,20 +13,20 @@ import io.github.bootystar.mybatisplus.generator.config.impl.SubClassConfig;
  *
  * @author booty
  */
-public class SubClassGenerator extends GeneratorBase<SubClassConfig.Builder> {
+public class ExtraFieldGenerator extends AbstractGenerator<ExtraFieldConfig, ExtraFieldConfig.Builder> {
 
-    public SubClassGenerator(String url, String username, String password) {
-        super(url, username, password, new SubClassConfig.Builder());
+    public ExtraFieldGenerator(String url, String username, String password) {
+        super(url, username, password, new ExtraFieldConfig.Builder());
     }
 
     @Override
     protected void config4child() {
         strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/common/service.enhance.java")
-                .serviceImplTemplate("/common/serviceImpl.enhance.java")
+                .serviceTemplate("/velocityTemplates/service.enhance.java" )
+                .serviceImplTemplate("/velocityTemplates/serviceImpl.enhance.java" )
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/common/mapper.enhance.java")
+                .mapperTemplate("/velocityTemplates/mapper.enhance.java" )
         ;
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)

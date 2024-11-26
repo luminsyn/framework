@@ -1,15 +1,15 @@
-package io.github.bootystar.mybatisplus.generator.config.impl;
+package io.github.bootystar.mybatisplus.generator.config.base;
 
-import io.github.bootystar.mybatisplus.generator.config.base.CustomConfigBase;
+import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
 import lombok.Getter;
 
 /**
- * SQL拼接配置类
+ * 继承增强配置项
  *
  * @author bootystar
  */
 @Getter
-public class SubClassConfig extends CustomConfigBase {
+public abstract class CustomConfigEnhance extends CustomConfig {
 
     /**
      * 显示 service impl方法
@@ -26,17 +26,7 @@ public class SubClassConfig extends CustomConfigBase {
      *
      * @author bootystar
      */
-    public static class Builder extends CustomConfigBase.Builder<SubClassConfig, Builder> {
-
-        @Override
-        protected SubClassConfig initConfig() {
-            return new SubClassConfig();
-        }
-
-        @Override
-        protected Builder initBuilder() {
-            return this;
-        }
+    public static abstract class Builder<C extends CustomConfigEnhance, B extends CustomConfigEnhance.Builder<C, B>> extends CustomConfig.Builder<C, B> implements IConfigBuilder<C> {
 
         /**
          * 不生成服务impl的父类方法
@@ -44,9 +34,9 @@ public class SubClassConfig extends CustomConfigBase {
          * @return {@code U }
          * @author bootystar
          */
-        public Builder disableServiceImplOverrideMethod() {
+        public B disableServiceImplOverrideMethod() {
             this.config.showServiceImplMethod = false;
-            return this;
+            return builder;
         }
 
         /**
@@ -55,9 +45,9 @@ public class SubClassConfig extends CustomConfigBase {
          * @return {@code U }
          * @author bootystar
          */
-        public Builder disableMapperOverrideMethod() {
+        public B disableMapperOverrideMethod() {
             this.config.showMapperMethod = false;
-            return this;
+            return builder;
         }
     }
 

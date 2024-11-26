@@ -6,10 +6,10 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.util.ExcelHelper;
 import io.github.bootystar.mybatisplus.logic.dynamic.core.Condition;
 import io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper;
+import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.util.ExcelHelper;
 import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
@@ -24,19 +24,19 @@ import java.util.stream.Collectors;
  *
  * @author bootystar
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("unused" )
 public interface EnhanceService<T, V> extends IService<T> {
 
     default List<String> queryFields() {
         return new ArrayList<>(ReflectHelper4MybatisPlus.fieldMap(entityClass()).keySet());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked" )
     default Class<T> entityClass() {
         return (Class<T>) Objects.requireNonNull(ReflectHelper4MybatisPlus.resolveTypeArguments(getClass(), EnhanceService.class))[0];
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked" )
     default Class<V> voClass() {
         return (Class<V>) Objects.requireNonNull(ReflectHelper4MybatisPlus.resolveTypeArguments(getClass(), EnhanceService.class))[1];
     }
@@ -104,13 +104,11 @@ public interface EnhanceService<T, V> extends IService<T> {
         return page;
     }
 
+    @SuppressWarnings("unchecked" )
     default <S, U> IPage<U> pageByDTO(S s, Long current, Long size, Class<U> clazz) {
-        IPage<V> vp = pageByDTO(s, current, size);
-        List<U> us = vp.getRecords().stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList());
-        IPage<U> up = new Page<>(vp.getCurrent(), vp.getSize(), vp.getTotal());
-        up.setPages(vp.getPages());
-        up.setRecords(us);
-        return up;
+        IPage<U> vp = (IPage<U>) pageByDTO(s, current, size);
+        vp.setRecords(vp.getRecords().stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList()));
+        return vp;
     }
 
     default <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, String... includeFields) {
