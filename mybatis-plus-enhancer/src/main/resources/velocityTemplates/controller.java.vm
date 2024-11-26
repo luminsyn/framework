@@ -79,7 +79,7 @@ import java.util.List;
 #if(${springdoc})
 @Tag(name = "${table.comment}", description = "$!{table.comment}")
     #elseif(${swagger})
-@Api(value = "#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}")
+@Api(value = "#if(${baseUrl})${baseUrl}#end#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}")
 #end
 #if(${restControllerStyle})
 @RestController

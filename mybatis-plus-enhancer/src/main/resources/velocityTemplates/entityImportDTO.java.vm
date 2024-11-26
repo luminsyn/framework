@@ -6,7 +6,7 @@ import ${pkg};
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-##import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -19,7 +19,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 /**
- * $!{table.comment}导入DTO
+ * $!{table.comment}-Excel导入DTO
  *
  * @author ${author}
  * @see ${package.Entity}.${entity}
@@ -32,11 +32,13 @@ import com.alibaba.excel.annotation.ExcelProperty;
 @Accessors(chain = true)
   #end
 #end
-###if(${springdoc})
-##@Schema(name = "${entity}ImportDTO", description = "$!{table.comment}导入DTO")
-###elseif(${swagger})
-##@ApiModel(value = "${entity}ImportDTO对象", description = "$!{table.comment}导入DTO")
-###end
+#if(${springdoc})
+##@Schema(name = "${entity}ImportDTO", description = "$!{table.comment}-Excel导入DTO")
+@Schema(description = "$!{table.comment}-Excel导入DTO")
+#elseif(${swagger})
+##@ApiModel(value = "${entity}ImportDTO", description = "$!{table.comment}-Excel导入DTO")
+@ApiModel(description = "$!{table.comment}-Excel导入DTO")
+#end
 @ExcelIgnoreUnannotated
 public class ${entity}ImportDTO {
 #if(${entitySerialVersionUID})

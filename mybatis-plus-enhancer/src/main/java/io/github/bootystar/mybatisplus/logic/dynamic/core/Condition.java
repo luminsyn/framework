@@ -1,7 +1,9 @@
 package io.github.bootystar.mybatisplus.logic.dynamic.core;
 
 import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 条件参数
@@ -14,26 +16,23 @@ import lombok.*;
 public class Condition {
 
     /**
-     * 连接符
-     * 和上一个条件的关系(AND 或 OR)
-     * 默认AND
-     * 递归
+     * 和上一个条件的关系(AND 或 OR),默认AND
      */
     protected String connector = SqlKeyword.AND.keyword;
 
     /**
-     * 字段
+     * 字段名
      */
     protected String field;
 
     /**
-     * 运算符(=,>,<,!=,>=,<=,LIKE,NOT LIKE,IS NULL,IS NOT NULL,IN,NOT IN)
-     * 默认=
+     * 运算符(=,>,<,!=,<>,>=,<=,LIKE,NOT LIKE,IS NULL,IS NOT NULL,IN,NOT IN),默认=
+     *
      */
     protected String operator = SqlKeyword.EQ.keyword;
 
     /**
-     * 值
+     * 值(若是多个值,如in ,则value为集合)
      */
     protected Object value;
 

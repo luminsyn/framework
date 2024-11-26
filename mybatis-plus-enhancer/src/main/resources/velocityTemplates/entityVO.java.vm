@@ -5,7 +5,7 @@ import ${pkg};
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-##import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -17,10 +17,9 @@ import lombok.experimental.Accessors;
 #if(${importOnVO}||${exportOnVO})
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-##import com.alibaba.excel.annotation.write.style.*;
 #end
 /**
- * $!{table.comment} VO
+ * $!{table.comment}-VO
  *
  * @author ${author}
  * @see ${package.Entity}.${entity}
@@ -33,11 +32,13 @@ import com.alibaba.excel.annotation.ExcelProperty;
 @Accessors(chain = true)
   #end
 #end
-###if(${springdoc})
-##@Schema(name = "${entity}VO", description = "$!{table.comment}VO")
-###elseif(${swagger})
-##@ApiModel(value = "${entity}VO对象", description = "$!{table.comment}VO")
-###end
+#if(${springdoc})
+##@Schema(name = "${entity}VO", description = "$!{table.comment}-VO")
+@Schema(description = "$!{table.comment}-VO")
+#elseif(${swagger})
+##@ApiModel(value = "${entity}VO", description = "$!{table.comment}-VO")
+@ApiModel(description = "$!{table.comment}-VO")
+#end
 #if(${importOnVO}||${exportOnVO})
 @ExcelIgnoreUnannotated
 ##@HeadRowHeight(30)

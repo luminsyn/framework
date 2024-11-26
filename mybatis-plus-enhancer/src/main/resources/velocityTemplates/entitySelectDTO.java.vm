@@ -12,7 +12,7 @@ import ${javaApiPackage}.validation.constraints.Size;
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-##import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * $!{table.comment}查询DTO
+ * $!{table.comment}-查询DTO
  *
  * @author ${author}
  * @see ${package.Entity}.${entity}
@@ -44,11 +44,13 @@ import java.util.List;
 @Accessors(chain = true)
   #end
 #end
-###if(${springdoc})
-##@Schema(name = "${entity}SelectDTO", description = "$!{table.comment}查询DTO")
-###elseif(${swagger})
-##@ApiModel(value = "${entity}SelectDTO对象", description = "$!{table.comment}查询DTO")
-###end
+#if(${springdoc})
+##@Schema(name = "${entity}SelectDTO", description = "$!{table.comment}-查询DTO")
+@Schema(description = "$!{table.comment}-查询DTO")
+#elseif(${swagger})
+##@ApiModel(value = "${entity}SelectDTO", description = "$!{table.comment}-查询DTO")
+@ApiModel(description = "$!{table.comment}-查询DTO")
+#end
 public class ${entity}SelectDTO {
 ###if(${entitySerialVersionUID})
 ##

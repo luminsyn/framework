@@ -6,7 +6,7 @@ import ${pkg};
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-##import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 
@@ -18,11 +18,13 @@ import io.swagger.annotations.ApiModelProperty;
 #if(${table.convert})
 @TableName("${schemaName}${table.name}")
 #end
-###if(${springdoc})
+#if(${springdoc})
 ##@Schema(name = "${entity}", description = "$!{table.comment}")
-###elseif(${swagger})
+@Schema(description = "$!{table.comment}")
+#elseif(${swagger})
 ##@ApiModel(value = "${entity}对象", description = "$!{table.comment}")
-###end
+@ApiModel(description = "$!{table.comment}")
+#end
 #if(${superEntityClass})
 class ${entity} : ${superEntityClass}#if(${activeRecord})<${entity}>#end() {
 #elseif(${activeRecord})

@@ -29,7 +29,7 @@ import ${javaApiPackage}.validation.constraints.Size;
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
-##import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
@@ -40,7 +40,7 @@ import lombok.experimental.Accessors;
 #end
 
 /**
- * $!{table.comment}更新DTO
+ * $!{table.comment}-修改DTO
  *
  * @author ${author}
  * @see ${package.Entity}.${entity}
@@ -53,11 +53,13 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
   #end
 #end
-###if(${springdoc})
-##@Schema(name = "${entity}UpdateDTO", description = "$!{table.comment}更新DTO")
-###elseif(${swagger})
-##@ApiModel(value = "${entity}UpdateDTO对象", description = "$!{table.comment}更新DTO")
-###end
+#if(${springdoc})
+##@Schema(name = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
+@Schema(description = "$!{table.comment}-修改DTO")
+#elseif(${swagger})
+##@ApiModel(value = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
+@ApiModel(description = "$!{table.comment}-修改DTO")
+#end
 public class ${entity}UpdateDTO {
 #if(${entitySerialVersionUID})
 ##

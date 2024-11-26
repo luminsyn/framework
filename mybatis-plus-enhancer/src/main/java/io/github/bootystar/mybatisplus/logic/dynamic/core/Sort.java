@@ -1,7 +1,6 @@
 package io.github.bootystar.mybatisplus.logic.dynamic.core;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
