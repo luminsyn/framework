@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 @Getter
 @Slf4j
 @SuppressWarnings("unused" )
-public abstract class AbstractGenerator<C extends CustomConfig, B extends CustomConfig.Builder<C, B>> {
+public abstract class AbstractGenerator<C extends CustomConfig, B extends CustomConfig.Builder<C, B>> implements EnhanceGenerator<B> {
     protected DataSourceConfig.Builder dataSourceConfigBuilder;
     protected GlobalConfig.Builder globalConfigBuilder = new GlobalConfig.Builder();
     protected PackageConfig.Builder packageConfigBuilder = new PackageConfig.Builder();
@@ -169,6 +169,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
      * @param tableNames 表名(不填为全部)
      * @author bootystar
      */
+    @Override
     public void execute(String... tableNames) {
         if (tableNames != null && tableNames.length > 0) {
             strategyConfigBuilder.addInclude(Arrays.asList(tableNames));
@@ -176,52 +177,62 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
         execute();
     }
 
-    public AbstractGenerator<C, B> dataSource(Consumer<DataSourceConfig.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> dataSource(Consumer<DataSourceConfig.Builder> consumer) {
         consumer.accept(dataSourceConfigBuilder);
         return this;
     }
 
-    public AbstractGenerator<C, B> global(Consumer<GlobalConfig.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> global(Consumer<GlobalConfig.Builder> consumer) {
         consumer.accept(globalConfigBuilder);
         return this;
     }
 
-    public AbstractGenerator<C, B> pkg(Consumer<PackageConfig.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> pkg(Consumer<PackageConfig.Builder> consumer) {
         consumer.accept(packageConfigBuilder);
         return this;
     }
 
-    public AbstractGenerator<C, B> strategy(Consumer<StrategyConfig.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> strategy(Consumer<StrategyConfig.Builder> consumer) {
         consumer.accept(strategyConfigBuilder);
         return this;
     }
 
-    public AbstractGenerator<C, B> entity(Consumer<Entity.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> entity(Consumer<Entity.Builder> consumer) {
         consumer.accept(strategyConfigBuilder.entityBuilder());
         return this;
     }
 
-    public AbstractGenerator<C, B> mapper(Consumer<Mapper.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> mapper(Consumer<Mapper.Builder> consumer) {
         consumer.accept(strategyConfigBuilder.mapperBuilder());
         return this;
     }
 
-    public AbstractGenerator<C, B> service(Consumer<Service.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> service(Consumer<Service.Builder> consumer) {
         consumer.accept(strategyConfigBuilder.serviceBuilder());
         return this;
     }
 
-    public AbstractGenerator<C, B> controller(Consumer<Controller.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> controller(Consumer<Controller.Builder> consumer) {
         consumer.accept(strategyConfigBuilder.controllerBuilder());
         return this;
     }
 
-    public AbstractGenerator<C, B> injection(Consumer<InjectionConfig.Builder> consumer) {
+    @Override
+    public EnhanceGenerator<B> injection(Consumer<InjectionConfig.Builder> consumer) {
         consumer.accept(injectionConfigBuilder);
         return this;
     }
 
-    public AbstractGenerator<C, B> custom(Consumer<CustomConfig.Builder<C, B>> consumer) {
+    @Override
+    public EnhanceGenerator<B> custom(Consumer<CustomConfig.Builder<?, B>> consumer) {
         consumer.accept(customConfigBuilder);
         return this;
     }
@@ -233,7 +244,8 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
      * @return {@link AbstractGenerator }<{@link B }>
      * @author bootystar
      */
-    public AbstractGenerator<C, B> mapperXmlResource(String path) {
+    @Override
+    public EnhanceGenerator<B> mapperXmlResource(String path) {
         String projectPath = System.getProperty("user.dir" );
         if (path.startsWith("/" )) {
             path = path.substring(1);
@@ -248,7 +260,8 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
      * @return {@link AbstractGenerator }<{@link B }>
      * @author bootystar
      */
-    public AbstractGenerator<C, B> initialize() {
+    @Override
+    public EnhanceGenerator<B> initialize() {
         customConfigBuilder
                 .sortColumn("index" , false)
                 .sortColumn("order" , false)
@@ -283,7 +296,8 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
      * @return {@link AbstractGenerator }<{@link B }>
      * @author bootystar
      */
-    public AbstractGenerator<C, B> enableGlobalFileOverwrite() {
+    @Override
+    public EnhanceGenerator<B> enableGlobalFileOverwrite() {
         customConfigBuilder
                 .enableFileOverride()
         ;
