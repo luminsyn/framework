@@ -28,6 +28,14 @@ import java.util.List;
 interface ${table.serviceName} : ${superServiceClass}<${entity}>
 #else
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+    #if(${generateInsert})
+
+    <S> ${entity}VO insertByDTO(S s);
+    #end
+    #if(${generateUpdate})
+
+    <S> boolean updateByDTO(S s);
+    #end
     #if(${generateSelect})
 
     ${entity}VO oneById(Serializable id);
@@ -37,10 +45,6 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     <S> List<${entity}VO> listByDTO(S s);
 
     <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size);
-        #if(${generateExport})
-
-    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields);
-        #end
     #end
     #if(${generateImport})
 
@@ -48,14 +52,11 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     <U> void excelTemplate(OutputStream os, Class<U> clazz);
     #end
-    #if(${generateInsert})
+    #if(${generateExport})
 
-    <S> ${entity}VO insertByDTO(S s);
+    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields);
     #end
-    #if(${generateUpdate})
 
-    <S> boolean updateByDTO(S s);
-    #end
 
 }
 #end

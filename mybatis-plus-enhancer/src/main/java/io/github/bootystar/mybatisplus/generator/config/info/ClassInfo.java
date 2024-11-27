@@ -24,14 +24,14 @@ public class ClassInfo {
         this.classGenericTypeCount = clazz.getTypeParameters().length;
     }
 
-    public boolean enable() {
+    public boolean on() {
         if (classPackage == null || classSimpleName == null || classFullName == null) {
             return false;
         }
         return true;
     }
 
-    public String classDeclaration(String... genericTypeStr) {
+    public String clazz(String... genericTypeStr) {
         if (classSimpleName == null) {
             return genericTypeStr!=null && genericTypeStr.length == 1 ? genericTypeStr[0] : "Object";
         }

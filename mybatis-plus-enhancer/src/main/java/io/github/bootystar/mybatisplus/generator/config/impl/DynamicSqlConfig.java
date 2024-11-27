@@ -15,7 +15,7 @@ import lombok.Getter;
 public class DynamicSqlConfig extends CustomConfigEnhance {
 
     {
-        entitySelectDTO = new ClassInfo(SqlHelper.class);
+        selectDTO = new ClassInfo(SqlHelper.class);
         mapperDTO = new ClassInfo(UnmodifiableSqlHelper.class);
     }
 

@@ -47,9 +47,40 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 }
 #else
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+    #if(${generateInsert})
+
+    @Override
+    public <S> ${entity}VO insertByDTO(S s) {
+        // ${entity}InsertDTO
+        ${entity} entity = new ${entity}();
+        BeanUtils.copyProperties(s, entity);
+        super.save(entity);
+        ${entity}VO vo = new ${entity}VO();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
+    }
+    #end
+    #if(${generateUpdate})
+
+    @Override
+    public <S> boolean updateByDTO(S s) {
+        // ${entity}UpdateDTO
+        ${entity} entity = new ${entity}();
+        BeanUtils.copyProperties(s, entity);
+        return super.updateById(entity);
+    }
+    #end
+    #if(${generateDelete})
+
+    @Override
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
+    }
+    #end
     #if(${generateSelect})
 
     public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
+        // ${entity}SelectDTO
         if (source ==null || source instanceof Map){
             return getBaseMapper().listByDTO(source, page);
         }
@@ -103,7 +134,27 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         page.setRecords(voList);
         return page;
     }
-        #if(${generateExport})
+    #end
+    #if(${generateImport})
+
+    @Override
+    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+        // ${entity}InsertDTO
+        List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
+        List<${entity}> entityList = cachedDataList.stream().map(e->{
+                ${entity} entity = new ${entity}();
+                BeanUtils.copyProperties(e, entity);
+                return entity;
+            }).collect(Collectors.toList());
+        return super.saveBatch(entityList);
+    }
+
+    @Override
+    public <U> void excelTemplate(OutputStream os, Class<U> clazz) {
+        EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
+    }
+    #end
+    #if(${generateExport})
 
     @Override
     public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
@@ -119,53 +170,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         }
         builder.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
-        #end
     #end
-    #if(${generateImport})
 
-    @Override
-    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
-        List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
-        List<${entity}> entityList = cachedDataList.stream().map(e->{
-                ${entity} entity = new ${entity}();
-                BeanUtils.copyProperties(e, entity);
-                return entity;
-            }).collect(Collectors.toList());
-        return super.saveBatch(entityList);
-    }
-
-    @Override
-    public <U> void excelTemplate(OutputStream os, Class<U> clazz) {
-        EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
-    }
-    #end
-    #if(${generateInsert})
-
-    @Override
-    public <S> ${entity}VO insertByDTO(S s) {
-        ${entity} entity = new ${entity}();
-        BeanUtils.copyProperties(s, entity);
-        super.save(entity);
-        ${entity}VO vo = new ${entity}VO();
-        BeanUtils.copyProperties(entity, vo);
-        return vo;
-    }
-    #end
-    #if(${generateUpdate})
-
-    @Override
-    public <S> boolean updateByDTO(S s) {
-        ${entity} entity = new ${entity}();
-        BeanUtils.copyProperties(s, entity);
-        return super.updateById(entity);
-    }
-    #end
-    #if(${generateDelete})
-
-    @Override
-    public boolean removeById(Serializable id) {
-        return super.removeById(id);
-    }
-    #end
 }
 #end

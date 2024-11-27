@@ -25,7 +25,7 @@ import java.util.Map;
 public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, UnmodifiableSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
 
     @Override
-    @SuppressWarnings("unchecked" )
+    @SuppressWarnings("unchecked")
     public <S> List<V> doSelect(S s, IPage<V> page) {
         if (s == null) {
             return getBaseMapper().listByDTO(null, page);
@@ -58,7 +58,7 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, Unmodi
             sqlHelper.addConditions(s, SqlKeyword.EQ.keyword);
         }
         if (sqlHelper.getConditions() == null || sqlHelper.getConditions().isEmpty()) {
-            throw new IllegalStateException(String.format("no conditions from %s for entity %s" , s.getClass().getName(), classOfEntity().getName()));
+            throw new IllegalStateException(String.format("no conditions from %s for entity %s", s.getClass().getName(), classOfEntity().getName()));
         }
         return getBaseMapper().listByDTO(sqlHelper.unmodifiable(classOfEntity()), page);
     }
@@ -66,7 +66,14 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, Unmodi
 
     @Override
     public V oneById(Serializable id) {
-        Condition condition = new Condition(null, MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity()), SqlKeyword.EQ.keyword, id);
+        if (id == null) {
+            throw new IllegalArgumentException("id can't be null");
+        }
+        String s = MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity());
+        if (s == null) {
+            throw new IllegalArgumentException("no id field found in entity");
+        }
+        Condition condition = new Condition(s, SqlKeyword.EQ.keyword, id);
         return oneByDTO(new SqlHelper().addRequiredConditions(condition).unmodifiable(classOfEntity()));
     }
 

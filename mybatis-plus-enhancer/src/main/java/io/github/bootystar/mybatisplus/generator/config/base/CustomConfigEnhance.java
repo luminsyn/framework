@@ -10,24 +10,14 @@ import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
 public abstract class CustomConfigEnhance extends CustomConfig {
 
     /**
-     * 显示子类重写的方法
+     * 生成重写的方法
      */
-    protected boolean enableServiceImplMethod = true;
-
-    /**
-     * 重写方法中显示注释
-     */
-    protected boolean enableServiceImplMethodComment = true;
-
-    /**
-     * 显示mapper方法
-     */
-    protected boolean enableMapperMethod = true;
+    protected boolean overrideMethods = true;
 
     /**
      * mapper入参dto
      */
-    protected ClassInfo mapperDTO = new ClassInfo(Object.class);
+    protected ClassInfo mapperDTO = new ClassInfo();
 
     /**
      * 构造器
@@ -37,36 +27,13 @@ public abstract class CustomConfigEnhance extends CustomConfig {
     public static abstract class Builder<C extends CustomConfigEnhance, B extends CustomConfigEnhance.Builder<C, B>> extends CustomConfig.Builder<C, B> {
 
         /**
-         * 不生成service实现类的重写方法
+         * 不生成重写的方法
          *
          * @return {@code U }
          * @author bootystar
          */
-        public B disableServiceImplOverrideMethod() {
-            this.config.enableServiceImplMethod = false;
-            return builder;
-        }
-
-        /**
-         * 不生成service实现类的重写方法中的注释信息
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B disableServiceImplOverrideMethodComment() {
-            this.config.enableServiceImplMethodComment = false;
-            return builder;
-        }
-
-
-        /**
-         * 不生成mapper的父类方法
-         *
-         * @return {@code U }
-         * @author bootystar
-         */
-        public B disableMapperOverrideMethod() {
-            this.config.enableMapperMethod = false;
+        public B disableOverrideMethods() {
+            this.config.overrideMethods = false;
             return builder;
         }
 

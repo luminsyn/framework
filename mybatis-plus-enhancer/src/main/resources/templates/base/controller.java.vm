@@ -10,18 +10,30 @@ import ${superControllerClassPackage};
 #if(${generateSelect}||(${generateExport}&&${exportOnVO})||(${generateImport}&&${importOnVO}))
 import ${basePackage}.${package4VO}.${entity}VO;
 #end
-###-----查询DTO及方法----start
-#if(${generateSelect})
-    #if(${pageMethod.enable()})
+###-----查询DTO字符串----start
+#if ($entity == 'User')
+    #set ($entityVO = 'UserVO')
+#elseif ($entity == 'Product')
+    #set ($entityVO = 'ProductVO')
+#else
+    #set ($entityVO = 'DefaultVO')
+#end
+###-----查询DTO字符串----end
+###-----查询DTO字符串----start
+#if(${generateSelect}|| ${gener})
+    #if(${pageMethod.imports()})
 import ${pageMethod.classFullName};
     #else
 import com.baomidou.mybatisplus.core.metadata.IPage;
     #end
-    #if(${entitySelectDTO.enable()})
-import ${entitySelectDTO.classFullName};
+    #if(${selectDTO.on()})
+import ${selectDTO.classFullName};
+#set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
     #else
 import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+#set($entitySelectDTO = "${entity}SelectDTO")
     #end
+#set($pathParams = "@PathVariable(value = 'current', required = false) Long current, @PathVariable(value = 'size', required = false) Long size")
 #end
 ###-----查询DTO及方法----end
 #if(${generateInsert})
@@ -103,7 +115,87 @@ public class ${table.controllerName} {
 
     @Autowired
     private ${table.serviceName} baseService;
-## ----------  BEGIN 字段循环遍历  ----------
+#if(${generateInsert})
+
+    #if(${springdoc})
+    @Operation(summary = "新增")
+        #elseif(${swagger})
+    @ApiOperation(value = "新增")
+    #else
+    /**
+     * 新增
+     *
+     * @param s 新增入参对象
+     * @return 是否成功
+     * @author ${author}
+     */
+    #end
+    #if(${restful})
+    @PostMapping("")
+        #else
+    @PostMapping("/insert")
+    #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
+    public ${returnMethod.classDeclaration("${entity}VO")} insert(#if(${requestBody})@RequestBody #end#if(${validated})@Validated #end${entity}InsertDTO s) {
+        return ${returnMethod.methodDeclaration("baseService.insertByDTO(s)")};
+    }
+#end
+#if(${generateUpdate})
+
+    #if(${springdoc})
+    @Operation(summary = "修改")
+        #elseif(${swagger})
+    @ApiOperation(value = "修改")
+        #else
+    /**
+     * 修改
+     *
+     * @param s 修改入参对象
+     * @return 是否成功
+     * @author ${author}
+     */
+    #end
+    #if(${restful})
+    @PutMapping("")
+        #else
+    @PostMapping("/update")
+    #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
+    public ${returnMethod.classDeclaration("Boolean")} update(#if(${requestBody})@RequestBody #end#if(${validated})@Validated #end${entity}UpdateDTO s) {
+        return ${returnMethod.methodDeclaration("baseService.updateByDTO(s)")};
+    }
+#end
+#if(${generateDelete})
+
+    #if(${springdoc})
+    @Operation(summary = "删除")
+        #elseif(${swagger})
+    @ApiOperation(value = "删除")
+        #else
+    /**
+     * 删除
+     *
+     * @param id 主键id
+     * @return 是否成功
+     * @author ${author}
+     */
+    #end
+    #if(${restful})
+    @DeleteMapping("/{id}")
+        #else
+    @PostMapping("/delete/{id}")
+    #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
+    public ${returnMethod.classDeclaration("Boolean")} delete(@PathVariable("id") Serializable id) {
+        return ${returnMethod.methodDeclaration("baseService.removeById(id)")};
+    }
+#end
 ##------------查询相关--------start
 #if(${generateSelect})
 
@@ -145,7 +237,7 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
-    #if(${postOnComplicatedSelect})
+    #if(${postQuery})
     @PostMapping("/list")
     #else
     @GetMapping("/list")
@@ -153,7 +245,7 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration("${entity}VO")} selectList(#if(${requestBody})@RequestBody(required = false) #end#if(${entitySelectDTO.enable()})${entitySelectDTO.classDeclaration()}#else${entity}SelectDTO#end s) {
+    public ${returnMethod.classDeclaration("${entity}VO")} selectList(${entitySelectDTO} s) {
         return ${returnMethod.methodDeclaration("baseService.listByDTO(s)")};
     }
 
@@ -172,7 +264,7 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
-    #if(${postOnComplicatedSelect})
+    #if(${postQuery})
     @PostMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
     #else
     @GetMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
@@ -180,35 +272,14 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration(${pageMethod.classDeclaration(${entity}VO)})} selectPage(#if(${requestBody})@RequestBody(required = false) #end#if(${entitySelectDTO.enable()})${entitySelectDTO.classDeclaration}#else${entity}SelectDTO#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
-        return ${returnResultMethodName.methodInvokeDeclaration(baseService.pageByDTO(s, current, size))};
+    #set($entityVO = "${entity}VO")
+    #set($pageClazz = ${pageMethod.clazz("$entityVO")})
+    #set($returnPageClazz = ${returnMethod.clazz("$pageClazz")})
+##    public ${returnPageClazz} selectPage(#if(${requestBody})@RequestBody(required = false) ${entitySelectDTO} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
+    public ${returnPageClazz} selectPage(#if(${requestBody})@RequestBody(required = false) ${entitySelectDTO} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
+        return ${returnMethod.method("baseService.pageByDTO(s, current, size)")};
     }
-    ##--------导出--------start
-        #if(${generateExport})
 
-    #if(${springdoc})
-    @Operation(summary = "导出excel")
-        #elseif(${swagger})
-    @ApiOperation(value = "导出excel")
-        #else
-    /**
-     * 导出excel(页码与大小均不传时导出全部)
-     *
-     * @param current 页码(默认1)
-     * @param size 每页大小(默认10)
-     * @param s 查询条件
-     * @author ${author}
-     */
-    #end
-    #if(${postOnComplicatedSelect})@PostMapping#else@GetMapping({"/export", "/export/{current}", "/export/{current}/{size}"})#end
-    public void exportExcel(#if(${requestBody})@RequestBody(required = false) #end#if(${entitySelectDTO.enable()})${entitySelectDTO.classDeclaration}#else${entity}SelectDTO#end s#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
-        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
-        response.setContentType("application/vnd.ms-excel");
-        baseService.exportExcel(s, response.getOutputStream(), #if(${exportOnVO})${entity}VO#else${entity}ExportDTO#end.class, current, size);
-    }
-        #end
-##------------查询相关--------start
-    ###--------导出--------end
 #end
 #if(${generateImport})
 
@@ -223,11 +294,11 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
-    #if(${allPost})@PostMapping#else@GetMapping("/template")#end
+    @GetMapping("/excelTemplate")
     public void excelTemplate(HttpServletResponse response) throws IOException {
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
         response.setContentType("application/vnd.ms-excel");
-        baseService.excelTemplate(response.getOutputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class);
+        baseService.excelTemplate(response.getOutputStream(), ${entity}InsertDTO.class);
     }
 
     #if(${springdoc})
@@ -243,96 +314,42 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
-    @PostMapping("/import")
+    @PostMapping("/excelImport")
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration(${entity}VO)} importExcel(@RequestParam("file") MultipartFile file) throws IOException {
+    public ${returnMethod.clazz("${entity}VO")} excelImport(@RequestParam("file") MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
-            return ${returnResultMethodName.methodInvokeDeclaration(false)}
+            return ${returnResultMethodName.method("false")}
         }
-        return ${returnResultMethodName.methodInvokeDeclaration(baseService.importExcel(file.getInputStream(), #if(${importOnVO})${entity}VO#else${entity}ImportDTO#end.class))};
+        return ${returnResultMethodName.method("baseService.excelImport(file.getInputStream(), ${entity}InsertDTO.class)")};
     }
-
 #end
-#if(${generateInsert})
+#if(${generateExport})
+
     #if(${springdoc})
-    @Operation(summary = "新增")
+    @Operation(summary = "导出excel")
         #elseif(${swagger})
-    @ApiOperation(value = "新增")
+    @ApiOperation(value = "导出excel")
+        #else
+    /**
+     * 导出excel(页码与大小均不传时导出全部)
+     *
+     * @param current 页码(默认1)
+     * @param size 每页大小(默认10)
+     * @param s 查询条件
+     * @author ${author}
+     */
+    #end
+    #if(${postQuery})
+    @PostMapping({"/excelExport", "/export/{current}", "/export/{current}/{size}"})
     #else
-    /**
-     * 新增
-     *
-     * @param s 新增入参对象
-     * @return 是否成功
-     * @author ${author}
-     */
+    @GetMapping({"/excelExport", "/export/{current}", "/export/{current}/{size}"})
     #end
-    #if(${restful})
-    @PostMapping("")
-        #else
-    @PostMapping("/insert")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
-    #end
-    public ${returnMethod.classDeclaration("${entity}VO")} insert(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}InsertDTO s) {
-        return ${returnMethod.methodDeclaration("baseService.insertByDTO(s)")};
-    }
-#end
-#if(${generateUpdate})
-
-    #if(${springdoc})
-    @Operation(summary = "修改")
-        #elseif(${swagger})
-    @ApiOperation(value = "修改")
-        #else
-    /**
-     * 修改
-     *
-     * @param s 修改入参对象
-     * @return 是否成功
-     * @author ${author}
-     */
-    #end
-    #if(${restful})
-    @PutMapping("")
-        #else
-    @PostMapping("/update")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
-    #end
-    public ${returnMethod.classDeclaration("Boolean")} update(#if(${requestBody})@RequestBody #end#if(${enableValidated})@Validated #end${entity}UpdateDTO s) {
-        return ${returnMethod.methodDeclaration("baseService.updateByDTO(s)")};
-    }
-#end
-#if(${generateDelete})
-
-    #if(${springdoc})
-    @Operation(summary = "删除")
-        #elseif(${swagger})
-    @ApiOperation(value = "删除")
-        #else
-    /**
-     * 删除
-     *
-     * @param id 主键id
-     * @return 是否成功
-     * @author ${author}
-     */
-    #end
-    #if(${restful})
-    @DeleteMapping("/{id}")
-        #else
-    @PostMapping("/delete/{id}")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
-    #end
-    public ${returnMethod.classDeclaration("Boolean")} delete(@PathVariable("id") Serializable id) {
-        return ${returnMethod.methodDeclaration("baseService.removeById(id)")};
+    public void excelExport(#if(${requestBody})@RequestBody(required = false) #end#if(${selectDTO.on()})${selectDTO.clazz("${entity}")}#else${entity}SelectDTO#end s#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
+        response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
+        response.setContentType("application/vnd.ms-excel");
+        baseService.excelExport(s, response.getOutputStream(), ${entity}VO.class, current, size);
     }
 #end
 

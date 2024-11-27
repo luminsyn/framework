@@ -34,7 +34,7 @@ public class MethodInfo extends ClassInfo {
         this.isConstructor = true;
     }
 
-    public String methodDeclaration(String parametersStr) {
+    public String method(String parametersStr) {
         if (methodName == null) {
             return parametersStr;
         }

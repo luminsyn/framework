@@ -37,7 +37,7 @@ public abstract class CustomConfig {
         String path4DTO = parentPath + File.separator + pathUnderParent4DTO + File.separator;
         String path4VO = parentPath + File.separator + pathUnderParent4VO + File.separator;
 
-        if (generateInsert) {
+        if (generateInsert || generateImport) {
             String fileName = "InsertDTO.java";
             String path = path4DTO + entityName + fileName;
             CustomFile.Builder builder = new CustomFile.Builder()
@@ -65,7 +65,8 @@ public abstract class CustomConfig {
             customFiles.add(builder.build());
         }
 
-        if (generateSelect && entitySelectDTO == null) {
+        // todo 导入导出整合
+        if (generateSelect && selectDTO == null) {
             String fileName = "SelectDTO.java";
             String path = path4DTO + File.separator + entityName + fileName;
             CustomFile.Builder builder = new CustomFile.Builder()
@@ -78,33 +79,33 @@ public abstract class CustomConfig {
             }
             customFiles.add(builder.build());
         }
-        if (generateExport && !exportOnVO) {
-            String fileName = "ExportDTO.java";
-            String path = path4DTO + File.separator + entityName + fileName;
-            CustomFile.Builder builder = new CustomFile.Builder()
-                    .fileName(fileName)
-                    .filePath(path)
-                    .templatePath("/templates/base/entityExportDTO.java.vm")
-                    .packageName(pathUnderParent4DTO);
-            if (fileOverride) {
-                builder.enableFileOverride();
-            }
-            customFiles.add(builder.build());
-
-        }
-        if (generateImport && !importOnVO) {
-            String fileName = "ImportDTO.java";
-            String path = path4DTO + File.separator + entityName + fileName;
-            CustomFile.Builder builder = new CustomFile.Builder()
-                    .fileName(fileName)
-                    .filePath(path)
-                    .templatePath("/templates/base/entityImportDTO.java.vm")
-                    .packageName(pathUnderParent4DTO);
-            if (fileOverride) {
-                builder.enableFileOverride();
-            }
-            customFiles.add(builder.build());
-        }
+//        if (generateExport && !exportOnVO) {
+//            String fileName = "ExportDTO.java";
+//            String path = path4DTO + File.separator + entityName + fileName;
+//            CustomFile.Builder builder = new CustomFile.Builder()
+//                    .fileName(fileName)
+//                    .filePath(path)
+//                    .templatePath("/templates/base/entityExportDTO.java.vm")
+//                    .packageName(pathUnderParent4DTO);
+//            if (fileOverride) {
+//                builder.enableFileOverride();
+//            }
+//            customFiles.add(builder.build());
+//
+//        }
+//        if (generateImport && !importOnVO) {
+//            String fileName = "ImportDTO.java";
+//            String path = path4DTO + File.separator + entityName + fileName;
+//            CustomFile.Builder builder = new CustomFile.Builder()
+//                    .fileName(fileName)
+//                    .filePath(path)
+//                    .templatePath("/templates/base/entityImportDTO.java.vm")
+//                    .packageName(pathUnderParent4DTO);
+//            if (fileOverride) {
+//                builder.enableFileOverride();
+//            }
+//            customFiles.add(builder.build());
+//        }
 
         String fileName = "VO.java";
         String path = path4DTO + File.separator + entityName + fileName;
@@ -168,8 +169,7 @@ public abstract class CustomConfig {
     /**
      * 实体查询dto
      */
-    protected ClassInfo entitySelectDTO;
-
+    protected ClassInfo selectDTO;
 
     /**
      * DTO所在包
@@ -185,17 +185,6 @@ public abstract class CustomConfig {
      * 新增或修改时排除的字段
      */
     protected Collection<String> editExcludeColumns;
-
-    /**
-     * 使用VO生出导出Excel(不生成额外ExportDTO)
-     */
-    protected boolean exportOnVO = true;
-
-    /**
-     * 使用VO生出导入Excel(不生成额外ImportDTO)
-     */
-    protected boolean importOnVO = true;
-
 
     // ------------------controller相关配置----------------
 
@@ -220,18 +209,18 @@ public abstract class CustomConfig {
     protected String javaApiPackage = "javax";
 
     /**
-     * 是否添加参数校验
+     * 参数校验注解
      */
-    protected boolean enableValidated = true;
+    protected boolean validated = true;
     /**
-     * 是否添加跨域注解
+     * 跨域注解
      */
-    protected boolean enableOrigins;
+    protected boolean crossOrigins;
 
     /**
      * 复杂查询使用post请求
      */
-    protected boolean postOnComplicatedSelect = true;
+    protected boolean postQuery = true;
 
     /**
      * 请求基础url
@@ -278,11 +267,6 @@ public abstract class CustomConfig {
      * 导出DTO
      */
     protected boolean generateExport = true;
-    /**
-     * 生成查询dto
-     */
-    protected boolean generateSelectDTO = true;
-
 
     /**
      * 构建器
@@ -365,28 +349,6 @@ public abstract class CustomConfig {
             return this.builder;
         }
 
-        /**
-         * 不在vo上导出(生成额外ExportDTO)
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B disableExportOnVO() {
-            this.config.exportOnVO = false;
-            return this.builder;
-        }
-
-        /**
-         * 不在vo上导入(生成额外ImportDTO)
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B disableImportOnVO() {
-            this.config.importOnVO = false;
-            return this.builder;
-        }
-
         //==================controller=======================
 
         /**
@@ -417,8 +379,8 @@ public abstract class CustomConfig {
          * @return this
          * @author bootystar
          */
-        public B enableOrigins() {
-            this.config.enableOrigins = true;
+        public B enableCrossOrigins() {
+            this.config.crossOrigins = true;
             return this.builder;
         }
 
@@ -487,7 +449,7 @@ public abstract class CustomConfig {
          * @author bootystar
          */
         public B disableValidated() {
-            this.config.enableValidated = false;
+            this.config.validated = false;
             return this.builder;
         }
 
@@ -497,8 +459,8 @@ public abstract class CustomConfig {
          * @return this
          * @author bootystar
          */
-        public B disablePostOnComplicatedSelect() {
-            this.config.postOnComplicatedSelect = false;
+        public B disablePostQuery() {
+            this.config.postQuery = false;
             return this.builder;
         }
 
@@ -576,6 +538,17 @@ public abstract class CustomConfig {
         }
 
         /**
+         * 不生成导入方法
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B disableImport() {
+            this.config.generateImport = false;
+            return this.builder;
+        }
+
+        /**
          * 不生成导出方法
          *
          * @return {@link B }
@@ -586,16 +559,7 @@ public abstract class CustomConfig {
             return this.builder;
         }
 
-        /**
-         * 不生成导入方法
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B disableImport() {
-            this.config.generateImport = false;
-            return this.builder;
-        }
+
 
     }
 

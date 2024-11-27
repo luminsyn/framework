@@ -42,6 +42,16 @@ public interface EnhanceService<T, V> extends IService<T> {
         return MybatisPlusReflectHelper.toTarget(source, classOfVO());
     }
 
+    default <S> V insertByDTO(S s) {
+        T entity = toEntity(s);
+        save(entity);
+        return toVO(entity);
+    }
+
+    default <S> boolean updateByDTO(S s) {
+        return updateById(toEntity(s));
+    }
+
     <S> List<V> doSelect(S s, IPage<V> page);
 
     V oneById(Serializable id);
@@ -117,15 +127,5 @@ public interface EnhanceService<T, V> extends IService<T> {
         List<T> entityList = cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
         return saveBatch(entityList);
     }
-
-    default <S> V insertByDTO(S s) {
-        T entity = toEntity(s);
-        save(entity);
-        return toVO(entity);
-    }
-
-    default <S> boolean updateByDTO(S s) {
-        return updateById(toEntity(s));
-    }
-
+    
 }
