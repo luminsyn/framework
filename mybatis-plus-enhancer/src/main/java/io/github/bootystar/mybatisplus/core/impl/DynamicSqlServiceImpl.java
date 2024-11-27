@@ -9,8 +9,9 @@ import io.github.bootystar.mybatisplus.logic.dynamic.core.Condition;
 import io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper;
 import io.github.bootystar.mybatisplus.logic.dynamic.core.UnmodifiableSqlHelper;
 import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
+import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,11 +25,6 @@ import java.util.Map;
 public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, UnmodifiableSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
 
     @Override
-    public List<String> queryFields() {
-        return new ArrayList<>(ReflectHelper4MybatisPlus.dynamicFieldsMap(entityClass()).keySet());
-    }
-
-    @Override
     @SuppressWarnings("unchecked" )
     public <S> List<V> doSelect(S s, IPage<V> page) {
         if (s == null) {
@@ -36,11 +32,11 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, Unmodi
         }
         if (s instanceof SqlHelper) {
             SqlHelper sqlHelper = (SqlHelper) s;
-            return getBaseMapper().listByDTO(sqlHelper.unmodifiable(entityClass()), page);
+            return getBaseMapper().listByDTO(sqlHelper.unmodifiable(classOfEntity()), page);
         }
         if (s instanceof UnmodifiableSqlHelper<?>) {
             UnmodifiableSqlHelper<?> unmodifiableSqlHelper = (UnmodifiableSqlHelper<?>) s;
-            if (!entityClass().equals(unmodifiableSqlHelper.getEntityClass())) {
+            if (!classOfEntity().equals(unmodifiableSqlHelper.getEntityClass())) {
                 throw new UnsupportedOperationException("not support this type of sqlHelper: " + unmodifiableSqlHelper.getEntityClass().getName());
             }
             return getBaseMapper().listByDTO((UnmodifiableSqlHelper<T>) unmodifiableSqlHelper, page);
@@ -62,9 +58,16 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, Unmodi
             sqlHelper.addConditions(s, SqlKeyword.EQ.keyword);
         }
         if (sqlHelper.getConditions() == null || sqlHelper.getConditions().isEmpty()) {
-            throw new IllegalStateException(String.format("no conditions from %s for entity %s" , s.getClass().getName(), entityClass().getName()));
+            throw new IllegalStateException(String.format("no conditions from %s for entity %s" , s.getClass().getName(), classOfEntity().getName()));
         }
-        return getBaseMapper().listByDTO(sqlHelper.unmodifiable(entityClass()), page);
+        return getBaseMapper().listByDTO(sqlHelper.unmodifiable(classOfEntity()), page);
+    }
+
+
+    @Override
+    public V oneById(Serializable id) {
+        Condition condition = new Condition(null, MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity()), SqlKeyword.EQ.keyword, id);
+        return oneByDTO(new SqlHelper().addRequiredConditions(condition).unmodifiable(classOfEntity()));
     }
 
 }

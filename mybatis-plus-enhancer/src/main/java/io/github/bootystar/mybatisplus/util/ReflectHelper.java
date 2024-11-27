@@ -38,14 +38,23 @@ public abstract class ReflectHelper {
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
-                int modifiers = field.getModifiers();
-                if (Modifier.isStatic(modifiers) || Modifier.isFinal(modifiers) || Modifier.isNative(modifiers))
+                if (isSpecialModifier(field.getModifiers())) {
                     continue;
+                }
                 map.putIfAbsent(field.getName(), field);
             }
             clazz = clazz.getSuperclass();
         }
         return map;
+    }
+
+    public static boolean isSpecialModifier(int modifiers) {
+        return Modifier.isStatic(modifiers)
+                || Modifier.isFinal(modifiers)
+                || Modifier.isNative(modifiers)
+                || Modifier.isVolatile(modifiers)
+                || Modifier.isTransient(modifiers)
+                ;
     }
 
 
@@ -58,7 +67,7 @@ public abstract class ReflectHelper {
      * @author bootystar
      */
     @SneakyThrows
-    public static <T> T copyProperties(Object source, T target) {
+    public static <T> T copyFieldProperties(Object source, T target) {
         if (source == null || target == null || source.equals(target)) return target;
         Map<String, Field> sourceMap = fieldMap(source.getClass());
         Map<String, Field> targetMap = fieldMap(target.getClass());
@@ -78,15 +87,14 @@ public abstract class ReflectHelper {
      * 对象转map
      *
      * @param source 来源
-     * @return {@link Map }<{@link String },{@link Object }>
+     * @return {@link Map }<{@link ? }, {@link ? }>
      * @author bootystar
      */
     @SneakyThrows
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> objectToMap(Object source) {
+    public static Map<?, ?> objectToMap(Object source) {
+        if (source == null) return null;
+        if (source instanceof Map) return (Map<?, ?>) source;
         HashMap<String, Object> map = new HashMap<>();
-        if (source == null) return map;
-        if (source instanceof Map) return (Map<String, Object>) source;
         Collection<Field> fields = fieldMap(source.getClass()).values();
         for (Field field : fields) {
             Object o = field.get(source);
@@ -94,6 +102,18 @@ public abstract class ReflectHelper {
             map.put(field.getName(), o);
         }
         return map;
+    }
+
+    /**
+     * 对象转对象
+     *
+     * @param source 来源
+     * @param clazz  克拉兹
+     * @return {@link U }
+     * @author bootystar
+     */
+    public static <U> U toTarget(Object source, Class<U> clazz) {
+        return copyFieldProperties(source, newInstance(clazz));
     }
 
 }

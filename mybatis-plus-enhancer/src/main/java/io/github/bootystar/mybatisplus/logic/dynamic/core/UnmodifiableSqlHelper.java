@@ -2,10 +2,9 @@ package io.github.bootystar.mybatisplus.logic.dynamic.core;
 
 import io.github.bootystar.mybatisplus.logic.dynamic.ConditionConvertException;
 import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
+import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.compiler.ast.Variable;
 
 import java.util.*;
 
@@ -32,7 +31,7 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
         if (entityClass == null || baseHelper == null) {
             throw new ConditionConvertException("baseHelper or entityClass class can not be null, please check your configuration");
         }
-        Map<String, String> map = ReflectHelper4MybatisPlus.dynamicFieldsMap(entityClass);
+        Map<String, String> map = MybatisPlusReflectHelper.dynamicFieldsMap(entityClass);
         if (map.isEmpty()) {
             throw new ConditionConvertException("entityClass %s has no field to convert, please check your configuration", entityClass.getName());
         }

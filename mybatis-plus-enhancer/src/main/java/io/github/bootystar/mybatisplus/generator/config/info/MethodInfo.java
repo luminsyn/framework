@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.logic.info;
+package io.github.bootystar.mybatisplus.generator.config.info;
 
 import lombok.*;
 
@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier;
  * @author bootystar
  */
 @Getter
+@NoArgsConstructor
 public class MethodInfo extends ClassInfo {
     protected String methodName;
     protected int methodGenericTypeCount;
@@ -18,24 +19,22 @@ public class MethodInfo extends ClassInfo {
     protected boolean isGenericMethod;
 
     public MethodInfo(Method method) {
-        super(method.getClass());
+        super(method.getDeclaringClass());
         this.methodName = method.getName();
         this.methodGenericTypeCount = method.getTypeParameters().length;
         this.isStatic = Modifier.isStatic(method.getModifiers());
-        this.isConstructor = method.getName().startsWith("<init>" );
+        this.isConstructor = method.getName().startsWith("<init>");
     }
 
     public MethodInfo(Constructor<?> method) {
-        super(method.getClass());
+        super(method.getDeclaringClass());
         this.methodName = method.getName();
         this.methodGenericTypeCount = method.getTypeParameters().length;
         this.isStatic = Modifier.isStatic(method.getModifiers());
         this.isConstructor = true;
     }
 
-
-
-    public String methodInvokeDeclaration(String parametersStr) {
+    public String methodDeclaration(String parametersStr) {
         if (methodName == null) {
             return parametersStr;
         }
@@ -54,13 +53,4 @@ public class MethodInfo extends ClassInfo {
         return String.format("new %s().%s(%s)" , classSimpleName, methodName, parametersStr);
     }
 
-    public String methodSelfReturnDeclaration(String returnTypeStr) {
-        if (classSimpleName == null) {
-            return "";
-        }
-        if (classGenericTypeCount == 1 && methodGenericTypeCount == 1) {
-            return String.format("%s<%s>" , classSimpleName, returnTypeStr);
-        }
-        return String.format("%s" , classSimpleName);
-    }
 }

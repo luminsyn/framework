@@ -6,11 +6,8 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.Condition;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper;
-import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
 import io.github.bootystar.mybatisplus.util.ExcelHelper;
-import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
+import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import java.io.InputStream;
@@ -24,52 +21,33 @@ import java.util.stream.Collectors;
  *
  * @author bootystar
  */
-@SuppressWarnings("unused" )
+@SuppressWarnings("unused")
 public interface EnhanceService<T, V> extends IService<T> {
 
-    default List<String> queryFields() {
-        return new ArrayList<>(ReflectHelper4MybatisPlus.fieldMap(entityClass()).keySet());
+    @SuppressWarnings("unchecked")
+    default Class<T> classOfEntity() {
+        return (Class<T>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), EnhanceService.class))[0];
     }
 
-    @SuppressWarnings("unchecked" )
-    default Class<T> entityClass() {
-        return (Class<T>) Objects.requireNonNull(ReflectHelper4MybatisPlus.resolveTypeArguments(getClass(), EnhanceService.class))[0];
-    }
-
-    @SuppressWarnings("unchecked" )
-    default Class<V> voClass() {
-        return (Class<V>) Objects.requireNonNull(ReflectHelper4MybatisPlus.resolveTypeArguments(getClass(), EnhanceService.class))[1];
+    @SuppressWarnings("unchecked")
+    default Class<V> classOfVO() {
+        return (Class<V>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), EnhanceService.class))[1];
     }
 
     default T toEntity(Object source) {
-        return toTarget(source, entityClass());
+        return MybatisPlusReflectHelper.toTarget(source, classOfEntity());
     }
 
     default V toVO(Object source) {
-        return toTarget(source, voClass());
+        return MybatisPlusReflectHelper.toTarget(source, classOfVO());
     }
 
-    default <U> U toTarget(Object source, Class<U> clazz) {
-        return ReflectHelper4MybatisPlus.copyProperties(source, ReflectHelper4MybatisPlus.newInstance(clazz));
-    }
+    <S> List<V> doSelect(S s, IPage<V> page);
 
-    default <S> V insertByDTO(S s) {
-        T entity = toEntity(s);
-        save(entity);
-        return toVO(entity);
-    }
-
-    default <S> boolean updateByDTO(S s) {
-        return updateById(toEntity(s));
-    }
-
-    default V oneById(Serializable id) {
-        Condition condition = new Condition(null, ReflectHelper4MybatisPlus.idFieldPropertyName(entityClass()), SqlKeyword.EQ.keyword, id);
-        return oneByDTO(new SqlHelper().addRequiredConditions(condition));
-    }
+    V oneById(Serializable id);
 
     default <U> U oneById(Serializable id, Class<U> clazz) {
-        return toTarget(oneById(id), clazz);
+        return MybatisPlusReflectHelper.toTarget(oneById(id), clazz);
     }
 
     default <S> V oneByDTO(S s) {
@@ -80,7 +58,7 @@ public interface EnhanceService<T, V> extends IService<T> {
     }
 
     default <S, U> U oneByDTO(S s, Class<U> clazz) {
-        return toTarget(oneByDTO(s), clazz);
+        return MybatisPlusReflectHelper.toTarget(oneByDTO(s), clazz);
     }
 
     default List<V> listByDTO() {
@@ -92,7 +70,7 @@ public interface EnhanceService<T, V> extends IService<T> {
     }
 
     default <S, U> List<U> listByDTO(S s, Class<U> clazz) {
-        return listByDTO(s).stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList());
+        return listByDTO(s).stream().map(e -> MybatisPlusReflectHelper.toTarget(e, clazz)).collect(Collectors.toList());
     }
 
     default <S> IPage<V> pageByDTO(S s, Long current, Long size) {
@@ -104,10 +82,10 @@ public interface EnhanceService<T, V> extends IService<T> {
         return page;
     }
 
-    @SuppressWarnings("unchecked" )
+    @SuppressWarnings("unchecked")
     default <S, U> IPage<U> pageByDTO(S s, Long current, Long size, Class<U> clazz) {
         IPage<U> vp = (IPage<U>) pageByDTO(s, current, size);
-        vp.setRecords(vp.getRecords().stream().map(e -> toTarget(e, clazz)).collect(Collectors.toList()));
+        vp.setRecords(vp.getRecords().stream().map(e -> MybatisPlusReflectHelper.toTarget(e, clazz)).collect(Collectors.toList()));
         return vp;
     }
 
@@ -140,6 +118,14 @@ public interface EnhanceService<T, V> extends IService<T> {
         return saveBatch(entityList);
     }
 
-    <S> List<V> doSelect(S s, IPage<V> page);
+    default <S> V insertByDTO(S s) {
+        T entity = toEntity(s);
+        save(entity);
+        return toVO(entity);
+    }
+
+    default <S> boolean updateByDTO(S s) {
+        return updateById(toEntity(s));
+    }
 
 }

@@ -66,7 +66,7 @@
 #end
     #if(${resultMapForVO})
     <!-- vo查询映射结果 -->
-    <resultMap id="voMap" type="${basePackage}.${VOPackage}.${entity}VO">
+    <resultMap id="voMap" type="${basePackage}.${package4VO}.${entity}VO">
         #foreach($field in ${table.fields})
             #if(${field.keyFlag})##生成主键排在第一位
         <id column="${field.name}" property="${field.propertyName}" />
@@ -95,7 +95,7 @@
     </sql>
 
 #end
-    <select id="listByDTO" #if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${VOPackage}.${entity}VO"#end>
+    <select id="listByDTO" #if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${package4VO}.${entity}VO"#end>
         SELECT
         a.*
         FROM

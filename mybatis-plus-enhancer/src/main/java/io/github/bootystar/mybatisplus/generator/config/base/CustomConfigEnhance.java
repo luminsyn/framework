@@ -1,14 +1,12 @@
 package io.github.bootystar.mybatisplus.generator.config.base;
 
-import com.baomidou.mybatisplus.generator.config.IConfigBuilder;
-import lombok.Getter;
+import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
 
 /**
  * 继承增强配置项
  *
  * @author bootystar
  */
-@Getter
 public abstract class CustomConfigEnhance extends CustomConfig {
 
     /**
@@ -27,11 +25,16 @@ public abstract class CustomConfigEnhance extends CustomConfig {
     protected boolean enableMapperMethod = true;
 
     /**
+     * mapper入参dto
+     */
+    protected ClassInfo mapperDTO = new ClassInfo(Object.class);
+
+    /**
      * 构造器
      *
      * @author bootystar
      */
-    public static abstract class Builder<C extends CustomConfigEnhance, B extends CustomConfigEnhance.Builder<C, B>> extends CustomConfig.Builder<C, B> implements IConfigBuilder<C> {
+    public static abstract class Builder<C extends CustomConfigEnhance, B extends CustomConfigEnhance.Builder<C, B>> extends CustomConfig.Builder<C, B> {
 
         /**
          * 不生成service实现类的重写方法
@@ -66,9 +69,6 @@ public abstract class CustomConfigEnhance extends CustomConfig {
             this.config.enableMapperMethod = false;
             return builder;
         }
-
-
-
 
     }
 

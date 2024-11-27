@@ -6,10 +6,11 @@ import ${superMapperClassPackage};
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
-import ${basePackage}.${VOPackage}.${entity}VO;
+import ${basePackage}.${package4VO}.${entity}VO;
 import ${package.Entity}.${entity};
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * $!{table.comment} Mapper 接口
@@ -24,7 +25,7 @@ interface ${table.mapperName} : ${superMapperClass}<${entity}>
 #else
 public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
 
-    <S> List<${entity}VO> listByDTO(S s, IPage<${entity}VO> page);
+    List<${entity}VO> listByDTO(Map<?, ?> s, IPage<${entity}VO> page);
 
 }
 #end

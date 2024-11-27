@@ -1,7 +1,30 @@
-package ${basePackage}.${DTOPackage};
+package ${basePackage}.${package4DTO};
 
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
+#end
+#if(${enableValidated})
+#foreach($field in ${table.fields})
+    #if(${field.metaInfo.nullable}==false && ${field.keyFlag})
+import ${javaApiPackage}.validation.constraints.NotNull;
+    #if(${field.metaInfo.nullable}==false && ${field.keyFlag} && ${field.propertyType}=="String")
+import ${javaApiPackage}.validation.constraints.NotBlank;
+    #end
+    #break
+    #end
+#end
+#foreach($field in ${table.fields})
+    #if(${field.versionField})
+import ${javaApiPackage}.validation.constraints.NotNull;
+    #break
+    #end
+#end
+#foreach($field in ${table.fields})
+    #if(${field.propertyType}=="String")
+import ${javaApiPackage}.validation.constraints.Size;
+    #break
+    #end
+#end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,11 +38,9 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 #end
 #end
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
 
 /**
- * $!{table.comment}-Excel导出DTO
+ * $!{table.comment}-修改DTO
  *
  * @author ${author}
  * @see ${package.Entity}.${entity}
@@ -33,21 +54,21 @@ import com.alibaba.excel.annotation.ExcelProperty;
   #end
 #end
 #if(${springdoc})
-##@Schema(name = "${entity}ExportDTO", description = "$!{table.comment}-Excel导出DTO")
-@Schema(description = "$!{table.comment}-Excel导出DTO")
+##@Schema(name = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
+@Schema(description = "$!{table.comment}-修改DTO")
 #elseif(${swagger})
-##@ApiModel(value = "${entity}ExportDTO", description = "$!{table.comment}-Excel导出DTO")
-@ApiModel(description = "$!{table.comment}-Excel导出DTO")
+##@ApiModel(value = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
+@ApiModel(description = "$!{table.comment}-修改DTO")
 #end
-@ExcelIgnoreUnannotated
-public class ${entity}ExportDTO {
+public class ${entity}UpdateDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-#if(${field.logicDeleteField})
+#if(($editExcludeColumns.contains(${field.columnName})))
+#elseif(${field.logicDeleteField})
 #else
 
 #if("$!field.comment" != "")
@@ -61,14 +82,33 @@ public class ${entity}ExportDTO {
      */
   #end
 #end
-    @ExcelProperty(value = "${field.comment}")
+#if(${enableValidated})
+#if(${field.keyFlag})
+## 主键
+    @NotNull(message = "${field.comment}不能为空")
+    #if(${field.propertyType}=="String")
+    @NotBlank(message = "${field.comment}不能为空")
+    #end
+#end
+## 乐观锁注解
+#if(${field.versionField})
+    @NotNull(message = "${field.comment}不能为空")
+    #if(${field.propertyType}=="String")
+    @NotBlank(message = "${field.comment}不能为空")
+    #end
+#end
+    #if(${field.propertyType} == "String")
+    @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
+    #end
+#end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
 #foreach($field in ${table.fields})
-#if(${field.logicDeleteField})
+#if($updateExcludeFields.contains(${field.propertyName}))
+#elseif(${field.logicDeleteField})
 #else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
@@ -81,7 +121,7 @@ public class ${entity}ExportDTO {
     }
 
   #if(${chainModel})
-    public ${entity}ExportDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}UpdateDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -95,13 +135,15 @@ public class ${entity}ExportDTO {
 ## --foreach end---
 #end
 ## --end of #if(!${entityLombokModel})--
+
 #if(!${entityLombokModel})
 
     @Override
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
-  #if(${field.logicDeleteField})
+  #if($updateExcludeFields.contains(${field.propertyName}))
+  #elseif(${field.logicDeleteField})
   #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +

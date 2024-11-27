@@ -8,13 +8,15 @@ import ${mapperAnnotationClass.name};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${superMapperClassPackage};
+#if(${mapperDTO.enable()})
+import ${mapperDTO.classFullName};
+#end
 import ${package.Entity}.${entity};
-import ${basePackage}.${VOPackage}.${entity}VO;
+import ${basePackage}.${package4VO}.${entity}VO;
 
 #if(${showMapperMethod})
 import java.util.List;
 #end
-
 
 /**
  * $!{table.comment} Mapper 接口
@@ -25,13 +27,13 @@ import java.util.List;
 @${mapperAnnotationClass.simpleName}
 #end
 #if(${kotlin})
-interface ${table.mapperName} : ${superMapperClass}<${entity}, ${entity}VO>
+interface ${table.mapperName} : ${superMapperClass}<${entity}, ${entity}VO, ${mapperDTO.classDeclaration(${entity})}>
 #else
-public interface ${table.mapperName} extends ${superMapperClass}<${entity}, ${entity}VO> {
+public interface ${table.mapperName} extends ${superMapperClass}<${entity}, ${entity}VO, ${mapperDTO.classDeclaration(${entity})}> {
     #if(${showMapperMethod})
 
     @Override
-    <S> List<${entity}VO> listByDTO(S s, IPage<${entity}VO> page);
+    List<${entity}VO> listByDTO(${mapperDTO.declaration()} s, IPage<${entity}VO> page);
     #end
 
 }

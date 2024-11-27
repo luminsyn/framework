@@ -1,4 +1,4 @@
-package ${basePackage}.${VOPackage};
+package ${basePackage}.${package4VO};
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end

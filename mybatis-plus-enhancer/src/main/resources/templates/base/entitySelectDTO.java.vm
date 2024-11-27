@@ -1,4 +1,4 @@
-package ${basePackage}.${DTOPackage};
+package ${basePackage}.${package4DTO};
 
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};

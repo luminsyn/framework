@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.logic.info.MethodInfo;
+import io.github.bootystar.mybatisplus.generator.config.info.MethodInfo;
 import io.github.bootystar.mybatisplus.logic.dynamic.DynamicEntity;
 import lombok.SneakyThrows;
 
@@ -19,12 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * mybatis-plus解析工具类
+ * 针对mybatis-plus增强的反射工具类
  *
  * @author bootystar
  */
-public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
-
+public abstract class MybatisPlusReflectHelper extends ReflectHelper {
 
     /**
      * lambda方法信息
@@ -35,12 +34,12 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
      * @author bootystar
      */
     public static MethodInfo lambdaMethodInfo(SFunction<?, ?> methodReference, Class<?> parameterClass) {
-        String methodName = "" , className = "";
+        String methodName = "", className = "";
         try {
-            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace" );
+            Method lambdaMethod = methodReference.getClass().getDeclaredMethod("writeReplace");
             lambdaMethod.setAccessible(Boolean.TRUE);
             SerializedLambda serializedLambda = (SerializedLambda) lambdaMethod.invoke(methodReference);
-            className = serializedLambda.getImplClass().replace("/" , "." );
+            className = serializedLambda.getImplClass().replace("/", ".");
             methodName = serializedLambda.getImplMethodName();
             Class<?> methodClass = Class.forName(className);
             try {
@@ -48,7 +47,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 Class<?> returnType = returnMethod.getReturnType();
                 int modifiers = returnMethod.getModifiers();
                 if (!returnType.equals(methodClass) || !Modifier.isPublic(modifiers)) {
-                    throw new NoSuchMethodException("no public method found which return instance of class itself" );
+                    throw new NoSuchMethodException("no public method found which return instance of class itself");
                 }
                 return new MethodInfo(returnMethod);
             } catch (Exception e) {
@@ -56,7 +55,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 return new MethodInfo(constructor);
             }
         } catch (Exception e) {
-            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]" , className, methodName, parameterClass.getName());
+            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", className, methodName, parameterClass.getName());
             throw new IllegalStateException(msg);
         }
     }
@@ -86,20 +85,7 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
      */
     public static Map<String, String> fieldConvertMap(Class<?> clazz) {
         TableInfo tableInfo = TableInfoHelper.getTableInfo(clazz);
-        List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-        Map<String, String> result = new HashMap<>();
-        for (TableFieldInfo fieldInfo : fieldList) {
-            Field field = fieldInfo.getField();
-            String fieldName = field.getName();
-            String jdbcColumn = fieldInfo.getColumn();
-            result.put(fieldName, String.format("a.`%s`" , jdbcColumn));
-        }
-        TableFieldInfo logicDeleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
-        if (logicDeleteFieldInfo != null) {
-            String name = logicDeleteFieldInfo.getField().getName();
-            result.remove(name);
-        }
-
+        Map<String, String> result = filedConvertMapFromMybatisPlus(tableInfo);
         Map<String, Field> fieldMap = fieldMap(clazz);
         for (Field field : fieldMap.values()) {
             String fieldName = field.getName();
@@ -113,8 +99,8 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 String value = tableId.value();
                 if (!value.isEmpty()) {
                     jdbcColumn = value;
-                    if (!value.contains("." )) {
-                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
+                    if (!value.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
                 result.putIfAbsent(fieldName, jdbcColumn);
@@ -133,14 +119,38 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                 }
                 if (!value.isEmpty()) {
                     jdbcColumn = value;
-                    if (!value.contains("." )) {
-                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
+                    if (!value.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                 }
                 result.putIfAbsent(fieldName, jdbcColumn);
                 continue;
             }
-            result.putIfAbsent(fieldName, String.format("a.`%s`" , jdbcColumn));
+            result.putIfAbsent(fieldName, String.format("a.`%s`", jdbcColumn));
+        }
+        return result;
+    }
+
+    /**
+     * 从mybatis plus获取实体类与数据库字段转换映射
+     *
+     * @param tableInfo 表信息
+     * @return {@link Map }<{@link String }, {@link String }>
+     * @author bootystar
+     */
+    private static Map<String, String> filedConvertMapFromMybatisPlus(TableInfo tableInfo) {
+        List<TableFieldInfo> fieldList = tableInfo.getFieldList();
+        Map<String, String> result = new HashMap<>();
+        for (TableFieldInfo fieldInfo : fieldList) {
+            Field field = fieldInfo.getField();
+            String fieldName = field.getName();
+            String jdbcColumn = fieldInfo.getColumn();
+            result.put(fieldName, String.format("a.`%s`", jdbcColumn));
+        }
+        TableFieldInfo logicDeleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
+        if (logicDeleteFieldInfo != null) {
+            String name = logicDeleteFieldInfo.getField().getName();
+            result.remove(name);
         }
         return result;
     }
@@ -167,8 +177,8 @@ public abstract class ReflectHelper4MybatisPlus extends ReflectHelper {
                     if (jdbcColumn == null || jdbcColumn.isEmpty()) {
                         continue;
                     }
-                    if (!jdbcColumn.contains("." )) {
-                        jdbcColumn = String.format("a.`%s`" , jdbcColumn);
+                    if (!jdbcColumn.contains(".")) {
+                        jdbcColumn = String.format("a.`%s`", jdbcColumn);
                     }
                     map.put(fieldName, jdbcColumn);
                 }

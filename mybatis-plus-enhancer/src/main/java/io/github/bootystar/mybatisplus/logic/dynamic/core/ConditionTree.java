@@ -1,7 +1,7 @@
 package io.github.bootystar.mybatisplus.logic.dynamic.core;
 
 import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.util.ReflectHelper4MybatisPlus;
+import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 import lombok.Data;
 import lombok.SneakyThrows;
 
@@ -41,7 +41,7 @@ public class ConditionTree implements Iterable<ConditionTree> {
         if (entity == null) {
             throw new IllegalStateException("entity is null");
         }
-        Map<String, Field> fieldMap = ReflectHelper4MybatisPlus.fieldMap(entity.getClass());
+        Map<String, Field> fieldMap = MybatisPlusReflectHelper.fieldMap(entity.getClass());
         List<Condition> conditions = new ArrayList<>();
         for (Field field : fieldMap.values()) {
             Object value = field.get(entity);

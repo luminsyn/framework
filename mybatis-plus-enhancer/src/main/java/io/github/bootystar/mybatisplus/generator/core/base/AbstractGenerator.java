@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
@@ -24,7 +23,7 @@ import java.util.function.Consumer;
  */
 @Getter
 @Slf4j
-@SuppressWarnings("unused" )
+@SuppressWarnings("unused")
 public abstract class AbstractGenerator<C extends CustomConfig, B extends CustomConfig.Builder<C, B>> implements EnhanceGenerator<B> {
     protected DataSourceConfig.Builder dataSourceConfigBuilder;
     protected GlobalConfig.Builder globalConfigBuilder = new GlobalConfig.Builder();
@@ -46,27 +45,27 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
         this.customConfigBuilder = customConfigBuilder;
         globalConfigBuilder
                 .dateType(DateType.TIME_PACK)
-                .author(System.getProperty("user.name" ))
-                .outputDir(System.getProperty("user.dir" ) + "/src/main/java" )
+                .author(System.getProperty("user.name"))
+                .outputDir(System.getProperty("user.dir") + "/src/main/java")
         ;
         packageConfigBuilder
-                .parent("io.github.bootystar" )
-                .xml("mapper" )
+                .parent("io.github.bootystar")
+                .xml("mapper")
         ;
         strategyConfigBuilder.entityBuilder()
-                .javaTemplate("/velocityTemplates/entity.java" )
+                .javaTemplate("/templates/entity.java")
         ;
         strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
-                .mapperTemplate("/velocityTemplates/mapper.java" )
-                .mapperXmlTemplate("/velocityTemplates/mapperXml.xml" )
+                .mapperTemplate("/templates/base/mapper.java")
+                .mapperXmlTemplate("/templates/base/mapperXml.xml")
         ;
         strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/velocityTemplates/service.java" )
-                .serviceImplTemplate("/velocityTemplates/serviceImpl.java" )
+                .serviceTemplate("/templates/base/service.java")
+                .serviceImplTemplate("/templates/base/serviceImpl.java")
         ;
         strategyConfigBuilder.controllerBuilder()
-                .template("/velocityTemplates/controller.java" )
+                .template("/templates/base/controller.java")
         ;
         // 子类配置
         config4child();
@@ -75,92 +74,31 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
     protected abstract void config4child();
 
     private void execute() {
-        DataSourceConfig dataSourceConfig = dataSourceConfigBuilder.build();
-        GlobalConfig globalConfig = globalConfigBuilder.build();
-        PackageConfig packageConfig = packageConfigBuilder.build();
-        StrategyConfig strategyConfig = strategyConfigBuilder.build();
-        InjectionConfig injectionConfig = injectionConfigBuilder.build();
-        CustomConfig customConfig = customConfigBuilder.build();
-        String DTOPackage = customConfig.getPackage4DTO().replaceAll("\\." , "\\" + File.separator);
-        String VOPackage = customConfig.getPackage4VO().replaceAll("\\." , "\\" + File.separator);
-        ArrayList<CustomFile> customFiles = new ArrayList<>(8);
-        if (customConfig.isGenerateInsert()) {
-            CustomFile InsertDto = new CustomFile.Builder()
-                    .fileName("InsertDTO.java" )
-                    .templatePath("/velocityTemplates/entityInsertDTO.java.vm" )
-                    .packageName(DTOPackage)
-                    .build();
-            customFiles.add(InsertDto);
-        }
-        if (customConfig.isGenerateUpdate()) {
-            CustomFile updateDto = new CustomFile.Builder()
-                    .fileName("UpdateDTO.java" )
-                    .templatePath("/velocityTemplates/entityUpdateDTO.java.vm" )
-                    .packageName(DTOPackage)
-                    .build();
-            customFiles.add(updateDto);
-        }
-        if (customConfig.isGenerateSelect() && customConfig.isGenerateSelectDTO()) {
-            CustomFile selectDto = new CustomFile.Builder()
-                    .fileName("SelectDTO.java" )
-                    .templatePath("/velocityTemplates/entitySelectDTO.java.vm" )
-                    .packageName(DTOPackage)
-                    .build();
-            customFiles.add(selectDto);
-        }
-        if (customConfig.isGenerateExport() && !customConfig.isExportOnVO()) {
-            CustomFile exportDto = new CustomFile.Builder()
-                    .fileName("ExportDTO.java" )
-                    .templatePath("/velocityTemplates/entityExportDTO.java.vm" )
-                    .packageName(DTOPackage)
-                    .build();
-            customFiles.add(exportDto);
-        }
-        if (customConfig.isGenerateImport() && !customConfig.isImportOnVO()) {
-            CustomFile importDto = new CustomFile.Builder()
-                    .fileName("ImportDTO.java" )
-                    .templatePath("/velocityTemplates/entityImportDTO.java.vm" )
-                    .packageName(DTOPackage)
-                    .build();
-            customFiles.add(importDto);
-        }
-        CustomFile vo = new CustomFile.Builder()
-                .fileName("VO.java" )
-                .templatePath("/velocityTemplates/entityVO.java.vm" )
-                .packageName(VOPackage)
-                .build();
-        customFiles.add(vo);
-        customConfig.setCustomFiles(customFiles);
-        try {
-            log.debug("==========================准备生成文件...==========================" );
-            // 初始化配置
-            ConfigBuilder config = new ConfigBuilder(
-                    packageConfig,
-                    dataSourceConfig,
-                    strategyConfig,
-                    null,
-                    globalConfig,
-                    injectionConfig
-            );
-            EnhanceVelocityTemplateEngine templateEngine = new EnhanceVelocityTemplateEngine(customConfig);
-            templateEngine.setConfigBuilder(config);
-            // 模板引擎初始化执行文件输出
-            templateEngine.init(config).batchOutput().open();
-            log.debug("==========================文件生成完成！！！==========================" );
-            System.out.println("\n" +
-                    "                 __         __    _                __                              __                             \n" +
-                    "  __ _   __ __  / /  ___ _ / /_  (_)  ___   ___   / / __ __  ___ ____ ___   ___   / /  ___ _  ___  ____ ___   ____\n" +
-                    " /  ' \\ / // / / _ \\/ _ `// __/ / /  (_-<  / _ \\ / / / // / (_-</___// -_) / _ \\ / _ \\/ _ `/ / _ \\/ __// -_) / __/\n" +
-                    "/_/_/_/ \\_, / /_.__/\\_,_/ \\__/ /_/  /___/ / .__//_/  \\_,_/ /___/     \\__/ /_//_//_//_/\\_,_/ /_//_/\\__/ \\__/ /_/   \n" +
-                    "       /___/                             /_/                                                                      \n" );
+        log.debug("==========================准备生成文件...==========================");
+        // 初始化配置
+        ConfigBuilder config = new ConfigBuilder(
+                packageConfigBuilder.build(),
+                dataSourceConfigBuilder.build(),
+                strategyConfigBuilder.build(),
+                null,
+                globalConfigBuilder.build(),
+                injectionConfigBuilder.build()
+        );
+        EnhanceVelocityTemplateEngine templateEngine = new EnhanceVelocityTemplateEngine(customConfigBuilder.build());
+        templateEngine.setConfigBuilder(config);
+        // 模板引擎初始化执行文件输出
+        templateEngine.init(config).batchOutput().open();
+        log.debug("==========================文件生成完成！！！==========================");
+        System.out.println("\n" +
+                "                 __         __    _                __                              __                             \n" +
+                "  __ _   __ __  / /  ___ _ / /_  (_)  ___   ___   / / __ __  ___      ___   ___   / /  ___ _  ___  ____ ___   ____\n" +
+                " /  ' \\ / // / / _ \\/ _ `// __/ / /  (_-<  / _ \\ / / / // / (_-<     / -_) / _ \\ / _ \\/ _ `/ / _ \\/ __// -_) / __/\n" +
+                "/_/_/_/ \\_, / /_.__/\\_,_/ \\__/ /_/  /___/ / .__//_/  \\_,_/ /___/     \\__/ /_//_//_//_/\\_,_/ /_//_/\\__/ \\__/ /_/   \n" +
+                "       /___/                             /_/                                                                      \n");
 
-            System.out.println("execute success! check files in following folder:" );
-            String path = config.getPathInfo().get(OutputFile.parent);
-            System.out.println(new File(path).getAbsolutePath());
-        } catch (Exception e) {
-            System.out.println("生成失败, 请排查依赖版本与jdk版本" );
-            throw e;
-        }
+        System.out.println("execute success! check files in following folder:");
+        String path = config.getPathInfo().get(OutputFile.parent);
+        System.out.println(new File(path).getAbsolutePath());
     }
 
     /**
@@ -246,8 +184,8 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
      */
     @Override
     public EnhanceGenerator<B> mapperXmlResource(String path) {
-        String projectPath = System.getProperty("user.dir" );
-        if (path.startsWith("/" )) {
+        String projectPath = System.getProperty("user.dir");
+        if (path.startsWith("/")) {
             path = path.substring(1);
         }
         packageConfigBuilder.pathInfo(Collections.singletonMap(OutputFile.mapper, projectPath + "/src/main/resources/" + path));
@@ -263,17 +201,17 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
     @Override
     public EnhanceGenerator<B> initialize() {
         customConfigBuilder
-                .sortColumn("index" , false)
-                .sortColumn("order" , false)
-                .sortColumn("rank" , false)
-                .sortColumn("seq" , false)
-                .sortColumn("sort" , false)
-                .sortColumn("create_time" , true)
-                .sortColumn("id" , true)
+                .sortColumn("index", false)
+                .sortColumn("order", false)
+                .sortColumn("rank", false)
+                .sortColumn("seq", false)
+                .sortColumn("sort", false)
+                .sortColumn("create_time", true)
+                .sortColumn("id", true)
         ;
         strategyConfigBuilder.entityBuilder()
                 .idType(IdType.ASSIGN_ID)
-                .logicDeleteColumnName("deleted" )
+                .logicDeleteColumnName("deleted")
                 .disableSerialVersionUID()
                 .enableLombok()
         ;
@@ -281,7 +219,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
 //                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
         ;
         strategyConfigBuilder.serviceBuilder()
-                .formatServiceFileName("%sService" )
+                .formatServiceFileName("%sService")
         ;
         strategyConfigBuilder.controllerBuilder()
                 .enableRestStyle()

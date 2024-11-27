@@ -1,12 +1,12 @@
 package io.github.bootystar.mybatisplus.generator;
 
 import io.github.bootystar.mybatisplus.generator.config.impl.DynamicSqlConfig;
-import io.github.bootystar.mybatisplus.generator.config.impl.ExtraCodeConfig;
-import io.github.bootystar.mybatisplus.generator.config.impl.ExtraFieldConfig;
+import io.github.bootystar.mybatisplus.generator.config.impl.BaseConfig;
+import io.github.bootystar.mybatisplus.generator.config.impl.EnhanceConfig;
 import io.github.bootystar.mybatisplus.generator.core.base.EnhanceGenerator;
 import io.github.bootystar.mybatisplus.generator.core.impl.DynamicSqlGenerator;
 import io.github.bootystar.mybatisplus.generator.core.impl.ExtraCodeGenerator;
-import io.github.bootystar.mybatisplus.generator.core.impl.ExtraFieldGenerator;
+import io.github.bootystar.mybatisplus.generator.core.impl.ExtraParamGenerator;
 
 /**
  * @author bootystar
@@ -19,10 +19,10 @@ public abstract class GeneratorHelper {
      * @param url      url
      * @param username 用户名
      * @param password 密码
-     * @return {@link EnhanceGenerator }<{@link ExtraCodeConfig.Builder }>
+     * @return {@link EnhanceGenerator }<{@link BaseConfig.Builder }>
      * @author bootystar
      */
-    public static EnhanceGenerator<ExtraCodeConfig.Builder> extraCodeGenerator(String url, String username, String password) {
+    public static EnhanceGenerator<BaseConfig.Builder> extraCodeGenerator(String url, String username, String password) {
         return new ExtraCodeGenerator(url, username, password);
     }
 
@@ -32,11 +32,11 @@ public abstract class GeneratorHelper {
      * @param url      url
      * @param username 用户名
      * @param password 密码
-     * @return {@link EnhanceGenerator }<{@link ExtraFieldConfig.Builder }>
+     * @return {@link EnhanceGenerator }<{@link EnhanceConfig.Builder }>
      * @author bootystar
      */
-    public static EnhanceGenerator<ExtraFieldConfig.Builder> extraFieldGenerator(String url, String username, String password) {
-        return new ExtraFieldGenerator(url, username, password);
+    public static EnhanceGenerator<EnhanceConfig.Builder> extraParamGenerator(String url, String username, String password) {
+        return new ExtraParamGenerator(url, username, password);
     }
 
     /**

@@ -1,6 +1,6 @@
 package io.github.bootystar.mybatisplus.generator.core.impl;
 
-import io.github.bootystar.mybatisplus.generator.config.impl.ExtraCodeConfig;
+import io.github.bootystar.mybatisplus.generator.config.impl.BaseConfig;
 import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
 
 /**
@@ -9,10 +9,10 @@ import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
  *
  * @author bootystar
  */
-public class ExtraCodeGenerator extends AbstractGenerator<ExtraCodeConfig, ExtraCodeConfig.Builder> {
+public class ExtraCodeGenerator extends AbstractGenerator<BaseConfig, BaseConfig.Builder> {
 
     public ExtraCodeGenerator(String url, String username, String password) {
-        super(url, username, password, new ExtraCodeConfig.Builder());
+        super(url, username, password, new BaseConfig.Builder());
     }
 
     @Override

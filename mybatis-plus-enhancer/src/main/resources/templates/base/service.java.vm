@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import ${superServiceClassPackage};
 import ${package.Entity}.${entity};
 #if(${generateInsert}||${generateSelect})
-import ${basePackage}.${VOPackage}.${entity}VO;
+import ${basePackage}.${package4VO}.${entity}VO;
 #end
 
 #if(${generateImport}||${generateExport})
@@ -28,6 +28,26 @@ import java.util.List;
 interface ${table.serviceName} : ${superServiceClass}<${entity}>
 #else
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
+    #if(${generateSelect})
+
+    ${entity}VO oneById(Serializable id);
+
+    <S> ${entity}VO oneByDTO(S s);
+
+    <S> List<${entity}VO> listByDTO(S s);
+
+    <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size);
+        #if(${generateExport})
+
+    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields);
+        #end
+    #end
+    #if(${generateImport})
+
+    <U> boolean importExcel(InputStream is, Class<U> clazz);
+
+    <U> void excelTemplate(OutputStream os, Class<U> clazz);
+    #end
     #if(${generateInsert})
 
     <S> ${entity}VO insertByDTO(S s);
@@ -35,26 +55,6 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #if(${generateUpdate})
 
     <S> boolean updateByDTO(S s);
-    #end
-    #if(${generateSelect})
-
-    ${entity}VO voById(Serializable id);
-
-    <S> ${entity}VO oneByDTO(S s);
-
-    <S> List<${entity}VO> listByDTO(S s);
-
-    <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size);
-    #end
-    #if(${generateExport})
-
-    <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields);
-    #end
-    #if(${generateImport})
-
-    <U> boolean importExcel(InputStream is, Class<U> clazz);
-
-    <U> void excelTemplate(OutputStream os, Class<U> clazz);
     #end
 
 }

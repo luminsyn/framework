@@ -1,29 +1,26 @@
-package ${basePackage}.${DTOPackage};
+package ${basePackage}.${package4DTO};
 
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
 #if(${enableValidated})
 #foreach($field in ${table.fields})
-    #if(${field.metaInfo.nullable}==false && ${field.keyFlag})
+  #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
 import ${javaApiPackage}.validation.constraints.NotNull;
-    #if(${field.metaInfo.nullable}==false && ${field.keyFlag} && ${field.propertyType}=="String")
+  #break
+  #end
+#end
+#foreach($field in ${table.fields})
+  #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.NotBlank;
-    #end
-    #break
-    #end
+  #break
+  #end
 #end
 #foreach($field in ${table.fields})
-    #if(${field.versionField})
-import ${javaApiPackage}.validation.constraints.NotNull;
-    #break
-    #end
-#end
-#foreach($field in ${table.fields})
-    #if(${field.propertyType}=="String")
+  #if(${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.Size;
-    #break
-    #end
+  #break
+  #end
 #end
 #end
 #if(${springdoc})
@@ -40,7 +37,7 @@ import lombok.experimental.Accessors;
 #end
 
 /**
- * $!{table.comment}-修改DTO
+ * $!{table.comment}-新增DTO
  *
  * @author ${author}
  * @see ${package.Entity}.${entity}
@@ -54,62 +51,59 @@ import lombok.experimental.Accessors;
   #end
 #end
 #if(${springdoc})
-##@Schema(name = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
-@Schema(description = "$!{table.comment}-修改DTO")
+##@Schema(name = "${entity}InsertDTO ", description = "$!{table.comment}-新增DTO")
+@Schema(description = "$!{table.comment}-新增DTO")
 #elseif(${swagger})
-##@ApiModel(value = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
-@ApiModel(description = "$!{table.comment}-修改DTO")
+##@ApiModel(value = "${entity}InsertDTO", description = "$!{table.comment}-新增DTO")
+@ApiModel(description = "$!{table.comment}-新增DTO")
 #end
-public class ${entity}UpdateDTO {
+public class ${entity}InsertDTO {
 #if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-#if(($editExcludeColumns.contains(${field.columnName})))
+#if(${field.keyFlag})
+#elseif(${field.versionField})
 #elseif(${field.logicDeleteField})
+#elseif($editExcludeColumns.contains(${field.columnName}))
 #else
 
-#if("$!field.comment" != "")
-  #if(${springdoc})
+  #if("$!field.comment" != "")
+    #if(${springdoc})
     @Schema(description = "${field.comment}")
-  #elseif(${swagger})
+    #elseif(${swagger})
     @ApiModelProperty("${field.comment}")
-  #else
+    #else
     /**
      * ${field.comment}
      */
+    #end
   #end
-#end
-#if(${enableValidated})
-#if(${field.keyFlag})
-## 主键
-    @NotNull(message = "${field.comment}不能为空")
-    #if(${field.propertyType}=="String")
-    @NotBlank(message = "${field.comment}不能为空")
-    #end
-#end
-## 乐观锁注解
-#if(${field.versionField})
-    @NotNull(message = "${field.comment}不能为空")
-    #if(${field.propertyType}=="String")
-    @NotBlank(message = "${field.comment}不能为空")
-    #end
-#end
+  #if(${enableValidated})
+  #if(!${field.metaInfo.nullable})
     #if(${field.propertyType} == "String")
-    @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
+    @NotBlank(message = "${field.comment}不能为空")
+    #else
+    @NotNull(message = "${field.comment}不能为空")
     #end
-#end
+  #end
+  #if(${field.propertyType} == "String")
+    @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
+  #end
+  #end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
 #foreach($field in ${table.fields})
-#if($updateExcludeFields.contains(${field.propertyName}))
-#elseif(${field.logicDeleteField})
-#else
+  #if(${field.keyFlag})
+  #elseif(${field.versionField})
+  #elseif(${field.logicDeleteField})
+  #elseif($insertExcludeFields.contains(${field.propertyName}))
+  #else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
   #else
@@ -121,7 +115,7 @@ public class ${entity}UpdateDTO {
     }
 
   #if(${chainModel})
-    public ${entity}UpdateDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
+    public ${entity}InsertDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #end
@@ -130,11 +124,10 @@ public class ${entity}UpdateDTO {
         return this;
   #end
     }
-#end
+  #end
 #end
 ## --foreach end---
 #end
-## --end of #if(!${entityLombokModel})--
 
 #if(!${entityLombokModel})
 
@@ -142,15 +135,17 @@ public class ${entity}UpdateDTO {
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
-  #if($updateExcludeFields.contains(${field.propertyName}))
-  #elseif(${field.logicDeleteField})
-  #else
+    #if(${field.keyFlag})
+    #elseif(${field.versionField})
+    #elseif(${field.logicDeleteField})
+    #elseif($insertExcludeFields.contains(${field.propertyName}))
+    #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +
     #else
         ", ${field.propertyName} = " + ${field.propertyName} +
     #end
-  #end
+    #end
   #end
         "}";
     }

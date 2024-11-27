@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${superServiceImplClassPackage};
 import ${package.Entity}.${entity};
-import ${basePackage}.${VOPackage}.${entity}VO;
+import ${basePackage}.${package4VO}.${entity}VO;
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import org.springframework.stereotype.Service;
@@ -40,27 +40,6 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
         return super.doSelect(s, page);
     }
-    #if(${generateInsert})
-
-    @Override
-    public <S> ${entity}VO insertByDTO(S s) {
-        return super.insertByDTO(s);
-    }
-    #end
-    #if(${generateUpdate})
-
-    @Override
-    public <S> boolean updateByDTO(S s) {
-        return super.updateByDTO(s);
-    }
-    #end
-    #if(${generateDelete})
-
-    @Override
-    public boolean removeById(Serializable id) {
-        return super.removeById(id);
-    }
-    #end
     #if(${generateSelect})
 
     @Override
@@ -92,6 +71,28 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return super.importExcel(is, clazz);
     }
     #end
+    #if(${generateInsert})
+
+    @Override
+    public <S> ${entity}VO insertByDTO(S s) {
+        return super.insertByDTO(s);
+    }
+    #end
+    #if(${generateUpdate})
+
+    @Override
+    public <S> boolean updateByDTO(S s) {
+        return super.updateByDTO(s);
+    }
+    #end
+    #if(${generateDelete})
+
+    @Override
+    public boolean removeById(Serializable id) {
+        return super.removeById(id);
+    }
+    #end
+
 #end
 
 }

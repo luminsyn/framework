@@ -3,8 +3,8 @@ package io.github.bootystar.mybatisplus.generator.core.impl;
 
 import io.github.bootystar.mybatisplus.core.EnhanceMapper;
 import io.github.bootystar.mybatisplus.core.EnhanceService;
-import io.github.bootystar.mybatisplus.core.impl.ExtraFieldServiceImpl;
-import io.github.bootystar.mybatisplus.generator.config.impl.ExtraFieldConfig;
+import io.github.bootystar.mybatisplus.core.impl.EnhanceServiceImpl;
+import io.github.bootystar.mybatisplus.generator.config.impl.EnhanceConfig;
 import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
 
 /**
@@ -13,24 +13,24 @@ import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
  *
  * @author booty
  */
-public class ExtraFieldGenerator extends AbstractGenerator<ExtraFieldConfig, ExtraFieldConfig.Builder> {
+public class ExtraParamGenerator extends AbstractGenerator<EnhanceConfig, EnhanceConfig.Builder> {
 
-    public ExtraFieldGenerator(String url, String username, String password) {
-        super(url, username, password, new ExtraFieldConfig.Builder());
+    public ExtraParamGenerator(String url, String username, String password) {
+        super(url, username, password, new EnhanceConfig.Builder());
     }
 
     @Override
     protected void config4child() {
         strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/velocityTemplates/service.enhance.java" )
-                .serviceImplTemplate("/velocityTemplates/serviceImpl.enhance.java" )
+                .serviceTemplate("/templates/enhance/service.java")
+                .serviceImplTemplate("/templates/enhance/serviceImpl.java")
         ;
         strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/velocityTemplates/mapper.enhance.java" )
+                .mapperTemplate("/templates/enhance/mapper.java")
         ;
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)
-                .superServiceImplClass(ExtraFieldServiceImpl.class)
+                .superServiceImplClass(EnhanceServiceImpl.class)
         ;
         strategyConfigBuilder.mapperBuilder()
                 .superClass(EnhanceMapper.class)

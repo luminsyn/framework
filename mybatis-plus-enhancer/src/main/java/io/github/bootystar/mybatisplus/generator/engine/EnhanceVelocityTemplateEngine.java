@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.AbstractTemplateEngine;
 import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 import io.github.bootystar.mybatisplus.generator.config.base.CustomConfig;
+import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
 
 import java.io.File;
 import java.util.List;
@@ -29,18 +30,11 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
 
     @Override
     protected void outputCustomFile(List<CustomFile> customFiles, TableInfo tableInfo, Map<String, Object> objectMap) {
-        String entityName = tableInfo.getEntityName();
-        String parentPath = getPathInfo(OutputFile.parent);
-        boolean fileOverride = customConfig.isFileOverride();
+        if (customFiles == null || customFiles.isEmpty()) {
+            return;
+        }
         customFiles.forEach(file -> {
-            String filePath = StringUtils.isNotBlank(file.getFilePath()) ? file.getFilePath() : parentPath;
-            if (StringUtils.isNotBlank(file.getPackageName())) {
-                filePath = filePath + File.separator + file.getPackageName();
-            }
-            String fileName = filePath + File.separator + entityName + file.getFileName();
-
-//            outputFile(new File(fileName), objectMap, file.getTemplatePath(), file.isFileOverride());
-            outputFile(new File(fileName), objectMap, file.getTemplatePath(), fileOverride);
+            outputFile(new File(file.getFilePath()), objectMap, file.getTemplatePath(), file.isFileOverride());
         });
     }
 
@@ -54,42 +48,37 @@ public class EnhanceVelocityTemplateEngine extends VelocityTemplateEngine {
             }
         }
         objectMap.put("basePackage", config.getPackageConfig().getParent());
-
         return objectMap;
     }
 
 
     @Override
     public AbstractTemplateEngine batchOutput() {
-        try {
-            ConfigBuilder config = this.getConfigBuilder();
-            List<TableInfo> tableInfoList = config.getTableInfoList();
-            tableInfoList.forEach(tableInfo -> {
-                Map<String, Object> objectMap = this.getObjectMap(config, tableInfo);
-                Optional.ofNullable(config.getInjectionConfig()).ifPresent(t -> {
-                    // 添加自定义属性
-                    t.beforeOutputFile(tableInfo, objectMap);
-                    // 输出自定义文件
-                    outputCustomFile(t.getCustomFiles(), tableInfo, objectMap);
-                });
-                // entity
-                outputEntity(tableInfo, objectMap);
-                // mapper and xml
-                outputMapper(tableInfo, objectMap);
-                // service
-                outputService(tableInfo, objectMap);
-                // controller
-                outputController(tableInfo, objectMap);
-
-                Optional.ofNullable(customConfig).ifPresent(t -> {
-                    // 输出自定义文件
-                    outputCustomFile(t.getCustomFiles(), tableInfo, objectMap);
-                });
-
+        ConfigBuilder config = this.getConfigBuilder();
+        List<TableInfo> tableInfoList = config.getTableInfoList();
+        tableInfoList.forEach(tableInfo -> {
+            Map<String, Object> objectMap = this.getObjectMap(config, tableInfo);
+            Optional.ofNullable(config.getInjectionConfig()).ifPresent(t -> {
+                // 添加自定义属性
+                t.beforeOutputFile(tableInfo, objectMap);
+                // 输出自定义文件
+                outputCustomFile(t.getCustomFiles(), tableInfo, objectMap);
             });
-        } catch (Exception e) {
-            throw new RuntimeException("无法创建文件，请检查配置信息！", e);
-        }
+            // entity
+            outputEntity(tableInfo, objectMap);
+            // mapper and xml
+            outputMapper(tableInfo, objectMap);
+            // service
+            outputService(tableInfo, objectMap);
+            // controller
+            outputController(tableInfo, objectMap);
+            // 自定义文件
+            Optional.ofNullable(customConfig).ifPresent(t -> {
+                // 输出自定义文件
+                String parentPath = getPathInfo(OutputFile.parent);
+                outputCustomFile(customConfig.customFiles(config, tableInfo), tableInfo, objectMap);
+            });
+        });
         return this;
     }
 
