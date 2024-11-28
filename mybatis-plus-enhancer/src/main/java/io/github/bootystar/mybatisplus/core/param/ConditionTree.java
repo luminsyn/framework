@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * 条件树
@@ -61,20 +60,6 @@ public class ConditionTree implements Iterable<ConditionTree> {
         return new TreeIterator();
     }
 
-    @Override
-    public void forEach(Consumer<? super ConditionTree> action) {
-        TreeIterator iterator = new TreeIterator();
-        while (iterator.hasNext()) {
-            action.accept(iterator.next());
-        }
-    }
-
-    @Override
-    public Spliterator<ConditionTree> spliterator() {
-        return Iterable.super.spliterator();
-    }
-
-
     /**
      * 树迭代器
      *
@@ -106,9 +91,5 @@ public class ConditionTree implements Iterable<ConditionTree> {
             return pop;
         }
 
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("not support remove");
-        }
     }
 }

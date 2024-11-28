@@ -32,7 +32,7 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
         if (entityClass == null || baseHelper == null) {
             throw new MappingException("baseHelper or entityClass class can not be null, please check your configuration");
         }
-        Map<String, String> map = MybatisPlusReflectHelper.dynamicFieldsMap(entityClass);
+        Map<String, String> map = MybatisPlusReflectHelper.field2JdbcColumnMap(entityClass);
         if (map.isEmpty()) {
             throw new MappingException("entityClass %s has no field to convert, please check your configuration", entityClass.getName());
         }
