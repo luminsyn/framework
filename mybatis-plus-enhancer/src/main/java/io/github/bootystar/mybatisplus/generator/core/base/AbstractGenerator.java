@@ -58,7 +58,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
         strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
                 .mapperTemplate("/templates/base/mapper.java")
-                .mapperXmlTemplate("/templates/base/mapperXml.xml")
+                .mapperXmlTemplate("/templates/base/mapper.xml")
         ;
         strategyConfigBuilder.serviceBuilder()
                 .serviceTemplate("/templates/base/service.java")
@@ -193,7 +193,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
     }
 
     /**
-     * 初始化推荐配置项
+     * 初始化常用配置项
      *
      * @return {@link AbstractGenerator }<{@link B }>
      * @author bootystar
@@ -201,9 +201,6 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
     @Override
     public EnhanceGenerator<B> initialize() {
         customConfigBuilder
-                .sortColumn("index", false)
-                .sortColumn("order", false)
-                .sortColumn("rank", false)
                 .sortColumn("seq", false)
                 .sortColumn("sort", false)
                 .sortColumn("create_time", true)

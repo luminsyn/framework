@@ -1,7 +1,7 @@
 package io.github.bootystar.mybatisplus.generator.config.impl;
 
 import io.github.bootystar.mybatisplus.generator.config.base.CustomConfigEnhance;
-import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
+import io.github.bootystar.mybatisplus.generator.info.ClassInfo;
 import lombok.Getter;
 
 import java.util.Map;
@@ -12,21 +12,21 @@ import java.util.Map;
  * @author bootystar
  */
 @Getter
-public class EnhanceConfig extends CustomConfigEnhance {
+public class ExtraFiledConfig extends CustomConfigEnhance {
 
     {
         mapperDTO = new ClassInfo(Map.class);
     }
 
-    public static class Builder extends CustomConfigEnhance.Builder<EnhanceConfig, EnhanceConfig.Builder> {
+    public static class Builder extends CustomConfigEnhance.Builder<ExtraFiledConfig, Builder> {
 
         @Override
-        protected EnhanceConfig initConfig() {
-            return new EnhanceConfig();
+        protected ExtraFiledConfig initConfig() {
+            return new ExtraFiledConfig();
         }
 
         @Override
-        protected EnhanceConfig.Builder initBuilder() {
+        protected Builder initBuilder() {
             return this;
         }
     }

@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.logic.dynamic.core;
+package io.github.bootystar.mybatisplus.core.param;
 
 /**
  * @author bootystar

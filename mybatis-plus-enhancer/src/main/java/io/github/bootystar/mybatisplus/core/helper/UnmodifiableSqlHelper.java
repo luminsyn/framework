@@ -1,7 +1,8 @@
-package io.github.bootystar.mybatisplus.logic.dynamic.core;
+package io.github.bootystar.mybatisplus.core.helper;
 
-import io.github.bootystar.mybatisplus.logic.dynamic.ConditionConvertException;
-import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.core.MappingException;
+import io.github.bootystar.mybatisplus.core.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.core.param.*;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +30,11 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
 
     public UnmodifiableSqlHelper(SqlHelper baseHelper, Class<T> entityClass) {
         if (entityClass == null || baseHelper == null) {
-            throw new ConditionConvertException("baseHelper or entityClass class can not be null, please check your configuration");
+            throw new MappingException("baseHelper or entityClass class can not be null, please check your configuration");
         }
         Map<String, String> map = MybatisPlusReflectHelper.dynamicFieldsMap(entityClass);
         if (map.isEmpty()) {
-            throw new ConditionConvertException("entityClass %s has no field to convert, please check your configuration", entityClass.getName());
+            throw new MappingException("entityClass %s has no field to convert, please check your configuration", entityClass.getName());
         }
         this.entityClass = entityClass;
         this.sorts = validatedUnmodifiableSorts(baseHelper.getSorts(), map);
@@ -53,7 +54,7 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
         ConditionTree child = conditionTree.getChild();
         if (validatedConditions == null || validatedConditions.isEmpty()) {
             if (child != null) {
-                throw new ConditionConvertException("validatedConditions is null or empty, but child is not null, currentNode : %s", conditionTree);
+                throw new MappingException("validatedConditions is null or empty, but child is not null, currentNode : %s", conditionTree);
             }
             return null;
         }
@@ -61,7 +62,7 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
         return new UnmodifiableConditionTree(validatedConditions, newChild);
     }
 
-    protected static List<UnmodifiableCondition> validatedUnmodifiableConditions(List<? extends Condition> conditions, Map<String, String> map) {
+    public static List<UnmodifiableCondition> validatedUnmodifiableConditions(List<? extends Condition> conditions, Map<String, String> map) {
         if (conditions == null || conditions.isEmpty()) {
             return null;
         }
@@ -106,7 +107,7 @@ public class UnmodifiableSqlHelper<T> extends ConditionTree {
         return Collections.unmodifiableList(validatedConditions);
     }
 
-    private static List<Sort> validatedUnmodifiableSorts(List<? extends Sort> sorts, Map<String, String> map) {
+    public static List<Sort> validatedUnmodifiableSorts(List<? extends Sort> sorts, Map<String, String> map) {
         if (sorts == null || sorts.isEmpty()) {
             return null;
         }

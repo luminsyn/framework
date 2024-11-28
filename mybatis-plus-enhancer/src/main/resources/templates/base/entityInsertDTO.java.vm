@@ -3,37 +3,44 @@ package ${basePackage}.${package4DTO};
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
-#if(${enableValidated})
-#foreach($field in ${table.fields})
-  #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
+#if(${generateImport})
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+#end
+#if(${validated})
+    ## ---字段非空验证---
+    #foreach($field in ${table.fields})
+        #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
 import ${javaApiPackage}.validation.constraints.NotNull;
-  #break
-  #end
-#end
-#foreach($field in ${table.fields})
-  #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
+            #break
+        #end
+    #end
+    ## ---字符串非空验证---
+    #foreach($field in ${table.fields})
+        #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.NotBlank;
-  #break
-  #end
-#end
-#foreach($field in ${table.fields})
-  #if(${field.propertyType}=="String")
+            #break
+        #end
+    #end
+    ## ---字符串长度验证---
+    #foreach($field in ${table.fields})
+        #if(${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.Size;
-  #break
-  #end
-#end
+            #break
+        #end
+    #end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
-#elseif(${swagger})
+    #elseif(${swagger})
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
 import lombok.Data;
-#if(${chainModel})
+    #if(${chainModel}&&${generateImport})
 import lombok.experimental.Accessors;
-#end
+    #end
 #end
 
 /**
@@ -46,9 +53,12 @@ import lombok.experimental.Accessors;
  */
 #if(${entityLombokModel})
 @Data
-  #if(${chainModel})
+  #if(${chainModel}&&!${generateImport})
 @Accessors(chain = true)
   #end
+#end
+#if(${generateImport})
+@ExcelIgnoreUnannotated
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}InsertDTO ", description = "$!{table.comment}-新增DTO")
@@ -58,10 +68,10 @@ import lombok.experimental.Accessors;
 @ApiModel(description = "$!{table.comment}-新增DTO")
 #end
 public class ${entity}InsertDTO {
-#if(${entitySerialVersionUID})
+###if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
-#end
+###end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.keyFlag})
@@ -70,35 +80,38 @@ public class ${entity}InsertDTO {
 #elseif($editExcludeColumns.contains(${field.columnName}))
 #else
 
-  #if("$!field.comment" != "")
-    #if(${springdoc})
+    #if("$!field.comment" != "")
+        #if(${springdoc})
     @Schema(description = "${field.comment}")
-    #elseif(${swagger})
+        #elseif(${swagger})
     @ApiModelProperty("${field.comment}")
-    #else
+        #else
     /**
      * ${field.comment}
      */
+        #end
     #end
-  #end
-  #if(${enableValidated})
-  #if(!${field.metaInfo.nullable})
-    #if(${field.propertyType} == "String")
-    @NotBlank(message = "${field.comment}不能为空")
-    #else
-    @NotNull(message = "${field.comment}不能为空")
-    #end
-  #end
-  #if(${field.propertyType} == "String")
+    #if(${validated})## 参数校验
+        #if(!${field.metaInfo.nullable})## 非空
+            #if(${field.propertyType} == "String")
+    @NotBlank(message = "${field.comment}为必填项")
+                #else
+    @NotNull(message = "${field.comment}为必填项")
+            #end
+        #end
+        #if(${field.propertyType} == "String")## 字符串长度
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
-  #end
-  #end
+        #end
+    #end
+    #if(${generateImport})## excel导入
+    @ExcelProperty(value = "${field.comment}")
+    #end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
-#foreach($field in ${table.fields})
+  #foreach($field in ${table.fields})
   #if(${field.keyFlag})
   #elseif(${field.versionField})
   #elseif(${field.logicDeleteField})
@@ -114,7 +127,7 @@ public class ${entity}InsertDTO {
         return ${field.propertyName};
     }
 
-  #if(${chainModel})
+  #if(${chainModel}&&!${generateImport})
     public ${entity}InsertDTO set${field.capitalName}(${field.propertyType} ${field.propertyName}) {
   #else
     public void set${field.capitalName}(${field.propertyType} ${field.propertyName}) {

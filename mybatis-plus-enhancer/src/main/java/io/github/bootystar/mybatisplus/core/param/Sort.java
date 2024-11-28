@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.logic.dynamic.core;
+package io.github.bootystar.mybatisplus.core.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

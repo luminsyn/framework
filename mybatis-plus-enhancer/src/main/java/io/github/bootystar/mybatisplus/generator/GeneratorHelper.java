@@ -2,7 +2,7 @@ package io.github.bootystar.mybatisplus.generator;
 
 import io.github.bootystar.mybatisplus.generator.config.impl.DynamicSqlConfig;
 import io.github.bootystar.mybatisplus.generator.config.impl.BaseConfig;
-import io.github.bootystar.mybatisplus.generator.config.impl.EnhanceConfig;
+import io.github.bootystar.mybatisplus.generator.config.impl.ExtraFiledConfig;
 import io.github.bootystar.mybatisplus.generator.core.base.EnhanceGenerator;
 import io.github.bootystar.mybatisplus.generator.core.impl.DynamicSqlGenerator;
 import io.github.bootystar.mybatisplus.generator.core.impl.ExtraCodeGenerator;
@@ -32,10 +32,10 @@ public abstract class GeneratorHelper {
      * @param url      url
      * @param username 用户名
      * @param password 密码
-     * @return {@link EnhanceGenerator }<{@link EnhanceConfig.Builder }>
+     * @return {@link EnhanceGenerator }<{@link ExtraFiledConfig.Builder }>
      * @author bootystar
      */
-    public static EnhanceGenerator<EnhanceConfig.Builder> extraParamGenerator(String url, String username, String password) {
+    public static EnhanceGenerator<ExtraFiledConfig.Builder> extraParamGenerator(String url, String username, String password) {
         return new ExtraParamGenerator(url, username, password);
     }
 

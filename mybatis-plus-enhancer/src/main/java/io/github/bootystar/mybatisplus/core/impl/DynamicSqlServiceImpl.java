@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.bootystar.mybatisplus.core.EnhanceMapper;
 import io.github.bootystar.mybatisplus.core.EnhanceService;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.Condition;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.UnmodifiableSqlHelper;
-import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.core.param.Condition;
+import io.github.bootystar.mybatisplus.core.helper.SqlHelper;
+import io.github.bootystar.mybatisplus.core.helper.UnmodifiableSqlHelper;
+import io.github.bootystar.mybatisplus.core.enums.SqlKeyword;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 
 import java.io.Serializable;

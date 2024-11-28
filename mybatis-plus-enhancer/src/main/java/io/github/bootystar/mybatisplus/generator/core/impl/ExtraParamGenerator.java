@@ -4,7 +4,7 @@ package io.github.bootystar.mybatisplus.generator.core.impl;
 import io.github.bootystar.mybatisplus.core.EnhanceMapper;
 import io.github.bootystar.mybatisplus.core.EnhanceService;
 import io.github.bootystar.mybatisplus.core.impl.EnhanceServiceImpl;
-import io.github.bootystar.mybatisplus.generator.config.impl.EnhanceConfig;
+import io.github.bootystar.mybatisplus.generator.config.impl.ExtraFiledConfig;
 import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
 
 /**
@@ -13,10 +13,10 @@ import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
  *
  * @author booty
  */
-public class ExtraParamGenerator extends AbstractGenerator<EnhanceConfig, EnhanceConfig.Builder> {
+public class ExtraParamGenerator extends AbstractGenerator<ExtraFiledConfig, ExtraFiledConfig.Builder> {
 
     public ExtraParamGenerator(String url, String username, String password) {
-        super(url, username, password, new EnhanceConfig.Builder());
+        super(url, username, password, new ExtraFiledConfig.Builder());
     }
 
     @Override

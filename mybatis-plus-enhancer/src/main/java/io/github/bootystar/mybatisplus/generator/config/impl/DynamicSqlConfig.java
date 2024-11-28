@@ -1,9 +1,9 @@
 package io.github.bootystar.mybatisplus.generator.config.impl;
 
 import io.github.bootystar.mybatisplus.generator.config.base.CustomConfigEnhance;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.SqlHelper;
-import io.github.bootystar.mybatisplus.logic.dynamic.core.UnmodifiableSqlHelper;
-import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
+import io.github.bootystar.mybatisplus.core.helper.SqlHelper;
+import io.github.bootystar.mybatisplus.core.helper.UnmodifiableSqlHelper;
+import io.github.bootystar.mybatisplus.generator.info.ClassInfo;
 import lombok.Getter;
 
 /**
@@ -19,16 +19,18 @@ public class DynamicSqlConfig extends CustomConfigEnhance {
         mapperDTO = new ClassInfo(UnmodifiableSqlHelper.class);
     }
 
-    public static class Builder extends CustomConfigEnhance.Builder<DynamicSqlConfig, DynamicSqlConfig.Builder> {
+    public static class Builder extends CustomConfigEnhance.Builder<DynamicSqlConfig, Builder> {
         @Override
         protected DynamicSqlConfig initConfig() {
             return new DynamicSqlConfig();
         }
 
         @Override
-        protected DynamicSqlConfig.Builder initBuilder() {
+        protected Builder initBuilder() {
             return this;
         }
+
+
     }
 
 

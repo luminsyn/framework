@@ -3,12 +3,6 @@ package ${basePackage}.${package4DTO};
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
-#foreach($field in ${table.fields})
-    #if(${field.propertyType}=="String")
-import ${javaApiPackage}.validation.constraints.Size;
-        #break
-    #end
-#end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
 #elseif(${swagger})
@@ -16,13 +10,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-#if(${chainModel})
+    #if(${chainModel})
 import lombok.experimental.Accessors;
-#end
+    #end
 #end
 
 import java.util.List;
@@ -37,12 +28,9 @@ import java.util.List;
  */
 #if(${entityLombokModel})
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-  #if(${chainModel})
+    #if(${chainModel})
 @Accessors(chain = true)
-  #end
+    #end
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}SelectDTO", description = "$!{table.comment}-查询DTO")
@@ -55,40 +43,37 @@ public class ${entity}SelectDTO {
 ###if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
-##
 ###end
-##
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
 #elseif(${field.logicDeleteField})
 #else
 
-#if("$!field.comment" != "")
-  #if(${springdoc})
+    #if("$!field.comment" != "")
+        #if(${springdoc})
     @Schema(description = "${field.comment}")
-  #elseif(${swagger})
+        #elseif(${swagger})
     @ApiModelProperty("${field.comment}")
-  #else
+        #else
     /**
      * ${field.comment}
      */
-  #end
-#end
-    #if(${field.propertyType} == "String")
-    @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
+        #end
     #end
     private ${field.propertyType} ${field.propertyName};
-#if(${field.keyFlag})
+    #if(${field.keyFlag})
 
-    #if(${springdoc})
+    #if("$!field.comment" != "")
+        #if(${springdoc})
     @Schema(description = "${field.comment}批量查询")
-    #elseif(${swagger})
+        #elseif(${swagger})
     @ApiModelProperty("${field.comment}批量查询")
-    #else
+        #else
     /**
      * ${field.comment}批量查询
      */
+        #end
     #end
     private List<${field.propertyType}> ${field.propertyName}List;
 ## String类型追加模糊查询
@@ -103,7 +88,6 @@ public class ${entity}SelectDTO {
      * ${field.comment}模糊查询
      */
     #end
-    @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
     private ${field.propertyType} ${field.propertyName}Like;
     #if(${entityLombokModel})
     #if(${chainModel})

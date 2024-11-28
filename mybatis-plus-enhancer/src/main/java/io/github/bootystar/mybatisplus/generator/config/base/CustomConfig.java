@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
-import io.github.bootystar.mybatisplus.generator.config.info.MethodInfo;
+import io.github.bootystar.mybatisplus.generator.info.ClassInfo;
+import io.github.bootystar.mybatisplus.generator.info.MethodInfo;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
@@ -65,8 +65,7 @@ public abstract class CustomConfig {
             customFiles.add(builder.build());
         }
 
-        // todo 导入导出整合
-        if (generateSelect && selectDTO == null) {
+        if ((generateSelect || generateExport) && selectDTO == null) {
             String fileName = "SelectDTO.java";
             String path = path4DTO + File.separator + entityName + fileName;
             CustomFile.Builder builder = new CustomFile.Builder()
@@ -108,7 +107,7 @@ public abstract class CustomConfig {
 //        }
 
         String fileName = "VO.java";
-        String path = path4DTO + File.separator + entityName + fileName;
+        String path = path4VO + File.separator + entityName + fileName;
         CustomFile.Builder builder = new CustomFile.Builder()
                 .fileName(fileName)
                 .filePath(path)
@@ -154,7 +153,11 @@ public abstract class CustomConfig {
         List<TableField> fields = tableInfo.getFields();
         List<String> existColumnNames = fields.stream().map(TableField::getColumnName).collect(Collectors.toList());
         if (orderColumnMap != null && !orderColumnMap.isEmpty()) {
-            orderColumnMap.entrySet().stream().filter(e -> existColumnNames.contains(e.getKey())).map(e -> String.format("a.`%s`%s", e.getKey(), e.getValue() ? " DESC" : "")).reduce((e1, e2) -> e1 + " , " + e2).ifPresent(e -> data.put("orderBySql", e));
+            orderColumnMap.entrySet().stream()
+                    .filter(e -> existColumnNames.contains(e.getKey()))
+                    .map(e -> String.format("a.%s%s", e.getKey(), e.getValue() ? " DESC" : ""))
+                    .reduce((e1, e2) -> e1 + " , " + e2)
+                    .ifPresent(e -> data.put("orderBySql", e));
         }
         return data;
     }
@@ -301,6 +304,17 @@ public abstract class CustomConfig {
 
 
         //==================DTO VO=======================
+
+        /**
+         * 使用Map作为查询DTO
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B mapAsSelectDTO() {
+            this.config.selectDTO = new ClassInfo(Map.class);
+            return this.builder;
+        }
 
         /**
          * DTO所在包

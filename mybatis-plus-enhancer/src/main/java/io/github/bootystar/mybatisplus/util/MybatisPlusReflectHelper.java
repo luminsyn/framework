@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.generator.config.info.MethodInfo;
-import io.github.bootystar.mybatisplus.logic.dynamic.DynamicEntity;
+import io.github.bootystar.mybatisplus.core.EnhanceEntity;
+import io.github.bootystar.mybatisplus.generator.info.MethodInfo;
 import lombok.SneakyThrows;
 
 import java.lang.invoke.SerializedLambda;
@@ -158,7 +158,7 @@ public abstract class MybatisPlusReflectHelper extends ReflectHelper {
 
     /**
      * 获取实体类字段映射
-     * 当实体类实现{@link DynamicEntity }接口后,会额外添加映射字段
+     * 当实体类实现{@link EnhanceEntity }接口后,会额外添加映射字段
      *
      * @param entityClass 实体类
      * @return {@link Map }<{@link String }, {@link String }>
@@ -167,9 +167,9 @@ public abstract class MybatisPlusReflectHelper extends ReflectHelper {
     @SneakyThrows
     public static Map<String, String> dynamicFieldsMap(Class<?> entityClass) {
         Map<String, String> map = fieldConvertMap(entityClass);
-        if (DynamicEntity.class.isAssignableFrom(entityClass)) {
-            DynamicEntity instance = (DynamicEntity) entityClass.getConstructor().newInstance();
-            Map<String, String> extraMap = instance.extraMap();
+        if (EnhanceEntity.class.isAssignableFrom(entityClass)) {
+            EnhanceEntity instance = (EnhanceEntity) entityClass.getConstructor().newInstance();
+            Map<String, String> extraMap = instance.extraFieldColumnMap();
             if (extraMap != null && !extraMap.isEmpty()) {
                 for (Map.Entry<String, String> next : extraMap.entrySet()) {
                     String fieldName = next.getKey();

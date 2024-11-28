@@ -1,10 +1,10 @@
-package io.github.bootystar.mybatisplus.logic.dynamic.core;
+package io.github.bootystar.mybatisplus.core.param;
 
 /**
  * 不可变条件
  * @author bootystar
  */
-public class UnmodifiableCondition extends Condition{
+public class UnmodifiableCondition extends Condition {
 
     public UnmodifiableCondition(String connector, String field, String operator, Object value) {
         this.connector = connector;

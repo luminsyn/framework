@@ -1,6 +1,5 @@
 package io.github.bootystar.mybatisplus.generator.engine;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
@@ -8,7 +7,6 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.engine.AbstractTemplateEngine;
 import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 import io.github.bootystar.mybatisplus.generator.config.base.CustomConfig;
-import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
 
 import java.io.File;
 import java.util.List;

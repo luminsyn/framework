@@ -1,6 +1,6 @@
 package io.github.bootystar.mybatisplus.generator.config.base;
 
-import io.github.bootystar.mybatisplus.generator.config.info.ClassInfo;
+import io.github.bootystar.mybatisplus.generator.info.ClassInfo;
 
 /**
  * 继承增强配置项

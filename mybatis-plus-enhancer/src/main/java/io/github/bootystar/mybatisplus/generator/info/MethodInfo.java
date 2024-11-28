@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.generator.config.info;
+package io.github.bootystar.mybatisplus.generator.info;
 
 import lombok.*;
 
@@ -39,7 +39,7 @@ public class MethodInfo extends ClassInfo {
             return parametersStr;
         }
         if (isStatic) {
-            return String.format("%s.%s(" , classSimpleName, methodName);
+            return String.format("%s.%s(%s)" , classSimpleName, methodName, parametersStr);
         }
         if (isConstructor) {
             return String.format("new %s%s(%s)" , classSimpleName, classGenericTypeCount == 1 ? "<>" : "" , parametersStr);

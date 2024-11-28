@@ -1,52 +1,48 @@
 package ${package.Controller};
 
-#if(${returnMethod.enable()})
+##------参数设置----start
+#set($requestBaseUrL = "$!{baseUrl}$!{package.ModuleName}/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${requestBody})
+    #set($requiredBodyStr = "@RequestBody ")
+    #set($optionalBodyStr = "@RequestBody(required = false) ")
+#end
+#if(${validated})
+    #set($validatedStr = "@Validated ")
+#end
+#set($entityInsertDTO = "${entity}InsertDTO")
+#set($entityUpdateDTO = "${entity}UpdateDTO")
+#set($entityVO = "${entity}VO")
+#if(${selectDTO.classFullName})
+import ${selectDTO.classFullName};
+        #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
+    #else
+import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+        #set($entitySelectDTO = "${entity}SelectDTO")
+#end
+#set($requestMethod4Select = "#if(${postQuery})@PostMapping#else@GetMapping#end")
+##set($pagePathParams = "@PathVariable(value = ""current"", required = false) Long current, @PathVariable(value = ""size"", required = false) Long size")
+#set($pagePathParams = "@PathVariable(""current"") Long current, @PathVariable(""size"") Long size")
+##------参数设置----end
+#if(${generateInsert}||${generateImport})
+import ${basePackage}.${package4DTO}.${entityInsertDTO};
+#end
+#if(${generateUpdate})
+import ${basePackage}.${package4DTO}.${entityUpdateDTO};
+#end
+#if(${generateSelect}||${generateExport}||${generateInsert})
+import ${basePackage}.${package4VO}.${entityVO};
+#end
+#if(${returnMethod.classFullName})
 import ${returnMethod.classFullName};
+#end
+#if(${pageMethod.classFullName})
+import ${pageMethod.classFullName};
+    #else
+import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${package.Service}.${table.serviceName};
 #if(${superControllerClassPackage})
 import ${superControllerClassPackage};
-#end
-#if(${generateSelect}||(${generateExport}&&${exportOnVO})||(${generateImport}&&${importOnVO}))
-import ${basePackage}.${package4VO}.${entity}VO;
-#end
-###-----查询DTO字符串----start
-#if ($entity == 'User')
-    #set ($entityVO = 'UserVO')
-#elseif ($entity == 'Product')
-    #set ($entityVO = 'ProductVO')
-#else
-    #set ($entityVO = 'DefaultVO')
-#end
-###-----查询DTO字符串----end
-###-----查询DTO字符串----start
-#if(${generateSelect}|| ${gener})
-    #if(${pageMethod.imports()})
-import ${pageMethod.classFullName};
-    #else
-import com.baomidou.mybatisplus.core.metadata.IPage;
-    #end
-    #if(${selectDTO.on()})
-import ${selectDTO.classFullName};
-#set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
-    #else
-import ${basePackage}.${package4DTO}.${entity}SelectDTO;
-#set($entitySelectDTO = "${entity}SelectDTO")
-    #end
-#set($pathParams = "@PathVariable(value = 'current', required = false) Long current, @PathVariable(value = 'size', required = false) Long size")
-#end
-###-----查询DTO及方法----end
-#if(${generateInsert})
-import ${basePackage}.${package4DTO}.${entity}InsertDTO;
-#end
-#if(${generateUpdate})
-import ${basePackage}.${package4DTO}.${entity}UpdateDTO;
-#end
-#if(${generateImport}&&!${importOnVO})
-import ${basePackage}.${package4DTO}.${entity}ImportDTO;
-#end
-#if(${generateExport}&&!${exportOnVO})
-import ${basePackage}.${package4DTO}.${entity}ExportDTO;
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,7 +56,7 @@ import org.springframework.web.bind.annotation.*;
 #if(!${restControllerStyle})
 import org.springframework.stereotype.Controller;
 #end
-#if(${enableValidated} && (${generateInsert}||${generateUpdate}))
+#if(${validated} && (${generateInsert}||${generateUpdate}))
 import org.springframework.validation.annotation.Validated;
 #end
 #if(${generateImport})
@@ -92,7 +88,7 @@ import java.util.List;
 #if(${springdoc})
 @Tag(name = "${table.comment}", description = "$!{table.comment}")
     #elseif(${swagger})
-@Api(value = "#if(${baseUrl})${baseUrl}#end#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end", tags = "$!{table.comment}")
+@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}")
 #end
 #if(${restControllerStyle})
 @RestController
@@ -102,7 +98,7 @@ import java.util.List;
 #if(${enableOrigins})
 @CrossOrigin
 #end
-@RequestMapping("#if(${baseUrl})${baseUrl}#end#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@RequestMapping("${requestBaseUrL}")
 #if(${kotlin})
 class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
     #else
@@ -138,8 +134,8 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration("${entity}VO")} insert(#if(${requestBody})@RequestBody #end#if(${validated})@Validated #end${entity}InsertDTO s) {
-        return ${returnMethod.methodDeclaration("baseService.insertByDTO(s)")};
+    public ${returnMethod.clazz("${entityVO}")} insert($!{requiredBodyStr}$!{validatedStr}${entityInsertDTO} s) {
+        return ${returnMethod.method("baseService.insertByDTO(s)")};
     }
 #end
 #if(${generateUpdate})
@@ -165,8 +161,8 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration("Boolean")} update(#if(${requestBody})@RequestBody #end#if(${validated})@Validated #end${entity}UpdateDTO s) {
-        return ${returnMethod.methodDeclaration("baseService.updateByDTO(s)")};
+    public ${returnMethod.clazz("Boolean")} update($!{requiredBodyStr}$!{validatedStr}${entityUpdateDTO} s) {
+        return ${returnMethod.method("baseService.updateByDTO(s)")};
     }
 #end
 #if(${generateDelete})
@@ -192,8 +188,8 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration("Boolean")} delete(@PathVariable("id") Serializable id) {
-        return ${returnMethod.methodDeclaration("baseService.removeById(id)")};
+    public ${returnMethod.clazz("Boolean")} delete(@PathVariable("id") Serializable id) {
+        return ${returnMethod.method("baseService.removeById(id)")};
     }
 #end
 ##------------查询相关--------start
@@ -220,8 +216,8 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration("${entity}VO")} selectId(@PathVariable("id") Serializable id) {
-        return ${returnResultMethodName.methodDeclaration("baseService.oneById(id)")};
+    public ${returnMethod.clazz("${entityVO}")} selectId(@PathVariable("id") Serializable id) {
+        return ${returnMethod.method("baseService.oneById(id)")};
     }
 
     #if(${springdoc})
@@ -237,16 +233,12 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
-    #if(${postQuery})
-    @PostMapping("/list")
-    #else
-    @GetMapping("/list")
-    #end
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.classDeclaration("${entity}VO")} selectList(${entitySelectDTO} s) {
-        return ${returnMethod.methodDeclaration("baseService.listByDTO(s)")};
+    ${requestMethod4Select}("/list")
+    public ${returnMethod.clazz("List<${entityVO}>")} selectList($!{optionalBodyStr}${entitySelectDTO} s) {
+        return ${returnMethod.method("baseService.listByDTO(s)")};
     }
 
     #if(${springdoc})
@@ -257,39 +249,31 @@ public class ${table.controllerName} {
     /**
      * 分页查询(页码与大小均不传时采用默认值)
      *
-     * @param current 页码(默认1)
-     * @param size 每页大小(默认10,-1为不限制)
      * @param s 查询条件
+     * @param current 页码(非必传,默认1)
+     * @param size 每页大小(非必传,默认10)
      * @return 查询结果
      * @author ${author}
      */
     #end
-    #if(${postQuery})
-    @PostMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
-    #else
-    @GetMapping({"/page", "/page/{current}", "/page/{current}/{size}"})
-    #end
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    #set($entityVO = "${entity}VO")
-    #set($pageClazz = ${pageMethod.clazz("$entityVO")})
-    #set($returnPageClazz = ${returnMethod.clazz("$pageClazz")})
-##    public ${returnPageClazz} selectPage(#if(${requestBody})@RequestBody(required = false) ${entitySelectDTO} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
-    public ${returnPageClazz} selectPage(#if(${requestBody})@RequestBody(required = false) ${entitySelectDTO} s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size) {
-        return ${returnMethod.method("baseService.pageByDTO(s, current, size)")};
+##    ${requestMethod4Select}({"/page", "/page/{current}", "/page/{current}/{size}"})
+    ${requestMethod4Select}("/page/{current}/{size}")
+    public ${returnMethod.clazz(${pageMethod.clazz("${entityVO}")})} selectPage($!{optionalBodyStr}${entitySelectDTO} s, $!{pagePathParams}) {
+        return ${returnMethod.method(${pageMethod.method("baseService.pageByDTO(s, current, size)")})};
     }
-
 #end
 #if(${generateImport})
 
     #if(${springdoc})
-    @Operation(summary = "下载excel导入模板")
+    @Operation(summary = "excel导入模板")
         #elseif(${swagger})
-    @ApiOperation(value = "下载excel导入模板")
+    @ApiOperation(value = "excel导入模板")
         #else
     /**
-     * 下载excel导入模板
+     * excel导入模板
      *
      * @author ${author}
      */
@@ -298,16 +282,16 @@ public class ${table.controllerName} {
     public void excelTemplate(HttpServletResponse response) throws IOException {
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
         response.setContentType("application/vnd.ms-excel");
-        baseService.excelTemplate(response.getOutputStream(), ${entity}InsertDTO.class);
+        baseService.excelTemplate(response.getOutputStream(), ${entityInsertDTO}.class);
     }
 
     #if(${springdoc})
-    @Operation(summary = "导入excel")
+    @Operation(summary = "excel文件导入")
         #elseif(${swagger})
-    @ApiOperation(value = "导入excel")
+    @ApiOperation(value = "excel文件导入")
         #else
     /**
-     * 导入excel
+     * excel文件导入
      *
      * @param file excel文件
      * @return 是否成功
@@ -318,38 +302,32 @@ public class ${table.controllerName} {
     #if(!${restControllerStyle})
     @ResponseBody
     #end
-    public ${returnMethod.clazz("${entity}VO")} excelImport(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) {
-            return ${returnResultMethodName.method("false")}
-        }
-        return ${returnResultMethodName.method("baseService.excelImport(file.getInputStream(), ${entity}InsertDTO.class)")};
+    public ${returnMethod.clazz("Boolean")} excelImport(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) return ${returnMethod.method("false")};
+        return ${returnMethod.method("baseService.excelImport(file.getInputStream(), ${entityInsertDTO}.class)")};
     }
 #end
 #if(${generateExport})
 
     #if(${springdoc})
-    @Operation(summary = "导出excel")
+    @Operation(summary = "excel文件导出")
         #elseif(${swagger})
-    @ApiOperation(value = "导出excel")
+    @ApiOperation(value = "excel文件导出")
         #else
     /**
-     * 导出excel(页码与大小均不传时导出全部)
-     *
-     * @param current 页码(默认1)
-     * @param size 每页大小(默认10)
+     * excel文件导出
      * @param s 查询条件
+     * @param current 页码(非必传,默认无页码)
+     * @param size 每页大小(非必传,有页码时默认10,无页码时导出全部)
      * @author ${author}
      */
     #end
-    #if(${postQuery})
-    @PostMapping({"/excelExport", "/export/{current}", "/export/{current}/{size}"})
-    #else
-    @GetMapping({"/excelExport", "/export/{current}", "/export/{current}/{size}"})
-    #end
-    public void excelExport(#if(${requestBody})@RequestBody(required = false) #end#if(${selectDTO.on()})${selectDTO.clazz("${entity}")}#else${entity}SelectDTO#end s#end s, @PathVariable(value = "current", required = false) Long current, @PathVariable(value = "size", required = false) Long size, HttpServletResponse response) throws IOException {
+##    ${requestMethod4Select}({"/excelExport", "/excelExport/{current}", "/excelExport/{current}/{size}"})
+    ${requestMethod4Select}("/excelExport/{current}/{size}")
+    public void excelExport($!{optionalBodyStr}${entitySelectDTO} s, ${pagePathParams}, HttpServletResponse response) throws IOException {
         response.setHeader("Content-disposition", "attachment;filename=" + System.currentTimeMillis() + ".xlsx");
         response.setContentType("application/vnd.ms-excel");
-        baseService.excelExport(s, response.getOutputStream(), ${entity}VO.class, current, size);
+        baseService.excelExport(s, response.getOutputStream(), ${entityVO}.class, current, size);
     }
 #end
 

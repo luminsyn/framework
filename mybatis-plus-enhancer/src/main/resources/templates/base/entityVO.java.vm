@@ -1,6 +1,11 @@
 package ${basePackage}.${package4VO};
+
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
+#end
+#if(${generateExport})
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,10 +18,6 @@ import lombok.Data;
 #if(${chainModel})
 import lombok.experimental.Accessors;
 #end
-#end
-#if(${importOnVO}||${exportOnVO})
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
 #end
 /**
  * $!{table.comment}-VO
@@ -39,58 +40,33 @@ import com.alibaba.excel.annotation.ExcelProperty;
 ##@ApiModel(value = "${entity}VO", description = "$!{table.comment}-VO")
 @ApiModel(description = "$!{table.comment}-VO")
 #end
-#if(${importOnVO}||${exportOnVO})
+#if(${generateExport})
 @ExcelIgnoreUnannotated
-##@HeadRowHeight(30)
-##@ColumnWidth(25)
-##@ContentRowHeight(20)
 #end
 public class ${entity}VO {
-#if(${entitySerialVersionUID})
+###if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
-#end
+###end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.logicDeleteField})
 #else
 
-#if("$!field.comment" != "")
-  #if(${springdoc})
+    #if("$!field.comment" != "")
+        #if(${springdoc})
     @Schema(description = "${field.comment}")
-  #elseif(${swagger})
+        #elseif(${swagger})
     @ApiModelProperty("${field.comment}")
-  #else
+        #else
     /**
      * ${field.comment}
      */
-  #end
-#end
-    #if(${importOnVO}||${exportOnVO})
+        #end
+    #end
+    #if(${generateExport})## 导出
     @ExcelProperty(value = "${field.comment}")
     #end
-#if(${fieldAnnotationOnVO})
-    #if(${field.keyFlag})
-## 主键
-    #if(${field.keyIdentityFlag})
-    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
-    #elseif(!$null.isNull(${idType}) && "$!idType" != "")
-    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
-    #elseif(${field.convert})
-    @TableId("${field.annotationColumnName}")
-    #end
-## 普通字段
-    #elseif(${field.fill})
-## -----   存在字段填充设置   -----
-    #if(${field.convert})
-    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
-    #else
-    @TableField(fill = FieldFill.${field.fill})
-    #end
-    #elseif(${field.convert})
-    @TableField("${field.annotationColumnName}")
-    #end
-#end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end

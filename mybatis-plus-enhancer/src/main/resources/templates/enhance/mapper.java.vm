@@ -3,7 +3,7 @@ package ${package.Mapper};
 #if(${mapperAnnotationClass})
 import ${mapperAnnotationClass.name};
 #end
-#if(${showMapperMethod})
+#if(${overrideMethods})
 ##import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #end

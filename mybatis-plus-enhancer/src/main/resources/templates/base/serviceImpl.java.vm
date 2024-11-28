@@ -79,50 +79,51 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #end
     #if(${generateSelect})
 
-    public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
+    public <S> List<SysTestVO> doSelect(S s, IPage<SysTestVO> page) {
+        #if(${selectDTO.classFullName})
+        // ${selectDTO.clazz("${entity}")}
+        #else
         // ${entity}SelectDTO
-        if (source ==null || source instanceof Map){
-            return getBaseMapper().listByDTO(source, page);
-        }
-        Map<Object, Object> map = new HashMap<>();
-        List<Field> fields = new ArrayList<>();
-        Class<?> currentClass = source.getClass();
-        while (currentClass != null && currentClass != Object.class && !currentClass.isInterface()) {
-            Arrays.stream(currentClass.getDeclaredFields()).filter(f -> !Modifier.isStatic(f.getModifiers()))
-                    .filter(f -> !Modifier.isFinal(f.getModifiers())).filter(f -> !Modifier.isNative(f.getModifiers()))
-                    .peek(f -> f.setAccessible(true)).forEach(fields::add);
-            currentClass = currentClass.getSuperclass();
-        }
-        try {
-            for (Field field : fields) {
-                Object key = field.getName();
-                Object value = field.get(source);
-                if (value != null) map.put(key, value);
+        #end
+        Map<Object, Object> map = null;
+        if (s == null || s instanceof Map) {
+            map = s == null ? new HashMap<>() : (Map<Object, Object>) s;
+        } else {
+            map = new HashMap<>();
+            List<Field> fields = new ArrayList<>();
+            Class<?> currentClass = s.getClass();
+            while (currentClass != null && currentClass != Object.class && !currentClass.isInterface()) {
+                Arrays.stream(currentClass.getDeclaredFields()).filter(f -> !Modifier.isStatic(f.getModifiers()))
+                        .filter(f -> !Modifier.isFinal(f.getModifiers())).filter(f -> !Modifier.isNative(f.getModifiers()))
+                        .peek(f -> f.setAccessible(true)).forEach(fields::add);
+                currentClass = currentClass.getSuperclass();
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            try {
+                for (Field field : fields) {
+                    Object key = field.getName();
+                    Object value = field.get(s);
+                    if (value != null) map.put(key, value);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
-        return getBaseMapper().listByDTO(map, null);
+        return getBaseMapper().listByDTO(map, page);
     }
 
     @Override
     public ${entity}VO oneById(Serializable id) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("id", id);
-        return this.oneByDTO(map);
-    }
-
-    @Override
-    public <S> ${entity}VO oneByDTO(S s) {
         List<${entity}VO> vs = listByDTO(s);
-        if (vs == null || vs.size()==0 ) return null;
+        if (vs == null || vs.isEmpty()) return null;
         if(vs.size() > 1) throw new RuntimeException("error query => required 1 but found " + vs.size());
         return vs.get(0);
     }
 
     @Override
     public <S> List<${entity}VO> listByDTO(S s) {
-        return doSelect(s, page);
+        return doSelect(s, null);
     }
 
     @Override
@@ -138,7 +139,12 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateImport})
 
     @Override
-    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+    public <U> void excelTemplate(OutputStream os, Class<U> clazz) {
+        EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
+    }
+
+    @Override
+    public <U> boolean excelImport(InputStream is, Class<U> clazz) {
         // ${entity}InsertDTO
         List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
         List<${entity}> entityList = cachedDataList.stream().map(e->{
@@ -148,27 +154,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
             }).collect(Collectors.toList());
         return super.saveBatch(entityList);
     }
-
-    @Override
-    public <U> void excelTemplate(OutputStream os, Class<U> clazz) {
-        EasyExcel.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
-    }
     #end
     #if(${generateExport})
 
     @Override
-    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        List<${entity}VO> voList;
-        if (current == null && size == null) {
-            voList = listByDTO(s);
-        } else {
-            voList = pageByDTO(s, current, size).getRecords();
-        }
-        ExcelWriterBuilder builder = EasyExcel.write(os, clazz);
-        if (includeFields != null && includeFields.length > 0) {
-            builder.includeColumnFieldNames(Arrays.asList(includeFields));
-        }
-        builder.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
+    public <S, U> void excelExport(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
+        List<${entity}VO> voList = pageByDTO(s, current, size).getRecords();
+        ExcelHelper.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
     #end
 

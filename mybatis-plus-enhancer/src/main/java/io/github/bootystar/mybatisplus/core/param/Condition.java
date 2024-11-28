@@ -1,6 +1,6 @@
-package io.github.bootystar.mybatisplus.logic.dynamic.core;
+package io.github.bootystar.mybatisplus.core.param;
 
-import io.github.bootystar.mybatisplus.logic.dynamic.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.core.enums.SqlKeyword;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -60,7 +60,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #end
     @Override
     public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
-        #if(${selectDTO.on()})
+        #if(${selectDTO.classFullName})
         // ${selectDTO.clazz("${entity}")}
             #else
         // ${entity}SelectDTO
@@ -87,16 +87,16 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateImport})
 
     @Override
-    public <U> boolean importExcel(InputStream is, Class<U> clazz) {
+    public <U> boolean excelImport(InputStream is, Class<U> clazz) {
         // ${entity}InsertDTO
-        return super.importExcel(is, clazz);
+        return super.excelImport(is, clazz);
     }
     #end
     #if(${generateExport})
 
     @Override
-    public <S,U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        super.exportExcel(s, os, clazz, current, size, includeFields);
+    public <S,U> void excelExport(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
+        super.excelExport(s, os, clazz, current, size, includeFields);
     }
     #end
 

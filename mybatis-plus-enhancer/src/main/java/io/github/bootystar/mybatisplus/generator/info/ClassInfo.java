@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.generator.config.info;
+package io.github.bootystar.mybatisplus.generator.info;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,8 +38,10 @@ public class ClassInfo {
         if (classGenericTypeCount == 0) {
             return classSimpleName;
         }
-
-        if (genericTypeStr != null || classGenericTypeCount == genericTypeStr.length) {
+        if (genericTypeStr == null || genericTypeStr.length == 0) {
+            return String.format("%s<%s>", classSimpleName, String.join(", ", Collections.nCopies(classGenericTypeCount, "?")));
+        }
+        if (classGenericTypeCount == genericTypeStr.length) {
             return String.format("%s<%s>", classSimpleName, String.join(", ", genericTypeStr));
         }
         return String.format("%s<%s>", classSimpleName, String.join(", ", Collections.nCopies(classGenericTypeCount, "?")));

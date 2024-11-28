@@ -5,9 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.bootystar.mybatisplus.core.EnhanceMapper;
 import io.github.bootystar.mybatisplus.core.EnhanceService;
+import io.github.bootystar.mybatisplus.core.helper.UnmodifiableSqlHelper;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
-import org.apache.ibatis.exceptions.TooManyResultsException;
-import org.apache.ibatis.ognl.NoSuchPropertyException;
 
 import java.io.Serializable;
 import java.util.*;
@@ -30,13 +29,9 @@ public abstract class EnhanceServiceImpl<M extends EnhanceMapper<T, V, Map<?, ?>
 
     @Override
     public V oneById(Serializable id) {
+        if (id == null) throw new IllegalArgumentException("id can't be null");
         String s = MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity());
-        if (s == null ) {
-            throw new IllegalArgumentException("no id field found in entity");
-        }
-        if (id == null) {
-            throw new IllegalArgumentException("id can't be null");
-        }
+        if (s == null) throw new IllegalArgumentException("no id field found in entity");
         HashMap<Object, Object> map = new HashMap<>();
         map.put(s, id);
         return oneByDTO(map);

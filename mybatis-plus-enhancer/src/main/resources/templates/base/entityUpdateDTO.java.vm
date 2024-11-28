@@ -3,40 +3,40 @@ package ${basePackage}.${package4DTO};
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
-#if(${enableValidated})
-#foreach($field in ${table.fields})
-    #if(${field.metaInfo.nullable}==false && ${field.keyFlag})
+#if(${validated})
+    ## ---字段非空验证---
+    #foreach($field in ${table.fields})
+        #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
 import ${javaApiPackage}.validation.constraints.NotNull;
-    #if(${field.metaInfo.nullable}==false && ${field.keyFlag} && ${field.propertyType}=="String")
+            #break
+        #end
+    #end
+    ## ---字符串非空验证---
+    #foreach($field in ${table.fields})
+        #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.NotBlank;
+            #break
+        #end
     #end
-    #break
-    #end
-#end
-#foreach($field in ${table.fields})
-    #if(${field.versionField})
-import ${javaApiPackage}.validation.constraints.NotNull;
-    #break
-    #end
-#end
-#foreach($field in ${table.fields})
-    #if(${field.propertyType}=="String")
+    ## ---字符串长度验证---
+    #foreach($field in ${table.fields})
+        #if(${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.Size;
-    #break
+            #break
+        #end
     #end
-#end
 #end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
-#elseif(${swagger})
+    #elseif(${swagger})
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 #end
 #if(${entityLombokModel})
 import lombok.Data;
-#if(${chainModel})
+    #if(${chainModel})
 import lombok.experimental.Accessors;
-#end
+    #end
 #end
 
 /**
@@ -49,9 +49,9 @@ import lombok.experimental.Accessors;
  */
 #if(${entityLombokModel})
 @Data
-  #if(${chainModel})
+    #if(${chainModel})
 @Accessors(chain = true)
-  #end
+    #end
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
@@ -61,46 +61,48 @@ import lombok.experimental.Accessors;
 @ApiModel(description = "$!{table.comment}-修改DTO")
 #end
 public class ${entity}UpdateDTO {
-#if(${entitySerialVersionUID})
+###if(${entitySerialVersionUID})
 ##
 ##    private static final long serialVersionUID = 1L;
-#end
+###end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(($editExcludeColumns.contains(${field.columnName})))
 #elseif(${field.logicDeleteField})
 #else
 
-#if("$!field.comment" != "")
-  #if(${springdoc})
+    #if("$!field.comment" != "")
+        #if(${springdoc})
     @Schema(description = "${field.comment}")
-  #elseif(${swagger})
+        #elseif(${swagger})
     @ApiModelProperty("${field.comment}")
-  #else
+        #else
     /**
      * ${field.comment}
      */
-  #end
-#end
-#if(${enableValidated})
-#if(${field.keyFlag})
-## 主键
-    @NotNull(message = "${field.comment}不能为空")
-    #if(${field.propertyType}=="String")
-    @NotBlank(message = "${field.comment}不能为空")
+        #end
     #end
-#end
-## 乐观锁注解
-#if(${field.versionField})
-    @NotNull(message = "${field.comment}不能为空")
-    #if(${field.propertyType}=="String")
-    @NotBlank(message = "${field.comment}不能为空")
-    #end
-#end
-    #if(${field.propertyType} == "String")
+    ## 参数校验
+    #if(${validated})
+        ## 主键
+        #if(${field.keyFlag})
+    @NotNull(message = "${field.comment}为必填项")
+            #if(${field.propertyType}=="String")
+    @NotBlank(message = "${field.comment}为必填项")
+            #end
+        #end
+        ## 乐观锁注解
+        #if(${field.versionField})
+    @NotNull(message = "${field.comment}为必填项")
+            #if(${field.propertyType}=="String")
+    @NotBlank(message = "${field.comment}为必填项")
+            #end
+        #end
+        ## 字符串长度限制
+        #if(${field.propertyType} == "String")
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
+        #end
     #end
-#end
     private ${field.propertyType} ${field.propertyName};
 #end
 #end

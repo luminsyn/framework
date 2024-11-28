@@ -46,9 +46,9 @@
 #if(${baseColumnList})
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-#foreach($field in ${table.commonFields})
-        ${field.columnName},
-#end
+        #foreach($field in ${table.commonFields})
+            ${field.columnName},
+        #end
         ${table.fieldNames}
     </sql>
 
@@ -59,24 +59,23 @@
         a.*
         FROM
 ##         ${schemaName} ${table.name} a
-        `${table.name}` a
+        ${table.name} a
         <where>
-#foreach($field in ${table.fields})
-    #if(${field.logicDeleteField})
-            a.`${field.columnName}` = 0
-    #break
-    #end
-#end
+            #foreach($field in ${table.fields})
+                #if(${field.logicDeleteField})
+            a.${field.columnName} = 0
+                    #break
+                #end
+            #end
             <if test="param1 != null">
 #foreach($field in ${table.fields})
     #if(${field.logicDeleteField})
-##                AND a.${field.columnName} = 0
     #elseif(${field.keyFlag})
                 <if test="param1.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
+                    AND a.${field.columnName} = #{param1.${field.propertyName}}
                 </if>
                 <if test="param1.${field.propertyName}List != null and param1.${field.propertyName}List.size() > 0">
-                    AND a.`${field.columnName}` IN
+                    AND a.${field.columnName} IN
                     <foreach collection="param1.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                         #{prop}
                     </foreach>
@@ -84,34 +83,34 @@
     #else
         #if(${field.propertyType} == "String")
                 <if test="param1.${field.propertyName} != null and param1.${field.propertyName}.length()>0">
-                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
+                    AND a.${field.columnName} = #{param1.${field.propertyName}}
                 </if>
-                <if test="param1.${field.propertyName}Like  != null and param1.${field.propertyName}Like.length()>0">
-                    AND a.`${field.columnName}` LIKE #{param1.${field.propertyName}Like}
+                <if test="param1.${field.propertyName}Lk  != null and param1.${field.propertyName}Lk.length()>0">
+                    AND a.${field.columnName} LIKE #{param1.${field.propertyName}Lk}
                 </if>
         #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
                 <if test="param1.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
+                    AND a.${field.columnName} = #{param1.${field.propertyName}}
                 </if>
-                <if test="param1.${field.propertyName}Start != null">
-                    AND a.`${field.columnName}` &gt;= #{param1.${field.propertyName}Start}
+                <if test="param1.${field.propertyName}Ge != null">
+                    AND a.${field.columnName} &gt;= #{param1.${field.propertyName}Ge}
                 </if>
-                <if test="param1.${field.propertyName}End != null">
-                    AND a.`${field.columnName}` &lt;= #{param1.${field.propertyName}End}
+                <if test="param1.${field.propertyName}Le != null">
+                    AND a.${field.columnName} &lt;= #{param1.${field.propertyName}Le}
                 </if>
         #elseif(${field.propertyType} == "Integer"||${field.propertyType} == "Long")
                 <if test="param1.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
+                    AND a.${field.columnName} = #{param1.${field.propertyName}}
                 </if>
-                <if test="param1.${field.propertyName}List != null and param1.${field.propertyName}List.size() > 0">
-                    AND a.`${field.columnName}` IN
+                <if test="param1.${field.propertyName}Ls != null and param1.${field.propertyName}Ls.size() > 0">
+                    AND a.${field.columnName} IN
                     <foreach collection="param1.${field.propertyName}List" item="prop" open="(" close=")" separator=",">
                         #{prop}
                     </foreach>
                 </if>
         #else
                 <if test="param1.${field.propertyName} != null">
-                    AND a.`${field.columnName}` = #{param1.${field.propertyName}}
+                    AND a.${field.columnName} = #{param1.${field.propertyName}}
                 </if>
         #end
     #end

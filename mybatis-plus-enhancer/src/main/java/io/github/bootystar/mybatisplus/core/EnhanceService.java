@@ -1,7 +1,6 @@
 package io.github.bootystar.mybatisplus.core;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,7 +12,10 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -99,33 +101,24 @@ public interface EnhanceService<T, V> extends IService<T> {
         return vp;
     }
 
-    default <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, String... includeFields) {
-        exportExcel(s, os, clazz, null, null, includeFields);
-    }
-
-    default <S, U> void exportExcel(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        List<V> voList;
-        if (current == null && size == null) {
-            voList = listByDTO(s);
-        } else {
-            voList = pageByDTO(s, current, size).getRecords();
-        }
-        ExcelWriterBuilder builder = ExcelHelper.write(os, clazz);
-        if (includeFields != null && includeFields.length > 0) {
-            builder.includeColumnFieldNames(Arrays.asList(includeFields));
-        }
-        builder.registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
-    }
-
     default <U> void excelTemplate(OutputStream os, Class<U> clazz) {
         ExcelHelper.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
     }
 
-    default <U> boolean importExcel(InputStream is, Class<U> clazz) {
+    default <U> boolean excelImport(InputStream is, Class<U> clazz) {
         List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
         if (cachedDataList == null || cachedDataList.isEmpty()) return false;
         List<T> entityList = cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
         return saveBatch(entityList);
     }
-    
+
+    default <S, U> void excelExport(S s, OutputStream os, Class<U> clazz, String... includeFields) {
+        excelExport(s, os, clazz, null, null, includeFields);
+    }
+
+    default <S, U> void excelExport(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
+        List<V> voList = current == null && size == null ? listByDTO(s) : pageByDTO(s, current, size).getRecords();
+        ExcelHelper.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
+    }
+
 }

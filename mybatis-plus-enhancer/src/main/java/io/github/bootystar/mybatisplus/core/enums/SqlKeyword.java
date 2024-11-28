@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.logic.dynamic.enums;
+package io.github.bootystar.mybatisplus.core.enums;
 
 import lombok.AllArgsConstructor;
 

@@ -19,5 +19,6 @@ public class BaseConfig extends CustomConfig {
         protected Builder initBuilder() {
             return this;
         }
+
     }
 }
