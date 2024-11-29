@@ -7,11 +7,14 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author bootystar
  */
 public abstract class ReflectHelper {
+
+    private static final Map<Class<?>, Map<String, Field>> FIELD_MAP_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 新建实例
@@ -33,6 +36,10 @@ public abstract class ReflectHelper {
      * @author bootystar
      */
     public static Map<String, Field> fieldMap(Class<?> clazz) {
+        Map<String, Field> stringFieldMap = FIELD_MAP_CACHE.get(clazz);
+        if (stringFieldMap != null) {
+            return stringFieldMap;
+        }
         Map<String, Field> map = new HashMap<>();
         while (clazz != null && Object.class != clazz && !clazz.isInterface()) {
             Field[] fields = clazz.getDeclaredFields();
@@ -45,6 +52,7 @@ public abstract class ReflectHelper {
             }
             clazz = clazz.getSuperclass();
         }
+        FIELD_MAP_CACHE.put(clazz, map);
         return map;
     }
 
@@ -108,7 +116,7 @@ public abstract class ReflectHelper {
      * 对象转对象
      *
      * @param source 来源
-     * @param clazz  克拉兹
+     * @param clazz  目标类
      * @return {@link U }
      * @author bootystar
      */

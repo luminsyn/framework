@@ -1,12 +1,24 @@
 package ${package.Service};
 
+## ------参数设置----start
+#set($entityInsertDTO = "${entity}InsertDTO")
+#set($entityUpdateDTO = "${entity}UpdateDTO")
+#set($entityVO = "${entity}VO")
+#if(${selectDTO.classFullName})
+import ${selectDTO.classFullName};
+    #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
+#else
+import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+    #set($entitySelectDTO = "${entity}SelectDTO")
+#end
+## ------参数设置----end
 #if(${generateSelect})
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${superServiceClassPackage};
 import ${package.Entity}.${entity};
 #if(${generateInsert}||${generateSelect})
-import ${basePackage}.${package4VO}.${entity}VO;
+import ${basePackage}.${package4VO}.${entityVO};
 #end
 
 #if(${generateImport}||${generateExport})
@@ -30,7 +42,7 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #if(${generateInsert})
 
-    <S> ${entity}VO insertByDTO(S s);
+    <S> ${entityVO} insertByDTO(S s);
     #end
     #if(${generateUpdate})
 
@@ -38,11 +50,11 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #end
     #if(${generateSelect})
 
-    ${entity}VO oneById(Serializable id);
+    ${entityVO} oneById(Serializable id);
 
-    <S> List<${entity}VO> listByDTO(S s);
+    <S> List<${entityVO}> listByDTO(S s);
 
-    <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size);
+    <S> IPage<${entityVO}> pageByDTO(S s, Long current, Long size);
     #end
     #if(${generateImport})
 

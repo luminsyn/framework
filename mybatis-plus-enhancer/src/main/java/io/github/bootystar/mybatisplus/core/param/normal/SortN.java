@@ -1,5 +1,6 @@
-package io.github.bootystar.mybatisplus.core.param;
+package io.github.bootystar.mybatisplus.core.param.normal;
 
+import io.github.bootystar.mybatisplus.core.param.base.ISqlSort;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Sort {
+public class SortN implements ISqlSort {
 
     /**
      * 字段

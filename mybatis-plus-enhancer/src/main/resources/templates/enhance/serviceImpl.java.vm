@@ -1,10 +1,23 @@
 package ${package.ServiceImpl};
+
+## ------参数设置----start
+#set($entityInsertDTO = "${entity}InsertDTO")
+#set($entityUpdateDTO = "${entity}UpdateDTO")
+#set($entityVO = "${entity}VO")
+#if(${selectDTO.classFullName})
+import ${selectDTO.classFullName};
+    #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
+#else
+import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+    #set($entitySelectDTO = "${entity}SelectDTO")
+#end
+## ------参数设置----end
 #if(${overrideMethods}&&${generateSelect})
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${superServiceImplClassPackage};
 import ${package.Entity}.${entity};
-import ${basePackage}.${package4VO}.${entity}VO;
+import ${basePackage}.${package4VO}.${entityVO};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import org.springframework.stereotype.Service;
@@ -29,17 +42,17 @@ import java.io.OutputStream;
  */
 @Service
 #if(${kotlin})
-open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}, ${entity}VO>() implements ${table.serviceName} {
+open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperName}, ${entity}, ${entityVO}>() implements ${table.serviceName} {
 
 }
 #else
-public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity} ,${entity}VO> implements ${table.serviceName} {
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity} ,${entityVO}> implements ${table.serviceName} {
 #if(${overrideMethods})
     #if(${generateInsert})
 
     @Override
-    public <S> ${entity}VO insertByDTO(S s) {
-        // ${entity}InsertDTO
+    public <S> ${entityVO} insertByDTO(S s) {
+        // ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         return super.insertByDTO(s);
     }
     #end
@@ -47,7 +60,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <S> boolean updateByDTO(S s) {
-        // ${entity}UpdateDTO
+        // ${entityUpdateDTO} dto = (${entityUpdateDTO}) s;
         return super.updateByDTO(s);
     }
     #end
@@ -59,28 +72,24 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
     #end
     @Override
-    public <S> List<${entity}VO> doSelect(S s, IPage<${entity}VO> page) {
-        #if(${selectDTO.classFullName})
-        // ${selectDTO.clazz("${entity}")}
-            #else
-        // ${entity}SelectDTO
-        #end
+    public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
+        // ${entitySelectDTO} dto = (${entitySelectDTO}) s;
         return super.doSelect(s, page);
     }
     #if(${generateSelect})
 
     @Override
-    public ${entity}VO oneById(Serializable id) {
+    public ${entityVO} oneById(Serializable id) {
         return super.oneById(id);
     }
 
     @Override
-    public <S> List<${entity}VO> listByDTO(S s) {
+    public <S> List<${entityVO}> listByDTO(S s) {
         return super.listByDTO(s);
     }
 
     @Override
-    public <S> IPage<${entity}VO> pageByDTO(S s, Long current, Long size) {
+    public <S> IPage<${entityVO}> pageByDTO(S s, Long current, Long size) {
         return super.pageByDTO(s, current, size);
     }
     #end
@@ -88,7 +97,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <U> boolean excelImport(InputStream is, Class<U> clazz) {
-        // ${entity}InsertDTO
+        // ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         return super.excelImport(is, clazz);
     }
     #end

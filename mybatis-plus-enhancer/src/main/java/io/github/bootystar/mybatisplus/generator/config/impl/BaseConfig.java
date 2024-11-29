@@ -10,6 +10,7 @@ import io.github.bootystar.mybatisplus.generator.config.base.CustomConfig;
 public class BaseConfig extends CustomConfig {
 
     public static class Builder extends CustomConfig.Builder<BaseConfig, Builder> {
+
         @Override
         protected BaseConfig initConfig() {
             return new BaseConfig();

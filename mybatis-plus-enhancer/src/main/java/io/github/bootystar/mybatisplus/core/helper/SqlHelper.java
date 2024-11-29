@@ -1,15 +1,16 @@
 package io.github.bootystar.mybatisplus.core.helper;
 
 import io.github.bootystar.mybatisplus.core.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.core.param.Condition;
-import io.github.bootystar.mybatisplus.core.param.ConditionTree;
-import io.github.bootystar.mybatisplus.core.param.Sort;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import io.github.bootystar.mybatisplus.core.param.base.ISqlCondition;
+import io.github.bootystar.mybatisplus.core.param.normal.ConditionN;
+import io.github.bootystar.mybatisplus.core.param.normal.SortN;
+import io.github.bootystar.mybatisplus.core.param.normal.TreeN;
+import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
+import lombok.SneakyThrows;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 动态sql助手
@@ -17,14 +18,7 @@ import java.util.List;
  * @author bootystar
  */
 @SuppressWarnings("unused")
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class SqlHelper extends ConditionTree {
-
-    /**
-     * 排序条件列表
-     */
-    protected List<? extends Sort> sorts;
+public class SqlHelper extends TreeN {
 
     /**
      * 添加前置条件
@@ -48,7 +42,7 @@ public class SqlHelper extends ConditionTree {
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public SqlHelper addRequiredConditions(Condition... conditions) {
+    public SqlHelper addRequiredConditions(ISqlCondition... conditions) {
         return addRequiredConditions(Arrays.asList(conditions));
     }
 
@@ -60,12 +54,12 @@ public class SqlHelper extends ConditionTree {
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public SqlHelper addRequiredConditions(List<Condition> conditions) {
-        ConditionTree conditionO = getChild();
-        ConditionTree conditionN = new ConditionTree();
-        setChild(conditionN);
-        conditionN.setChild(conditionO);
-        conditionN.setConditions(conditions);
+    public SqlHelper addRequiredConditions(List<? extends ISqlCondition> conditions) {
+        TreeN oldTree = getChild();
+        TreeN newTree = new TreeN();
+        setChild(newTree);
+        newTree.setChild(oldTree);
+        newTree.setConditions(conditions.stream().map(ConditionN::of).collect(Collectors.toList()));
         return this;
     }
 
@@ -90,7 +84,7 @@ public class SqlHelper extends ConditionTree {
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public SqlHelper addConditions(Condition... conditions) {
+    public SqlHelper addConditions(ISqlCondition... conditions) {
         return addConditions(new ArrayList<>(Arrays.asList(conditions)));
     }
 
@@ -102,14 +96,14 @@ public class SqlHelper extends ConditionTree {
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public SqlHelper addConditions(List<Condition> conditions) {
+    public SqlHelper addConditions(List<? extends ISqlCondition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return this;
         }
-        List<? extends Condition> conditionsO = getConditions();
+        List<ConditionN> conditionsO = getConditions();
         int size = conditionsO == null ? conditions.size() : conditionsO.size() + conditions.size();
-        ArrayList<Condition> conditionsN = new ArrayList<>(size);
-        conditionsN.addAll(conditions);
+        ArrayList<ConditionN> conditionsN = new ArrayList<>(size);
+        conditionsN.addAll(conditions.stream().map(ConditionN::of).collect(Collectors.toList()));
         if (conditionsO != null) {
             conditionsN.addAll(conditionsO);
         }
@@ -117,16 +111,83 @@ public class SqlHelper extends ConditionTree {
         return this;
     }
 
-    /**
-     * 获取数据库实体类对应的不可变SQL拼接器
-     *
-     * @param entityClass 实体类
-     * @return {@link UnmodifiableSqlHelper }<{@link T }>
-     * @author bootystar
-     */
-    public <T> UnmodifiableSqlHelper<T> unmodifiable(Class<T> entityClass) {
-        return new UnmodifiableSqlHelper<>(this, entityClass);
+    public SqlHelper addSorts(SortN... sorts) {
+        if (sorts == null || sorts.length == 0) {
+            return this;
+        }
+        List<SortN> sortsO = getSorts();
+        int size = sortsO == null ? sorts.length : sortsO.size() + sorts.length;
+        ArrayList<SortN> sortsN = new ArrayList<>(size);
+        sortsN.addAll(Arrays.asList(sorts));
+        if (sortsO != null) {
+            sortsN.addAll(sortsO);
+        }
+        setSorts(sortsN);
+        return this;
     }
 
+    /**
+     * 根据实体类生成条件
+     *
+     * @param entity   实体类
+     * @param operator SQL操作符号 参考{@link SqlKeyword }
+     * @return {@link List }<{@link ConditionN }>
+     * @author bootystar
+     */
+    @SneakyThrows
+    public static List<ConditionN> conditionsFromEntity(Object entity, String operator) {
+        if (entity == null) {
+            throw new IllegalStateException("entity is null");
+        }
+        Map<String, Field> fieldMap = MybatisPlusReflectHelper.fieldMap(entity.getClass());
+        List<ConditionN> conditions = new ArrayList<>();
+        for (Field field : fieldMap.values()) {
+            Object value = field.get(entity);
+            if (value == null) continue;
+            ConditionN condition = new ConditionN();
+            condition.setField(field.getName());
+            condition.setOperator(operator);
+            condition.setValue(value);
+            conditions.add(condition);
+        }
+        return conditions;
+    }
+
+    /**
+     * 根据指定对象字段,映射等于条件
+     *
+     * @param s 指定对象
+     * @param operator SQL操作符号 参考{@link SqlKeyword }
+     * @return {@link SqlHelper }
+     * @author bootystar
+     */
+    public static SqlHelper of(Object s, String operator) {
+        if (s == null) {
+            return new SqlHelper();
+        }
+        if (s instanceof SqlHelper) {
+            return (SqlHelper) s;
+        }
+        SqlHelper sqlHelper = new SqlHelper();
+        if (s instanceof Map) {
+            Map<?, ?> map = (Map<?, ?>) s;
+            Iterator<? extends Map.Entry<?, ?>> iterator = map.entrySet().iterator();
+            List<ConditionN> conditions = new ArrayList<>();
+            while (iterator.hasNext()) {
+                Map.Entry<?, ?> next = iterator.next();
+                Object key = next.getKey();
+                Object value = next.getValue();
+                ConditionN conditionN = new ConditionN(key.toString(), value);
+                conditions.add(conditionN);
+            }
+            sqlHelper.addConditions(conditions);
+        } else {
+            sqlHelper.addConditions(s, operator);
+        }
+        if (sqlHelper.getConditions() == null || sqlHelper.getConditions().isEmpty()) {
+            throw new IllegalStateException(String.format("no conditions from %s", s));
+        }
+        return sqlHelper;
+    }
 
 }

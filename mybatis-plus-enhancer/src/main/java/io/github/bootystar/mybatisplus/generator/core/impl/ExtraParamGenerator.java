@@ -3,7 +3,7 @@ package io.github.bootystar.mybatisplus.generator.core.impl;
 
 import io.github.bootystar.mybatisplus.core.EnhanceMapper;
 import io.github.bootystar.mybatisplus.core.EnhanceService;
-import io.github.bootystar.mybatisplus.core.impl.EnhanceServiceImpl;
+import io.github.bootystar.mybatisplus.core.impl.ExtraFieldServiceImpl;
 import io.github.bootystar.mybatisplus.generator.config.impl.ExtraFiledConfig;
 import io.github.bootystar.mybatisplus.generator.core.base.AbstractGenerator;
 
@@ -30,7 +30,7 @@ public class ExtraParamGenerator extends AbstractGenerator<ExtraFiledConfig, Ext
         ;
         strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)
-                .superServiceImplClass(EnhanceServiceImpl.class)
+                .superServiceImplClass(ExtraFieldServiceImpl.class)
         ;
         strategyConfigBuilder.mapperBuilder()
                 .superClass(EnhanceMapper.class)

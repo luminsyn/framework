@@ -18,9 +18,6 @@ public enum SqlKeyword {
     AND("AND"),
     OR("OR"),
 
-    IS_NULL("IS NULL"),
-    IS_NOT_NULL("IS NOT NULL"),
-
     EQ("="),
     NE("<>"),
     NE2("!="),
@@ -30,6 +27,9 @@ public enum SqlKeyword {
     LE("<="),
     LIKE("LIKE"),
     NOT_LIKE("NOT LIKE"),
+
+    IS_NULL("IS NULL"),
+    IS_NOT_NULL("IS NOT NULL"),
 
     IN("IN"),
     NOT_IN("NOT IN"),
@@ -111,6 +111,5 @@ public enum SqlKeyword {
     public static boolean isLikeOperator(String operator) {
         return CONDITION_OPERATORS_LIKE.contains(operator);
     }
-
 
 }
