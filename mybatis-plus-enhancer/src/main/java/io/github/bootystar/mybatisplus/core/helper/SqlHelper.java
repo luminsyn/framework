@@ -2,6 +2,8 @@ package io.github.bootystar.mybatisplus.core.helper;
 
 import io.github.bootystar.mybatisplus.core.enums.SqlKeyword;
 import io.github.bootystar.mybatisplus.core.param.base.ISqlCondition;
+import io.github.bootystar.mybatisplus.core.param.base.ISqlSort;
+import io.github.bootystar.mybatisplus.core.param.base.ISqlTree;
 import io.github.bootystar.mybatisplus.core.param.normal.ConditionN;
 import io.github.bootystar.mybatisplus.core.param.normal.SortN;
 import io.github.bootystar.mybatisplus.core.param.normal.TreeN;
@@ -54,12 +56,13 @@ public class SqlHelper extends TreeN {
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public SqlHelper addRequiredConditions(List<? extends ISqlCondition> conditions) {
-        TreeN oldTree = getChild();
+    public SqlHelper addRequiredConditions(Collection<? extends ISqlCondition> conditions) {
+        TreeN oldTree = this.getChild();
         TreeN newTree = new TreeN();
-        setChild(newTree);
+        this.setChild(newTree);
         newTree.setChild(oldTree);
-        newTree.setConditions(conditions.stream().map(ConditionN::of).collect(Collectors.toList()));
+        newTree.setConditions(this.getConditions());
+        this.setConditions(conditions.stream().map(ConditionN::of).collect(Collectors.toCollection(LinkedHashSet::new)));
         return this;
     }
 
@@ -85,7 +88,7 @@ public class SqlHelper extends TreeN {
      * @author bootystar
      */
     public SqlHelper addConditions(ISqlCondition... conditions) {
-        return addConditions(new ArrayList<>(Arrays.asList(conditions)));
+        return addConditions(Arrays.asList(conditions));
     }
 
     /**
@@ -96,35 +99,49 @@ public class SqlHelper extends TreeN {
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public SqlHelper addConditions(List<? extends ISqlCondition> conditions) {
+    public SqlHelper addConditions(Collection<? extends ISqlCondition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return this;
         }
-        List<ConditionN> conditionsO = getConditions();
-        int size = conditionsO == null ? conditions.size() : conditionsO.size() + conditions.size();
-        ArrayList<ConditionN> conditionsN = new ArrayList<>(size);
-        conditionsN.addAll(conditions.stream().map(ConditionN::of).collect(Collectors.toList()));
-        if (conditionsO != null) {
-            conditionsN.addAll(conditionsO);
+        if (this.conditions == null) {
+            this.conditions = new LinkedHashSet<>();
         }
-        setConditions(conditionsN);
+        this.conditions.addAll(conditions.stream().map(ConditionN::of).collect(Collectors.toList()));
         return this;
     }
 
-    public SqlHelper addSorts(SortN... sorts) {
+    /**
+     * 添加排序
+     *
+     * @param sorts 排序
+     * @return {@link SqlHelper }
+     * @author bootystar
+     */
+    public SqlHelper addSorts(ISqlSort... sorts) {
         if (sorts == null || sorts.length == 0) {
             return this;
         }
-        List<SortN> sortsO = getSorts();
-        int size = sortsO == null ? sorts.length : sortsO.size() + sorts.length;
-        ArrayList<SortN> sortsN = new ArrayList<>(size);
-        sortsN.addAll(Arrays.asList(sorts));
-        if (sortsO != null) {
-            sortsN.addAll(sortsO);
+        return addSorts(Arrays.asList(sorts));
+    }
+
+    /**
+     * 添加排序
+     *
+     * @param sorts 排序
+     * @return {@link SqlHelper }
+     * @author bootystar
+     */
+    public SqlHelper addSorts(Collection<ISqlSort> sorts) {
+        if (sorts == null || sorts.isEmpty()) {
+            return this;
         }
-        setSorts(sortsN);
+        if (this.sorts == null) {
+            this.sorts = new LinkedHashSet<>();
+        }
+        this.sorts.addAll(sorts.stream().map(SortN::of).collect(Collectors.toList()));
         return this;
     }
+
 
     /**
      * 根据实体类生成条件
@@ -156,7 +173,7 @@ public class SqlHelper extends TreeN {
     /**
      * 根据指定对象字段,映射等于条件
      *
-     * @param s 指定对象
+     * @param s        指定对象
      * @param operator SQL操作符号 参考{@link SqlKeyword }
      * @return {@link SqlHelper }
      * @author bootystar
@@ -165,10 +182,16 @@ public class SqlHelper extends TreeN {
         if (s == null) {
             return new SqlHelper();
         }
-        if (s instanceof SqlHelper) {
-            return (SqlHelper) s;
+        if (s instanceof ISqlTree) {
+            return ofSqlTree((ISqlTree) s);
         }
         SqlHelper sqlHelper = new SqlHelper();
+        if (s instanceof ISqlCondition) {
+            sqlHelper.addConditions((ISqlCondition) s);
+        }
+        if (s instanceof ISqlSort) {
+            sqlHelper.addSorts((ISqlSort) s);
+        }
         if (s instanceof Map) {
             Map<?, ?> map = (Map<?, ?>) s;
             Iterator<? extends Map.Entry<?, ?>> iterator = map.entrySet().iterator();
@@ -188,6 +211,50 @@ public class SqlHelper extends TreeN {
             throw new IllegalStateException(String.format("no conditions from %s", s));
         }
         return sqlHelper;
+    }
+
+    public static SqlHelper ofSqlTree(ISqlTree tree) {
+        if (tree == null) {
+            return new SqlHelper();
+        }
+        if (tree instanceof SqlHelper) {
+            return (SqlHelper) tree;
+        }
+        SqlHelper sqlHelper = new SqlHelper();
+        Collection<? extends ISqlCondition> conditions1 = tree.getConditions();
+        if (conditions1 != null) {
+            sqlHelper.addConditions(conditions1.stream().map(ConditionN::of).collect(Collectors.toList()));
+        }
+        Collection<? extends ISqlSort> sorts1 = tree.getSorts();
+        if (sorts1 != null) {
+            sqlHelper.addSorts(sorts1.stream().map(SortN::of).collect(Collectors.toList()));
+        }
+        TreeN thisChild = sqlHelper.getChild();
+        ISqlTree thatTree = tree.getChild();
+        // todo SqlTree的合并
+        while (thatTree != null) {
+            Collection<? extends ISqlCondition> conditions2 = thatTree.getConditions();
+
+            if (conditions2 != null) {
+
+                if (thisChild.getConditions() == null) {
+                    thisChild.setConditions(new LinkedHashSet<>());
+                }
+                thisChild.getConditions().addAll(conditions2.stream().map(ConditionN::of).collect(Collectors.toList()));
+            }
+            thatTree = thatTree.getChild();
+
+        }
+
+        return sqlHelper;
+    }
+
+    public <T> SqlHelper4Dynamic<T> dynamicHelper(Class<T> clazz) {
+        return SqlHelper4Dynamic.of(this, clazz);
+    }
+
+    public <T> SqlHelper4ExtraField<T> extraFieldHelper(Class<T> clazz) {
+        return SqlHelper4ExtraField.of(this, clazz);
     }
 
 }

@@ -1,5 +1,6 @@
 package io.github.bootystar.mybatisplus.core.param.base;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -10,9 +11,9 @@ import java.util.NoSuchElementException;
  */
 public interface ISqlTree extends Iterable<ISqlTree> {
 
-    List<? extends ISqlCondition> getConditions();
+    Collection<? extends ISqlCondition> getConditions();
 
-    List<? extends ISqlSort> getSorts();
+    Collection<? extends ISqlSort> getSorts();
 
     ISqlTree getChild();
 

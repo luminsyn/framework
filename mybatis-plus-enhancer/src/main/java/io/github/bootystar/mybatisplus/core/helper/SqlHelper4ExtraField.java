@@ -100,7 +100,7 @@ public class SqlHelper4ExtraField<T> extends SqlHelper2Generic<T> {
     }
 
     @Override
-    protected List<ConditionU> validatedConditions(List<? extends ISqlCondition> conditions) {
+    protected Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return null;
         }

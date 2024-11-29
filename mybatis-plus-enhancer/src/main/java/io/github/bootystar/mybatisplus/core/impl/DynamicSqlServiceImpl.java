@@ -42,18 +42,4 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, SqlHel
         return getBaseMapper().listByDTO(sqlHelper, page);
     }
 
-
-    @Override
-    public V oneById(Serializable id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id can't be null");
-        }
-        String s = MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity());
-        if (s == null) {
-            throw new IllegalArgumentException("no id field found in entity");
-        }
-        ConditionN condition = new ConditionN(s, SqlKeyword.EQ.keyword, id);
-        return oneByDTO(SqlHelper4Dynamic.of(new SqlHelper().addRequiredConditions(condition), classOfEntity()));
-    }
-
 }

@@ -43,14 +43,4 @@ public abstract class ExtraFieldServiceImpl<M extends EnhanceMapper<T, V, SqlHel
         return getBaseMapper().listByDTO(sqlHelper, page);
     }
 
-    @Override
-    public V oneById(Serializable id) {
-        if (id == null) throw new IllegalArgumentException("id can't be null");
-        String s = MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity());
-        if (s == null) throw new IllegalArgumentException("no id field found in entity");
-        HashMap<Object, Object> map = new HashMap<>();
-        map.put(s, id);
-        return oneByDTO(map);
-    }
-
 }

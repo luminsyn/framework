@@ -6,9 +6,7 @@ import io.github.bootystar.mybatisplus.core.param.unmodifiable.ConditionU;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author bootystar
@@ -26,15 +24,15 @@ public class SqlHelper4Dynamic<T> extends SqlHelper2Generic<T> {
     }
 
     @Override
-    protected List<ConditionU> validatedConditions(List<? extends ISqlCondition> conditions) {
+    protected Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return null;
         }
-        ArrayList<ConditionU> result = new ArrayList<>();
+        ArrayList<ConditionU> result = new ArrayList<>(conditions.size());
         for (ISqlCondition conditionO : conditions) {
             wrap2JdbcColumnCondition(conditionO).ifPresent(result::add);
         }
-        return Collections.unmodifiableList(result);
+        return result;
     }
 
 }

@@ -53,8 +53,8 @@ public abstract class SqlHelper2Generic<T> extends TreeU {
         if (sqlTree == null) {
             return null;
         }
-        List<? extends ISqlCondition> conditions = sqlTree.getConditions();
-        List<ConditionU> validatedUnmodifiableConditions = validatedConditions(conditions);
+        Collection<? extends ISqlCondition> conditions = sqlTree.getConditions();
+        Collection<ConditionU> validatedUnmodifiableConditions = validatedConditions(conditions);
         ISqlTree child = sqlTree.getChild();
         if (validatedUnmodifiableConditions == null || validatedUnmodifiableConditions.isEmpty()) {
             if (child != null) {
@@ -63,14 +63,14 @@ public abstract class SqlHelper2Generic<T> extends TreeU {
             return null;
         }
         TreeU newChild = recursionTree(child);
-        return new TreeU(validatedUnmodifiableConditions, newChild, validatedSorts(sqlTree.getSorts()));
+        return new TreeU(validatedUnmodifiableConditions, validatedSorts(sqlTree.getSorts()), newChild);
     }
 
-    protected List<SortU> validatedSorts(List<? extends ISqlSort> sorts) {
+    protected Collection<SortU> validatedSorts(Collection<? extends ISqlSort> sorts) {
         if (sorts == null || sorts.isEmpty()) {
             return null;
         }
-        ArrayList<SortU> validatedSorts = new ArrayList<>();
+        ArrayList<SortU> validatedSorts = new ArrayList<>(sorts.size());
         Iterator<? extends ISqlSort> sit = sorts.iterator();
         while (sit.hasNext()) {
             ISqlSort sortO = sit.next();
@@ -91,7 +91,7 @@ public abstract class SqlHelper2Generic<T> extends TreeU {
             }
             validatedSorts.add(new SortU(jdbcColumn, desc));
         }
-        return Collections.unmodifiableList(validatedSorts);
+        return validatedSorts;
     }
 
     public Optional<ConditionU> wrap2JdbcColumnCondition(ISqlCondition conditionO) {
@@ -138,6 +138,6 @@ public abstract class SqlHelper2Generic<T> extends TreeU {
         return Optional.of(new ConditionU(connector, jdbcColumn, operator, value));
     }
 
-    protected abstract List<ConditionU> validatedConditions(List<? extends ISqlCondition> conditions);
+    protected abstract Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions);
 
 }

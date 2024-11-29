@@ -25,4 +25,8 @@ public class SortN implements ISqlSort {
      */
     protected Boolean desc = false;
 
+    public static SortN of(ISqlSort sort) {
+        return new SortN(sort.getField(), sort.getDesc());
+    }
+
 }

@@ -5,6 +5,8 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.github.bootystar.mybatisplus.core.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.core.param.normal.ConditionN;
 import io.github.bootystar.mybatisplus.util.ExcelHelper;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -56,7 +58,13 @@ public interface EnhanceService<T, V> extends IService<T> {
 
     <S> List<V> doSelect(S s, IPage<V> page);
 
-    V oneById(Serializable id);
+    default V oneById(Serializable id) {
+        if (id == null) throw new IllegalArgumentException("id can't be null");
+        String idField = MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity());
+        if (idField == null) throw new IllegalArgumentException("no id field found in entity");
+        ConditionN condition = new ConditionN(idField, SqlKeyword.EQ.keyword, id);
+        return oneByDTO(condition);
+    }
 
     default <U> U oneById(Serializable id, Class<U> clazz) {
         return MybatisPlusReflectHelper.toTarget(oneById(id), clazz);

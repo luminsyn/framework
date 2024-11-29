@@ -18,7 +18,7 @@ public class TreeN implements ISqlTree {
     /**
      * 条件
      */
-    protected List<ConditionN> conditions;
+    protected LinkedHashSet<ConditionN> conditions;
 
     /**
      * 子条件
@@ -29,6 +29,6 @@ public class TreeN implements ISqlTree {
     /**
      * 排序条件列表
      */
-    protected List<SortN> sorts;
+    protected LinkedHashSet<SortN> sorts;
 
 }
