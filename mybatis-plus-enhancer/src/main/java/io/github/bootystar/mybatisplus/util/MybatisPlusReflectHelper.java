@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.core.EnhanceEntity;
-import io.github.bootystar.mybatisplus.generator.info.MethodInfo;
+import io.github.bootystar.mybatisplus.enhance.EnhanceEntity;
+import io.github.bootystar.mybatisplus.generate.info.MethodInfo;
 import lombok.SneakyThrows;
 
 import java.lang.invoke.SerializedLambda;

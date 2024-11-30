@@ -13,7 +13,14 @@
                 <if test="gen.conditions != null and gen.conditions.size() > 0">
                     <trim prefix="AND ( " suffix=" )" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
                         <foreach collection="gen.conditions" item="item" index="index">
-                            ${item.connector}
+                            <choose>
+                                <when test="item.isOr">
+                                    OR
+                                </when>
+                                <otherwise>
+                                    AND
+                                </otherwise>
+                            </choose>
                             <choose>
                                 <when test="item.operator.contains('IN'.toString())">
                                     ${item.field} ${item.operator}
@@ -21,7 +28,7 @@
                                         #{val}
                                     </foreach>
                                 </when>
-                                <when test="item.operator.contains('IS'.toString())">
+                                <when test="item.operator.contains('NULL'.toString())">
                                     ${item.field} ${item.operator}
                                 </when>
                                 <otherwise>
@@ -37,7 +44,7 @@
 
     <sql id="sortFragment">
         <if test="param1 != null and param1.sorts != null and param1.sorts.size() > 0">
-            <foreach collection="param1.sorts" item="item" separator=" , " open="ORDER BY ">
+            <foreach collection="param1.sorts" item="item" separator="," close=",">
                 ${item.field}
                 <if test="item.desc == true">
                     DESC
@@ -66,7 +73,7 @@
     #end
     </resultMap>
 
-    <resultMap id="BaseResultMap" type=""${basePackage}.${package4VO}.${entity}VO"">
+    <resultMap id="BaseResultMap4VO" type=""${basePackage}.${package4VO}.${entity}VO"">
     ##生成主键排在第一位
     #foreach($field in ${table.fields})
         #if(${field.keyFlag})
@@ -96,7 +103,7 @@
     </sql>
 #end
 
-    <select id="listByDTO" #if(${resultMapForVO}) resultMap="voMap"#else resultType="${basePackage}.${package4VO}.${entity}VO"#end>
+    <select id="listByDTO" #if(${resultMapForVO}) resultMap="BaseResultMap4VO"#else resultType="${basePackage}.${package4VO}.${entity}VO"#end>
         SELECT
         a.*
         FROM
@@ -105,12 +112,13 @@
         <where>
             <include refid="selectFragment"/>
         </where>
-        #if(${orderBySql})
-        <if test="param1==null or param1.sorts == null or param1.sorts.size() == 0">
-        ORDER BY ${orderBySql}
-        </if>
-        #end
-        <include refid="sortFragment"/>
+        <trim prefix="ORDER BY" suffixOverrides=",">
+            <include refid="sortFragment"/>
+            <if test="param1!=null and param1.sortMap!=null">
+                ${param1.sortMap.key} ${sortMap.key}
+            </if>
+            $!{orderBySql}
+        </trim>
     </select>
 
 </mapper>
