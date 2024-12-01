@@ -1,6 +1,8 @@
 package io.github.bootystar.mybatisplus.enhance.helper;
 
 import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlHelper;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlCondition;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlSort;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlTree;
@@ -259,12 +261,12 @@ public class SqlHelper extends TreeG {
         return sqlHelper;
     }
 
-    public <T> SqlHelper4Dynamic<T> dynamicHelper(Class<T> clazz) {
-        return new SqlHelper4Dynamic<>(this, clazz);
+    public <T> DynamicSqlHelper<T> dynamicHelper(Class<T> clazz) {
+        return new DynamicSqlHelper<>(this, clazz);
     }
 
-    public <T> SqlHelper4ExtraField<T> extraFieldHelper(Class<T> clazz) {
-        return new SqlHelper4ExtraField<>(this, clazz);
+    public <T> ExtraFieldSqlHelper<T> extraFieldHelper(Class<T> clazz) {
+        return new ExtraFieldSqlHelper<>(this, clazz);
     }
 
 }

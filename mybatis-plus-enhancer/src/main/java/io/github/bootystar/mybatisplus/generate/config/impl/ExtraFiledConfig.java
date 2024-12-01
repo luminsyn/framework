@@ -1,6 +1,6 @@
 package io.github.bootystar.mybatisplus.generate.config.impl;
 
-import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper4ExtraField;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
 import io.github.bootystar.mybatisplus.generate.config.base.CustomConfigEnhance;
 import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.Getter;
 public class ExtraFiledConfig extends CustomConfigEnhance {
 
     {
-        mapperDTO = new ClassInfo(SqlHelper4ExtraField.class);
+        mapperDTO = new ClassInfo(ExtraFieldSqlHelper.class);
     }
 
 

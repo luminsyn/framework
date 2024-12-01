@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhance.helper;
+package io.github.bootystar.mybatisplus.enhance.helper.unmodifiable;
 
 import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
 import io.github.bootystar.mybatisplus.enhance.expception.ParamMappingException;
@@ -18,7 +18,7 @@ import java.util.*;
  * @author bootystar
  */
 @Slf4j
-public abstract class GenericSqlHelper<T> extends TreeU {
+public abstract class UnmodifiableSqlHelper<T> extends TreeU {
 
     /**
      * 实体类
@@ -45,7 +45,7 @@ public abstract class GenericSqlHelper<T> extends TreeU {
      */
     protected final Map<String, String> field2JdbcColumnMap;
 
-    public GenericSqlHelper(Class<T> entityClass) {
+    public UnmodifiableSqlHelper(Class<T> entityClass) {
         super(null, null, null);
         if (entityClass == null) {
             throw new ParamMappingException("entityClass class can not be null, please check your configuration");
@@ -58,7 +58,7 @@ public abstract class GenericSqlHelper<T> extends TreeU {
         this.field2JdbcColumnMap = field2JdbcColumnMap;
     }
 
-    public GenericSqlHelper(ISqlTree sqlTree, Class<T> entityClass) {
+    public UnmodifiableSqlHelper(ISqlTree sqlTree, Class<T> entityClass) {
         super(null, null, null);
         if (entityClass == null) {
             throw new ParamMappingException("entityClass class can not be null, please check your configuration");

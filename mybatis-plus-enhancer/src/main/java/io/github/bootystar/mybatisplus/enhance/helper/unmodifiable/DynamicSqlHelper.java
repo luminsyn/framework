@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhance.helper;
+package io.github.bootystar.mybatisplus.enhance.helper.unmodifiable;
 
 import io.github.bootystar.mybatisplus.enhance.query.ISqlCondition;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlTree;
@@ -14,9 +14,9 @@ import java.util.HashMap;
  * @author bootystar
  */
 @Getter
-public class SqlHelper4Dynamic<T> extends GenericSqlHelper<T> {
+public class DynamicSqlHelper<T> extends UnmodifiableSqlHelper<T> {
 
-    public SqlHelper4Dynamic(ISqlTree sourceTree, Class<T> entityClass) {
+    public DynamicSqlHelper(ISqlTree sourceTree, Class<T> entityClass) {
         super(sourceTree, entityClass);
         initProperties(sourceTree);
     }
