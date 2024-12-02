@@ -32,13 +32,6 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
      */
     @Getter
     protected Map<String, Object> paramMap;
-    /**
-     * 无效排序map
-     * key: 传入属性名
-     * value: 是否倒序
-     */
-    @Getter
-    protected Map<String, Boolean> sortMap;
 
     /**
      * 属性和字段映射
@@ -103,9 +96,7 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
             return null;
         }
         ArrayList<SortU> validatedSorts = new ArrayList<>(sorts.size());
-        Iterator<? extends ISqlSort> sit = sorts.iterator();
-        while (sit.hasNext()) {
-            ISqlSort sortO = sit.next();
+        for (ISqlSort sortO : sorts) {
             String field = sortO.getField();
             boolean desc = sortO.isDesc();
             if (field == null || field.isEmpty()) {
@@ -121,6 +112,9 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         }
         return validatedSorts;
     }
+
+    // 由子类实现
+    protected abstract Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions);
 
     public Optional<ConditionU> wrap2JdbcColumnCondition(ISqlCondition conditionO) {
         boolean or = conditionO.isOr();
@@ -151,8 +145,11 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
                     log.warn("condition field [{}] requires collection but value is empty, it will be removed", field);
                     return Optional.empty();
                 }
+                // 使用新集合储存
                 ArrayList<Object> newContainer = new ArrayList<>();
-                iterable.forEach(newContainer::add);
+                for (Object o : iterable) {
+                    newContainer.add(o);
+                }
                 value = newContainer;
             } else {
                 log.warn("condition field [{}] requires collection but value is not iterable, it will be removed", field);
@@ -164,7 +161,5 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         }
         return Optional.of(new ConditionU(isOr, jdbcColumn, operator, value));
     }
-
-    protected abstract Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions);
 
 }

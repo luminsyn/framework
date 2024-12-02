@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.enhance.EnhanceEntity;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceEntity;
 import io.github.bootystar.mybatisplus.generate.info.MethodInfo;
 import lombok.SneakyThrows;
 
@@ -94,7 +94,7 @@ public abstract class MybatisPlusReflectHelper extends ReflectHelper {
     /**
      * 从mybatis plus获取实体类属性与数据库字段转换映射
      *
-     * @param tableInfo 表信息
+     * @param clazz 实体类
      * @return {@link Map }<{@link String }, {@link String }>
      * @author bootystar
      */
@@ -147,7 +147,6 @@ public abstract class MybatisPlusReflectHelper extends ReflectHelper {
                 if (value != null) {
                     result.putIfAbsent(fieldName, value);
                 }
-                continue;
             }
             // 无注解字段不处理
 //            result.putIfAbsent(fieldName, jdbcColumn);

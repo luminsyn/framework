@@ -72,13 +72,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
     #end
 
-    @Override
-    public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
-        #if(${entitySelectDTO})
-//        ${entitySelectDTO} dto = (${entitySelectDTO}) s;
-        #end
-        return super.doSelect(s, page);
-    }
+##    @Override
+##    public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
+####        #if(${entitySelectDTO})
+####//        ${entitySelectDTO} dto = (${entitySelectDTO}) s;
+####        #end
+##        return super.doSelect(s, page);
+##    }
     #if(${generateSelect})
 
     @Override

@@ -1,31 +1,37 @@
 package ${basePackage}.${package4DTO};
 
+## -----参数设置----start
+#set($importSize=false)
+#set($importNotNull=false)
+#set($importNotBlank=false)
+#foreach($field in ${table.fields})
+    #if(${field.propertyType}=="String")
+        #set($importSize=true)
+    #end
+    #if($feild.versionField || ${field.keyFlag})
+        #set($importNotNull=true)
+        #if(${field.propertyType}=="String")
+            #set($importNotBlank=true)
+        #end
+    #end
+#end
+## -----参数设置----end
 #foreach($pkg in ${importPackages4DTO})
 import ${pkg};
 #end
 #if(${validated})
-## ---字段非空验证---
-    #foreach($field in ${table.fields})
-        #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
-import ${javaApiPackage}.validation.constraints.NotNull;
-            #break
-        #end
-    #end
-## ---字符串非空验证---
-    #foreach($field in ${table.fields})
-        #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
-import ${javaApiPackage}.validation.constraints.NotBlank;
-            #break
-        #end
-    #end
-## ---字符串长度验证---
-    #foreach($field in ${table.fields})
-        #if(${field.propertyType}=="String")
+## ---字段非空验证---start
+    #if(${importSize})
 import ${javaApiPackage}.validation.constraints.Size;
-            #break
-        #end
+    #end
+    #if(${importNotNull})
+import ${javaApiPackage}.validation.constraints.NotNull;
+    #end
+    #if(${importNotBlank})
+import ${javaApiPackage}.validation.constraints.NotBlank;
     #end
 #end
+## ---字段非空验证---end
 #if(${springdoc})
 import io.swagger.v3.oas.annotations.media.Schema;
     #elseif(${swagger})

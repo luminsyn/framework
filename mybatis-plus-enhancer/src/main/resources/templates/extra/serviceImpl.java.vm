@@ -16,16 +16,14 @@ package ${package.ServiceImpl};
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${superServiceImplClassPackage};
+#if(${extraFieldSuffixMap})
+import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
+#end
 import ${package.Entity}.${entity};
 import ${basePackage}.${package4VO}.${entityVO};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import org.springframework.stereotype.Service;
-#if(${extraFieldSuffixMap})
-import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
-import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
-#end
 
 #if(${overrideMethods})
 import java.util.List;
@@ -52,6 +50,41 @@ open class ${table.serviceImplName} : ${superServiceImplClass}<${table.mapperNam
 }
 #else
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity} ,${entityVO}> implements ${table.serviceName} {
+#if(${extraFieldSuffixCustom})
+
+    @Override
+    protected FieldSuffixBuilder initSuffixBuilder() {
+        return new FieldSuffixBuilder()
+                #foreach($entry in ${extraFieldSuffixMap.entrySet()})
+                    #set($key = $entry.key)
+                    #set($value = $entry.value)
+                        #if(${value}=="!=")
+                            .ne("${key}")
+                        #elseif(${value}==">")
+                            .gt("${key}")
+                        #elseif(${value}==">=")
+                            .ge("${key}")
+                        #elseif(${value}=="<")
+                            .lt("${key}")
+                        #elseif(${value}=="<=")
+                            .le("${key}")
+                        #elseif(${value}=="LIKE")
+                            .like("${key}")
+                        #elseif(${value}=="NOT LIKE")
+                            .notLike("${key}")
+                        #elseif(${value}=="IS NULL")
+                            .isNull("${key}")
+                        #elseif(${value}=="IS NOT NULL")
+                            .isNotNull("${key}")
+                        #elseif(${value}=="IN")
+                            .in("${key}")
+                        #elseif(${value}=="NOT IN")
+                            .notIn("${key}")
+                        #end
+                #end
+            ;
+    }
+#end
 #if(${overrideMethods})
     #if(${generateInsert})
 
@@ -77,46 +110,14 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
     #end
 
-    @Override
-    public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
-        #if(${entitySelectDTO})
-//        ${entitySelectDTO} dto = (${entitySelectDTO}) s;
-        #end
-        #if(${extraFieldSuffixCustom})
-        FieldSuffixBuilder builder = new FieldSuffixBuilder()
-            #foreach($entry in ${extraFieldSuffixMap.entrySet()})
-                #set($key = $entry.key)
-                #set($value = $entry.value)
-                    #if(${value}=="<>")
-                        .ne("${key}")
-                    #elseif(${value}==">")
-                        .gt("${key}")
-                    #elseif(${value}==">=")
-                        .ge("${key}")
-                    #elseif(${value}=="<")
-                        .lt("${key}")
-                    #elseif(${value}=="<=")
-                        .le("${key}")
-                    #elseif(${value}=="LIKE")
-                        .like("${key}")
-                    #elseif(${value}=="NOT LIKE")
-                        .notLike("${key}")
-                    #elseif(${value}=="IS NULL")
-                        .isNull("${key}")
-                    #elseif(${value}=="IS NOT NULL")
-                        .isNotNull("${key}")
-                    #elseif(${value}=="IN")
-                        .in("${key}")
-                    #elseif(${value}=="NOT IN")
-                        .notIn("${key}")
-                    #end
-            #end
-        ;
-        return super.doSelect(new ExtraFieldSqlHelper<>(SqlHelper.of(s), classOfEntity(), builder), page);
-        #else
-        return super.doSelect(s, page);
-        #end
-    }
+##    @Override
+##    public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
+####        #if(${entitySelectDTO})
+####//        ${entitySelectDTO} dto = (${entitySelectDTO}) s;
+####        #end
+##        return super.doSelect(s, page);
+##        #end
+##    }
     #if(${generateSelect})
 
     @Override

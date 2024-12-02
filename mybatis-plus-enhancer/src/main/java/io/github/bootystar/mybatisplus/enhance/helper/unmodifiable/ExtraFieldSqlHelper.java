@@ -17,19 +17,14 @@ public class ExtraFieldSqlHelper<T> extends UnmodifiableSqlHelper<T> {
 
     private Map<String, String> suffix2OperatorMap = SqlExtraSuffix.DEFAULT_MAP;
 
-    public ExtraFieldSqlHelper(ISqlTree tree, Class<T> entityClass) {
-        super(tree, entityClass);
-    }
-
-    public ExtraFieldSqlHelper(ISqlTree tree, Class<T> entityClass, FieldSuffixBuilder suffixHelper) {
+    public ExtraFieldSqlHelper(ISqlTree tree, Class<T> entityClass, FieldSuffixBuilder suffixBuilder) {
         super(entityClass);
-        if (suffixHelper==null){
-            throw new IllegalArgumentException("suffixHelper can't be null");
-        }
         if (tree == null) {
             throw new IllegalArgumentException("tree can't be null");
         }
-        this.suffix2OperatorMap = suffixHelper.build();
+        if (suffixBuilder != null) {
+            this.suffix2OperatorMap = suffixBuilder.build();
+        }
         initProperties(tree);
     }
 

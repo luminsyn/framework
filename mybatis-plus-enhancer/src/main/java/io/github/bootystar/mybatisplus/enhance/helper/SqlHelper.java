@@ -1,8 +1,6 @@
 package io.github.bootystar.mybatisplus.enhance.helper;
 
 import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlHelper;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlCondition;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlSort;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlTree;
@@ -17,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 动态sql助手
+ * sql助手
  *
  * @author bootystar
  */
@@ -174,28 +172,20 @@ public class SqlHelper extends TreeG {
 
     /**
      * 根据指定对象字段映射等于条件
+     *
      * @param s s
      * @return {@link SqlHelper }
      * @author bootystar
      */
-    public static SqlHelper of(Object s){
-        return of(s, SqlKeyword.EQ.keyword);
-    }
-
-    /**
-     * 根据指定对象字段及操作符映射条件
-     *
-     * @param s        指定对象
-     * @param operator SQL操作符号 参考{@link SqlKeyword }
-     * @return {@link SqlHelper }
-     * @author bootystar
-     */
-    public static SqlHelper of(Object s, String operator) {
+    public static SqlHelper of(Object s) {
         if (s == null) {
             return new SqlHelper();
         }
+        if (s instanceof SqlHelper) {
+            return (SqlHelper) s;
+        }
         if (s instanceof ISqlTree) {
-            return ofSqlTree((ISqlTree) s);
+            return ofSqlTree((ISqlTree) s, true);
         }
         SqlHelper sqlHelper = new SqlHelper();
         if (s instanceof ISqlCondition) {
@@ -217,7 +207,7 @@ public class SqlHelper extends TreeG {
             }
             sqlHelper.addConditions(conditions);
         } else {
-            sqlHelper.addConditions(s, operator);
+            sqlHelper.addConditions(s, SqlKeyword.EQ.keyword);
         }
         if (sqlHelper.getConditions() == null || sqlHelper.getConditions().isEmpty()) {
             throw new IllegalStateException(String.format("no conditions from %s", s));
@@ -225,39 +215,33 @@ public class SqlHelper extends TreeG {
         return sqlHelper;
     }
 
-    public static SqlHelper ofSqlTree(ISqlTree tree) {
+    /**
+     * 根据SqlTree生成helper
+     *
+     * @param tree      树
+     * @param copySorts 复制排序
+     * @return {@link SqlHelper }
+     * @author bootystar
+     */
+    public static SqlHelper ofSqlTree(ISqlTree tree, boolean copySorts) {
         if (tree == null) {
             return new SqlHelper();
         }
-        if (tree instanceof SqlHelper) {
-            return (SqlHelper) tree;
-        }
         SqlHelper sqlHelper = new SqlHelper();
         Collection<? extends ISqlCondition> conditions1 = tree.getConditions();
-        if (conditions1 != null) {
+        if (conditions1 != null && !conditions1.isEmpty()) {
             sqlHelper.addConditions(conditions1.stream().map(ConditionG::of).collect(Collectors.toList()));
         }
-        Collection<? extends ISqlSort> sorts1 = tree.getSorts();
-        if (sorts1 != null) {
-            sqlHelper.addSorts(sorts1.stream().map(SortG::of).collect(Collectors.toList()));
-        }
-        TreeG thisChild = sqlHelper.getChild();
-        ISqlTree thatTree = tree.getChild();
-        // todo SqlTree的合并
-        while (thatTree != null) {
-            Collection<? extends ISqlCondition> conditions2 = thatTree.getConditions();
-
-            if (conditions2 != null) {
-
-                if (thisChild.getConditions() == null) {
-                    thisChild.setConditions(new LinkedHashSet<>());
-                }
-                thisChild.getConditions().addAll(conditions2.stream().map(ConditionG::of).collect(Collectors.toList()));
+        if (copySorts) {
+            Collection<? extends ISqlSort> sorts1 = tree.getSorts();
+            if (sorts1 != null && !sorts1.isEmpty()) {
+                sqlHelper.addSorts(sorts1.stream().map(SortG::of).collect(Collectors.toList()));
             }
-            thatTree = thatTree.getChild();
-
         }
-
+        ISqlTree child = tree.getChild();
+        if (child != null) {
+            sqlHelper.setChild(ofSqlTree(child, false));
+        }
         return sqlHelper;
     }
 

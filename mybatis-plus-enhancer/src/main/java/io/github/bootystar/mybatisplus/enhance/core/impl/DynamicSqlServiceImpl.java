@@ -1,10 +1,10 @@
-package io.github.bootystar.mybatisplus.enhance.impl;
+package io.github.bootystar.mybatisplus.enhance.core.impl;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.bootystar.mybatisplus.enhance.EnhanceMapper;
-import io.github.bootystar.mybatisplus.enhance.EnhanceService;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceMapper;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceService;
 import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
 import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlHelper;
 

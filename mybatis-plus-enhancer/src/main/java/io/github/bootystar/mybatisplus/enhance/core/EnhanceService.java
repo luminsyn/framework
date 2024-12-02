@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhance;
+package io.github.bootystar.mybatisplus.enhance.core;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;

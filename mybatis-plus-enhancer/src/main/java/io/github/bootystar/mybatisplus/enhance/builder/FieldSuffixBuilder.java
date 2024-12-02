@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class FieldSuffixBuilder {
     private static final String SUFFIX_PATTERN = "^[a-zA-Z0-9_$]+$";
-    private final Map<String, String> suffix2OperatorMap = new LinkedHashMap<>();
+    private final LinkedHashMap<String, String> suffix2OperatorMap = new LinkedHashMap<>();
 
     private void check(String suffix) {
         if (suffix == null) {
@@ -173,7 +173,7 @@ public class FieldSuffixBuilder {
      * @author bootystar
      */
     public LinkedHashMap<String, String> build() {
-        return new LinkedHashMap<>(suffix2OperatorMap);
+        return suffix2OperatorMap;
     }
 
 

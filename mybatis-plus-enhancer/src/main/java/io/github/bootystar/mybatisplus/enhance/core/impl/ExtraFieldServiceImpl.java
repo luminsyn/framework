@@ -1,12 +1,12 @@
-package io.github.bootystar.mybatisplus.enhance.impl;
+package io.github.bootystar.mybatisplus.enhance.core.impl;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.bootystar.mybatisplus.enhance.EnhanceMapper;
-import io.github.bootystar.mybatisplus.enhance.EnhanceService;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceMapper;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceService;
+import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
 import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlHelper;
 import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
 
 import java.util.List;
@@ -19,6 +19,12 @@ import java.util.List;
  */
 public abstract class ExtraFieldServiceImpl<M extends EnhanceMapper<T, V, ExtraFieldSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
 
+    protected FieldSuffixBuilder suffixBuilder;
+
+    {
+        suffixBuilder = initSuffixBuilder();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <S> List<V> doSelect(S s, IPage<V> page) {
@@ -30,9 +36,13 @@ public abstract class ExtraFieldServiceImpl<M extends EnhanceMapper<T, V, ExtraF
             }
             sqlHelper = (ExtraFieldSqlHelper<T>) s;
         } else {
-            sqlHelper = new ExtraFieldSqlHelper<>(SqlHelper.of(s), classOfEntity());
+            sqlHelper = new ExtraFieldSqlHelper<>(SqlHelper.of(s), classOfEntity(), suffixBuilder);
         }
         return getBaseMapper().listByDTO(sqlHelper, page);
+    }
+
+    protected FieldSuffixBuilder initSuffixBuilder() {
+        return null;
     }
 
 }

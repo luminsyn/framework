@@ -1,9 +1,9 @@
 package io.github.bootystar.mybatisplus.generate.generator.impl;
 
 
-import io.github.bootystar.mybatisplus.enhance.EnhanceMapper;
-import io.github.bootystar.mybatisplus.enhance.EnhanceService;
-import io.github.bootystar.mybatisplus.enhance.impl.ExtraFieldServiceImpl;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceMapper;
+import io.github.bootystar.mybatisplus.enhance.core.EnhanceService;
+import io.github.bootystar.mybatisplus.enhance.core.impl.ExtraFieldServiceImpl;
 import io.github.bootystar.mybatisplus.generate.config.impl.ExtraFiledConfig;
 import io.github.bootystar.mybatisplus.generate.generator.core.AbstractGenerator;
 

@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhance;
+package io.github.bootystar.mybatisplus.enhance.core;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

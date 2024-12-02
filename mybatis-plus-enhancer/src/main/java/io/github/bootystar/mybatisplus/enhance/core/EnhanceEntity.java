@@ -1,4 +1,4 @@
-package io.github.bootystar.mybatisplus.enhance;
+package io.github.bootystar.mybatisplus.enhance.core;
 
 import java.util.Map;
 
