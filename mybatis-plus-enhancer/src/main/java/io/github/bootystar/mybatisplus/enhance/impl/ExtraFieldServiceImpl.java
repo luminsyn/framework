@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.bootystar.mybatisplus.enhance.EnhanceMapper;
 import io.github.bootystar.mybatisplus.enhance.EnhanceService;
 import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlHelper;
 import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public abstract class ExtraFieldServiceImpl<M extends EnhanceMapper<T, V, ExtraF
             }
             sqlHelper = (ExtraFieldSqlHelper<T>) s;
         } else {
-            sqlHelper = SqlHelper.of(s).extraFieldHelper(classOfEntity());
+            sqlHelper = new ExtraFieldSqlHelper<>(SqlHelper.of(s), classOfEntity());
         }
         return getBaseMapper().listByDTO(sqlHelper, page);
     }

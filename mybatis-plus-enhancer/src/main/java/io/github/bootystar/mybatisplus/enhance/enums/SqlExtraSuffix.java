@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -32,7 +33,7 @@ public enum SqlExtraSuffix {
     public static final Map<String, String> DEFAULT_MAP;
 
     static {
-        HashMap<String, String> map = new HashMap<>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
         for (SqlExtraSuffix value : values()) {
             map.put(value.suffix, value.sqlKeyword.keyword);
         }

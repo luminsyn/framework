@@ -1,8 +1,7 @@
 package io.github.bootystar.mybatisplus.enhance.helper.unmodifiable;
 
 import io.github.bootystar.mybatisplus.enhance.enums.SqlExtraSuffix;
-import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
+import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlCondition;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlTree;
 import io.github.bootystar.mybatisplus.enhance.query.unmodifiable.ConditionU;
@@ -22,9 +21,15 @@ public class ExtraFieldSqlHelper<T> extends UnmodifiableSqlHelper<T> {
         super(tree, entityClass);
     }
 
-    private ExtraFieldSqlHelper(ISqlTree tree, Class<T> entityClass, Map<String, String> suffix2OperatorMap) {
+    public ExtraFieldSqlHelper(ISqlTree tree, Class<T> entityClass, FieldSuffixBuilder suffixHelper) {
         super(entityClass);
-        this.suffix2OperatorMap = suffix2OperatorMap;
+        if (suffixHelper==null){
+            throw new IllegalArgumentException("suffixHelper can't be null");
+        }
+        if (tree == null) {
+            throw new IllegalArgumentException("tree can't be null");
+        }
+        this.suffix2OperatorMap = suffixHelper.build();
         initProperties(tree);
     }
 
@@ -63,194 +68,6 @@ public class ExtraFieldSqlHelper<T> extends UnmodifiableSqlHelper<T> {
             this.paramMap = Collections.unmodifiableMap(illegalConditionMap);
         }
         return result;
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private static final String SUFFIX_PATTERN = "^[a-zA-Z0-9_$]+$";
-        private HashMap<String, String> suffix2OperatorMap = new HashMap<>();
-
-        private Builder() {
-
-        }
-
-        private void check(String suffix) {
-            if (suffix == null) {
-                throw new IllegalArgumentException("suffix can't be null");
-            }
-            if (suffix2OperatorMap == null) {
-                throw new IllegalStateException("this build has been built, please recreate a new one");
-            }
-            if (!suffix.matches(SUFFIX_PATTERN)) {
-                throw new IllegalArgumentException("illegal suffix [" + suffix + "] , field names cannot contain special characters");
-//                throw new IllegalArgumentException("illegal suffix [" + suffix + "] , it does not match the regular expression:" + SUFFIX_PATTERN);
-            }
-        }
-
-        /**
-         * 不等于
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder ne(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.NE.keyword);
-            return this;
-        }
-
-        /**
-         * 大于
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder gt(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.GT.keyword);
-            return this;
-        }
-
-        /**
-         * 大于等于
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder ge(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.GE.keyword);
-            return this;
-        }
-
-        /**
-         * 小于
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder lt(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.LT.keyword);
-            return this;
-        }
-
-        /**
-         * 小于等于
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder le(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.LE.keyword);
-            return this;
-        }
-
-        /**
-         * 模糊匹配
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder like(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.LIKE.keyword);
-            return this;
-        }
-
-        /**
-         * 不模糊匹配
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder notLike(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.NOT_LIKE.keyword);
-            return this;
-        }
-
-        /**
-         * in
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder in(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.IN.keyword);
-            return this;
-        }
-
-        /**
-         * not in
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder notIn(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.NOT_IN.keyword);
-            return this;
-        }
-
-        /**
-         * is null
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder isNull(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.IS_NULL.keyword);
-            return this;
-        }
-
-        /**
-         * is not null
-         *
-         * @param suffix 后缀
-         * @return {@link Builder }
-         * @author bootystar
-         */
-        public Builder isNotNull(String suffix) {
-            check(suffix);
-            suffix2OperatorMap.put(suffix, SqlKeyword.IS_NOT_NULL.keyword);
-            return this;
-        }
-
-        /**
-         * 构建
-         *
-         * @param sqlTree 条件树
-         * @param clazz   实体类
-         * @return {@link ExtraFieldSqlHelper }<{@link T }>
-         * @author bootystar
-         */
-        public <T> ExtraFieldSqlHelper<T> build(ISqlTree sqlTree, Class<T> clazz) {
-            if (suffix2OperatorMap == null) {
-                throw new IllegalStateException("this build has been built, please recreate a new one");
-            }
-            HashMap<String, String> map = suffix2OperatorMap;
-            this.suffix2OperatorMap = null;
-//            return new ExtraFieldSqlHelper<>(sqlTree, clazz, map);
-            return null;
-        }
-
     }
 
 }

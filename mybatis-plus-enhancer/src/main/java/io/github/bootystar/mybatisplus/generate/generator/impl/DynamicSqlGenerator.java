@@ -21,7 +21,7 @@ public class DynamicSqlGenerator extends AbstractGenerator<DynamicSqlConfig, Dyn
         ;
         this.strategyConfigBuilder.mapperBuilder()
                 .mapperTemplate("/templates/enhance/mapper.java")
-                .mapperXmlTemplate("/templates/dynamic/mapper.xml")
+                .mapperXmlTemplate("/templates/enhance/mapper.xml")
         ;
         this.strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)

@@ -28,7 +28,7 @@ public abstract class DynamicSqlServiceImpl<M extends EnhanceMapper<T, V, Dynami
             }
             sqlHelper = (DynamicSqlHelper<T>) s;
         } else {
-            sqlHelper = SqlHelper.of(s).dynamicHelper(classOfEntity());
+            sqlHelper = new DynamicSqlHelper<>(SqlHelper.of(s), classOfEntity());
         }
         return getBaseMapper().listByDTO(sqlHelper, page);
     }

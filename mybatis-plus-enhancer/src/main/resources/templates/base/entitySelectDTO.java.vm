@@ -62,88 +62,40 @@ public class ${entity}SelectDTO {
         #end
     #end
     private ${field.propertyType} ${field.propertyName};
-    #if(${field.keyFlag})
+## ----------额外字段-----------start
+    #if(${extraFieldSuffixMap})
+        #foreach($entry in ${extraFieldSuffixMap.entrySet()})
+            #set($key = $entry.key)
+            #set($value = $entry.value)
+            #set($extraFieldName= "${field.propertyName}${key}")
+            #if(${value}=="IN"||${value}=="NOT IN")
+                #set($extraFieldType= "List<${field.propertyType}>")
+            #else
+                #set($extraFieldType= "${field.propertyType}")
+            #end
+            #if(!$table.fields.contains("${extraFieldName}"))
 
-    #if("$!field.comment" != "")
-        #if(${springdoc})
-    @Schema(description = "${field.comment}批量查询")
-        #elseif(${swagger})
-    @ApiModelProperty("${field.comment}批量查询")
-        #else
+                #if("$!field.comment" != "")
+                    #if(${springdoc})
+    @Schema(description = "${field.comment}(${value})")
+                    #elseif(${swagger})
+    @ApiModelProperty("${field.comment}(${value})")
+                    #else
     /**
-     * ${field.comment}批量查询
+     * ${field.comment}(${value})
      */
+                    #end
+                #end
+    private ${extraFieldType} ${extraFieldName};
+            #end
         #end
     #end
-    private List<${field.propertyType}> ${field.propertyName}List;
-## String类型追加模糊查询
-#elseif(${field.propertyType} == "String")
-
-    #if(${springdoc})
-    @Schema(description = "${field.comment}模糊查询")
-    #elseif(${swagger})
-    @ApiModelProperty("${field.comment}模糊查询")
-    #else
-    /**
-     * ${field.comment}模糊查询
-     */
-    #end
-    private ${field.propertyType} ${field.propertyName}Like;
-    #if(${entityLombokModel})
-    #if(${chainModel})
-    public ${entity}SelectDTO set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
-    #end
-        this.${field.propertyName}Like = "%" + ${field.propertyName} + "%";
-    #if(${chainModel})
-        return this;
-    #end
-    }
-    #end
-## 时间类型追加时间段查询
-#elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
-
-    #if(${springdoc})
-    @Schema(description = "${field.comment}时间段查询(开始)")
-    #elseif(${swagger})
-    @ApiModelProperty("${field.comment}时间段查询(开始)")
-    #else
-    /**
-     * ${field.comment}时间段查询(开始)
-     */
-    #end
-    private ${field.propertyType} ${field.propertyName}Start;
-
-    #if(${springdoc})
-    @Schema(description = "${field.comment}时间段查询(结束)")
-    #elseif(${swagger})
-    @ApiModelProperty("${field.comment}时间段查询(结束)")
-    #else
-    /**
-     * ${field.comment}时间段查询(结束)
-     */
-    #end
-    private ${field.propertyType} ${field.propertyName}End;
-## int类型长度小于3时追加in查询
-#elseif(${field.propertyType} == "Integer"||${field.propertyType}=="Long")
-
-    #if(${springdoc})
-    @Schema(description = "${field.comment}批量查询")
-    #elseif(${swagger})
-    @ApiModelProperty("${field.comment}批量查询")
-    #else
-    /**
-     * ${field.comment}批量查询
-     */
-    #end
-    private List<${field.propertyType}> ${field.propertyName}List;
-#end
+## ----------额外字段-----------end
 #end
 #end
 ## ----------  END 字段循环遍历  ----------
 #if(!${entityLombokModel})
-
+##--getter/setter的foreach start---
 #foreach($field in ${table.fields})
 #if($selectExcludeFields.contains(${field.propertyName}))
 #elseif(${field.logicDeleteField})
@@ -153,6 +105,7 @@ public class ${entity}SelectDTO {
   #else
     #set($getprefix="get")
   #end
+##----------原始字段getter/setter-----------start
     public ${field.propertyType} ${getprefix}${field.capitalName}() {
         return ${field.propertyName};
     }
@@ -167,94 +120,41 @@ public class ${entity}SelectDTO {
         return this;
   #end
     }
+##----------原始字段getter/setter-----------end
+    #if(${extraFieldSuffixMap})
+##----------额外字段getter/setter的foreach-----------start
+        #foreach($entry in ${extraFieldSuffixMap.entrySet()})
+            #set($key = $entry.key)
+            #set($value = $entry.value)
+            #set($extraFieldName= "${field.propertyName}${key}")
+            #if(${value}=="IN"||${value}=="NOT IN")
+                #set($extraFieldType= "List<${field.propertyType}>")
+            #else
+                #set($extraFieldType= "${field.propertyType}")
+            #end
+            #if(!$table.fields.contains("${field.propertyName}${key}"))
 
-    #if(${field.keyFlag})
-##  主键批量查询getter and setter
-    public List<${field.propertyType}> ${getprefix}${field.capitalName}List() {
-        return ${field.propertyName}List;
+    public ${extraFieldType} ${getprefix}${field.capitalName}${key}() {
+        return ${extraFieldName};
     }
 
-    #if(${chainModel})
-    public ${entity}SelectDTO set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
-    #end
-        this.${field.propertyName}List = ${field.propertyName};
-    #if(${chainModel})
+                #if(${chainModel})
+    public ${entity}SelectDTO set${field.capitalName}${key}(${extraFieldType} ${extraFieldName}) {
+                    #else
+    public void set${field.capitalName}${key}(${extraFieldType} ${extraFieldName}) {
+                #end
+        this.${extraFieldName} = ${extraFieldName};
+                #if(${chainModel})
         return this;
-    #end
+                #end
     }
-
-    #elseif(${field.propertyType} == "String")
-##  模糊字段getter and setter
-    public ${field.propertyType} ${getprefix}${field.capitalName}Like() {
-        return ${field.propertyName}Like;
-    }
-
-    #if(${chainModel})
-    public ${entity}SelectDTO set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}Like(${field.propertyType} ${field.propertyName}) {
-    #end
-        this.${field.propertyName}Like = "%" + ${field.propertyName} + "%";
-    #if(${chainModel})
-        return this;
-    #end
-    }
-
-    #elseif($jdbcTimeTypes.contains(${field.metaInfo.jdbcType}))
-##  日期开始getter and setter
-    public ${field.propertyType} ${getprefix}${field.capitalName}Start() {
-        return ${field.propertyName}Start;
-    }
-
-    #if(${chainModel})
-    public ${entity}SelectDTO set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}Start(${field.propertyType} ${field.propertyName}) {
-    #end
-        this.${field.propertyName}Start = ${field.propertyName};
-    #if(${chainModel})
-        return this;
-    #end
-    }
-
-##  日期结束getter and setter
-    public ${field.propertyType} ${getprefix}${field.capitalName}End() {
-        return ${field.propertyName}End;
-    }
-
-    #if(${chainModel})
-    public ${entity}SelectDTO set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}End(${field.propertyType} ${field.propertyName}) {
-    #end
-        this.${field.propertyName}End = ${field.propertyName};
-    #if(${chainModel})
-        return this;
-    #end
-    }
-
-    #elseif(${field.propertyType} == "Integer"|| ${field.propertyType} == "Long")
-##  int批量查询getter and setter
-    public List<${field.propertyType}> ${getprefix}${field.capitalName}List() {
-        return ${field.propertyName}List;
-    }
-
-    #if(${chainModel})
-    public ${entity}SelectDTO set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
-    #else
-    public void set${field.capitalName}List(List<${field.propertyType}> ${field.propertyName}) {
-    #end
-        this.${field.propertyName}List = ${field.propertyName};
-    #if(${chainModel})
-        return this;
-    #end
-    }
+            #end
+        #end
+##----------额外字段getter/setter的foreach-----------start
     #end
 #end
 #end
-## --foreach end---
+##--getter/setter的foreach end---
 #end
 ## --end of #if(!${entityLombokModel})--
 #if(${entityColumnConstant})

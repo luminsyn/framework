@@ -8,21 +8,21 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 #end
 #if(${validated})
-    ## ---字段非空验证---
+## ---字段非空验证---
     #foreach($field in ${table.fields})
         #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
 import ${javaApiPackage}.validation.constraints.NotNull;
             #break
         #end
     #end
-    ## ---字符串非空验证---
+## ---字符串非空验证---
     #foreach($field in ${table.fields})
         #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.NotBlank;
             #break
         #end
     #end
-    ## ---字符串长度验证---
+## ---字符串长度验证---
     #foreach($field in ${table.fields})
         #if(${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.Size;

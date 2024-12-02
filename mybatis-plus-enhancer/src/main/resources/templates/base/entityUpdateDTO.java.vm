@@ -4,21 +4,21 @@ package ${basePackage}.${package4DTO};
 import ${pkg};
 #end
 #if(${validated})
-    ## ---字段非空验证---
+## ---字段非空验证---
     #foreach($field in ${table.fields})
         #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
 import ${javaApiPackage}.validation.constraints.NotNull;
             #break
         #end
     #end
-    ## ---字符串非空验证---
+## ---字符串非空验证---
     #foreach($field in ${table.fields})
         #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.NotBlank;
             #break
         #end
     #end
-    ## ---字符串长度验证---
+## ---字符串长度验证---
     #foreach($field in ${table.fields})
         #if(${field.propertyType}=="String")
 import ${javaApiPackage}.validation.constraints.Size;
@@ -82,24 +82,20 @@ public class ${entity}UpdateDTO {
      */
         #end
     #end
-    ## 参数校验
-    #if(${validated})
-        ## 主键
-        #if(${field.keyFlag})
+    #if(${validated})## 参数校验
+        #if(${field.keyFlag})## 主键
     @NotNull(message = "${field.comment}为必填项")
             #if(${field.propertyType}=="String")
     @NotBlank(message = "${field.comment}为必填项")
             #end
         #end
-        ## 乐观锁注解
-        #if(${field.versionField})
+        #if(${field.versionField})## 乐观锁注解
     @NotNull(message = "${field.comment}为必填项")
             #if(${field.propertyType}=="String")
     @NotBlank(message = "${field.comment}为必填项")
             #end
         #end
-        ## 字符串长度限制
-        #if(${field.propertyType} == "String")
+        #if(${field.propertyType} == "String")## 字符串长度限制
     @Size(message = "${field.comment}长度不能超过${field.metaInfo.length}", max = ${field.metaInfo.length})
         #end
     #end

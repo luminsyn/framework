@@ -1,30 +1,22 @@
 package io.github.bootystar.mybatisplus.generate.config.impl;
 
 import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
 import io.github.bootystar.mybatisplus.generate.config.base.CustomConfig;
-import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
-import lombok.Getter;
 
 import java.util.function.Consumer;
 
 /**
- * SQL拼接配置类
+ * 默认配置类
  *
  * @author bootystar
  */
-@Getter
-public class ExtraFiledConfig extends CustomConfig {
+public class ExtraCodeConfig extends CustomConfig {
 
-    {
-        mapperDTO = new ClassInfo(ExtraFieldSqlHelper.class);
-    }
-
-    public static class Builder extends CustomConfig.Builder<ExtraFiledConfig, Builder> {
-        private final ExtraFiledConfig config = new ExtraFiledConfig();
+    public static class Builder extends CustomConfig.Builder<ExtraCodeConfig, Builder> {
+        private final ExtraCodeConfig config = new ExtraCodeConfig();
 
         @Override
-        protected ExtraFiledConfig getConfig() {
+        protected ExtraCodeConfig getConfig() {
             return config;
         }
 
@@ -33,6 +25,7 @@ public class ExtraFiledConfig extends CustomConfig {
             return this;
         }
 
+
         /**
          * 获取字段后缀生成器
          *
@@ -40,7 +33,7 @@ public class ExtraFiledConfig extends CustomConfig {
          * @author bootystar
          */
         public FieldSuffixBuilder getFieldSuffixBuilder() {
-            return this.getConfig().extraFieldSuffixBuilder;
+            return getConfig().extraFieldSuffixBuilder;
         }
 
         /**
@@ -52,23 +45,8 @@ public class ExtraFiledConfig extends CustomConfig {
          */
         public Builder fieldSuffixBuilder(Consumer<FieldSuffixBuilder> builderConsumer) {
             builderConsumer.accept(this.getConfig().extraFieldSuffixBuilder);
-            return this.getBuilder();
+            return getBuilder();
         }
-
-
-        /**
-         * 不生成重写的方法
-         *
-         * @return {@code U }
-         * @author bootystar
-         */
-        public Builder disableOverrideMethods() {
-            this.getConfig().overrideMethods = false;
-            return this.getBuilder();
-        }
-
 
     }
 }
-
-

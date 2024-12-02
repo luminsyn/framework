@@ -261,12 +261,4 @@ public class SqlHelper extends TreeG {
         return sqlHelper;
     }
 
-    public <T> DynamicSqlHelper<T> dynamicHelper(Class<T> clazz) {
-        return new DynamicSqlHelper<>(this, clazz);
-    }
-
-    public <T> ExtraFieldSqlHelper<T> extraFieldHelper(Class<T> clazz) {
-        return new ExtraFieldSqlHelper<>(this, clazz);
-    }
-
 }

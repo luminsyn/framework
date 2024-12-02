@@ -22,6 +22,12 @@ import ${basePackage}.${package4DTO}.${entity}SelectDTO;
 #set($requestMethod4Select = "#if(${postQuery})@PostMapping#else@GetMapping#end")
 ##set($pagePathParams = "@PathVariable(value = ""current"", required = false) Long current, @PathVariable(value = ""size"", required = false) Long size")
 #set($pagePathParams = "@PathVariable(""current"") Long current, @PathVariable(""size"") Long size")
+#if(${pageMethod.classFullName})
+#set($pageClazz4return = ${pageMethod.clazz("${entityVO}")})
+    #else
+#set($pageClazz4return = "IPage<${entityVO}>")
+#end
+
 ##------参数设置----end
 #if(${generateInsert}||${generateImport})
 import ${basePackage}.${package4DTO}.${entityInsertDTO};
@@ -261,7 +267,7 @@ public class ${table.controllerName} {
     #end
 ##    ${requestMethod4Select}({"/page", "/page/{current}", "/page/{current}/{size}"})
     ${requestMethod4Select}("/page/{current}/{size}")
-    public ${returnMethod.clazz(${pageMethod.clazz("${entityVO}")})} selectPage($!{optionalBodyStr}${entitySelectDTO} s, $!{pagePathParams}) {
+    public ${returnMethod.clazz(${pageClazz4return})} selectPage($!{optionalBodyStr}${entitySelectDTO} s, $!{pagePathParams}) {
         return ${returnMethod.method(${pageMethod.method("baseService.pageByDTO(s, current, size)")})};
     }
 #end

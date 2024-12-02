@@ -13,16 +13,17 @@ import io.github.bootystar.mybatisplus.generate.generator.core.AbstractGenerator
  *
  * @author booty
  */
-public class ExtraParamGenerator extends AbstractGenerator<ExtraFiledConfig, ExtraFiledConfig.Builder> {
+public class ExtraFieldGenerator extends AbstractGenerator<ExtraFiledConfig, ExtraFiledConfig.Builder> {
 
-    public ExtraParamGenerator(String url, String username, String password) {
+    public ExtraFieldGenerator(String url, String username, String password) {
         super(url, username, password, new ExtraFiledConfig.Builder());
         this.strategyConfigBuilder.serviceBuilder()
                 .serviceTemplate("/templates/enhance/service.java")
-                .serviceImplTemplate("/templates/enhance/serviceImpl.java")
+                .serviceImplTemplate("/templates/extra/serviceImpl.java")
         ;
         this.strategyConfigBuilder.mapperBuilder()
                 .mapperTemplate("/templates/enhance/mapper.java")
+                .mapperXmlTemplate("/templates/enhance/mapper.xml")
         ;
         this.strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(EnhanceService.class)

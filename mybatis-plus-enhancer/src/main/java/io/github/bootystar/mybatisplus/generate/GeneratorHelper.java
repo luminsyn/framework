@@ -1,12 +1,12 @@
 package io.github.bootystar.mybatisplus.generate;
 
 import io.github.bootystar.mybatisplus.generate.config.impl.DynamicSqlConfig;
-import io.github.bootystar.mybatisplus.generate.config.impl.BaseConfig;
+import io.github.bootystar.mybatisplus.generate.config.impl.ExtraCodeConfig;
 import io.github.bootystar.mybatisplus.generate.config.impl.ExtraFiledConfig;
 import io.github.bootystar.mybatisplus.generate.generator.core.EnhanceGenerator;
 import io.github.bootystar.mybatisplus.generate.generator.impl.DynamicSqlGenerator;
 import io.github.bootystar.mybatisplus.generate.generator.impl.ExtraCodeGenerator;
-import io.github.bootystar.mybatisplus.generate.generator.impl.ExtraParamGenerator;
+import io.github.bootystar.mybatisplus.generate.generator.impl.ExtraFieldGenerator;
 
 /**
  * @author bootystar
@@ -19,10 +19,10 @@ public abstract class GeneratorHelper {
      * @param url      url
      * @param username 用户名
      * @param password 密码
-     * @return {@link EnhanceGenerator }<{@link BaseConfig.Builder }>
+     * @return {@link EnhanceGenerator }<{@link ExtraCodeConfig.Builder }>
      * @author bootystar
      */
-    public static EnhanceGenerator<BaseConfig.Builder> extraCodeGenerator(String url, String username, String password) {
+    public static EnhanceGenerator<ExtraCodeConfig.Builder> extraCodeGenerator(String url, String username, String password) {
         return new ExtraCodeGenerator(url, username, password);
     }
 
@@ -35,8 +35,8 @@ public abstract class GeneratorHelper {
      * @return {@link EnhanceGenerator }<{@link ExtraFiledConfig.Builder }>
      * @author bootystar
      */
-    public static EnhanceGenerator<ExtraFiledConfig.Builder> extraParamGenerator(String url, String username, String password) {
-        return new ExtraParamGenerator(url, username, password);
+    public static EnhanceGenerator<ExtraFiledConfig.Builder> extraFiledGenerator(String url, String username, String password) {
+        return new ExtraFieldGenerator(url, username, password);
     }
 
     /**

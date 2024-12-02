@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.po.TableField;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
+import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
+import io.github.bootystar.mybatisplus.enhance.enums.SqlExtraSuffix;
 import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
 import io.github.bootystar.mybatisplus.generate.info.MethodInfo;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
@@ -122,6 +124,13 @@ public abstract class CustomConfig {
 
     public Map<String, Object> renderData(TableInfo tableInfo) {
         HashMap<String, Object> data = new HashMap<>();
+        // 额外字段后缀
+        LinkedHashMap<String, String> build = this.extraFieldSuffixBuilder.build();
+        if (build != null && !build.isEmpty()) {
+            this.extraFieldSuffixCustom = true;
+            this.extraFieldSuffixMap = build;
+        }
+
         // 添加自定义字段
         try {
             Collection<Field> fields = MybatisPlusReflectHelper.fieldMap(getClass()).values();
@@ -167,7 +176,32 @@ public abstract class CustomConfig {
      */
     protected boolean fileOverride;
 
+    /**
+     * 生成重写的父类方法
+     */
+    protected boolean overrideMethods = true;
+
     //------------------额外类相关配置----------------
+
+    /**
+     * mapper入参dto
+     */
+    protected ClassInfo mapperDTO;
+
+    /**
+     * 额外字段后缀
+     */
+    protected Map<String, String> extraFieldSuffixMap = SqlExtraSuffix.DEFAULT_MAP;
+
+    /**
+     * 额外字段后缀构建器
+     */
+    protected FieldSuffixBuilder extraFieldSuffixBuilder = new FieldSuffixBuilder();
+
+    /**
+     * 是否自定义后缀
+     */
+    protected boolean extraFieldSuffixCustom;
 
     /**
      * 实体查询dto
@@ -401,7 +435,7 @@ public abstract class CustomConfig {
 
         /**
          * 使用jakarta的api
-         * (自java17起移除了javax包,使用jakarta替代)
+         * (自springboot3起移除了javax包,使用jakarta替代)
          *
          * @return this
          * @author bootystar
@@ -573,7 +607,6 @@ public abstract class CustomConfig {
             this.getConfig().generateExport = false;
             return this.getBuilder();
         }
-
 
 
     }
