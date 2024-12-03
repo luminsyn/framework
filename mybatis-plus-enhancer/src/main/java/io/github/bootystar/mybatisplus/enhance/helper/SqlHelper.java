@@ -142,6 +142,43 @@ public class SqlHelper extends TreeG {
         return this;
     }
 
+    /**
+     * 将指定的sql树作为条件添加
+     *
+     * @param sqlTree sql树
+     * @return {@link SqlHelper }
+     * @author bootystar
+     */
+    public SqlHelper with(ISqlTree sqlTree) {
+        if (sqlTree == null || sqlTree.getConditions() == null || sqlTree.getConditions().isEmpty()) {
+            return this;
+        }
+        LinkedHashSet<ConditionG> conditions1 = this.getConditions();
+        if (conditions1 == null) {
+            conditions1 = new LinkedHashSet<>();
+        }
+        conditions1.addAll(SqlHelper.of(sqlTree).getConditions());
+        if (sqlTree.getChild() != null) {
+            this.withChild(sqlTree.getChild());
+        }
+        return this;
+    }
+
+    /**
+     * 将指定的sql树条件作为子条件添加
+     *
+     * @param sqlTree sql树
+     * @return {@link SqlHelper }
+     * @author bootystar
+     */
+    public SqlHelper withChild(ISqlTree sqlTree) {
+        TreeG tree = this;
+        while (tree.getChild() != null) {
+            tree = tree.getChild();
+        }
+        tree.setChild(SqlHelper.of(sqlTree));
+        return this;
+    }
 
     /**
      * 根据实体类生成条件
