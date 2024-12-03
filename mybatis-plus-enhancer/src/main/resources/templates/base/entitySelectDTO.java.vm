@@ -74,6 +74,8 @@ public class ${entity}SelectDTO {
                 #set($extraFieldType= "${field.propertyType}")
             #end
             #if(!$table.fields.contains("${extraFieldName}"))
+                #if(!${field.propertyType}=="String" && (${value}=="LIKE"||${value}=="NOT LIKE"))
+                #else
 
                 #if("$!field.comment" != "")
                     #if(${springdoc})
@@ -87,6 +89,7 @@ public class ${entity}SelectDTO {
                     #end
                 #end
     private ${extraFieldType} ${extraFieldName};
+                #end
             #end
         #end
     #end

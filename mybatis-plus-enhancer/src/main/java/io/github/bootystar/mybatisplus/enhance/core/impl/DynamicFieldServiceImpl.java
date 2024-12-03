@@ -7,7 +7,7 @@ import io.github.bootystar.mybatisplus.enhance.core.DynamicMapper;
 import io.github.bootystar.mybatisplus.enhance.core.DynamicService;
 import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
 import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicFieldSqlHelper;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author bootystar
  */
-public abstract class DynamicFieldServiceImpl<M extends DynamicMapper<T, V, ExtraFieldSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements DynamicService<T, V> {
+public abstract class DynamicFieldServiceImpl<M extends DynamicMapper<T, V, DynamicFieldSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements DynamicService<T, V> {
 
     protected FieldSuffixBuilder suffixBuilder;
 
@@ -28,15 +28,15 @@ public abstract class DynamicFieldServiceImpl<M extends DynamicMapper<T, V, Extr
     @Override
     @SuppressWarnings("unchecked")
     public <S> List<V> doSelect(S s, IPage<V> page) {
-        ExtraFieldSqlHelper<T> sqlHelper;
-        if (s instanceof ExtraFieldSqlHelper<?>) {
-            ExtraFieldSqlHelper<?> unmodifiableSqlHelper = (ExtraFieldSqlHelper<?>) s;
+        DynamicFieldSqlHelper<T> sqlHelper;
+        if (s instanceof DynamicFieldSqlHelper<?>) {
+            DynamicFieldSqlHelper<?> unmodifiableSqlHelper = (DynamicFieldSqlHelper<?>) s;
             if (!classOfEntity().equals(unmodifiableSqlHelper.getEntityClass())) {
                 throw new UnsupportedOperationException("not support this type of sqlHelper: " + unmodifiableSqlHelper.getEntityClass().getName());
             }
-            sqlHelper = (ExtraFieldSqlHelper<T>) s;
+            sqlHelper = (DynamicFieldSqlHelper<T>) s;
         } else {
-            sqlHelper = new ExtraFieldSqlHelper<>(SqlHelper.of(s), classOfEntity(), suffixBuilder);
+            sqlHelper = new DynamicFieldSqlHelper<>(SqlHelper.of(s), classOfEntity(), suffixBuilder);
         }
         return getBaseMapper().listByDTO(sqlHelper, page);
     }

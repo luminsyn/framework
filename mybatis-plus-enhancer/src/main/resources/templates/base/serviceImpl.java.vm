@@ -121,8 +121,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public ${entityVO} oneById(Serializable id) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("id", id);
+        HashMap<String, Object> s = new HashMap<>();
+        s.put("id", id);
         List<${entityVO}> vs = listByDTO(s);
         if (vs == null || vs.isEmpty()) return null;
         if(vs.size() > 1) throw new RuntimeException("error query => required 1 but found " + vs.size());
@@ -168,7 +168,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     @Override
     public <S, U> void excelExport(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
         List<${entityVO}> voList = pageByDTO(s, current, size).getRecords();
-        ExcelHelper.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
+        EasyExcel.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
     #end
 

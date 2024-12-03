@@ -40,8 +40,9 @@ public interface ISqlTree extends Iterable<ISqlTree> {
             if (current == null) {
                 throw new NoSuchElementException();
             }
+            ISqlTree result = current;
             current = current.getChild();
-            return current;
+            return result;
         }
     }
 
