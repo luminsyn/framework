@@ -74,6 +74,7 @@ public class ${entity}SelectDTO {
                 #set($extraFieldType= "${field.propertyType}")
             #end
             #if(!$table.fields.contains("${extraFieldName}"))
+##   todo 额外类型判断, 如localdatetime等
                 #if(!${field.propertyType}=="String" && (${value}=="LIKE"||${value}=="NOT LIKE"))
                 #else
 

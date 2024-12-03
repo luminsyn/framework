@@ -91,7 +91,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #end
     #if(${generateSelect})
 
-    public <S> List<SysTestVO> doSelect(S s, IPage<SysTestVO> page) {
+    public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
         // ${entitySelectDTO} dto = (${entitySelectDTO}) s;
         Map<Object, Object> map = null;
         if (s == null || s instanceof Map) {
