@@ -14,9 +14,9 @@ import java.util.HashMap;
  * @author bootystar
  */
 @Getter
-public class DynamicSqlHelper<T> extends UnmodifiableSqlHelper<T> {
+public class DynamicSqlSqlHelper<T> extends UnmodifiableSqlHelper<T> {
 
-    public DynamicSqlHelper(ISqlTree sourceTree, Class<T> entityClass) {
+    public DynamicSqlSqlHelper(ISqlTree sourceTree, Class<T> entityClass) {
         super(sourceTree, entityClass);
         initProperties(sourceTree);
     }

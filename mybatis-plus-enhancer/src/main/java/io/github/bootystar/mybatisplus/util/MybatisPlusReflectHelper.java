@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import io.github.bootystar.mybatisplus.enhance.core.EnhanceEntity;
+import io.github.bootystar.mybatisplus.enhance.core.DynamicEntity;
 import io.github.bootystar.mybatisplus.generate.info.MethodInfo;
 import lombok.SneakyThrows;
 
@@ -156,8 +156,8 @@ public abstract class MybatisPlusReflectHelper extends ReflectHelper {
 
     @SneakyThrows
     public static Map<String, String> field2JdbcColumnMapByEnhanceEntity(Class<?> entityClass) {
-        if (EnhanceEntity.class.isAssignableFrom(entityClass)) {
-            EnhanceEntity enhanceEntity = (EnhanceEntity) entityClass.getConstructor().newInstance();
+        if (DynamicEntity.class.isAssignableFrom(entityClass)) {
+            DynamicEntity enhanceEntity = (DynamicEntity) entityClass.getConstructor().newInstance();
             return enhanceEntity.extraFieldColumnMap();
         }
         return new HashMap<>();

@@ -26,16 +26,16 @@ import java.util.stream.Collectors;
  * @author bootystar
  */
 @SuppressWarnings("unused")
-public interface EnhanceService<T, V> extends IService<T> {
+public interface DynamicService<T, V> extends IService<T> {
 
     @SuppressWarnings("unchecked")
     default Class<T> classOfEntity() {
-        return (Class<T>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), EnhanceService.class))[0];
+        return (Class<T>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), DynamicService.class))[0];
     }
 
     @SuppressWarnings("unchecked")
     default Class<V> classOfVO() {
-        return (Class<V>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), EnhanceService.class))[1];
+        return (Class<V>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), DynamicService.class))[1];
     }
 
     default T toEntity(Object source) {

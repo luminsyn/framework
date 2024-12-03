@@ -49,6 +49,7 @@ public class ConditionG implements ISqlCondition {
 
 
     public static ConditionG of(ISqlCondition sqlCondition) {
+        if (sqlCondition instanceof ConditionG) return (ConditionG) sqlCondition;
         return new ConditionG(sqlCondition.isOr(), sqlCondition.getField(), sqlCondition.getOperator(), sqlCondition.getValue());
     }
 

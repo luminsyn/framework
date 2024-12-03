@@ -7,7 +7,7 @@ import java.util.Map;
  *
  * @author bootystar
  */
-public interface EnhanceEntity {
+public interface DynamicEntity {
 
     /**
      * 非实体类对应表的属性字段映射

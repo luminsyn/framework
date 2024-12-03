@@ -3,8 +3,8 @@ package io.github.bootystar.mybatisplus.enhance.core.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.bootystar.mybatisplus.enhance.core.EnhanceMapper;
-import io.github.bootystar.mybatisplus.enhance.core.EnhanceService;
+import io.github.bootystar.mybatisplus.enhance.core.DynamicMapper;
+import io.github.bootystar.mybatisplus.enhance.core.DynamicService;
 import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
 import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
 import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author bootystar
  */
-public abstract class ExtraFieldServiceImpl<M extends EnhanceMapper<T, V, ExtraFieldSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements EnhanceService<T, V> {
+public abstract class DynamicFieldServiceImpl<M extends DynamicMapper<T, V, ExtraFieldSqlHelper<T>>, T, V> extends ServiceImpl<M, T> implements DynamicService<T, V> {
 
     protected FieldSuffixBuilder suffixBuilder;
 

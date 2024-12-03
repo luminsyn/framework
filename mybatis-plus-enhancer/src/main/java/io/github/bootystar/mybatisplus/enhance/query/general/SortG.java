@@ -26,6 +26,7 @@ public class SortG implements ISqlSort {
     protected boolean desc;
 
     public static SortG of(ISqlSort sort) {
+        if (sort instanceof SortG) return (SortG) sort;
         return new SortG(sort.getField(), sort.isDesc());
     }
 

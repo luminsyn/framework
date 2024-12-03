@@ -1,14 +1,12 @@
 package io.github.bootystar.mybatisplus.generate.config.impl;
 
 import io.github.bootystar.mybatisplus.enhance.helper.SqlHelper;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlHelper;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicSqlSqlHelper;
 import io.github.bootystar.mybatisplus.generate.config.base.CustomConfig;
 import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
 import lombok.Getter;
 
 /**
- * SQL拼接配置类
- *
  * @author bootystar
  */
 @Getter
@@ -16,7 +14,7 @@ public class DynamicSqlConfig extends CustomConfig {
 
     {
         selectDTO = new ClassInfo(SqlHelper.class);
-        mapperDTO = new ClassInfo(DynamicSqlHelper.class);
+        mapperDTO = new ClassInfo(DynamicSqlSqlHelper.class);
     }
 
     public static class Builder extends CustomConfig.Builder<DynamicSqlConfig, Builder> {

@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author bootystar
  */
-public interface EnhanceMapper<T, V, S> extends BaseMapper<T> {
+public interface DynamicMapper<T, V, S> extends BaseMapper<T> {
 
     List<V> listByDTO(S s, IPage<V> page);
 

@@ -1,7 +1,7 @@
 package io.github.bootystar.mybatisplus.generate.generator.impl;
 
-import io.github.bootystar.mybatisplus.enhance.core.EnhanceMapper;
-import io.github.bootystar.mybatisplus.enhance.core.EnhanceService;
+import io.github.bootystar.mybatisplus.enhance.core.DynamicMapper;
+import io.github.bootystar.mybatisplus.enhance.core.DynamicService;
 import io.github.bootystar.mybatisplus.enhance.core.impl.DynamicSqlServiceImpl;
 import io.github.bootystar.mybatisplus.generate.config.impl.DynamicSqlConfig;
 import io.github.bootystar.mybatisplus.generate.generator.core.AbstractGenerator;
@@ -24,11 +24,11 @@ public class DynamicSqlGenerator extends AbstractGenerator<DynamicSqlConfig, Dyn
                 .mapperXmlTemplate("/templates/enhance/mapper.xml")
         ;
         this.strategyConfigBuilder.serviceBuilder()
-                .superServiceClass(EnhanceService.class)
+                .superServiceClass(DynamicService.class)
                 .superServiceImplClass(DynamicSqlServiceImpl.class)
         ;
         this.strategyConfigBuilder.mapperBuilder()
-                .superClass(EnhanceMapper.class)
+                .superClass(DynamicMapper.class)
         ;
     }
 

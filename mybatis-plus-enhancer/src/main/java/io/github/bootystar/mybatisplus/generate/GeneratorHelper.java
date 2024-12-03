@@ -1,12 +1,12 @@
 package io.github.bootystar.mybatisplus.generate;
 
+import io.github.bootystar.mybatisplus.generate.config.impl.DynamicFieldConfig;
 import io.github.bootystar.mybatisplus.generate.config.impl.DynamicSqlConfig;
 import io.github.bootystar.mybatisplus.generate.config.impl.ExtraCodeConfig;
-import io.github.bootystar.mybatisplus.generate.config.impl.ExtraFiledConfig;
 import io.github.bootystar.mybatisplus.generate.generator.core.EnhanceGenerator;
+import io.github.bootystar.mybatisplus.generate.generator.impl.DynamicFieldGenerator;
 import io.github.bootystar.mybatisplus.generate.generator.impl.DynamicSqlGenerator;
 import io.github.bootystar.mybatisplus.generate.generator.impl.ExtraCodeGenerator;
-import io.github.bootystar.mybatisplus.generate.generator.impl.ExtraFieldGenerator;
 
 /**
  * @author bootystar
@@ -27,16 +27,16 @@ public abstract class GeneratorHelper {
     }
 
     /**
-     * 额外字段生成器
+     * 动态字段生成器
      *
      * @param url      url
      * @param username 用户名
      * @param password 密码
-     * @return {@link EnhanceGenerator }<{@link ExtraFiledConfig.Builder }>
+     * @return {@link EnhanceGenerator }<{@link DynamicFieldConfig.Builder }>
      * @author bootystar
      */
-    public static EnhanceGenerator<ExtraFiledConfig.Builder> extraFiledGenerator(String url, String username, String password) {
-        return new ExtraFieldGenerator(url, username, password);
+    public static EnhanceGenerator<DynamicFieldConfig.Builder> dynamicFieldGenerator(String url, String username, String password) {
+        return new DynamicFieldGenerator(url, username, password);
     }
 
     /**

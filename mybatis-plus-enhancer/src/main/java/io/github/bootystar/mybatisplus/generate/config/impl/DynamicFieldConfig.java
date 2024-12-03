@@ -1,30 +1,29 @@
 package io.github.bootystar.mybatisplus.generate.config.impl;
 
 import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
-import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.ExtraFieldSqlHelper;
+import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicFieldSqlHelper;
 import io.github.bootystar.mybatisplus.generate.config.base.CustomConfig;
 import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
 import lombok.Getter;
 
 import java.util.function.Consumer;
 
+
 /**
- * SQL拼接配置类
- *
  * @author bootystar
  */
 @Getter
-public class ExtraFiledConfig extends CustomConfig {
+public class DynamicFieldConfig extends CustomConfig {
 
     {
-        mapperDTO = new ClassInfo(ExtraFieldSqlHelper.class);
+        mapperDTO = new ClassInfo(DynamicFieldSqlHelper.class);
     }
 
-    public static class Builder extends CustomConfig.Builder<ExtraFiledConfig, Builder> {
-        private final ExtraFiledConfig config = new ExtraFiledConfig();
+    public static class Builder extends CustomConfig.Builder<DynamicFieldConfig, Builder> {
+        private final DynamicFieldConfig config = new DynamicFieldConfig();
 
         @Override
-        protected ExtraFiledConfig getConfig() {
+        protected DynamicFieldConfig getConfig() {
             return config;
         }
 

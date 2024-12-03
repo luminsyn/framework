@@ -331,7 +331,7 @@ generator.execute("user");
 
 1. <font style="background-color:rgba(255, 255, 255, 0);">通过反射获取指定实体类的所有可用字段</font>
 2. <font style="background-color:rgba(255, 255, 255, 0);">检索mybatis-plus对应注解并处理数据库字段</font>
-3. <font style="background-color:rgba(255, 255, 255, 0);">若实体类实现了`io.github.bootystar.mybatisplus.enhance.core.EnhanceEntity`接口,根据实现方法添加额外字段</font>
+3. <font style="background-color:rgba(255, 255, 255, 0);">若实体类实现了`io.github.bootystar.mybatisplus.enhance.core.DynamicEntity`接口,根据实现方法添加额外字段</font>
 
 ### 自定义连表查询
 在mapper中添加需要连表的表名, 并添加别名
