@@ -98,7 +98,7 @@
     </sql>
 #end
 
-    <select id="listByDTO" #if(${resultMapForVO}) resultMap="BaseResultMap4VO"#else resultType="${basePackage}.${package4VO}.${entity}VO"#end>
+    <select id="listByDTO"#if(${resultMapForVO}) resultMap="BaseResultMap4VO"#else resultType="${basePackage}.${package4VO}.${entity}VO"#end>
         SELECT
         a.*
         FROM
