@@ -22,13 +22,13 @@
                                 </otherwise>
                             </choose>
                             <choose>
-                                <when test="item.operator=='IN' || item.operator=='NOT IN'">
+                                <when test="item.operator=='IN' or item.operator=='NOT IN'">
                                     ${item.field} ${item.operator}
                                     <foreach collection="item.value" item="val" separator="," open="(" close=")">
                                         #{val}
                                     </foreach>
                                 </when>
-                                <when test="item.operator=='IS NULL' || item.operator=='IS NOT NULL'">
+                                <when test="item.operator=='IS NULL' or item.operator=='IS NOT NULL'">
                                     ${item.field} ${item.operator}
                                 </when>
                                 <otherwise>
