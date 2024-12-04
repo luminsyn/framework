@@ -13,18 +13,10 @@ import java.util.function.Consumer;
 public class ExtraCodeConfig extends CustomConfig {
 
     public static class Builder extends CustomConfig.Builder<ExtraCodeConfig, Builder> {
-        private final ExtraCodeConfig config = new ExtraCodeConfig();
 
-        @Override
-        protected ExtraCodeConfig getConfig() {
-            return config;
+        public Builder() {
+            super(new ExtraCodeConfig());
         }
-
-        @Override
-        protected Builder getBuilder() {
-            return this;
-        }
-
 
         /**
          * 获取字段后缀生成器

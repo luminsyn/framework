@@ -123,6 +123,8 @@
                 #end
             #end
             <include refid="selectFragment"/>
+            <if test="param1.map != null">
+            </if>
         </where>
         <trim prefix="ORDER BY" suffixOverrides=",">
             <include refid="sortFragment"/>

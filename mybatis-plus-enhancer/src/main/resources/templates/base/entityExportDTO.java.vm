@@ -34,10 +34,10 @@ import com.alibaba.excel.annotation.ExcelProperty;
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}ExportDTO", description = "$!{table.comment}-Excel导出DTO")
-@Schema(description = "$!{table.comment}-Excel导出DTO")
+@Schema(name = "${entity}ExportDTO$!{docUUID}", description = "$!{table.comment}-Excel导出DTO")
 #elseif(${swagger})
 ##@ApiModel(value = "${entity}ExportDTO", description = "$!{table.comment}-Excel导出DTO")
-@ApiModel(description = "$!{table.comment}-Excel导出DTO")
+@ApiModel(value = "${entity}ExportDTO$!{docUUID}", description = "$!{table.comment}-Excel导出DTO")
 #end
 @ExcelIgnoreUnannotated
 public class ${entity}ExportDTO {

@@ -54,6 +54,9 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
     protected void initProperties(ISqlTree sqlTree) {
         // 不在迭代时直接赋值, 保留扩展空间
         TreeU tree = recursionTree(sqlTree);
+        if (tree == null) {
+            return;
+        }
         this.conditions = tree.getConditions();
         this.child = tree.getChild();
         this.sorts = tree.getSorts();
@@ -63,17 +66,19 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         if (sqlTree == null) {
             return null;
         }
-        Collection<? extends ISqlCondition> conditions = sqlTree.getConditions();
-        Collection<ConditionU> validatedUnmodifiableConditions = validatedConditions(conditions);
+        Collection<ConditionU> conditions = wrapConditions(sqlTree.getConditions());
         ISqlTree child = sqlTree.getChild();
-        if (validatedUnmodifiableConditions == null || validatedUnmodifiableConditions.isEmpty()) {
+        if (conditions == null || conditions.isEmpty()) {
             if (child != null) {
-                throw new ParamMappingException("validatedConditions is null or empty, but child is not null, currentNode : %s", sqlTree);
+                String s = Optional.ofNullable(sqlTree.getConditions()).orElse(Collections.emptyList()).stream()
+                        .map(e -> String.format("isOr:%s , field:%s , operator:%s ,value:%s", e.isOr(), e.getField(), e.getOperator(), e.getValue()))
+                        .reduce((e1, e2) -> e1 + "\n" + e2).orElse("null");
+                throw new ParamMappingException("mapped condition is empty, but sub-condition is not empty !!!\ncurrent condition source:\n %s",  s);
             }
             return null;
         }
         TreeU newChild = recursionTree(child);
-        return new TreeU(validatedUnmodifiableConditions, validatedSorts(sqlTree.getSorts()), newChild);
+        return new TreeU(conditions, validatedSorts(sqlTree.getSorts()), newChild);
     }
 
     protected Collection<SortU> validatedSorts(Collection<? extends ISqlSort> sorts) {
@@ -99,7 +104,7 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
     }
 
     // 由子类实现
-    protected abstract Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions);
+    protected abstract Collection<ConditionU> wrapConditions(Collection<? extends ISqlCondition> conditions);
 
     public Optional<ConditionU> wrap2JdbcColumnCondition(ISqlCondition conditionO) {
         boolean or = conditionO.isOr();

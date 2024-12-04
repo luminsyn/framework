@@ -1,15 +1,14 @@
 package io.github.bootystar.mybatisplus.enhance.helper;
 
+import io.github.bootystar.mybatisplus.enhance.core.DynamicService;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlCondition;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlSort;
 import io.github.bootystar.mybatisplus.enhance.query.ISqlTree;
 import io.github.bootystar.mybatisplus.enhance.query.general.ConditionG;
 import io.github.bootystar.mybatisplus.enhance.query.general.SortG;
-import io.github.bootystar.mybatisplus.enhance.query.general.TreeG;
 import io.github.bootystar.mybatisplus.util.ReflectHelper;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,79 +18,17 @@ import java.util.stream.Collectors;
  * @author bootystar
  */
 @SuppressWarnings("unused")
-public class SqlHelper<T> extends TreeG {
-    {
-        this.conditions = new LinkedHashSet<>(4);
-        this.sorts = new LinkedHashSet<>(4);
-    }
+public class SqlHelper<T> extends AbstractSqlHelper<T, SqlHelper<T>> {
+
 
     /**
-     * 添加一般条件
-     * 和现有条件同等优先级
+     * 返回指定泛型的sql助手
      *
-     * @param condition 条件
-     * @return {@link SqlHelper<T> }
+     * @return {@link SqlHelper }<{@link T }>
      * @author bootystar
      */
-    public SqlHelper<T> condition(ISqlCondition condition) {
-        if (condition == null) {
-            return this;
-        }
-        this.getConditions().add(ConditionG.of(condition));
-        return this;
-    }
-
-    /**
-     * 添加排序
-     *
-     * @param sort 排序
-     * @return {@link SqlHelper<T> }
-     * @author bootystar
-     */
-    public SqlHelper<T> sort(ISqlSort sort) {
-        if (sort == null) {
-            return this;
-        }
-        this.getSorts().add(SortG.of(sort));
-        return this;
-    }
-
-    /**
-     * 将指定的sql树作为条件添加
-     *
-     * @param sqlTree sql树
-     * @return {@link SqlHelper<T> }
-     * @author bootystar
-     */
-    public SqlHelper<T> with(ISqlTree sqlTree) {
-        if (sqlTree == null || sqlTree.getConditions() == null || sqlTree.getConditions().isEmpty()) {
-            return this;
-        }
-        LinkedHashSet<ConditionG> conditions1 = this.getConditions();
-        if (conditions1 == null) {
-            conditions1 = new LinkedHashSet<>();
-        }
-        conditions1.addAll(SqlHelper.of(sqlTree).getConditions());
-        if (sqlTree.getChild() != null) {
-            return this.withChild(sqlTree.getChild());
-        }
-        return this;
-    }
-
-    /**
-     * 将指定的sql树条件作为子条件添加
-     *
-     * @param sqlTree sql树
-     * @return {@link SqlHelper<T> }
-     * @author bootystar
-     */
-    public SqlHelper<T> withChild(ISqlTree sqlTree) {
-        TreeG tree = this;
-        while (tree.getChild() != null) {
-            tree = tree.getChild();
-        }
-        tree.setChild(SqlHelper.of(sqlTree));
-        return this;
+    public static <T> SqlHelper<T> of() {
+        return new SqlHelper<>();
     }
 
     /**
@@ -130,10 +67,10 @@ public class SqlHelper<T> extends TreeG {
     }
 
     /**
-     * 根据SqlTree生成helper
+     * 根据SqlTree生成sql助手
      *
      * @param tree      树
-     * @param copySorts 复制排序
+     * @param copySorts 是否复制排序
      * @return {@link SqlHelper<T> }
      * @author bootystar
      */
@@ -157,6 +94,17 @@ public class SqlHelper<T> extends TreeG {
             helper.setChild(ofSqlTree(child, false));
         }
         return helper;
+    }
+
+    /**
+     * 包装sql助手, 添加指定服务的查询方法
+     *
+     * @param baseService 基础服务
+     * @return {@link SqlHelperWrapper }<{@link T },{@link V }>
+     * @author bootystar
+     */
+    public <V> SqlHelperWrapper<T, V> wrap(DynamicService<T, V> baseService) {
+        return new SqlHelperWrapper<>(baseService).with(this);
     }
 
 }

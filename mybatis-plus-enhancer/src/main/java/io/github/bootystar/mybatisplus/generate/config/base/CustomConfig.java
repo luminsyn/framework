@@ -168,6 +168,14 @@ public abstract class CustomConfig {
                     .reduce((e1, e2) -> e1 + " , " + e2)
                     .ifPresent(e -> data.put("orderBySql", e));
         }
+
+        if (this.docWithUUID) {
+            String uuid = "@" + UUID.randomUUID().toString().substring(0, 4);
+            data.put("docUUID", uuid);
+        } else {
+            data.remove("docUUID");
+        }
+
         return data;
     }
 
@@ -180,6 +188,11 @@ public abstract class CustomConfig {
      * 生成重写的父类方法
      */
     protected boolean overrideMethods = true;
+
+    /**
+     * 文档uuid标识
+     */
+    protected boolean docWithUUID = true;
 
     //------------------额外类相关配置----------------
 
@@ -234,6 +247,11 @@ public abstract class CustomConfig {
      * 分页结果方法
      */
     protected MethodInfo pageMethod = new MethodInfo();
+
+    /**
+     * 基本服务注解
+     */
+    protected boolean autoWired;
 
     /**
      * controller是否使用@RequestBody注解
@@ -311,21 +329,32 @@ public abstract class CustomConfig {
      * @author bootystar
      */
     @SuppressWarnings("unused")
-    public static abstract class Builder<C extends CustomConfig, B> {
+    public static abstract class Builder<C extends CustomConfig, B extends Builder<C, B>> {
+
+        private final C config;
+
+        public Builder(C config) {
+            this.config = config;
+        }
 
         /**
          * 获取配置
          *
          * @return {@link C }
          */
-        protected abstract C getConfig();
+        protected C getConfig() {
+            return this.config;
+        }
 
         /**
          * 获取构建器
          *
          * @return {@link B }
          */
-        protected abstract B getBuilder();
+        @SuppressWarnings("unchecked")
+        protected B getBuilder() {
+            return (B) this;
+        }
 
 
         /**
@@ -336,6 +365,30 @@ public abstract class CustomConfig {
          */
         public C build() {
             return this.getConfig();
+        }
+
+        /**
+         * 开启文件覆盖(vo及dto)
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B enableFileOverride() {
+            this.getConfig().fileOverride = true;
+            return this.getBuilder();
+        }
+
+        /**
+         * 禁用swagger/springdoc文档额外uuid标识
+         * <p>
+         * 已知swagger注解在同名时有冲突, 禁用后请确保表注释不为空且不同名
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B disableDocUUID() {
+            this.getConfig().docWithUUID = false;
+            return this.getBuilder();
         }
 
         //==================DTO VO=======================
@@ -387,17 +440,6 @@ public abstract class CustomConfig {
             return this.getBuilder();
         }
 
-        /**
-         * 开启文件覆盖(vo及dto)
-         *
-         * @return {@link B }
-         * @author bootystar
-         */
-        public B enableFileOverride() {
-            this.getConfig().fileOverride = true;
-            return this.getBuilder();
-        }
-
         //==================controller=======================
 
         /**
@@ -442,6 +484,17 @@ public abstract class CustomConfig {
          */
         public B enableJakartaApi() {
             this.getConfig().javaApiPackage = "jakarta";
+            return this.getBuilder();
+        }
+
+        /**
+         * 使用@AutoWired替换@Resource
+         *
+         * @return this
+         * @author bootystar
+         */
+        public B enableAutoWired() {
+            this.getConfig().autoWired = true;
             return this.getBuilder();
         }
 

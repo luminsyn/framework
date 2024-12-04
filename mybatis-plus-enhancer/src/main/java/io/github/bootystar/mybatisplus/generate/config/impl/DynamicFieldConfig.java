@@ -20,16 +20,9 @@ public class DynamicFieldConfig extends CustomConfig {
     }
 
     public static class Builder extends CustomConfig.Builder<DynamicFieldConfig, Builder> {
-        private final DynamicFieldConfig config = new DynamicFieldConfig();
 
-        @Override
-        protected DynamicFieldConfig getConfig() {
-            return config;
-        }
-
-        @Override
-        protected Builder getBuilder() {
-            return this;
+        public Builder() {
+            super(new DynamicFieldConfig());
         }
 
         /**

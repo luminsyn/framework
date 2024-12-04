@@ -36,10 +36,10 @@ import lombok.experimental.Accessors;
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}VO", description = "$!{table.comment}-VO")
-@Schema(description = "$!{table.comment}-VO")
+@Schema(name = "${entity}VO$!{docUUID}", description = "$!{table.comment}-VO")
 #elseif(${swagger})
 ##@ApiModel(value = "${entity}VO", description = "$!{table.comment}-VO")
-@ApiModel(description = "$!{table.comment}-VO")
+@ApiModel(value = "${entity}VO$!{docUUID}", description = "$!{table.comment}-VO")
 #end
 #if(${generateExport})
 @ExcelIgnoreUnannotated

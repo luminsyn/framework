@@ -18,16 +18,10 @@ public class DynamicSqlConfig extends CustomConfig {
     }
 
     public static class Builder extends CustomConfig.Builder<DynamicSqlConfig, Builder> {
-        private final DynamicSqlConfig config = new DynamicSqlConfig();
 
-        @Override
-        protected DynamicSqlConfig getConfig() {
-            return config;
-        }
 
-        @Override
-        protected Builder getBuilder() {
-            return this;
+        public Builder() {
+            super(new DynamicSqlConfig());
         }
 
         /**

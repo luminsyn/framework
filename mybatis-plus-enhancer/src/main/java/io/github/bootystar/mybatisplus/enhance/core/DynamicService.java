@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.enhance.helper.LambdaSqlHelperWrapper;
+import io.github.bootystar.mybatisplus.enhance.helper.SqlHelperWrapper;
 import io.github.bootystar.mybatisplus.enhance.query.general.ConditionG;
 import io.github.bootystar.mybatisplus.util.ExcelHelper;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
@@ -131,8 +131,8 @@ public interface DynamicService<T, V> extends IService<T> {
         ExcelHelper.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
 
-    default LambdaSqlHelperWrapper<T, V> lambdaHelper() {
-        return new LambdaSqlHelperWrapper<>(this);
+    default SqlHelperWrapper<T, V> lambdaHelper() {
+        return new SqlHelperWrapper<>(this);
     }
 
 }

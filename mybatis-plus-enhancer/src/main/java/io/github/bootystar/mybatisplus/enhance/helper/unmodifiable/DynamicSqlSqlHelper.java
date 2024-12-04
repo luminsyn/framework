@@ -22,7 +22,7 @@ public class DynamicSqlSqlHelper<T> extends UnmodifiableSqlHelper<T> {
     }
 
     @Override
-    protected Collection<ConditionU> validatedConditions(Collection<? extends ISqlCondition> conditions) {
+    protected Collection<ConditionU> wrapConditions(Collection<? extends ISqlCondition> conditions) {
         if (conditions == null || conditions.isEmpty()) {
             return null;
         }

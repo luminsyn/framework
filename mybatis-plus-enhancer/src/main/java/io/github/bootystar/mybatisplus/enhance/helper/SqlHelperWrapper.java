@@ -6,19 +6,20 @@ import io.github.bootystar.mybatisplus.enhance.core.DynamicService;
 import java.util.List;
 
 /**
+ * sql助手包装器
  * @author bootystar
  */
 @SuppressWarnings("unused")
-public class LambdaSqlHelperWrapper<T, V> extends AbstractLambdaSqlHelper<T, LambdaSqlHelperWrapper<T, V>> {
+public class SqlHelperWrapper<T, V> extends AbstractSqlHelper<T, SqlHelperWrapper<T, V>> {
 
     private final DynamicService<T, V> baseService;
 
-    public LambdaSqlHelperWrapper(DynamicService<T, V> baseService) {
+    public SqlHelperWrapper(DynamicService<T, V> baseService) {
         this.baseService = baseService;
     }
 
     @Override
-    protected LambdaSqlHelperWrapper<T, V> returnValue() {
+    protected SqlHelperWrapper<T, V> returnValue() {
         return this;
     }
 

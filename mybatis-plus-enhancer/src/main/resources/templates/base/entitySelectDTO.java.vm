@@ -34,10 +34,10 @@ import java.util.List;
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}SelectDTO", description = "$!{table.comment}-查询DTO")
-@Schema(description = "$!{table.comment}-查询DTO")
+@Schema(name = "${entity}SelectDTO$!{docUUID}", description = "$!{table.comment}-查询DTO")
 #elseif(${swagger})
 ##@ApiModel(value = "${entity}SelectDTO", description = "$!{table.comment}-查询DTO")
-@ApiModel(description = "$!{table.comment}-查询DTO")
+@ApiModel(value = "${entity}SelectDTO$!{docUUID}", description = "$!{table.comment}-查询DTO")
 #end
 public class ${entity}SelectDTO {
 ###if(${entitySerialVersionUID})

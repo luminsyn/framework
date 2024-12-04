@@ -23,6 +23,7 @@ package ${package.Controller};
         #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
         #if(${generateSelect}||${generateExport})
 import ${selectDTO.classFullName};
+import ${package.Entity}.${entity};
         #end
     #else
         #set($entitySelectDTO = "${entity}SelectDTO")
@@ -38,7 +39,6 @@ import ${basePackage}.${package4DTO}.${entity}SelectDTO;
     #else
 #set($pageClazz4return = "IPage<${entityVO}>")
 #end
-
 ##------参数设置----end
 #if(${generateInsert}||${generateImport})
 import ${basePackage}.${package4DTO}.${entityInsertDTO};
@@ -68,7 +68,14 @@ import io.swagger.v3.oas.annotations.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 #end
+#if(${generateImport}||${generateExport})
+import ${javaApiPackage}.servlet.http.HttpServletResponse;
+#end
+#if(!${autoWired})
+import ${javaApiPackage}.annotation.Resource;
+#else
 import org.springframework.beans.factory.annotation.Autowired;
+#end
 import org.springframework.web.bind.annotation.*;
 #if(!${restControllerStyle})
 import org.springframework.stereotype.Controller;
@@ -80,9 +87,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 #end
 
-#if(${generateImport}||${generateExport})
-import ${javaApiPackage}.servlet.http.HttpServletResponse;
-#end
 #if(${generateImport}||${generateExport})
 import java.io.IOException;
 #end
@@ -103,9 +107,11 @@ import java.util.List;
  * @see ${package.ServiceImpl}.${table.serviceImplName}
  */
 #if(${springdoc})
-@Tag(name = "${table.comment}", description = "$!{table.comment}")
+##@Tag(name = "${table.comment}", description = "$!{table.comment}")
+@Tag(name = "${table.comment}$!{docUUID}", description = "$!{table.comment}")
     #elseif(${swagger})
-@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}")
+##@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}")
+@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}$!{docUUID}")
 #end
 #if(${restControllerStyle})
 @RestController
@@ -126,7 +132,11 @@ public class ${table.controllerName} {
     #end
 #end
 
+    #if(${autoWired})
     @Autowired
+        #else
+    @Resource
+    #end
     private ${table.serviceName} baseService;
 #if(${generateInsert})
 
