@@ -99,7 +99,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateImport})
 
     @Override
-    public <U> boolean excelImport(InputStream is, Class<U> clazz) {
+    public <U> int excelImport(InputStream is, Class<U> clazz) {
 //        ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         return super.excelImport(is, clazz);
     }

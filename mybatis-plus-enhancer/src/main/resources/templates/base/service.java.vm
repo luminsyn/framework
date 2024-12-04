@@ -5,27 +5,29 @@ package ${package.Service};
 #set($entityUpdateDTO = "${entity}UpdateDTO")
 #set($entityVO = "${entity}VO")
 #if(${selectDTO.classFullName})
-import ${selectDTO.classFullName};
+##import ${selectDTO.classFullName};
     #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
 #else
-import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+##import ${basePackage}.${package4DTO}.${entity}SelectDTO;
     #set($entitySelectDTO = "${entity}SelectDTO")
 #end
 ## ------参数设置----end
-#if(${generateSelect})
+#if(${generateSelect}||${generateExport})
 import com.baomidou.mybatisplus.core.metadata.IPage;
 #end
 import ${superServiceClassPackage};
 import ${package.Entity}.${entity};
-#if(${generateInsert}||${generateSelect})
+#if(${generateInsert}||${generateSelect}||${generateExport})
 import ${basePackage}.${package4VO}.${entityVO};
 #end
 
-#if(${generateImport}||${generateExport})
+#if(${generateImport})
 import java.io.InputStream;
+#end
+#if(${generateImport}||${generateExport})
 import java.io.OutputStream;
 #end
-#if(${generateSelect})
+#if(${generateSelect}||${generateExport})
 import java.io.Serializable;
 import java.util.List;
 #end
@@ -48,7 +50,7 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     <S> boolean updateByDTO(S s);
     #end
-    #if(${generateSelect})
+    #if(${generateSelect}||${generateExport})
 
     ${entityVO} oneById(Serializable id);
 
@@ -60,7 +62,7 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
     <U> void excelTemplate(OutputStream os, Class<U> clazz);
 
-    <U> boolean excelImport(InputStream is, Class<U> clazz);
+    <U> int excelImport(InputStream is, Class<U> clazz);
     #end
     #if(${generateExport})
 

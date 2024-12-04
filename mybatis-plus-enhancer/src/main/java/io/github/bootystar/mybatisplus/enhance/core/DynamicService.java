@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
-import io.github.bootystar.mybatisplus.enhance.helper.LambdaSqlHelper;
+import io.github.bootystar.mybatisplus.enhance.helper.LambdaSqlHelperWrapper;
 import io.github.bootystar.mybatisplus.enhance.query.general.ConditionG;
 import io.github.bootystar.mybatisplus.util.ExcelHelper;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
@@ -114,11 +114,12 @@ public interface DynamicService<T, V> extends IService<T> {
         ExcelHelper.write(os, clazz).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(Collections.emptyList());
     }
 
-    default <U> boolean excelImport(InputStream is, Class<U> clazz) {
+    default <U> int excelImport(InputStream is, Class<U> clazz) {
         List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
-        if (cachedDataList == null || cachedDataList.isEmpty()) return false;
+        if (cachedDataList == null || cachedDataList.isEmpty()) return 0;
         List<T> entityList = cachedDataList.stream().map(this::toEntity).collect(Collectors.toList());
-        return saveBatch(entityList);
+        saveBatch(entityList);
+        return entityList.size();
     }
 
     default <S, U> void excelExport(S s, OutputStream os, Class<U> clazz, String... includeFields) {
@@ -130,8 +131,8 @@ public interface DynamicService<T, V> extends IService<T> {
         ExcelHelper.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
 
-    default LambdaSqlHelper<T, V> lambdaSqlHelper() {
-        return new LambdaSqlHelper<>(this);
+    default LambdaSqlHelperWrapper<T, V> lambdaHelper() {
+        return new LambdaSqlHelperWrapper<>(this);
     }
 
 }

@@ -20,11 +20,15 @@ package ${package.Controller};
 #end
 #set($entityVO = "${entity}VO")
 #if(${selectDTO.classFullName})
-import ${selectDTO.classFullName};
         #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
+        #if(${generateSelect}||${generateExport})
+import ${selectDTO.classFullName};
+        #end
     #else
-import ${basePackage}.${package4DTO}.${entity}SelectDTO;
         #set($entitySelectDTO = "${entity}SelectDTO")
+        #if(${generateSelect}||${generateExport})
+import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+        #end
 #end
 #set($requestMethod4Select = "#if(${postQuery})@PostMapping#else@GetMapping#end")
 ##set($pagePathParams = "@PathVariable(value = ""current"", required = false) Long current, @PathVariable(value = ""size"", required = false) Long size")
@@ -306,7 +310,7 @@ public class ${table.controllerName} {
      * excel文件导入
      *
      * @param file excel文件
-     * @return 是否成功
+     * @return 导入条数
      * @author ${author}
      */
     #end
@@ -314,9 +318,9 @@ public class ${table.controllerName} {
     @ResponseBody
     #end
     @PostMapping("/excelImport")
-    public ${returnMethod.clazz("Boolean")} excelImport(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) return ${returnMethod.method("false")};
-        return ${returnMethod.method("baseService.excelImport(file.getInputStream(), ${entityInsertDTO}.class)")};
+    public ${returnMethod.clazz("Integer")} excelImport(@RequestParam("excel") MultipartFile excel) throws IOException {
+        if (excel == null || excel.isEmpty()) return ${returnMethod.method(0)};
+        return ${returnMethod.method("baseService.excelImport(excel.getInputStream(), ${entityInsertDTO}.class)")};
     }
 #end
 #if(${generateExport})

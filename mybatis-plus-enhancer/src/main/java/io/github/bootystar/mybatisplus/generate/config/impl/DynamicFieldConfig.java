@@ -33,6 +33,17 @@ public class DynamicFieldConfig extends CustomConfig {
         }
 
         /**
+         * 不生成重写的方法
+         *
+         * @return {@code U }
+         * @author bootystar
+         */
+        public Builder disableOverrideMethods() {
+            this.getConfig().overrideMethods = false;
+            return this.getBuilder();
+        }
+
+        /**
          * 获取字段后缀生成器
          *
          * @return {@link FieldSuffixBuilder }
@@ -53,19 +64,6 @@ public class DynamicFieldConfig extends CustomConfig {
             builderConsumer.accept(this.getConfig().extraFieldSuffixBuilder);
             return this.getBuilder();
         }
-
-
-        /**
-         * 不生成重写的方法
-         *
-         * @return {@code U }
-         * @author bootystar
-         */
-        public Builder disableOverrideMethods() {
-            this.getConfig().overrideMethods = false;
-            return this.getBuilder();
-        }
-
 
     }
 }

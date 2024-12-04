@@ -5,10 +5,10 @@ package ${package.ServiceImpl};
 #set($entityUpdateDTO = "${entity}UpdateDTO")
 #set($entityVO = "${entity}VO")
 #if(${selectDTO.classFullName})
-import ${selectDTO.classFullName};
+##import ${selectDTO.classFullName};
     #set($entitySelectDTO = ${selectDTO.clazz("${entity}")})
 #else
-import ${basePackage}.${package4DTO}.${entity}SelectDTO;
+##import ${basePackage}.${package4DTO}.${entity}SelectDTO;
     #set($entitySelectDTO = "${entity}SelectDTO")
 #end
 ## ------参数设置----end
@@ -16,7 +16,7 @@ import ${basePackage}.${package4DTO}.${entity}SelectDTO;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 #end
-#if(${generateSelect})
+#if(${generateSelect}||${generateExport})
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 #end
@@ -24,20 +24,24 @@ import ${superServiceImplClassPackage};
 import ${package.Service}.${table.serviceName};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Entity}.${entity};
-#if(${generateSelect}||${generateInsert})
+#if(${generateSelect}||${generateInsert}||${generateExport})
 import ${basePackage}.${package4VO}.${entityVO};
 #end
 import org.springframework.stereotype.Service;
-#if(${generateInsert}||${generateUpdate})
+#if(${generateInsert}||${generateUpdate}||${generateImport})
 import org.springframework.beans.BeanUtils;
 #end
 
 #if(${generateSelect}||${generateDelete})
 import java.io.Serializable;
 #end
-#if(${generateImport}||${generateExport})
+#if(${generateImport})
 import java.io.InputStream;
+#end
+#if(${generateImport}||${generateExport})
 import java.io.OutputStream;
+#end
+#if(${generateImport})
 import java.util.stream.Collectors;
 #end
 import java.util.*;
@@ -88,7 +92,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
         return super.removeById(id);
     }
     #end
-    #if(${generateSelect})
+    #if(${generateSelect}||${generateExport})
 
     public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
         // ${entitySelectDTO} dto = (${entitySelectDTO}) s;
@@ -151,7 +155,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     }
 
     @Override
-    public <U> boolean excelImport(InputStream is, Class<U> clazz) {
+    public <U> int excelImport(InputStream is, Class<U> clazz) {
         // ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
         List<${entity}> entityList = cachedDataList.stream().map(e->{
@@ -159,7 +163,8 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 BeanUtils.copyProperties(e, entity);
                 return entity;
             }).collect(Collectors.toList());
-        return super.saveBatch(entityList);
+        super.saveBatch(entityList);
+        return entityList.size();
     }
     #end
     #if(${generateExport})
