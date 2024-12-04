@@ -341,13 +341,13 @@ public abstract class CustomConfig {
         //==================DTO VO=======================
 
         /**
-         * 使用Map作为查询DTO
+         * 使用指定类作为查询DTO
          *
          * @return {@link B }
          * @author bootystar
          */
-        public B mapAsSelectDTO() {
-            this.getConfig().selectDTO = new ClassInfo(Map.class);
+        public B class4SelectDTO(Class<?> clazz) {
+            this.getConfig().selectDTO = new ClassInfo(clazz);
             return this.getBuilder();
         }
 

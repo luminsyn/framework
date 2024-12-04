@@ -46,8 +46,7 @@ public class ${entity}SelectDTO {
 ###end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
-#if($selectExcludeFields.contains(${field.propertyName}))
-#elseif(${field.logicDeleteField})
+#if(${field.logicDeleteField})
 #else
 
     #if("$!field.comment" != "")
@@ -74,8 +73,7 @@ public class ${entity}SelectDTO {
                 #set($extraFieldType= "${field.propertyType}")
             #end
             #if(!$table.fields.contains("${extraFieldName}"))
-##   todo 额外类型判断, 如localdatetime等
-                #if(!${field.propertyType}=="String" && (${value}=="LIKE"||${value}=="NOT LIKE"))
+                #if(${field.propertyType}!="String" && (${value}=="LIKE"||${value}=="NOT LIKE"))
                 #else
 
                 #if("$!field.comment" != "")
@@ -101,8 +99,7 @@ public class ${entity}SelectDTO {
 #if(!${entityLombokModel})
 ##--getter/setter的foreach start---
 #foreach($field in ${table.fields})
-#if($selectExcludeFields.contains(${field.propertyName}))
-#elseif(${field.logicDeleteField})
+#if(${field.logicDeleteField})
 #else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
@@ -137,6 +134,8 @@ public class ${entity}SelectDTO {
                 #set($extraFieldType= "${field.propertyType}")
             #end
             #if(!$table.fields.contains("${field.propertyName}${key}"))
+                #if(${field.propertyType}!="String" && (${value}=="LIKE"||${value}=="NOT LIKE"))
+                #else
 
     public ${extraFieldType} ${getprefix}${field.capitalName}${key}() {
         return ${extraFieldName};
@@ -152,6 +151,7 @@ public class ${entity}SelectDTO {
         return this;
                 #end
     }
+                #end
             #end
         #end
 ##----------额外字段getter/setter的foreach-----------start
@@ -177,14 +177,29 @@ public class ${entity}SelectDTO {
     public String toString() {
         return "${entity}{" +
   #foreach($field in ${table.fields})
-  #if($selectExcludeFields.contains(${field.propertyName}))
-  #elseif(${field.logicDeleteField})
+  #if(${field.logicDeleteField})
   #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +
     #else
         ", ${field.propertyName} = " + ${field.propertyName} +
     #end
+        #foreach($entry in ${extraFieldSuffixMap.entrySet()})
+          #set($key = $entry.key)
+          #set($value = $entry.value)
+          #set($extraFieldName= "${field.propertyName}${key}")
+          #if(${value}=="IN"||${value}=="NOT IN")
+              #set($extraFieldType= "List<${field.propertyType}>")
+          #else
+              #set($extraFieldType= "${field.propertyType}")
+          #end
+          #if(!$table.fields.contains("${field.propertyName}${key}"))
+              #if(${field.propertyType}!="String" && (${value}=="LIKE"||${value}=="NOT LIKE"))
+              #else
+        ", ${extraFieldName} = " + ${extraFieldName} +
+                  #end
+          #end
+        #end
   #end
   #end
         "}";

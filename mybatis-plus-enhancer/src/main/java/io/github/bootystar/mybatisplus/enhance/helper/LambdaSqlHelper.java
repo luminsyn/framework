@@ -30,15 +30,15 @@ public class LambdaSqlHelper<T, V> {
         this.baseService = baseService;
     }
 
-    V one() {
+    public V one() {
         return baseService.oneByDTO(sqlHelper);
     }
 
-    List<V> list() {
+    public List<V> list() {
         return baseService.listByDTO(sqlHelper);
     }
 
-    IPage<V> page(Long current, Long size) {
+    public IPage<V> page(Long current, Long size) {
         return baseService.pageByDTO(sqlHelper, current, size);
     }
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 public class DynamicSqlSqlHelper<T> extends UnmodifiableSqlHelper<T> {
 
     public DynamicSqlSqlHelper(ISqlTree sourceTree, Class<T> entityClass) {
-        super(sourceTree, entityClass);
+        super(entityClass);
         initProperties(sourceTree);
     }
 
@@ -27,18 +27,8 @@ public class DynamicSqlSqlHelper<T> extends UnmodifiableSqlHelper<T> {
             return null;
         }
         ArrayList<ConditionU> result = new ArrayList<>(conditions.size());
-        HashMap<String, Object> illegalConditionMap = new HashMap<>();
         for (ISqlCondition conditionO : conditions) {
-            String field = conditionO.getField();
-            String jdbcColumn = field2JdbcColumnMap.get(field);
-            if (jdbcColumn == null) {
-                illegalConditionMap.put(field, conditionO.getValue());
-                continue;
-            }
             wrap2JdbcColumnCondition(conditionO).ifPresent(result::add);
-        }
-        if (!illegalConditionMap.isEmpty()) {
-            this.paramMap = Collections.unmodifiableMap(illegalConditionMap);
         }
         return result;
     }

@@ -59,7 +59,7 @@
 ##         ${schemaName} ${table.name} a
         ${table.name} a
         <where>
-##   todo 逻辑删除字段支持所有数据类型，
+## 逻辑删除字段支持所有数据类型，
 ## 但推荐使用 Integer、Boolean 或 LocalDateTime。
 ## 如果使用 datetime 类型，可以配置逻辑未删除值为 null(长度为4的字符串,在yaml中需使用转义符(单引号)包裹)，
 ## 已删除值可以使用函数如 now() 来获取当前时间。
@@ -68,7 +68,11 @@
 ## 适合用于将删除字段作为唯一索引组成列,可以多次逻辑删除
             #foreach($field in ${table.fields})
                 #if(${field.logicDeleteField})
-            a.${field.columnName} = 0
+                    #if(${field.metaInfo.defaultValue})
+            a.${field.columnName} = ${field.metaInfo.defaultValue}
+                        #else
+            a.${field.columnName} IS NULL
+                    #end
                     #break
                 #end
             #end
@@ -100,7 +104,7 @@
                     #end
                 #elseif(${value}=="<")
                 <if test="param1.${extraFieldName} != null">
-                    AND a.${field.columnName} &lt;= #{param1.${extraFieldName}}
+                    AND a.${field.columnName} &lt; #{param1.${extraFieldName}}
                 </if>
                 #elseif(${value}=="<=")
                 <if test="param1.${extraFieldName} != null">

@@ -116,7 +116,7 @@ public class ${entity}InsertDTO {
   #if(${field.keyFlag})
   #elseif(${field.versionField})
   #elseif(${field.logicDeleteField})
-  #elseif($insertExcludeFields.contains(${field.propertyName}))
+  #elseif($editExcludeColumns.contains(${field.columnName}))
   #else
   #if(${field.propertyType.equals("boolean")})
     #set($getprefix="is")
@@ -152,7 +152,7 @@ public class ${entity}InsertDTO {
     #if(${field.keyFlag})
     #elseif(${field.versionField})
     #elseif(${field.logicDeleteField})
-    #elseif($insertExcludeFields.contains(${field.propertyName}))
+    #elseif($editExcludeColumns.contains(${field.columnName}))
     #else
     #if($!{foreach.index}==0)
         "${field.propertyName} = " + ${field.propertyName} +

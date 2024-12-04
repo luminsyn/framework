@@ -14,7 +14,6 @@ import ${basePackage}.${package4DTO}.${entity}SelectDTO;
 ## ------参数设置----end
 #if(${generateImport}||${generateExport})
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 #end
 #if(${generateSelect})

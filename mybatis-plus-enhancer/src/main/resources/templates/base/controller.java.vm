@@ -108,7 +108,7 @@ import java.util.List;
     #else
 @Controller
 #end
-#if(${enableOrigins})
+#if(${crossOrigins})
 @CrossOrigin
 #end
 @RequestMapping("${requestBaseUrL}")
@@ -139,13 +139,13 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${restful})
     @PostMapping("")
         #else
     @PostMapping("/insert")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
     #end
     public ${returnMethod.clazz("${entityVO}")} insert($!{requiredBodyStr}$!{validatedStr}${entityInsertDTO} s) {
         return ${returnMethod.method("baseService.insertByDTO(s)")};
@@ -166,13 +166,13 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${restful})
     @PutMapping("")
         #else
     @PostMapping("/update")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
     #end
     public ${returnMethod.clazz("Boolean")} update($!{requiredBodyStr}$!{validatedStr}${entityUpdateDTO} s) {
         return ${returnMethod.method("baseService.updateByDTO(s)")};
@@ -193,13 +193,13 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${restful})
     @DeleteMapping("/{id}")
         #else
     @PostMapping("/delete/{id}")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
     #end
     public ${returnMethod.clazz("Boolean")} delete(@PathVariable("id") ${primaryKeyPropertyType} id) {
         return ${returnMethod.method("baseService.removeById(id)")};
@@ -221,13 +221,13 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
+    #if(!${restControllerStyle})
+    @ResponseBody
+    #end
     #if(${restful})
     @GetMapping("/{id}")
     #else
     @GetMapping("/select/{id}")
-    #end
-    #if(!${restControllerStyle})
-    @ResponseBody
     #end
     public ${returnMethod.clazz("${entityVO}")} selectId(@PathVariable("id") ${primaryKeyPropertyType} id) {
         return ${returnMethod.method("baseService.oneById(id)")};
@@ -310,10 +310,10 @@ public class ${table.controllerName} {
      * @author ${author}
      */
     #end
-    @PostMapping("/excelImport")
     #if(!${restControllerStyle})
     @ResponseBody
     #end
+    @PostMapping("/excelImport")
     public ${returnMethod.clazz("Boolean")} excelImport(@RequestParam("file") MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) return ${returnMethod.method("false")};
         return ${returnMethod.method("baseService.excelImport(file.getInputStream(), ${entityInsertDTO}.class)")};

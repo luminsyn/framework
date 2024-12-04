@@ -31,7 +31,7 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
      * value: 值
      */
     @Getter
-    protected Map<String, Object> paramMap;
+    protected Map<String, Object> map = new LinkedHashMap<>();
 
     /**
      * 属性和字段映射
@@ -50,21 +50,6 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         }
         this.field2JdbcColumnMap = field2JdbcColumnMap;
     }
-
-    public UnmodifiableSqlHelper(ISqlTree sqlTree, Class<T> entityClass) {
-        super(null, null, null);
-        if (entityClass == null) {
-            throw new ParamMappingException("entityClass class can not be null, please check your configuration");
-        }
-        this.entityClass = entityClass;
-        Map<String, String> field2JdbcColumnMap = MybatisPlusReflectHelper.field2JdbcColumnMap(entityClass);
-        if (field2JdbcColumnMap.isEmpty()) {
-            throw new ParamMappingException("entityClass %s has no field to convert, please check your configuration", entityClass.getName());
-        }
-        this.field2JdbcColumnMap = field2JdbcColumnMap;
-        initProperties(sqlTree);
-    }
-
 
     protected void initProperties(ISqlTree sqlTree) {
         // 不在迭代时直接赋值, 保留扩展空间
@@ -100,12 +85,12 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
             String field = sortO.getField();
             boolean desc = sortO.isDesc();
             if (field == null || field.isEmpty()) {
-                log.warn("sort field [{}] is null , it will be removed", field);
+                log.info("sort field [{}] is null , it will be removed", field);
                 continue;
             }
             String jdbcColumn = field2JdbcColumnMap.get(field);
             if (jdbcColumn == null) {
-                log.warn("sort field [{}] not exist in fieldMap , it will be removed", field);
+                log.info("sort field [{}] not exist in fieldMap , it will be removed", field);
                 continue;
             }
             validatedSorts.add(new SortU(jdbcColumn, desc));
@@ -130,19 +115,22 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         }
         String jdbcColumn = field2JdbcColumnMap.get(field);
         if (jdbcColumn == null) {
-            log.warn("condition field [{}] not exist in fieldMap , it will be removed", field);
+            log.info("condition field [{}] not exist in fieldMap , it will be removed and put into paramMap", field);
+            map.putIfAbsent(field, value);
             return Optional.empty();
         }
         operator = SqlKeyword.replaceOperator(operator);
         if (!SqlKeyword.isNoneArgOperator(operator) && value == null) {
-            log.warn("condition field [{}] requires value but value is null, it will be removed", field);
+            log.info("condition field [{}] requires value but value is null, it will be removed and put into paramMap", field);
+            map.putIfAbsent(field, value);
             return Optional.empty();
         }
         if (SqlKeyword.isMultiArgOperator(operator)) {
             if (value instanceof Iterable) {
                 Iterable<?> iterable = (Iterable<?>) value;
                 if (!iterable.iterator().hasNext()) {
-                    log.warn("condition field [{}] requires collection but value is empty, it will be removed", field);
+                    log.info("condition field [{}] requires collection but value is empty, it will be removed and put into paramMap", field);
+                    map.putIfAbsent(field, value);
                     return Optional.empty();
                 }
                 // 使用新集合储存
@@ -152,7 +140,8 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
                 }
                 value = newContainer;
             } else {
-                log.warn("condition field [{}] requires collection but value is not iterable, it will be removed", field);
+                log.info("condition field [{}] requires collection but value is not iterable, it will be removed and put into paramMap", field);
+                map.putIfAbsent(field, value);
                 return Optional.empty();
             }
         }
