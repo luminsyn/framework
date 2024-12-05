@@ -1,56 +1,27 @@
 # maven依赖
-## 配置快照仓库地址
-按需配置,正式版本会同步到中央仓库
-```xml
-<repositories>
-    <repository>
-        <id>snapshot</id>
-        <name>snapshot</name>
-        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>release</id>
-        <name>release</name>
-        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
-    </repository>
-</repositories>
-```
-若使用阿里云仓库, 需配置`!snapshots`以便拉取
-```xml
-<mirror>
-  <id>aliyunmaven</id>
-  <mirrorOf>*,!snapshots</mirrorOf>
-  <name>aliyun</name>
-  <url>https://maven.aliyun.com/repository/public</url>
-</mirror>
-```
 
-## 引入maven依赖
+## 引入依赖
 
 使用`dependencyManagement`管理依赖,避免版本冲突
 ```xml
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.github.bootystar</groupId>
-                <artifactId>mybatis-plus-enhancer</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.github.bootystar</groupId>
+            <artifactId>mybatis-plus-enhancer</artifactId>
+            <version>版本号</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
 ```
 按需引入相关依赖
-```mvn
+```xml
 <!--mybatis-plus-enhancer-->
 <dependency>
     <groupId>io.github.bootystar</groupId>
     <artifactId>mybatis-plus-enhancer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
 </dependency>
 
 <!-- spring boot3 引入可选模块 -->
@@ -79,269 +50,203 @@
 </dependency>
 ```
 
+## 引入SNAPSHOT快照版本
+配置快照仓库地址,正式版本无需配置, 会同步到中央仓库
+```xml
+<repositories>
+    <repository>
+        <id>snapshot</id>
+        <name>snapshot</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>release</id>
+        <name>release</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+    </repository>
+</repositories>
+```
+若使用阿里云仓库, 需在maven的`settings.xml`文件中配置`!snapshots`以便拉取
+```xml
+<mirror>
+  <id>aliyunmaven</id>
+  <mirrorOf>*,!snapshots</mirrorOf>
+  <name>aliyun</name>
+  <url>https://maven.aliyun.com/repository/public</url>
+</mirror>
+```
 
 # 代码生成器
-
-代码生成器所在包为
-
+## 导入包
 ```java
-
+import io.github.bootystar.mybatisplus.generate.GeneratorHelper;
+```
+## 选择需要使用的生成器, 生成代码
+```java
+String url = "jdbc:postgresql://localhost:5432/test?useUnicode=true&characterEncoding=UTF-8";
+String username = "postgres";
+String password = "root";
+GeneratorHelper
+//        .extraCodeGenerator(url, username, password) // 额外代码生成器
+//        .dynamicSqlGenerator(url, username, password) // 动态SQL生成器
+        .dynamicFieldGenerator(url, username, password) // 动态字段生成器
+        .initialize() // 初始化常用配置
+        .pkg(pkg -> pkg.parent("io.github.bootystar" ))// 父包名
+//        .mapperXmlResource("static/mapper") // mapper.xml文件在Resources下的路径
+        .execute("sys_user" )// 要生成的表(不输入为全部)
+;
 ```
 
-## <font style="background-color:rgba(255, 255, 255, 0);">SimpleGenerator</font>
-+ <font style="color:#ED740C;">兼容性好</font>
-+ 生成时需要该依赖, 运行时仅依赖于mybatisplus
-+ <font style="background-color:rgba(255, 255, 255, 0);">直接将额外代码嵌入原有类中</font>
-+ <font style="color:#117CEE;background-color:rgba(255, 255, 255, 0);">嵌入代码量大, 重复性高</font>
-+ <font style="color:#117CEE;background-color:rgba(255, 255, 255, 0);">类添加/修改字段后, mapper需要添加/修改字段对应的查询参数</font>
-
-## <font style="background-color:rgba(255, 255, 255, 0);">CustomGenerator</font>
-+ <font style="color:#ED740C;">最简洁</font>
-+ 生成/运行时都需要该依赖及mybatisplus
-+ <font style="background-color:rgba(255, 255, 255, 0);">逻辑继承自父类, 无额外代码</font>
-+ <font style="background-color:rgba(255, 255, 255, 0);">查询方法会生成到xml文件中, 可用查询参数会封装到查询DTO中</font>
-+ <font style="color:#117CEE;background-color:rgba(255, 255, 255, 0);">类添加/修改字段后, mapper和查询DTO需要添加/修改字段对应的查询参数</font>
-
-## <font style="background-color:rgba(255, 255, 255, 0);">SplicingGenerator</font>
-+ <font style="color:#ED740C;">最灵活</font>
-+ 生成/运行时都需要该依赖及mybatisplus
-+ <font style="background-color:rgba(255, 255, 255, 0);">逻辑继承自父类, 无额外代码</font>
-+ <font style="background-color:rgba(255, 255, 255, 0);">可任意自定义参数/查询类型/值, 可自定义排序</font>
-+ <font style="background-color:rgba(255, 255, 255, 0);">类字段修改后无需添加mapper和DTO, 会自动根据实体类适配</font>
-+ <font style="color:#117CEE;background-color:rgba(255, 255, 255, 0);">前端传参较复杂, 需要指定: 字段/类型/对应值</font>
-
-# 使用方式
-## 最简使用
+## 可选配置项
 ```java
-String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
-String username ="root";
-String password ="root";
+String url = "jdbc:postgresql://localhost:5432/test?useUnicode=true&characterEncoding=UTF-8";
+String username = "postgres";
+String password = "root";
+GeneratorHelper
+        // .extraCodeGenerator(url, username, password) // 额外代码生成器
+        // .dynamicSqlGenerator(url, username, password) // 动态SQL生成器
+        .dynamicFieldGenerator(url, username, password) // 动态字段生成器
+        .enableGlobalFileOverwrite() // 全局文件覆盖生成(覆盖所有的文件)
+        .mapperXmlResource("static/mapper") // mapper.xml文件在Resources下的路径
+        .initialize() // 初始化常用配置
+        .custom(custom -> {
+            custom
+                // 文件相关
+                .enableFileOverride() // 文件覆盖生成(DTO、VO)
+                .disableDocUUID() // 禁用文档UUID(swagger多个同名或空名对象会有冲突,使用uuid避免)
+                .class4SelectDTO(Map.class) // 使用指定类作为查询入参DTO(推荐使用Map或SqlHelper)
+                .package4DTO("dto") // DTO的包名
+                .path4DTO("C:/Project/test21/") // DTO的路径(全路径或相对路径)
+                .package4VO("vo") // VO的包名
+                .path4VO("C:/Project/test21/") // VO的路径(全路径或相对路径)
+                .editExcludeColumns("create_time", "update_time") // 新增/修改时忽略的字段
+                // controller额外生成项
+                .baseUrl("/api") // 请求url前缀
+                .enableCrossOrigins() // 启用跨域
+                .enableJakartaApi() // 启用Jakarta API, springboot3以上需要开启
+                .enableAutoWired() // 使用@Autowired替换@Resource
+                .returnMethod(R1::of) // 返回值对象封装的方法
+                .pageMethod(P1::new) // 分页对象封装的方法
+                .disableRestful() // 禁用restful
+                .disableRequestBody() // 禁用请求体
+                .disableValidated() // 禁用参数校验
+                .disablePostQuery() // 复杂查询不使用post请求
+                // mapper额外生成项
+                .sortColumnClear() // 清空排序
+                .sortColumn("create_time",true) // 添加排序(字段,是否倒序)
+                .sortColumn("id",true) // 添加排序(字段,是否倒序)
+                // 需要生成的方法
+                .disableInsert() // 不生成新增
+                .disableUpdate() // 不生成更新
+                .disableDelete() // 不生成删除
+                .disableSelect() // 不生成查询(若生成器为额外代码生成器并生成了导出, 则此项无效)
+                .disableImport() // 不生成导入
+                .disableExport() // 不生成导出
+                // 特殊项, 因不同生成器而异
+                .disableOverrideMethods() // 不生成重写的父类方法(动态字段生成器/动态sql生成器)
+                .fieldSuffixBuilder(builder -> {
+                // 该项默认无需配置, 配置后, 只会根据已配置的字段生成额外后缀, 未配置的类型不会生成后缀
+                                builder
+                                    .ne("Ne") // 不等于字段额外后缀
+                                    .lt("Lt") // 小于字段额外后缀
+                                    .le("Le") // 小于等于字段额外后缀
+                                    .ge("Ge") // 大于等于字段额外后缀
+                                    .gt("Gt") // 大于字段额外后缀
+                                    .like("Like") // 模糊匹配字段额外后缀
+                                    .notLike("NotLike") // 反模糊匹配字段额外后缀
+                                    .in("In") // 包含字段额外后缀
+                                    .notIn("NotIn") // 不包含字段额外后缀
+                                    .isNull("IsNull") // 空字段额外后缀
+                                    .isNotNull("IsNotNull") // 非空字段额外后缀
+                    ;})// 额外自定义字段后缀(额外代码生成器/动态字段生成器专属)
+                ;})
+        .dataSource(dataSource -> {
+        // 数据源配置(参考mybatis-plus官方文档)
+        })
+        .global(global -> {
+        // 全局配置(参考mybatis-plus官方文档)
+        })
+        .pkg(pkg -> {
+        // 包配置(参考mybatis-plus官方文档)
+        })
+        .strategy(strategy -> {
+        // 策略配置(参考mybatis-plus官方文档)
+        })
+        .entity(entity -> {
+        // 实体类配置(参考mybatis-plus官方文档)
+        })
+        .mapper(mapper -> {
+        // mapper配置(参考mybatis-plus官方文档)
+        })
+        .service(service -> {
+        // service配置(参考mybatis-plus官方文档)
+        })
+        .controller(controller -> {
+        // controller配置(参考mybatis-plus官方文档)
+        })
+        .execute("sys_user") // 要生成的表(不输入为全部)
+        ;
+```
+## 非链式调用配置
 
-//SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
-//CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
-SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
+```java
+String url = "jdbc:postgresql://localhost:5432/test?useUnicode=true&characterEncoding=UTF-8";
+String username = "postgres";
+String password = "root";
+ExtraCodeGenerator generator = new ExtraCodeGenerator(url, username, password); // 额外代码生成器
+// DynamicSqlGenerator generator = new DynamicSqlGenerator(url, username, password); // 动态SQL生成器
+// DynamicFieldGenerator generator = new DynamicFieldGenerator(url, username, password); // 动态字段生成器
 
-// 生成指定表
-generator.execute("user");
+// 自定义配置
+ExtraCodeConfig.Builder customConfigBuilder = generator.getCustomConfigBuilder();
+customConfigBuilder
+        .disableInsert() // 不生成新增
+        .disableUpdate() // 不生成更新
+        .disableDelete() // 不生成删除
+        .disableSelect() // 不生成查询(若生成器为额外代码生成器并生成了导出, 则此项无效)
+        .disableImport() // 不生成导入
+        .disableExport() // 不生成导出
+// ...略
+;
+// 字段后缀配置器
+FieldSuffixBuilder fieldSuffixBuilder = customConfigBuilder.getFieldSuffixBuilder();
+fieldSuffixBuilder
+        .ne("Ne" ) // 不等于字段额外后缀
+        .lt("Lt" ) // 小于字段额外后缀
+        .le("Le" ) // 小于等于字段额外后缀
+// ...略
+;
+
+
+// 数据源配置(参考mybatis-plus官方文档)
+DataSourceConfig.Builder dataSourceConfigBuilder = generator.getDataSourceConfigBuilder();
+
+// 全局配置(参考mybatis-plus官方文档)
+GlobalConfig.Builder globalConfigBuilder = generator.getGlobalConfigBuilder();
+
+// 包配置(参考mybatis-plus官方文档)
+PackageConfig.Builder packageConfigBuilder = generator.getPackageConfigBuilder();
+
+// 策略配置(参考mybatis-plus官方文档)
+StrategyConfig.Builder strategyConfigBuilder = generator.getStrategyConfigBuilder();
+
+// 实体类配置(参考mybatis-plus官方文档)
+Entity.Builder entityBuilder = strategyConfigBuilder.entityBuilder();
+
+// mapper配置(参考mybatis-plus官方文档)
+Mapper.Builder mapperBuilder = strategyConfigBuilder.mapperBuilder();
+
+// service配置(参考mybatis-plus官方文档)
+Service.Builder serviceBuilder = strategyConfigBuilder.serviceBuilder();
+
+// controller配置(参考mybatis-plus官方文档)
+Controller.Builder controllerBuilder = strategyConfigBuilder.controllerBuilder();
+
+// 要生成的表(不输入为全部)
+generator.execute("sys_user");
 ```
 
-## 推荐配置
-使用`initialize()`方法一键配置常用配置项
-
-推荐配置`包名`,`xml文件路径`,`返回值封装方法`,`分页封装方法`
-
-并根据项目实际修改`请求前缀`,`跨域注解`,`Jakarta包`,`restful风格`,`复杂查询使用post`
-
-```java
-String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
-String username ="root";
-String password ="root";
-
-//        SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
-//        CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
-SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
-
-generator
-        .initialize() // 一键配置常用配置项
-//      .mapperXmlResource("static/mapper") // xml文件在resource目录下的路径(默认在mapper目录下)
-; 
-
-generator.customConfigBuilder()
-//        .baseUrl("/api") // controller请求前缀
-//        .returnMethod(R::new) // 返回值的封装方法
-//        .enableOrigins() // 开启跨域
-//        .pageMethod(P::new) // 分页的封装方法
-//        .enableJakartaApi() // 开启Jakarta API(替换javax包, springboot3及之后版本默认使用Jakarta包)
-//        .disableRestful() // 禁止restful风格
-//        .disablePostOnComplicatedSelect() // 禁止复杂查询使用post请求
-;
-
-
-// 以下为mybatis-plus generator官方提供配置,默认无需配置,若需配置请参考官方文档
-generator.globalConfigBuilder() // 全局配置
-//                .author("bootystar") // 作者名称,会自动根据电脑用户名称获取
-//                .outputDir(System.getProperty("user.dir") + "/src/main/java") // 默认生成到项目目录下
-;
-
-generator.packageConfigBuilder() //包设置
-                .parent("io.github.bootystar") // 父包名, 建议修改
-;
-
-
-// 生成指定表
-generator.execute("user");
-
-// 生成所有表
-// generator.execute();
-```
-
-## 按需配置自定义参数
-```java
-String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
-String username ="root";
-String password ="root";
-
-//SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
-//CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
-SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
-
-generator
-        .initialize() // 一键配置常用配置项
-//      .mapperXmlResource("static/mapper") // xml文件在resource目录下的路径(也可通过包配置自行配置)
-; 
-
-
-generator.customConfigBuilder()
-        // 通用设置
-        .DTOPackage("dto") // DTO包名, 默认dto
-        .VOPackage("vo") // VO包名, 默认vo
-        .insertExcludeFields(Arrays.asList("createTime", "updateTime")) // 新增DTO忽略的字段
-        .updateExcludeFields(Arrays.asList("createTime", "updateTime")) // 更新DTO忽略的字段
-        .enableFileOverride() // 开启DTO\VO的文件覆盖
-        .enableFieldAnnotationOnVO() // 在VO上添加@Tablefield属性注释
-        .disableExportOnVO() // 禁用导出使用VO, 额外生成导出DTO
-        .disableImportOnVO() // 禁用导入使用VO, 额外生成导入DTO
-        .disableInsert() // 不生成新增方法及DTO
-        .disableUpdate() // 不生成更新方法及DTO
-        .disableSelect() // 不生成查询方法及DTO
-        .disableExport() // 不生成导出方法及DTO
-        .disableImport() // 不生成导入方法及DTO
-        .disableSelect() // 不生成查询方法()
-
-        // controller相关设置
-        .baseUrl("/api") // controller请求前缀
-        .enableOrigins() // 开启跨域
-        .returnMethod(R::new) // 返回值的封装方法
-        .pageMethod(P::new) // 分页的封装方法
-        .enableJakartaApi() // 开启Jakarta API(替换javax包, springboot3及之后版本默认使用Jakarta包)
-        .disableRestful() // 开启restful风格
-        .disableRequestBody() // 禁用requestBody接收参数
-        .disableValidated() // 禁用参数校验
-        .disablePostOnComplicatedSelect() // 禁止复杂查询使用post请求
-
-        // mapper设置
-        .enableResultMapForVO() // 开启VO的结果集封装
-        .orderColumnMap(new HashMap<>()) // 指定排序字段map集,如需清空,传入new HashMap<>()或null即可清空
-        .orderColumn("sort", true) // 添加排序字段(不会清空已添加的)
-
-        // CustomGenerator和SplicingGenerator特有,SimpleGenerator无该配置项
-        .disableServiceImplOverrideMethod() // 显示ServiceImpl重写的父类方法
-        .disableMapperOverrideMethod() // 显示Mapper重写的父类方法
-;
-
-// 生成指定表
-generator.execute("user");
-
-// 生成所有表
-// generator.execute();
-```
-
-## 按需配置mybatis-plus参数
-```java
-String url ="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8";
-String username ="root";
-String password ="root";
-
-//        SimpleGenerator generator = new SimpleGenerator(url, username, password); // 简单生成器, 最兼容, 直接将额外代码嵌入原有类中,不添加额外依赖,提供默认查询参数
-//        CustomGenerator generator = new CustomGenerator(url, username, password); // 自定义生成器, 最简洁, 继承父类实现,提供默认查询参数
-SplicingGenerator generator = new SplicingGenerator(url, username, password); // SQL注入生成器, 最灵活, 添加防注入措施,运行时可自定义任何字段的查询参数,但前端传参较复杂
-
-// generator.mapperXmlResource("static/mapper"); // xml文件在resource目录下的路径
-
-generator.customConfigBuilder()
-        // 通用设置
-        .DTOPackage("dto") // DTO包名, 默认dto
-        .VOPackage("vo") // VO包名, 默认vo
-        .insertExcludeFields(Arrays.asList("createTime", "updateTime")) // 新增DTO忽略的字段,默认添加了createTime和updateTime
-        .updateExcludeFields(Arrays.asList("createTime", "updateTime")) // 更新DTO忽略的字段,默认添加了createTime和updateTime
-        .enableFileOverride() // 开启DTO\VO的文件覆盖
-        .enableFieldAnnotationOnVO() // 在VO上添加@Tablefield属性注释
-        .disableExportOnVO() // 禁用导出使用VO, 额外生成导出DTO
-        .disableImportOnVO() // 禁用导入使用VO, 额外生成导入DTO
-        .disableInsert() // 不生成新增方法及DTO
-        .disableUpdate() // 不生成更新方法及DTO
-        .disableSelect() // 不生成查询方法及DTO
-        .disableExport() // 不生成导出方法及DTO
-        .disableImport() // 不生成导入方法及DTO
-        .disableSelect() // 不生成查询方法()
-
-        // controller相关设置
-        .baseUrl("/api") // controller请求前缀
-        .enableOrigins() // 开启跨域
-        .returnMethod(R::new) // 返回值的封装方法
-        .pageMethod(P::new) // 分页的封装方法
-        .enableJakartaApi() // 开启Jakarta API(替换javax包, springboot3及之后版本默认使用Jakarta包)
-        .disableRestful() // 开启restful风格
-        .disableRequestBody() // 禁用requestBody接收参数
-        .disableValidated() // 禁用参数校验
-        .disablePostOnComplicatedSelect() // 复杂查询使用post请求替换get
-
-        // mapper设置
-        .enableResultMapForVO() // 开启VO的结果集封装
-        .orderColumnMap(new HashMap<>()) // 指定排序字段map集,默认已添加create_time和id, 如需清空,传入new HashMap<>()或null即可清空
-        .orderColumn("sort", true) // 添加排序字段(不会清空已添加的)
-
-        // CustomGenerator和SplicingGenerator特有,SimpleGenerator无该配置项
-        .disableServiceImplOverrideMethod() // 显示ServiceImpl重写的父类方法
-        .disableMapperOverrideMethod() // 显示Mapper重写的父类方法
-;
-
-
-// 以下为mybatis-plus generator官方提供配置,默认无需配置,若需配置请参考官方文档
-generator.globalConfigBuilder() // 全局配置
-
-;
-
-generator.packageConfigBuilder() //包设置
-
-;
-
-generator.strategyConfigBuilder().entityBuilder() //实体类设置
-
-;
-generator.strategyConfigBuilder().controllerBuilder() // controller设置
-
-;
-generator.strategyConfigBuilder().serviceBuilder() // service设置
-
-;
-generator.strategyConfigBuilder().mapperBuilder() //mapper相关设置
-
-;
-
-
-// 生成指定表
-generator.execute("user");
-
-// 生成所有表
-// generator.execute();
-```
-
-# 核心逻辑
-## 继承的父类<font style="background-color:rgba(255, 255, 255, 0);">GenericService的</font>逻辑
-![画板](https://cdn.nlark.com/yuque/0/2024/jpeg/12797324/1731468926109-e985a5a5-ec08-4b10-b84b-db7983736e0b.jpeg)
-
-### Splicer反注入自定义参数
-使用`io.github.bootystar.mybatisplus.enhance.helper.SqlHelper`作为入参
-+ 调用`ImmutableSplicer()`会自动根据传入实体类反注入
-+ 调用`requiredConditions()`会自动添加优先级更高的条件, 添加后的条件必定生效
-+ 调用`addConditions()`会添加条件集
-
-<font style="background-color:rgba(255, 255, 255, 0);">反注入过程</font>
-
-1. <font style="background-color:rgba(255, 255, 255, 0);">通过反射获取指定实体类的所有可用字段</font>
-2. <font style="background-color:rgba(255, 255, 255, 0);">检索mybatis-plus对应注解并处理数据库字段</font>
-3. <font style="background-color:rgba(255, 255, 255, 0);">若实体类实现了`io.github.bootystar.mybatisplus.enhance.core.DynamicEntity`接口,根据实现方法添加额外字段</font>
-
-### 自定义连表查询
-在mapper中添加需要连表的表名, 并添加别名
-
-![](https://cdn.nlark.com/yuque/0/2024/png/12797324/1731469649819-3bb8af84-87df-45a4-895b-d732e8948300.png)
-
-在实体类中指定需要连表的字段
-
-+ 添加属性, 在属性上使用`@TableField`注解, 并指定`exist=false`, 指定`value`为指定表字段
-+ 实现SplicingEntity接口, 并在返回的map中添加属性名和对应表字段名
-
-![](https://cdn.nlark.com/yuque/0/2024/png/12797324/1731469795547-bfdf8b86-aa7f-4e2a-aeea-ff8d947effc0.png)
-
+# 运行时增强
