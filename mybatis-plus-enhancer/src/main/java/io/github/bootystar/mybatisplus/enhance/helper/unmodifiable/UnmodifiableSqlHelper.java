@@ -71,7 +71,7 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         if (conditions == null || conditions.isEmpty()) {
             if (child != null) {
                 String s = Optional.ofNullable(sqlTree.getConditions()).orElse(Collections.emptyList()).stream()
-                        .map(e -> String.format("isOr:%s , field:%s , operator:%s ,value:%s", e.isOr(), e.getField(), e.getOperator(), e.getValue()))
+                        .map(e -> String.format("isOr:[%s] , field:[%s] , operator:[%s] ,value:[%s]", e.isOr(), e.getField(), e.getOperator(), e.getValue()))
                         .reduce((e1, e2) -> e1 + "\n" + e2).orElse("null");
                 throw new ParamMappingException("mapped condition is empty, but sub-condition is not empty !!!\ncurrent condition source:\n %s",  s);
             }
@@ -127,7 +127,7 @@ public abstract class UnmodifiableSqlHelper<T> extends TreeU {
         operator = SqlKeyword.replaceOperator(operator);
         if (!SqlKeyword.isNoneArgOperator(operator) && value == null) {
             log.info("condition field [{}] requires value but value is null, it will be removed and put into paramMap", field);
-            map.putIfAbsent(field, value);
+            map.putIfAbsent(field, "null");
             return Optional.empty();
         }
         if (SqlKeyword.isMultiArgOperator(operator)) {

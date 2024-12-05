@@ -16,6 +16,21 @@ public abstract class ReflectHelper {
 
     private static final Map<Class<?>, Map<String, Field>> FIELD_MAP_CACHE = new ConcurrentHashMap<>();
 
+
+    /**
+     * 是否为java自带的核心类
+     *
+     * @param clazz 克拉兹
+     * @return boolean
+     * @author bootystar
+     */
+    public static boolean isJavaCoreClass(Class<?> clazz) {
+        if (clazz == null) {
+            return false;
+        }
+        return clazz.getClassLoader() == null;
+    }
+
     /**
      * 新建实例
      *
@@ -36,6 +51,9 @@ public abstract class ReflectHelper {
      * @author bootystar
      */
     public static Map<String, Field> fieldMap(Class<?> clazz) {
+        if (isJavaCoreClass(clazz)) {
+            throw new IllegalArgumentException("clazz must not be java class");
+        }
         Map<String, Field> stringFieldMap = FIELD_MAP_CACHE.get(clazz);
         if (stringFieldMap != null) {
             return stringFieldMap;
