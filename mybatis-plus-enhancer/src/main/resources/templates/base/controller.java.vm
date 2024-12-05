@@ -149,7 +149,7 @@ public class ${table.controllerName} {
      * 新增
      *
      * @param s 新增入参对象
-     * @return 是否成功
+     * @return id
      * @author ${author}
      */
     #end
@@ -161,7 +161,7 @@ public class ${table.controllerName} {
         #else
     @PostMapping("/insert")
     #end
-    public ${returnMethod.clazz("${entityVO}")} insert($!{requiredBodyStr}$!{validatedStr}${entityInsertDTO} s) {
+    public ${returnMethod.clazz(${primaryKeyPropertyType})} insert($!{requiredBodyStr}$!{validatedStr}${entityInsertDTO} s) {
         return ${returnMethod.method("baseService.insertByDTO(s)")};
     }
 #end
@@ -343,8 +343,8 @@ public class ${table.controllerName} {
     /**
      * excel文件导出
      * @param s 查询条件
-     * @param current 页码(非必传,默认无页码)
-     * @param size 每页大小(非必传,有页码时默认10,无页码时导出全部)
+     * @param current 页码(默认1)
+     * @param size 每页大小(默认10,-1为全部)
      * @author ${author}
      */
     #end

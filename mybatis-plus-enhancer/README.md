@@ -122,7 +122,7 @@ GeneratorHelper
             custom
                 // 文件相关
                 .enableFileOverride() // 文件覆盖生成(DTO、VO)
-                .disableDocUUID() // 禁用文档UUID(swagger多个同名或空名对象会有冲突,使用uuid避免)
+                .disableDocUUID() // 禁用文档UUID(swagger多个同名或空名对象会有冲突,默认使用uuid避免)
                 .class4SelectDTO(Map.class) // 使用指定类作为查询入参DTO(推荐使用Map或SqlHelper)
                 .package4DTO("dto") // DTO的包名
                 .path4DTO("C:/Project/test21/") // DTO的路径(全路径或相对路径)
@@ -134,8 +134,8 @@ GeneratorHelper
                 .enableCrossOrigins() // 启用跨域
                 .enableJakartaApi() // 启用Jakarta API, springboot3以上需要开启
                 .enableAutoWired() // 使用@Autowired替换@Resource
-                .returnMethod(R1::of) // 返回值对象封装的方法
-                .pageMethod(P1::new) // 分页对象封装的方法
+                .returnMethod(R1::new) // 返回值对象封装的方法
+                .pageMethod(P1::of) // 分页对象封装的方法(需要接收IPage作为参数)
                 .disableRestful() // 禁用restful
                 .disableRequestBody() // 禁用请求体
                 .disableValidated() // 禁用参数校验
@@ -206,64 +206,45 @@ import io.github.bootystar.mybatisplus.generate.generator.impl.*;
 String url = "jdbc:postgresql://localhost:5432/test?useUnicode=true&characterEncoding=UTF-8";
 String username = "postgres";
 String password = "root";
-ExtraCodeGenerator generator = new ExtraCodeGenerator(url, username, password); // 额外代码生成器
-// DynamicSqlGenerator generator = new DynamicSqlGenerator(url, username, password); // 动态SQL生成器
-// DynamicFieldGenerator generator = new DynamicFieldGenerator(url, username, password); // 动态字段生成器
+//ExtraCodeGenerator generator = new ExtraCodeGenerator(url, username, password); // 额外代码生成器
+//DynamicSqlGenerator generator = new DynamicSqlGenerator(url, username, password); // 动态SQL生成器
+DynamicFieldGenerator generator = new DynamicFieldGenerator(url, username, password); // 动态字段生成器
 
-// 一键配置项
-generator
-        .enableGlobalFileOverwrite() // 全局文件覆盖生成(覆盖所有的文件)
+generator.enableGlobalFileOverwrite() // 全局文件覆盖生成(覆盖所有的文件)
         .mapperXmlResource("static/mapper") // mapper.xml文件在Resources下的路径
         .initialize() // 初始化常用配置
 ;
-
-// 自定义配置
-ExtraCodeConfig.Builder customConfigBuilder = generator.getCustomConfigBuilder();
-customConfigBuilder
-        .disableInsert() // 不生成新增
-        .disableUpdate() // 不生成更新
-        .disableDelete() // 不生成删除
-        .disableSelect() // 不生成查询(若生成器为额外代码生成器并生成了导出, 则此项无效)
-        .disableImport() // 不生成导入
-        .disableExport() // 不生成导出
-// ...略
+generator.getCustomConfigBuilder() // 自定义配置
+        .enableJakartaApi() // ...略
 ;
-// 字段后缀配置器
-FieldSuffixBuilder fieldSuffixBuilder = customConfigBuilder.getFieldSuffixBuilder();
-fieldSuffixBuilder
-        .ne("Ne" ) // 不等于字段额外后缀
-        .lt("Lt" ) // 小于字段额外后缀
-        .le("Le" ) // 小于等于字段额外后缀
-// ...略
+generator.getCustomConfigBuilder().getFieldSuffixBuilder()// 自定义字段后缀配置器
+        .ne("Ne") // ...略
 ;
-
-
-// 数据源配置(参考mybatis-plus官方文档)
-DataSourceConfig.Builder dataSourceConfigBuilder = generator.getDataSourceConfigBuilder();
-
-// 全局配置(参考mybatis-plus官方文档)
-GlobalConfig.Builder globalConfigBuilder = generator.getGlobalConfigBuilder();
-
-// 包配置(参考mybatis-plus官方文档)
-PackageConfig.Builder packageConfigBuilder = generator.getPackageConfigBuilder();
-
-// 策略配置(参考mybatis-plus官方文档)
-StrategyConfig.Builder strategyConfigBuilder = generator.getStrategyConfigBuilder();
-
-// 实体类配置(参考mybatis-plus官方文档)
-Entity.Builder entityBuilder = strategyConfigBuilder.entityBuilder();
-
-// mapper配置(参考mybatis-plus官方文档)
-Mapper.Builder mapperBuilder = strategyConfigBuilder.mapperBuilder();
-
-// service配置(参考mybatis-plus官方文档)
-Service.Builder serviceBuilder = strategyConfigBuilder.serviceBuilder();
-
-// controller配置(参考mybatis-plus官方文档)
-Controller.Builder controllerBuilder = strategyConfigBuilder.controllerBuilder();
-
-// 要生成的表(不输入为全部)
-generator.execute("sys_user");
+generator.getDataSourceConfigBuilder() // 数据源配置(参考mybatis-plus官方文档)
+    //.driverClassName("org.postgresql.Driver")
+;
+generator.getGlobalConfigBuilder() // 全局配置(参考mybatis-plus官方文档)
+    //.author("bootystar")
+;
+generator.getPackageConfigBuilder() // 包配置(参考mybatis-plus官方文档)
+    //.parent("io.github.bootystar")
+;
+generator.getStrategyConfigBuilder() // 策略配置(参考mybatis-plus官方文档)
+    //.addTablePrefix("sys_")
+;
+generator.getStrategyConfigBuilder().entityBuilder() // 实体类配置(参考mybatis-plus官方文档)
+    //.enableLombok()
+;
+generator.getStrategyConfigBuilder().mapperBuilder() // mapper配置(参考mybatis-plus官方文档)
+    //.enableBaseResultMap()
+;
+generator.getStrategyConfigBuilder().serviceBuilder() // service配置(参考mybatis-plus官方文档)
+    //.formatServiceFileName("%sService")
+;
+generator.getStrategyConfigBuilder().controllerBuilder() // controller配置(参考mybatis-plus官方文档)
+    //.enableRestStyle()
+;
+generator.execute("sys_user"); // 要生成的表(不输入为全部)
 ```
 
 # 运行时增强
@@ -272,8 +253,7 @@ generator.execute("sys_user");
 ### EnhanceService<T, V>
 该接口定义了动态服务的一系列增强方法, 其中`T`为数据库实体类, `V`为VO数据展示类  
 继承该接口并指定泛型即可使用下述方法
-* `classOfEntity()`获取数据库实体类
-* `classOfVO()`获取VO数据展示类
+* `getVoClass()`获取VO数据展示类
 * `toEntity()`将指定对象转化为数据库实体类对象
 * `toVO()`将指定对象转化为VO数据展示类对象
 * `insertByDTO()`新增方法
@@ -308,12 +288,16 @@ public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object>
 #### xml中额外SQL编写
 * 在`xml`文件中, 可根据自身需要进行连表或者字段检索
 * 基础表别名固定为`a`, 请勿修改
-* 自动映射的条件会自动通过`selectFragment`封装
+* `selectFragment`为自动映射封装的查询条件
+* `selectFragment`下方添加额外条件(添加条件时不需要添加`WHERE`关键字)
+* `selectFragment`下处添加额外条件时, 建议始终添加`AND`或`OR`连接符, 系统会自动去除多余的连接符
+* 无法自动映射的查询条件会统一存放到`param1.map`中, 可通过param1.map.xxx判断参数是否存在,并添加对应逻辑
+* 无法自动映射的查询条件值为`null`时, 系统会将字符串`"null"`作为值添加到map中,避免`<if test"param1.map.xxx!=null">`判断失效
+* `sortFragment`为自动映射封装的排序条件
+* `sortFragment`下方可添加额外排序条件(添加条件时不需要添加`ORDER BY`关键字)
+* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`EnhanceEntity映射```
 * 自动映射的排序会自动通过`sortFragment`封装
-* 无法自动映射的参数会统一存放到`param1.map`中, 可通过param1.map.xxx判断参数是否存在,并添加对应逻辑
-* 无法自动映射的参数值为`null`时, 会将字符串`"null"`作为值添加到map中,避免`<if test"param1.map.xxx!=null">`判断失效
-* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`EnhanceEntity映射`
-* 可在生成的`sql`片段中自由添加逻辑
+* 或`sortFragment`处添加额外的sql, 建议添加在下方, 若添加在
 
 ##### 默认生成的xml
 ```xml
@@ -342,13 +326,18 @@ public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object>
     left join sys_role b on a.role_id = b.id
     <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
         <include refid="selectFragment"/>
-        <!--额外添加的sql-->
-        a.deleted = 0 and b.level = #{param1.map.roleLevel}
+        <!--在selectFragment下添加额外的查询条件-->
+        <!--注意:记得使用AND|OR连接符,当映射条件不存在时会自动删除AND|OR符号-->
+        AND a.deleted = 0 AND b.level = #{param1.map.roleLevel}
+        <!--对未自动映射的条件进行判断, 并操作-->
+        <if test="param1.map.xxx!=null">
+            AND a.name = #{param1.map.xxx}
+        </if>
     </trim>
     <trim prefix="ORDER BY" suffixOverrides=",">
         <include refid="sortFragment"/>
-        <!--额外添加排序-->
-        a.create_time DESC , a.id DESC
+        <!--在sortFragment下额外添加排序-->
+        a.create_time DESC , a.id DESC ,
     </trim>
 </select>
 ```

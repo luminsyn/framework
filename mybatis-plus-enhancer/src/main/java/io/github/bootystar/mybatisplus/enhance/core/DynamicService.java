@@ -3,6 +3,8 @@ package io.github.bootystar.mybatisplus.enhance.core;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.bootystar.mybatisplus.enhance.enums.SqlKeyword;
@@ -30,27 +32,29 @@ import java.util.stream.Collectors;
 public interface DynamicService<T, V> extends IService<T> {
 
     @SuppressWarnings("unchecked")
-    default Class<T> classOfEntity() {
-        return (Class<T>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), DynamicService.class))[0];
-    }
-
-    @SuppressWarnings("unchecked")
-    default Class<V> classOfVO() {
+    default Class<V> getVoClass() {
         return (Class<V>) Objects.requireNonNull(MybatisPlusReflectHelper.resolveTypeArguments(getClass(), DynamicService.class))[1];
     }
 
     default T toEntity(Object source) {
-        return MybatisPlusReflectHelper.toTarget(source, classOfEntity());
+        return MybatisPlusReflectHelper.toTarget(source, getEntityClass());
     }
 
     default V toVO(Object source) {
-        return MybatisPlusReflectHelper.toTarget(source, classOfVO());
+        return MybatisPlusReflectHelper.toTarget(source, getVoClass());
     }
 
-    default <S> V insertByDTO(S s) {
+    @SuppressWarnings("unchecked")
+    default <S, R> R insertByDTO(S s) {
         T entity = toEntity(s);
         save(entity);
-        return toVO(entity);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        if (tableInfo == null) return null;
+        String keyProperty = tableInfo.getKeyProperty();
+        if (keyProperty == null) return null;
+        Object propertyValue = tableInfo.getPropertyValue(entity, keyProperty);
+        if (propertyValue == null) return null;
+        return (R) propertyValue;
     }
 
     default <S> boolean updateByDTO(S s) {
@@ -61,9 +65,11 @@ public interface DynamicService<T, V> extends IService<T> {
 
     default V oneById(Serializable id) {
         if (id == null) throw new IllegalArgumentException("id can't be null");
-        String idField = MybatisPlusReflectHelper.idFieldPropertyName(classOfEntity());
-        if (idField == null) throw new IllegalArgumentException("no id field found in entity");
-        ConditionG condition = new ConditionG(idField, SqlKeyword.EQ.keyword, id);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        if (tableInfo == null) throw new IllegalArgumentException("there is no id field in entity");
+        String keyProperty = tableInfo.getKeyProperty();
+        if (keyProperty == null) throw new IllegalArgumentException("there is no id field in entity");
+        ConditionG condition = new ConditionG(keyProperty, SqlKeyword.EQ.keyword, id);
         return oneByDTO(condition);
     }
 
@@ -127,7 +133,7 @@ public interface DynamicService<T, V> extends IService<T> {
     }
 
     default <S, U> void excelExport(S s, OutputStream os, Class<U> clazz, Long current, Long size, String... includeFields) {
-        List<V> voList = current == null && size == null ? listByDTO(s) : pageByDTO(s, current, size).getRecords();
+        List<V> voList = pageByDTO(s, current, size).getRecords();
         ExcelHelper.write(os, clazz).includeColumnFieldNames(Arrays.asList(includeFields)).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).sheet().doWrite(voList);
     }
 

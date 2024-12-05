@@ -23,12 +23,12 @@ public abstract class DynamicSqlServiceImpl<M extends DynamicMapper<T, V, Dynami
         DynamicSqlSqlHelper<T> sqlHelper;
         if (s instanceof DynamicSqlSqlHelper<?>) {
             DynamicSqlSqlHelper<?> unmodifiableSqlHelper = (DynamicSqlSqlHelper<?>) s;
-            if (!classOfEntity().equals(unmodifiableSqlHelper.getEntityClass())) {
+            if (!super.getEntityClass().equals(unmodifiableSqlHelper.getEntityClass())) {
                 throw new UnsupportedOperationException("not support this type of sqlHelper: " + unmodifiableSqlHelper.getEntityClass().getName());
             }
             sqlHelper = (DynamicSqlSqlHelper<T>) s;
         } else {
-            sqlHelper = new DynamicSqlSqlHelper<>(SqlHelper.of(s), classOfEntity());
+            sqlHelper = new DynamicSqlSqlHelper<>(SqlHelper.of(s), super.getEntityClass());
         }
         return getBaseMapper().listByDTO(sqlHelper, page);
     }

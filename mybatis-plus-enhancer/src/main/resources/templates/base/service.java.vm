@@ -44,7 +44,7 @@ interface ${table.serviceName} : ${superServiceClass}<${entity}>
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
     #if(${generateInsert})
 
-    <S> ${entityVO} insertByDTO(S s);
+    <S, R> R insertByDTO(S s);
     #end
     #if(${generateUpdate})
 

@@ -196,15 +196,23 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
      */
     @Override
     public EnhanceGenerator<B> initialize() {
+        globalConfigBuilder
+                .disableOpenDir()
+        ;
         customConfigBuilder
-                .sortColumn("seq", false)
+                .editExcludeColumns("create_time", "update_time", "create_by", "update_by", "created_by", "updated_by", "create_at", "update_at", "created_at", "updated_at")
+                .sortColumn("order", false)
+                .sortColumn("rank", false)
                 .sortColumn("sort", false)
+                .sortColumn("seq", false)
+                .sortColumn("sequence", false)
                 .sortColumn("create_time", true)
                 .sortColumn("id", true)
         ;
         strategyConfigBuilder.entityBuilder()
                 .idType(IdType.ASSIGN_ID)
                 .logicDeleteColumnName("deleted")
+                .versionColumnName("version")
                 .disableSerialVersionUID()
                 .enableLombok()
         ;
@@ -212,7 +220,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
 //                .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
         ;
         strategyConfigBuilder.serviceBuilder()
-                .formatServiceFileName("%sService")
+//                .formatServiceFileName("%sService")
         ;
         strategyConfigBuilder.controllerBuilder()
                 .enableRestStyle()

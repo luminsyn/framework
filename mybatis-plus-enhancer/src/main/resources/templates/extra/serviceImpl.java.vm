@@ -89,7 +89,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateInsert})
 
     @Override
-    public <S> ${entityVO} insertByDTO(S s) {
+    public <S, R> R insertByDTO(S s) {
 //        ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         return super.insertByDTO(s);
     }

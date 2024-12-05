@@ -20,11 +20,15 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 #end
+#if(${generateInsert}||${generateSelect})
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+#end
 import ${superServiceImplClassPackage};
 import ${package.Service}.${table.serviceName};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Entity}.${entity};
-#if(${generateSelect}||${generateInsert}||${generateExport})
+#if(${generateSelect}||${generateExport})
 import ${basePackage}.${package4VO}.${entityVO};
 #end
 import org.springframework.stereotype.Service;
@@ -65,14 +69,18 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateInsert})
 
     @Override
-    public <S> ${entityVO} insertByDTO(S s) {
+    public <S, R> R insertByDTO(S s) {
         // ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         ${entity} entity = new ${entity}();
         BeanUtils.copyProperties(s, entity);
-        super.save(entity);
-        ${entityVO} vo = new ${entityVO}();
-        BeanUtils.copyProperties(entity, vo);
-        return vo;
+        save(entity);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        if (tableInfo == null) return null;
+        String keyProperty = tableInfo.getKeyProperty();
+        if (keyProperty == null) return null;
+        Object propertyValue = tableInfo.getPropertyValue(entity, keyProperty);
+        if (propertyValue == null) return null;
+        return (R) propertyValue;
     }
     #end
     #if(${generateUpdate})
@@ -124,8 +132,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public ${entityVO} oneById(Serializable id) {
+        if (id == null) throw new IllegalArgumentException("id can't be null");
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
+        if (tableInfo == null) throw new IllegalArgumentException("there is no id field in entity");
+        String keyProperty = tableInfo.getKeyProperty();
+        if (keyProperty == null) throw new IllegalArgumentException("there is no id field in entity");
         HashMap<String, Object> s = new HashMap<>();
-        s.put("id", id);
+        s.put(keyProperty, id);
         List<${entityVO}> vs = listByDTO(s);
         if (vs == null || vs.isEmpty()) return null;
         if(vs.size() > 1) throw new RuntimeException("error query => required 1 but found " + vs.size());

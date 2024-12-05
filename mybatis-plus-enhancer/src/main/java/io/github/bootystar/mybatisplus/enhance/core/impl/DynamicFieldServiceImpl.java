@@ -31,12 +31,12 @@ public abstract class DynamicFieldServiceImpl<M extends DynamicMapper<T, V, Dyna
         DynamicFieldSqlHelper<T> sqlHelper;
         if (s instanceof DynamicFieldSqlHelper<?>) {
             DynamicFieldSqlHelper<?> unmodifiableSqlHelper = (DynamicFieldSqlHelper<?>) s;
-            if (!classOfEntity().equals(unmodifiableSqlHelper.getEntityClass())) {
+            if (!super.getEntityClass().equals(unmodifiableSqlHelper.getEntityClass())) {
                 throw new UnsupportedOperationException("not support this type of sqlHelper: " + unmodifiableSqlHelper.getEntityClass().getName());
             }
             sqlHelper = (DynamicFieldSqlHelper<T>) s;
         } else {
-            sqlHelper = new DynamicFieldSqlHelper<>(SqlHelper.of(s), classOfEntity(), suffixBuilder);
+            sqlHelper = new DynamicFieldSqlHelper<>(SqlHelper.of(s), super.getEntityClass(), suffixBuilder);
         }
         return getBaseMapper().listByDTO(sqlHelper, page);
     }

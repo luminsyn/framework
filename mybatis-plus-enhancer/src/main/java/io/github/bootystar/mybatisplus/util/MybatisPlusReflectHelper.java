@@ -59,7 +59,7 @@ public abstract class MybatisPlusReflectHelper extends ReflectHelper {
                 return new MethodInfo(constructor);
             }
         } catch (Exception e) {
-            String msg = String.format("can't find constructor or method in class [%s] , method name [%s], parameter class [%s]", className, methodName, parameterClass.getName());
+            String msg = String.format("can't find constructor or method with parameter[%s] source:%s.%s() ", parameterClass.getName(), className, methodName);
             throw new IllegalStateException(msg);
         }
     }
