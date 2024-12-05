@@ -12,6 +12,7 @@ import io.github.bootystar.mybatisplus.enhance.enums.SqlExtraSuffix;
 import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
 import io.github.bootystar.mybatisplus.generate.info.MethodInfo;
 import io.github.bootystar.mybatisplus.util.MybatisPlusReflectHelper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.JdbcType;
 
@@ -32,16 +33,20 @@ public abstract class CustomConfig {
 
     public List<CustomFile> customFiles(ConfigBuilder config, TableInfo tableInfo) {
         List<CustomFile> customFiles = new ArrayList<>(8);
-        String pathUnderParent4DTO = package4DTO.replaceAll("\\.", "\\" + File.separator);
-        String pathUnderParent4VO = package4VO.replaceAll("\\.", "\\" + File.separator);
         String parentPath = config.getPathInfo().get(OutputFile.parent);
         String entityName = tableInfo.getEntityName();
-        String path4DTO = parentPath + File.separator + pathUnderParent4DTO + File.separator;
-        String path4VO = parentPath + File.separator + pathUnderParent4VO + File.separator;
+        String pathUnderParent4DTO = package4DTO.replaceAll("\\.", "\\" + File.separator);
+        String pathUnderParent4VO = package4VO.replaceAll("\\.", "\\" + File.separator);
+        if (this.path4DTO == null) {
+            this.path4DTO = parentPath + File.separator + pathUnderParent4DTO + File.separator;
+        }
+        if (this.path4VO == null) {
+            this.path4VO = parentPath + File.separator + pathUnderParent4VO + File.separator;
+        }
 
         if (generateInsert || generateImport) {
             String fileName = "InsertDTO.java";
-            String path = path4DTO + entityName + fileName;
+            String path = path4DTO + File.separator + entityName + fileName;
             CustomFile.Builder builder = new CustomFile.Builder()
                     .fileName(fileName)
                     .filePath(path)
@@ -55,7 +60,7 @@ public abstract class CustomConfig {
 
         if (generateUpdate) {
             String fileName = "UpdateDTO.java";
-            String path = path4DTO + entityName + fileName;
+            String path = path4DTO + File.separator + entityName + fileName;
             CustomFile.Builder builder = new CustomFile.Builder()
                     .fileName(fileName)
                     .filePath(path)
@@ -227,9 +232,19 @@ public abstract class CustomConfig {
     protected String package4DTO = "dto";
 
     /**
+     * DTO文件的生成路径
+     */
+    protected String path4DTO;
+
+    /**
      * VO所在包
      */
     protected String package4VO = "vo";
+
+    /**
+     * VO文件的生成路径
+     */
+    protected String path4VO;
 
     /**
      * 新增或修改时排除的字段
@@ -417,6 +432,19 @@ public abstract class CustomConfig {
         }
 
         /**
+         * DTO文件输出路径
+         *
+         * @param path 路径
+         * @return {@link B }
+         * @author bootystar
+         */
+        @SneakyThrows
+        public B path4DTO(String path) {
+            this.getConfig().path4DTO = new File(path).getCanonicalPath();
+            return this.getBuilder();
+        }
+
+        /**
          * VO所在包
          *
          * @param packageName 包名
@@ -425,6 +453,19 @@ public abstract class CustomConfig {
          */
         public B package4VO(String packageName) {
             this.getConfig().package4VO = packageName;
+            return this.getBuilder();
+        }
+
+        /**
+         * DTO文件输出路径
+         *
+         * @param path 路径
+         * @return {@link B }
+         * @author bootystar
+         */
+        @SneakyThrows
+        public B path4VO(String path) {
+            this.getConfig().path4VO = new File(path).getCanonicalPath();
             return this.getBuilder();
         }
 
