@@ -30,7 +30,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
     protected PackageConfig.Builder packageConfigBuilder = new PackageConfig.Builder();
     protected StrategyConfig.Builder strategyConfigBuilder = new StrategyConfig.Builder();
     protected InjectionConfig.Builder injectionConfigBuilder = new InjectionConfig.Builder();
-    protected CustomConfig.Builder<C, B> customConfigBuilder;
+    protected B customConfigBuilder;
 
     public AbstractGenerator(String url, String username, String password, B customConfigBuilder) {
         this.dataSourceConfigBuilder = new DataSourceConfig.Builder(url, username, password)
@@ -166,7 +166,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
     }
 
     @Override
-    public EnhanceGenerator<B> custom(Consumer<CustomConfig.Builder<?, B>> consumer) {
+    public EnhanceGenerator<B> custom(Consumer<B> consumer) {
         consumer.accept(customConfigBuilder);
         return this;
     }

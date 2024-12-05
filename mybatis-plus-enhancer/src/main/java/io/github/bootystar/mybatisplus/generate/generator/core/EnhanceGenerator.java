@@ -35,7 +35,7 @@ public interface EnhanceGenerator<B extends CustomConfig.Builder<?, B>> {
 
     EnhanceGenerator<B> injection(Consumer<InjectionConfig.Builder> consumer);
 
-    EnhanceGenerator<B> custom(Consumer<CustomConfig.Builder<?, B>> consumer);
+    EnhanceGenerator<B> custom(Consumer<B> consumer);
 
     EnhanceGenerator<B> mapperXmlResource(String path);
 
