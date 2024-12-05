@@ -11,7 +11,7 @@
         <if test="param1 != null">
             <foreach collection="param1" item="gen">
                 <if test="gen.conditions != null and gen.conditions.size() > 0">
-                    <trim prefix="AND ( " suffix=" )" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+                    <trim prefix="AND ( " suffix=" ) AND" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
                         <foreach collection="gen.conditions" item="item">
                             <choose>
                                 <when test="item.isOr()">
@@ -104,7 +104,7 @@
         FROM
 ##         ${schemaName} ${table.name} a
         ${table.name} a
-        <where>
+        <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
 ## 逻辑删除字段支持所有数据类型，
 ## 但推荐使用 Integer、Boolean 或 LocalDateTime。
 ## 如果使用 datetime 类型，可以配置逻辑未删除值为 null(长度为4的字符串,在yaml中需使用转义符(单引号)包裹)，
@@ -123,9 +123,7 @@
                 #end
             #end
             <include refid="selectFragment"/>
-            <if test="param1.map != null">
-            </if>
-        </where>
+        </trim>
         <trim prefix="ORDER BY" suffixOverrides=",">
             <include refid="sortFragment"/>
             $!{orderBySql}
