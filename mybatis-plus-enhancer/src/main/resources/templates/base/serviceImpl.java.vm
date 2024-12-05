@@ -70,7 +70,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <S, R> R insertByDTO(S s) {
-        // ${entityInsertDTO} dto = (${entityInsertDTO}) s;
+//        ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         ${entity} entity = new ${entity}();
         BeanUtils.copyProperties(s, entity);
         save(entity);
@@ -103,7 +103,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     #if(${generateSelect}||${generateExport})
 
     public <S> List<${entityVO}> doSelect(S s, IPage<${entityVO}> page) {
-        // ${entitySelectDTO} dto = (${entitySelectDTO}) s;
+//        ${entitySelectDTO} dto = (${entitySelectDTO}) s;
         Map<Object, Object> map = null;
         if (s == null || s instanceof Map) {
             map = s == null ? new HashMap<>() : (Map<Object, Object>) s;
@@ -169,7 +169,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 
     @Override
     public <U> int excelImport(InputStream is, Class<U> clazz) {
-        // ${entityInsertDTO} dto = (${entityInsertDTO}) s;
+//        ${entityInsertDTO} dto = (${entityInsertDTO}) s;
         List<U> cachedDataList = EasyExcel.read(is).head(clazz).sheet().doReadSync();
         List<${entity}> entityList = cachedDataList.stream().map(e->{
                 ${entity} entity = new ${entity}();
