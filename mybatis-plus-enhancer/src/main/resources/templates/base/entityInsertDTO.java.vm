@@ -63,7 +63,7 @@ import lombok.experimental.Accessors;
 #end
 #if(${springdoc})
 ##@Schema(name = "${entity}InsertDTO ", description = "$!{table.comment}-新增DTO")
-@Schema(name = "${entity}InsertDTO$!{docUUID} ", description = "$!{table.comment}-新增DTO")
+@Schema(name = "${entity}InsertDTO$!{docUUID}", description = "$!{table.comment}-新增DTO")
 #elseif(${swagger})
 ##@ApiModel(value = "${entity}InsertDTO", description = "$!{table.comment}-新增DTO")
 @ApiModel(value = "${entity}InsertDTO$!{docUUID}", description = "$!{table.comment}-新增DTO")

@@ -175,7 +175,7 @@ public abstract class CustomConfig {
         }
 
         if (this.docWithUUID) {
-            String uuid = "@" + UUID.randomUUID().toString().substring(0, 4);
+            String uuid = "_" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
             data.put("docUUID", uuid);
         } else {
             data.remove("docUUID");
