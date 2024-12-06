@@ -45,16 +45,20 @@ public interface DynamicService<T, V> extends IService<T> {
     }
 
     @SuppressWarnings("unchecked")
-    default <S, R> R insertByDTO(S s) {
-        T entity = toEntity(s);
-        save(entity);
+    default <R> R toId(Object source) {
         TableInfo tableInfo = TableInfoHelper.getTableInfo(getEntityClass());
         if (tableInfo == null) return null;
         String keyProperty = tableInfo.getKeyProperty();
         if (keyProperty == null) return null;
-        Object propertyValue = tableInfo.getPropertyValue(entity, keyProperty);
+        Object propertyValue = tableInfo.getPropertyValue(source, keyProperty);
         if (propertyValue == null) return null;
         return (R) propertyValue;
+    }
+
+    default <S, R> R insertByDTO(S s) {
+        T entity = toEntity(s);
+        save(entity);
+        return toId(entity);
     }
 
     default <S> boolean updateByDTO(S s) {
