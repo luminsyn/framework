@@ -295,7 +295,7 @@ public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object>
 * 无法自动映射的查询条件值为`null`时, 系统会将字符串`"null"`作为值添加到map中,避免`<if test"param1.map.xxx!=null">`判断失效
 * `sortFragment`为自动映射封装的排序条件
 * `sortFragment`下方可添加额外排序条件(添加条件时不需要添加`ORDER BY`关键字)
-* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`EnhanceEntity映射```
+* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`EnhanceEntity映射`
 * 自动映射的排序会自动通过`sortFragment`封装
 * 或`sortFragment`处添加额外的sql, 建议添加在下方, 若添加在
 
