@@ -256,7 +256,7 @@ generator.execute("sys_user"); // 要生成的表(不输入为全部)
 * `getVoClass()`获取VO数据展示类
 * `toEntity()`将指定对象转化为数据库实体类对象
 * `toVO()`将指定对象转化为VO数据展示类对象
-* `insertByDTO()`新增方法
+* `insertByDTO()`新增方法, 返回值为新增数据的主键
 * `updateByDTO()`更新方法
 * `doSelect()`查询逻辑封装方法
 * `oneById()`根据id查询单个VO

@@ -88,7 +88,14 @@
                 #set($key = $entry.key)
                 #set($value = $entry.value)
                 #set($extraFieldName= "${field.propertyName}${key}")
-                    #if(!$table.fields.contains("${extraFieldName}"))##-----属性字段不包含额外字段-----start
+                #set($existField = false)
+                #foreach($fieldcheck in ${table.fields})
+                    #if(${fieldcheck.propertyName}==${extraFieldName})
+                        #set($existField = true)
+                        #break
+                    #end
+                #end
+                    #if(!${existField})##-----属性字段不包含额外字段-----start
                 #if(${value}=="IN"||${value}=="NOT IN")
                 <if test="param1.${extraFieldName} != null and param1.${extraFieldName}.size()>0">
                     AND a.${field.columnName} ${value}
@@ -109,6 +116,14 @@
                 #elseif(${value}=="<=")
                 <if test="param1.${extraFieldName} != null">
                     AND a.${field.columnName} &lt;= #{param1.${extraFieldName}}
+                </if>
+                #elseif(${value}==">")
+                <if test="param1.${extraFieldName} != null">
+                    AND a.${field.columnName} &gt; #{param1.${extraFieldName}}
+                </if>
+                #elseif(${value}==">=")
+                <if test="param1.${extraFieldName} != null">
+                    AND a.${field.columnName} &gt;= #{param1.${extraFieldName}}
                 </if>
                 #elseif(${value}=="IS NULL"||${value}=="IS NOT NULL")
                 <if test="param1.${extraFieldName} != null">
