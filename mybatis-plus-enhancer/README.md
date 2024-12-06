@@ -380,14 +380,14 @@ public class SysUser implements DynamicEntity {
 
 ## service接口实现
 
-### DynamicSqlServiceImpl<M, T, V>
+### DynamicFieldServiceImpl<M, T, V>
 动态字段服务实现, 通过动态字段及动态sql实现嵌套增强
 * 继承该类, 指定`Mapper类`,`实体类`, `VO类`
 * 支持`SqlHelper`,`Map`,`一般类(会通过反射获取属性与值)`作为查询参数
 * 通过重写`initSuffixBuilder()`方法配置字段后缀, 若不重写该方法, 会按照默认后缀匹配, 重写后仅匹配已指定的后缀
 * 当入参为`一般实体类`或`Map`时, 会自动根据指定后缀追加相关的条件查询(例如`nameLike`字段,会转化为`name`对应的模糊查询)
 ```java
-public class SysUserServiceImpl extends DynamicSqlServiceImpl<SysUserMapper, SysUser ,SysUserVO>{
+public class SysUserServiceImpl extends DynamicFieldServiceImpl<SysUserMapper, SysUser ,SysUserVO>{
     @Override
     protected FieldSuffixBuilder initSuffixBuilder() {
         return new FieldSuffixBuilder()
@@ -399,13 +399,13 @@ public class SysUserServiceImpl extends DynamicSqlServiceImpl<SysUserMapper, Sys
 }
 ```
 
-### DynamicFieldServiceImpl<M, T, V>
+### DynamicSqlServiceImpl<M, T, V>
 动态sql服务实现, 通过动态sql嵌套增强
 * 继承该类, 指定`Mapper类`,`实体类`, `VO类`
 * 使用`SqlHelper`,`Map`,`一般类(会通过反射获取属性与值)`作为查询参数
 * 会自动根据情况生成条件匹配sql
 ```java
-public class SysUserServiceImpl extends DynamicFieldServiceImpl<SysUserMapper, SysUser ,SysUserVO>{
+public class SysUserServiceImpl extends DynamicSqlServiceImpl<SysUserMapper, SysUser ,SysUserVO>{
     
 }
 ```
