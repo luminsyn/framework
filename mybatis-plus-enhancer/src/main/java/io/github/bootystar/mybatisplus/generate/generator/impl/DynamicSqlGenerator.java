@@ -16,12 +16,12 @@ public class DynamicSqlGenerator extends AbstractGenerator<DynamicSqlConfig, Dyn
     public DynamicSqlGenerator(String url, String username, String password) {
         super(url, username, password, new DynamicSqlConfig.Builder());
         this.strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/templates/enhance/service.java")
-                .serviceImplTemplate("/templates/enhance/serviceImpl.java")
+                .serviceTemplate("/templates/dynamic/service.java" )
+                .serviceImplTemplate("/templates/dynamic/serviceImpl.java" )
         ;
         this.strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/templates/enhance/mapper.java")
-                .mapperXmlTemplate("/templates/enhance/mapper.xml")
+                .mapperTemplate("/templates/dynamic/mapper.java" )
+                .mapperXmlTemplate("/templates/dynamic/mapper.xml" )
         ;
         this.strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(DynamicService.class)

@@ -18,12 +18,12 @@ public class DynamicFieldGenerator extends AbstractGenerator<DynamicFieldConfig,
     public DynamicFieldGenerator(String url, String username, String password) {
         super(url, username, password, new DynamicFieldConfig.Builder());
         this.strategyConfigBuilder.serviceBuilder()
-                .serviceTemplate("/templates/enhance/service.java")
-                .serviceImplTemplate("/templates/extra/serviceImpl.java")
+                .serviceTemplate("/templates/dynamic/service.java" )
+                .serviceImplTemplate("/templates/dynamic/serviceImpl.java")
         ;
         this.strategyConfigBuilder.mapperBuilder()
-                .mapperTemplate("/templates/enhance/mapper.java")
-                .mapperXmlTemplate("/templates/enhance/mapper.xml")
+                .mapperTemplate("/templates/dynamic/mapper.java" )
+                .mapperXmlTemplate("/templates/dynamic/mapper.xml" )
         ;
         this.strategyConfigBuilder.serviceBuilder()
                 .superServiceClass(DynamicService.class)
