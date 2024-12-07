@@ -343,7 +343,7 @@ public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object>
 ```
 ##### 映射非本实体的表字段
 * 通过在属性上添加`@TableField`注解指定映射, 指定`value`为`表名.字段名`或`表别名.字段名`指定其他表字段
-* 通过实现`EnhanceEntity`接口, 重写`enhanceEntity()`方法指定映射
+* 通过实现`DynamicEntity`接口, 重写`extraFieldColumnMap()`方法指定映射
 
 ```java
     // 指定roleLevel对应的字段为b表的level字段, 并注明该字段在本表中不存在
