@@ -251,7 +251,7 @@ generator.execute("sys_user"); // 要生成的表(不输入为全部)
 # 运行时增强
 
 ## service接口 
-### EnhanceService<T, V>
+### DynamicService<T, V>
 该接口定义了动态服务的一系列增强方法, 其中`T`为数据库实体类, `V`为VO数据展示类  
 继承该接口并指定泛型即可使用下述方法
 * `getVoClass()`获取VO数据展示类
