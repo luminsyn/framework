@@ -297,7 +297,7 @@ public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object>
 * 无法自动映射的查询条件值为`null`时, 系统会将字符串`"null"`作为值添加到map中,避免`<if test"param1.map.xxx!=null">`判断失效
 * `sortFragment`为自动映射封装的排序条件
 * `sortFragment`下方可添加额外排序条件(添加条件时不需要添加`ORDER BY`关键字)
-* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`EnhanceEntity映射`
+* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`DynamicEntity映射`
 
 ##### 默认生成的xml
 ```xml
@@ -438,4 +438,4 @@ DynamicService默认通过该类生成动态sql
 * `sort()`添加ISqlSort(排序的原始封装类, 推荐使用`SortG`)
 * `with()`添加并融合另一个SqlHelper所有条件(包含子条件)(`ISqlTree`为`SqlHelper`的父类)
 * `withChild()`将另一个SqlHelper所有条件(包含子条件)添加为本对象的子条件
-* `wrap()`包装SqlHelper, 添加指定EnhanceService服务的查询方法
+* `wrap()`包装SqlHelper, 添加指定DynamicService服务的查询方法
