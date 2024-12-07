@@ -108,10 +108,10 @@ import java.util.List;
  */
 #if(${springdoc})
 ##@Tag(name = "${table.comment}", description = "$!{table.comment}")
-@Tag(name = "${table.comment}$!{docUUID}", description = "$!{table.comment}")
+@Tag(name = "${table.comment}$!{swaggerUUID}", description = "$!{table.comment}")
     #elseif(${swagger})
 ##@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}")
-@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}$!{docUUID}")
+@Api(value = "${requestBaseUrL}", tags = "$!{table.comment}$!{swaggerUUID}")
 #end
 #if(${restControllerStyle})
 @RestController

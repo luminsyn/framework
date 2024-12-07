@@ -59,12 +59,14 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
     #end
 #end
+#if(${swaggerModelWithAnnotation})
 #if(${springdoc})
 ##@Schema(name = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
-@Schema(name = "${entity}UpdateDTO$!{docUUID}", description = "$!{table.comment}-修改DTO")
+@Schema(name = "${entity}UpdateDTO$!{swaggerUUID}", description = "$!{table.comment}-修改DTO")
 #elseif(${swagger})
 ##@ApiModel(value = "${entity}UpdateDTO", description = "$!{table.comment}-修改DTO")
-@ApiModel(value = "${entity}UpdateDTO$!{docUUID}", description = "$!{table.comment}-修改DTO")
+@ApiModel(value = "${entity}UpdateDTO$!{swaggerUUID}", description = "$!{table.comment}-修改DTO")
+#end
 #end
 public class ${entity}UpdateDTO {
 ###if(${entitySerialVersionUID})

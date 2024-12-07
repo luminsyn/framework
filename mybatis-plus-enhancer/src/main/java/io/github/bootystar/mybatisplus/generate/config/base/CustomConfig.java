@@ -174,11 +174,11 @@ public abstract class CustomConfig {
                     .ifPresent(e -> data.put("orderBySql", e));
         }
 
-        if (this.docWithUUID) {
+        if (this.swaggerAnnotationWithUUID) {
             String uuid = "_" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
-            data.put("docUUID", uuid);
+            data.put("swaggerUUID", uuid);
         } else {
-            data.remove("docUUID");
+            data.remove("swaggerUUID");
         }
 
         return data;
@@ -195,9 +195,14 @@ public abstract class CustomConfig {
     protected boolean overrideMethods = true;
 
     /**
-     * 文档uuid标识
+     * swagger实体是否添加注解
      */
-    protected boolean docWithUUID = true;
+    protected boolean swaggerModelWithAnnotation = true;
+
+    /**
+     * swagger注解添加uuid标识
+     */
+    protected boolean swaggerAnnotationWithUUID = true;
 
     //------------------额外类相关配置----------------
 
@@ -393,6 +398,20 @@ public abstract class CustomConfig {
             return this.getBuilder();
         }
 
+
+        /**
+         * 禁用swagger/springdoc模型实体的注解
+         * <p>
+         * 已知swagger注解在同名时有冲突, 禁用后请确保表注释不为空且不同名
+         *
+         * @return {@link B }
+         * @author bootystar
+         */
+        public B disableSwaggerModelWithAnnotation() {
+            this.getConfig().swaggerModelWithAnnotation = false;
+            return this.getBuilder();
+        }
+
         /**
          * 禁用swagger/springdoc文档额外uuid标识
          * <p>
@@ -401,8 +420,8 @@ public abstract class CustomConfig {
          * @return {@link B }
          * @author bootystar
          */
-        public B disableDocUUID() {
-            this.getConfig().docWithUUID = false;
+        public B disableSwaggerAnnotationWithUUID() {
+            this.getConfig().swaggerAnnotationWithUUID = false;
             return this.getBuilder();
         }
 

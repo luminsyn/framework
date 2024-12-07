@@ -122,7 +122,8 @@ GeneratorHelper
             custom
                 // 文件相关
                 .enableFileOverride() // 文件覆盖生成(DTO、VO)
-                .disableDocUUID() // 禁用文档UUID(swagger多个同名或空名对象会有冲突,默认使用uuid避免)
+                .disableSwaggerModelWithAnnotation() // 禁用swagger/springdoc模型类实体上的注解,属性注解依然生效(已知swagger注解在同名时有冲突, 禁用后请确保表注释不为空且不同名)
+                .disableSwaggerAnnotationWithUUID() // 禁用swagger/springdoc文档额外uuid标识(已知swagger注解在同名时有冲突, 禁用后请确保表注释不为空且不同名)
                 .class4SelectDTO(Map.class) // 使用指定类作为查询入参DTO(推荐使用Map或SqlHelper)
                 .package4DTO("dto") // DTO的包名
                 .path4DTO("C:/Project/test21/") // DTO的路径(全路径或相对路径)
@@ -153,7 +154,7 @@ GeneratorHelper
                 .disableExport() // 不生成导出
                 // 特殊项, 因不同生成器而异
                 .disableOverrideMethods() // 不生成重写的父类方法(动态字段生成器/动态sql生成器)
-                .fieldSuffixBuilder(builder -> {
+                .fieldSuffixBuilder(builder -> { // 额外自定义字段后缀(额外代码生成器/动态字段生成器)
                 // 该项默认无需配置, 配置后, 只会根据已配置的字段生成额外后缀, 未配置的类型不会生成后缀
                                 builder
                                     .ne("Ne") // 不等于字段额外后缀
@@ -167,7 +168,7 @@ GeneratorHelper
                                     .notIn("NotIn") // 不包含字段额外后缀
                                     .isNull("IsNull") // 空字段额外后缀
                                     .isNotNull("IsNotNull") // 非空字段额外后缀
-                    ;})// 额外自定义字段后缀(额外代码生成器/动态字段生成器专属)
+                    ;})// 额外自定义字段后缀(额外代码生成器/动态字段生成器)
                 ;})
         .dataSource(dataSource -> {
         // 数据源配置(参考mybatis-plus官方文档)
@@ -256,7 +257,8 @@ generator.execute("sys_user"); // 要生成的表(不输入为全部)
 * `getVoClass()`获取VO数据展示类
 * `toEntity()`将指定对象转化为数据库实体类对象
 * `toVO()`将指定对象转化为VO数据展示类对象
-* `insertByDTO()`新增方法, 返回值为新增数据的主键
+* `toId()`将指定对象转化为主键值
+* `insertByDTO()`新增方法, 默认返回值R为新增数据的实际主键(重写时可搭配`toId()`使用)
 * `updateByDTO()`更新方法
 * `doSelect()`查询逻辑封装方法
 * `oneById()`根据id查询单个VO
