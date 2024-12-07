@@ -41,7 +41,7 @@ public class TreeHelper<T, R> {
      */
     private TreeHelper(Function<T, R> idGetter, Function<T, R> parentIdGetter, BiConsumer<T, ? super List<T>> childElementSetter) {
         if (idGetter == null || parentIdGetter == null || childElementSetter == null) {
-            throw new IllegalArgumentException("arguments can not be null");
+            throw new IllegalArgumentException("arguments can not be null" );
         }
         this.idGetter = idGetter;
         this.parentIdGetter = parentIdGetter;
@@ -155,6 +155,45 @@ public class TreeHelper<T, R> {
      */
     public List<T> findAllChildrenByNode(Collection<? extends T> elements, T node) {
         return findAllChildrenById(elements, idGetter.apply(node));
+    }
+
+    /**
+     * 查找指定id节点对应的所有父节点
+     *
+     * @param elements 元素
+     * @param id       id
+     * @return {@link List }<{@link T }>
+     * @author bootystar
+     */
+    public List<T> findAllParentById(Collection<? extends T> elements, R id) {
+        T currentNode = elements.stream().filter(c -> Objects.equals(id, idGetter.apply(c))).findFirst().orElse(null);
+        ArrayList<T> parents = new ArrayList<>();
+        if (currentNode == null) {
+            return parents;
+        }
+        R parentId = parentIdGetter.apply(currentNode);
+        while (parentId != null) {
+            for (T element : elements) {
+                if (Objects.equals(parentId, idGetter.apply(element))) {
+                    parents.add(element);
+                    parentId = parentIdGetter.apply(element);
+                    break;
+                }
+            }
+        }
+        return parents;
+    }
+
+    /**
+     * 查找指定节点对应的所有父节点
+     *
+     * @param elements 元素
+     * @param node     节点
+     * @return {@link List }<{@link T }>
+     * @author bootystar
+     */
+    public List<T> findAllParentByNode(Collection<? extends T> elements, T node) {
+        return findAllParentById(elements, idGetter.apply(node));
     }
 
 }
