@@ -413,7 +413,7 @@ public class SysUserServiceImpl extends DynamicSqlServiceImpl<SysUserMapper, Sys
 ```
 ## SqlHelper<T>动态sql工具
 该工具用于生成sql片段, 支持Object入参  
-EnhanceService默认通过该类生成动态sql    
+DynamicService默认通过该类生成动态sql    
 该工具条件底层为树状结构, 入参可以进行子条件的多层嵌套  
 嵌套子条件时,父条件必须为有效条件(即能映射对应字段的条件)  
 该类含以下方法用于生成sql片段
