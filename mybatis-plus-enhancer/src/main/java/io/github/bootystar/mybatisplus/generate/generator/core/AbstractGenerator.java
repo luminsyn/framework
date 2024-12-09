@@ -53,7 +53,7 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
                 .xml("mapper")
         ;
         this.strategyConfigBuilder.entityBuilder()
-                .javaTemplate("/templates/entity.java")
+                .javaTemplate("/templates/base/entity.java")
         ;
         this.strategyConfigBuilder.mapperBuilder()
                 .mapperAnnotation(org.apache.ibatis.annotations.Mapper.class)
