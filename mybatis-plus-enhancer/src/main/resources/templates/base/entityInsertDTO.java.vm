@@ -58,9 +58,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
   #end
 #end
-#if(${generateImport})
-@ExcelIgnoreUnannotated
-#end
 #if(${swaggerModelWithAnnotation})
 #if(${springdoc})
 ##@Schema(name = "${entity}InsertDTO ", description = "$!{table.comment}-新增DTO")
@@ -69,6 +66,9 @@ import lombok.experimental.Accessors;
 ##@ApiModel(value = "${entity}InsertDTO", description = "$!{table.comment}-新增DTO")
 @ApiModel(value = "${entity}InsertDTO$!{swaggerUUID}", description = "$!{table.comment}-新增DTO")
 #end
+#end
+#if(${generateImport})
+@ExcelIgnoreUnannotated
 #end
 public class ${entity}InsertDTO {
 ###if(${entitySerialVersionUID})
