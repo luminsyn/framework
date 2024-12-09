@@ -122,8 +122,8 @@ GeneratorHelper
             custom
                 // 文件相关
                 .enableFileOverride() // 文件覆盖生成(DTO、VO)
-                .disableSwaggerModelWithAnnotation() // 禁用swagger/springdoc模型类实体上的注解,属性注解依然生效(已知swagger注解在同名时有冲突, 禁用后请确保表注释不为空且不同名)
-                .disableSwaggerAnnotationWithUUID() // 禁用swagger/springdoc文档额外uuid标识(已知swagger注解在同名时有冲突, 禁用后请确保表注释不为空且不同名)
+                .enableSwaggerModelWithAnnotation() // 启用swagger/springdoc参数类注解(默认关闭,避免swagger同名冲突)
+                .enableSwaggerAnnotationWithUUID() // 启用swagger/springdoc文档额外uuid标识(开启参数类注解时避免swagger同名冲突)
                 .class4SelectDTO(Map.class) // 使用指定类作为查询入参DTO(推荐使用Map或SqlHelper)
                 .package4DTO("dto") // DTO的包名
                 .path4DTO("C:/Project/test21/") // DTO的路径(全路径或相对路径)

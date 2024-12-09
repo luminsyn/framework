@@ -208,8 +208,6 @@ public abstract class AbstractGenerator<C extends CustomConfig, B extends Custom
                 .sortColumn("sequence", false)
                 .sortColumn("create_time", true)
                 .sortColumn("id", true)
-                .disableSwaggerModelWithAnnotation()
-                .disableSwaggerAnnotationWithUUID()
         ;
         strategyConfigBuilder.entityBuilder()
                 .idType(IdType.ASSIGN_ID)

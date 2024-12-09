@@ -197,12 +197,12 @@ public abstract class CustomConfig {
     /**
      * swagger实体是否添加注解
      */
-    protected boolean swaggerModelWithAnnotation = true;
+    protected boolean swaggerModelWithAnnotation;
 
     /**
      * swagger注解添加uuid标识
      */
-    protected boolean swaggerAnnotationWithUUID = true;
+    protected boolean swaggerAnnotationWithUUID;
 
     //------------------额外类相关配置----------------
 
@@ -407,8 +407,8 @@ public abstract class CustomConfig {
          * @return {@link B }
          * @author bootystar
          */
-        public B disableSwaggerModelWithAnnotation() {
-            this.getConfig().swaggerModelWithAnnotation = false;
+        public B enableSwaggerModelWithAnnotation() {
+            this.getConfig().swaggerModelWithAnnotation = true;
             return this.getBuilder();
         }
 
@@ -420,8 +420,8 @@ public abstract class CustomConfig {
          * @return {@link B }
          * @author bootystar
          */
-        public B disableSwaggerAnnotationWithUUID() {
-            this.getConfig().swaggerAnnotationWithUUID = false;
+        public B enableSwaggerAnnotationWithUUID() {
+            this.getConfig().swaggerAnnotationWithUUID = true;
             return this.getBuilder();
         }
 
