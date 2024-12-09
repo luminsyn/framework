@@ -10,6 +10,7 @@ import io.github.bootystar.mybatisplus.util.ReflectHelper;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +40,7 @@ public class SqlHelper<T> extends AbstractSqlHelper<T, SqlHelper<T>> {
      * @author bootystar
      */
     @SuppressWarnings("unchecked")
-    public static <T> SqlHelper<T> of(T s) {
+    public static <T> SqlHelper<T> of(Object s) {
         if (s == null) {
             return new SqlHelper<>();
         }
