@@ -8,7 +8,6 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 #end
 #if(${validated})
-##    todo 字段校验
 ## ---字段非空验证---
     #foreach($field in ${table.fields})
         #if(${field.metaInfo.nullable}==false && !${field.keyFlag} &&${field.propertyType}!="String")
