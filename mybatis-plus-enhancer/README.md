@@ -9,7 +9,7 @@
         <dependency>
             <groupId>io.github.bootystar</groupId>
             <artifactId>mybatis-plus-enhancer</artifactId>
-            <version>版本号</version>
+            <version>1.0.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -30,39 +30,27 @@
     <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
 </dependency>
 
+<!-- jdk 11+ 引入可选模块(分页插件) -->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-jsqlparser</artifactId>
+</dependency>
+
 <!-- spring boot2 引入可选模块 -->
 <dependency>
     <groupId>com.baomidou</groupId>
     <artifactId>mybatis-plus-boot-starter</artifactId>
 </dependency>
 
-
-<!-- jdk 11+ 引入可选模块 -->
-<dependency>
-    <groupId>com.baomidou</groupId>
-    <artifactId>mybatis-plus-jsqlparser</artifactId>
-</dependency>
-
-<!-- jdk 8+ 引入可选模块 -->
+<!-- jdk 8+ 引入可选模块(分页插件) -->
 <dependency>
     <groupId>com.baomidou</groupId>
     <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
 </dependency>
 ```
-正式版本中央仓库地址  
-中央仓库同步到阿里云有延迟, 若阿里云无法拉取, 可通过配置拉取
-```xml
-<repositories>
-    <repository>
-        <id>release</id>
-        <name>release</name>
-        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
-    </repository>
-</repositories>
-```
 
 
-## SNAPSHOT快照版本
+## SNAPSHOT仓库地址(使用SNAPSHOT版本时配置)
 若需引入快照版本, 需配置快照仓库地址
 ```xml
 <repositories>
@@ -84,6 +72,18 @@
   <name>aliyun</name>
   <url>https://maven.aliyun.com/repository/public</url>
 </mirror>
+```
+## RELEASE仓库地址(无需配置)
+正式版本仓库地址  
+中央仓库同步到阿里云有延迟, 若阿里云无法拉取, 可通过配置拉取
+```xml
+<repositories>
+    <repository>
+        <id>release</id>
+        <name>release</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+    </repository>
+</repositories>
 ```
 
 # 代码生成器
