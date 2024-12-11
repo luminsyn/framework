@@ -580,111 +580,6 @@ public interface SysUserService extends DynamicService<SysUser, SysUserVO> {
     }
 ```
 
-### DynamicMapper<T, V, S>
-该接口定义了动态mapper的入参查询,其中`T`为数据库实体类, `V`为VO数据展示类, `S`为查询入参类
-* 子mapper继承该类, 即可运行, 无需实现
-* 该mapper的参数及对应`xml`文件会由生成器自动生成
-* 所有的增强查询都会最终通过`listByDTO()`从数据库查询
-* 可在`mapper.xml`文件中添加对应的额外表及字段检索等自定义逻辑
-
-```java
-public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object> {
-
-}
-```
-#### xml中额外SQL编写
-* 在`xml`文件中, 可根据自身需要进行连表或者字段检索
-* 基础表别名固定为`a`, 请勿修改
-* `selectFragment`为自动映射封装的查询条件
-* `selectFragment`下方添加额外条件(添加条件时不需要添加`WHERE`关键字)
-* `selectFragment`下处添加额外条件时, 建议始终添加`AND`或`OR`连接符, 系统会自动去除多余的连接符
-* 无法自动映射的查询条件会统一存放到`param1.map`中, 可通过param1.map.xxx判断参数是否存在,并添加对应逻辑
-* 无法自动映射的查询条件值为`null`时, 系统会将字符串`"null"`作为值添加到map中,避免`<if test"param1.map.xxx!=null">`判断失效
-* `sortFragment`为自动映射封装的排序条件
-* `sortFragment`下方可添加额外排序条件(添加条件时不需要添加`ORDER BY`关键字)
-* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`DynamicEntity映射`
-
-##### 默认生成的xml
-```xml
-<select id="listByDTO" resultType="io.github.bootystar.vo.SysUserVO">
-    SELECT
-    a.*
-    FROM
-    sys_user a
-    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
-        <include refid="selectFragment"/>
-    </trim>
-    <trim prefix="ORDER BY" suffixOverrides=",">
-        <include refid="sortFragment"/>
-    </trim>
-</select>
-```
-
-##### 自定义后的xml
-```xml
-<select id="listByDTO" resultType="io.github.bootystar.vo.SysUserVO">
-    SELECT
-    a.*
-    FROM
-    sys_user a
-    <!--额外添加连表-->
-    left join sys_role b on a.role_id = b.id
-    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
-        <include refid="selectFragment"/>
-        <!--在selectFragment下添加额外的查询条件-->
-        <!--注意:记得使用AND|OR连接符,当映射条件不存在时会自动删除AND|OR符号-->
-        AND a.deleted = 0 AND b.level = #{param1.map.roleLevel}
-        <!--对未自动映射的条件进行判断, 并操作-->
-        <if test="param1.map.xxx!=null">
-            AND a.name = #{param1.map.xxx}
-        </if>
-    </trim>
-    <trim prefix="ORDER BY" suffixOverrides=",">
-        <include refid="sortFragment"/>
-        <!--在sortFragment下额外添加排序-->
-        a.create_time DESC , a.id DESC ,
-    </trim>
-</select>
-```
-##### 映射非本实体的表字段
-* 通过在属性上添加`@TableField`注解指定映射, 指定`value`为`表名.字段名`或`表别名.字段名`指定其他表字段
-* 通过实现`DynamicEntity`接口, 重写`extraFieldColumnMap()`方法指定映射
-
-```java
-    // 指定roleLevel对应的字段为b表的level字段, 并注明该字段在本表中不存在
-    @TableField(exist = false, value = "b.level")
-    private String roleLevel;
-```
-
-### DynamicEntity
-
-该接口定义了可被动态sql增强的实体类
-
-* 在`xml`中添加需要连接的表
-* 通过`extraFieldColumnMap()`指定额外的属性名->数据库字段名映射
-* 指定的逻辑删除字段无效, 会被过滤, 防止侵入
-* 可通过`表名.字段名`或`表别名.字段名`指定其他表字段
-
-```java
-public class SysUser implements DynamicEntity {
-    @Override
-    public Map<String, String> extraFieldColumnMap() {
-        HashMap<String, String> map = new HashMap<>();
-        /*
-        select a.* from
-        sys_user a
-        left join sys_role b on a.role_id = b.id
-        left join sys_department on a.department_id = sys_department.id
-         */
-        // 指定roleLevel, 对应为b表(sys_role)的level
-        map.put("roleLevel", "b.level");
-        // departmentName, 对应为sys_department表的name
-        map.put("departmentName", "sys_department.name");
-        return map;
-    }
-}
-```
-
 ## service接口实现
 
 ### DynamicFieldServiceImpl<M, T, V>
@@ -785,5 +680,110 @@ DynamicService默认通过该类生成动态sql
                 ;
     }
 
+```
 
+
+## DynamicMapper<T, V, S>
+该接口定义了动态mapper的入参查询,其中`T`为数据库实体类, `V`为VO数据展示类, `S`为查询入参类
+* 子mapper继承该类, 即可运行, 无需实现
+* 该mapper的参数及对应`xml`文件会由生成器自动生成
+* 所有的增强查询都会最终通过`listByDTO()`从数据库查询
+* 可在`mapper.xml`文件中添加对应的额外表及字段检索等自定义逻辑
+
+```java
+public interface SysUserMapper extends DynamicMapper<SysUser, SysUserVO, Object> {
+
+}
+```
+### xml中额外SQL编写
+* 在`xml`文件中, 可根据自身需要进行连表或者字段检索
+* 基础表别名固定为`a`, 请勿修改
+* `selectFragment`为自动映射封装的查询条件
+* `selectFragment`下方添加额外条件(添加条件时不需要添加`WHERE`关键字)
+* `selectFragment`下处添加额外条件时, 建议始终添加`AND`或`OR`连接符, 系统会自动去除多余的连接符
+* 无法自动映射的查询条件会统一存放到`param1.map`中, 可通过param1.map.xxx判断参数是否存在,并添加对应逻辑
+* 无法自动映射的查询条件值为`null`时, 系统会将字符串`"null"`作为值添加到map中,避免`<if test"param1.map.xxx!=null">`判断失效
+* `sortFragment`为自动映射封装的排序条件
+* `sortFragment`下方可添加额外排序条件(添加条件时不需要添加`ORDER BY`关键字)
+* 参数映射顺序`实体类属性字段信息`->`@TableFiled注解`->`DynamicEntity映射`
+
+#### 默认生成的xml
+```xml
+<select id="listByDTO" resultType="io.github.bootystar.vo.SysUserVO">
+    SELECT
+    a.*
+    FROM
+    sys_user a
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+        <include refid="selectFragment"/>
+    </trim>
+    <trim prefix="ORDER BY" suffixOverrides=",">
+        <include refid="sortFragment"/>
+    </trim>
+</select>
+```
+
+#### 自定义后的xml
+```xml
+<select id="listByDTO" resultType="io.github.bootystar.vo.SysUserVO">
+    SELECT
+    a.*
+    FROM
+    sys_user a
+    <!--额外添加连表-->
+    left join sys_role b on a.role_id = b.id
+    <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+        <include refid="selectFragment"/>
+        <!--在selectFragment下添加额外的查询条件-->
+        <!--注意:记得使用AND|OR连接符,当映射条件不存在时会自动删除AND|OR符号-->
+        AND a.deleted = 0 AND b.level = #{param1.map.roleLevel}
+        <!--对未自动映射的条件进行判断, 并操作-->
+        <if test="param1.map.xxx!=null">
+            AND a.name = #{param1.map.xxx}
+        </if>
+    </trim>
+    <trim prefix="ORDER BY" suffixOverrides=",">
+        <include refid="sortFragment"/>
+        <!--在sortFragment下额外添加排序-->
+        a.create_time DESC , a.id DESC ,
+    </trim>
+</select>
+```
+#### 映射非本实体的表字段
+* 通过在属性上添加`@TableField`注解指定映射, 指定`value`为`表名.字段名`或`表别名.字段名`指定其他表字段
+* 通过实现`DynamicEntity`接口, 重写`extraFieldColumnMap()`方法指定映射
+
+```java
+    // 指定roleLevel对应的字段为b表的level字段, 并注明该字段在本表中不存在
+    @TableField(exist = false, value = "b.level")
+    private String roleLevel;
+```
+
+## DynamicEntity
+
+该接口定义了可被动态sql增强的实体类
+
+* 在`xml`中添加需要连接的表
+* 通过`extraFieldColumnMap()`指定额外的属性名->数据库字段名映射
+* 指定的逻辑删除字段无效, 会被过滤, 防止侵入
+* 可通过`表名.字段名`或`表别名.字段名`指定其他表字段
+
+```java
+public class SysUser implements DynamicEntity {
+    @Override
+    public Map<String, String> extraFieldColumnMap() {
+        HashMap<String, String> map = new HashMap<>();
+        /*
+        select a.* from
+        sys_user a
+        left join sys_role b on a.role_id = b.id
+        left join sys_department on a.department_id = sys_department.id
+         */
+        // 指定roleLevel, 对应为b表(sys_role)的level
+        map.put("roleLevel", "b.level");
+        // departmentName, 对应为sys_department表的name
+        map.put("departmentName", "sys_department.name");
+        return map;
+    }
+}
 ```
