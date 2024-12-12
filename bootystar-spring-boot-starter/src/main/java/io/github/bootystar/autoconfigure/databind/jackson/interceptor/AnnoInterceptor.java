@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
 import io.github.bootystar.autoconfigure.databind.jackson.deserializer.JacksonDeserializer;
 import io.github.bootystar.autoconfigure.databind.jackson.serializer.JacksonSerializer;
-import io.github.bootystar.autoconfigure.datamask.anno.Mask4JsonDeserialize;
-import io.github.bootystar.autoconfigure.datamask.anno.Mask4JsonSerialize;
+import io.github.bootystar.autoconfigure.databind.jackson.JsonDeserialize;
+import io.github.bootystar.autoconfigure.databind.jackson.JsonSerialize;
 import lombok.SneakyThrows;
 import org.springframework.core.GenericTypeResolver;
 
@@ -22,7 +22,7 @@ public class AnnoInterceptor extends NopAnnotationIntrospector {
 
     @Override
     public Object findSerializer(Annotated am) {
-        Mask4JsonSerialize annotation = am.getAnnotation(Mask4JsonSerialize.class);
+        JsonSerialize annotation = am.getAnnotation(JsonSerialize.class);
         if (annotation == null) return null;
         Class<? extends Function<?, String>> clazz = annotation.value();
         JacksonSerializer<?> serializer = SERIALIZER_CACHE.get(clazz);
@@ -49,7 +49,7 @@ public class AnnoInterceptor extends NopAnnotationIntrospector {
 
     @Override
     public Object findDeserializer(Annotated am) {
-        Mask4JsonDeserialize annotation = am.getAnnotation(Mask4JsonDeserialize.class);
+        JsonDeserialize annotation = am.getAnnotation(JsonDeserialize.class);
         if (annotation == null) return null;
         Class<? extends Function<String, ?>> clazz = annotation.value();
         JacksonDeserializer<?> deserializer = DESERIALIZER_CACHE.get(clazz);

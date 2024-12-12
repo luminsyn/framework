@@ -27,7 +27,7 @@ public class Config4MybatisPlus {
     @ConditionalOnBean(MybatisPlusAutoConfiguration.class)
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new DbInterceptor());
+//        interceptor.addInnerInterceptor(new DbInterceptor());
         log.debug("MybatisPlusInterceptor Configured");
         return interceptor;
     }

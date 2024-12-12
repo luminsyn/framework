@@ -18,7 +18,7 @@ public class DbInterceptor implements InnerInterceptor {
 
     @Override
     public boolean willDoUpdate(Executor executor, MappedStatement ms, Object parameter) throws SQLException {
-
+        // todo 数据更新拦截
         return InnerInterceptor.super.willDoUpdate(executor, ms, parameter);
     }
 
