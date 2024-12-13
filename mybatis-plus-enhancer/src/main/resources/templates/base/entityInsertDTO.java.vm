@@ -77,6 +77,7 @@ public class ${entity}InsertDTO {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 #if(${field.keyFlag})
+#elseif(${field.fill} && (${field.fill}=="INSERT" || ${field.fill}=="INSERT_UPDATE"))
 #elseif(${field.versionField})
 #elseif(${field.logicDeleteField})
 #elseif($editExcludeColumns.contains(${field.columnName}))
@@ -115,6 +116,7 @@ public class ${entity}InsertDTO {
 #if(!${entityLombokModel})
   #foreach($field in ${table.fields})
   #if(${field.keyFlag})
+  #elseif(${field.fill} && (${field.fill}=="INSERT" || ${field.fill}=="INSERT_UPDATE"))
   #elseif(${field.versionField})
   #elseif(${field.logicDeleteField})
   #elseif($editExcludeColumns.contains(${field.columnName}))
@@ -151,6 +153,7 @@ public class ${entity}InsertDTO {
         return "${entity}{" +
   #foreach($field in ${table.fields})
     #if(${field.keyFlag})
+    #elseif(${field.fill} && (${field.fill}=="INSERT" || ${field.fill}=="INSERT_UPDATE"))
     #elseif(${field.versionField})
     #elseif(${field.logicDeleteField})
     #elseif($editExcludeColumns.contains(${field.columnName}))
