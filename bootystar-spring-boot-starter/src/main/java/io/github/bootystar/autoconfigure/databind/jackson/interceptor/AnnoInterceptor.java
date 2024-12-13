@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.NopAnnotationIntrospector;
 import io.github.bootystar.autoconfigure.databind.jackson.deserializer.JacksonDeserializer;
 import io.github.bootystar.autoconfigure.databind.jackson.serializer.JacksonSerializer;
-import io.github.bootystar.autoconfigure.databind.jackson.JsonDeserialize;
-import io.github.bootystar.autoconfigure.databind.jackson.JsonSerialize;
+import io.github.bootystar.autoconfigure.databind.jackson.JsonIn;
+import io.github.bootystar.autoconfigure.databind.jackson.JsonOut;
 import lombok.SneakyThrows;
 import org.springframework.core.GenericTypeResolver;
 
@@ -22,7 +22,7 @@ public class AnnoInterceptor extends NopAnnotationIntrospector {
 
     @Override
     public Object findSerializer(Annotated am) {
-        JsonSerialize annotation = am.getAnnotation(JsonSerialize.class);
+        JsonOut annotation = am.getAnnotation(JsonOut.class);
         if (annotation == null) return null;
         Class<? extends Function<?, String>> clazz = annotation.value();
         JacksonSerializer<?> serializer = SERIALIZER_CACHE.get(clazz);
@@ -49,7 +49,7 @@ public class AnnoInterceptor extends NopAnnotationIntrospector {
 
     @Override
     public Object findDeserializer(Annotated am) {
-        JsonDeserialize annotation = am.getAnnotation(JsonDeserialize.class);
+        JsonIn annotation = am.getAnnotation(JsonIn.class);
         if (annotation == null) return null;
         Class<? extends Function<String, ?>> clazz = annotation.value();
         JacksonDeserializer<?> deserializer = DESERIALIZER_CACHE.get(clazz);

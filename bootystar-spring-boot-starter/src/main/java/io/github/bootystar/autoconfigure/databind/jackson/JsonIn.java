@@ -12,7 +12,7 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @JacksonAnnotationsInside
-public @interface JsonDeserialize {
+public @interface JsonIn {
 
     Class<? extends Function<String, ?>> value() default Fallback.class;
 
