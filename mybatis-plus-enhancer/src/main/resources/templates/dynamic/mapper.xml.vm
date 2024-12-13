@@ -119,7 +119,9 @@
         </trim>
         <trim prefix="ORDER BY" suffixOverrides=",">
             <include refid="sortFragment"/>
+            #if(${orderBySql})
             $!{orderBySql}
+            #end
         </trim>
     </select>
 
