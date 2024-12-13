@@ -16,7 +16,7 @@ public class DynamicSqlConfig extends CustomConfig {
 
     {
         selectDTO = new ClassInfo(SqlHelper.class);
-        mapperDTO = new ClassInfo(ISqlTree.class);
+        mapperDTO = new ClassInfo(UnmodifiableSqlHelper.class);
     }
 
     public static class Builder extends CustomConfig.Builder<DynamicSqlConfig, Builder> {

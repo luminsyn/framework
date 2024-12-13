@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 public class DynamicFieldConfig extends CustomConfig {
 
     {
-        mapperDTO = new ClassInfo(ISqlTree.class);
+        mapperDTO = new ClassInfo(UnmodifiableSqlHelper.class);
     }
 
     public static class Builder extends CustomConfig.Builder<DynamicFieldConfig, Builder> {
