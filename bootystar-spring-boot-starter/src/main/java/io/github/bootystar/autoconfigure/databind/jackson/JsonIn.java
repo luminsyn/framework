@@ -14,13 +14,14 @@ import java.util.function.Function;
 @JacksonAnnotationsInside
 public @interface JsonIn {
 
-    Class<? extends Function<String, ?>> value() default Fallback.class;
+    Class<? extends Function<String, Object>> value();
+//    Class<? extends Function<String, ?>> value() default Fallback.class;
 
-    class Fallback implements Function<String,Object> {
-
-        @Override
-        public Object apply(String o) {
-            return o;
-        }
-    }
+//    class Fallback implements Function<String,Object> {
+//
+//        @Override
+//        public Object apply(String o) {
+//            return o;
+//        }
+//    }
 }
