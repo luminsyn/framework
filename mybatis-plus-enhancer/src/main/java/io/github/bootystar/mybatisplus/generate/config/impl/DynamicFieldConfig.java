@@ -3,6 +3,7 @@ package io.github.bootystar.mybatisplus.generate.config.impl;
 import io.github.bootystar.mybatisplus.enhance.builder.FieldSuffixBuilder;
 import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.DynamicFieldSqlHelper;
 import io.github.bootystar.mybatisplus.enhance.helper.unmodifiable.UnmodifiableSqlHelper;
+import io.github.bootystar.mybatisplus.enhance.query.ISqlTree;
 import io.github.bootystar.mybatisplus.generate.config.base.CustomConfig;
 import io.github.bootystar.mybatisplus.generate.info.ClassInfo;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.function.Consumer;
 public class DynamicFieldConfig extends CustomConfig {
 
     {
-        mapperDTO = new ClassInfo(UnmodifiableSqlHelper.class);
+        mapperDTO = new ClassInfo(ISqlTree.class);
     }
 
     public static class Builder extends CustomConfig.Builder<DynamicFieldConfig, Builder> {
