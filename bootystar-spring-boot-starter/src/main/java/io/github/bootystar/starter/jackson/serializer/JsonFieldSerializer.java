@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import io.github.bootystar.starter.jackson.anno.JsonEnc;
+import io.github.bootystar.starter.jackson.anno.JsonMask;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;
@@ -32,7 +32,7 @@ public class JsonFieldSerializer extends JsonSerializer<Object> implements Conte
     @Override
     @SneakyThrows
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) {
-        JsonEnc annotation = property.getAnnotation(JsonEnc.class);
+        JsonMask annotation = property.getAnnotation(JsonMask.class);
         if (annotation != null) {
             JsonSerializer<?> handler = match(annotation, property);
             if (handler != null) {
@@ -43,12 +43,12 @@ public class JsonFieldSerializer extends JsonSerializer<Object> implements Conte
     }
 
     @SneakyThrows
-    public JsonSerializer<?> match(JsonEnc annotation, BeanProperty property) {
+    public JsonSerializer<?> match(JsonMask annotation, BeanProperty property) {
         Class<?> propertyRawClass = property.getType().getRawClass();
         String methodFullName = property.getMember().getFullName();
         Class<? extends Function<?, String>> funcClass = annotation.serialize();
         JsonSerializer<?> cache = METHOD_SIGNATURE_CACHE_MAP.get(methodFullName);
-        if (funcClass.equals(JsonEnc.Fallback.class)) {
+        if (funcClass.equals(JsonMask.Fallback.class)) {
             return null;
         }
         if (cache != null) {

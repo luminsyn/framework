@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
-import io.github.bootystar.starter.jackson.anno.JsonEnc;
+import io.github.bootystar.starter.jackson.anno.JsonMask;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;
@@ -32,7 +32,7 @@ public class JsonFieldDeserializer extends JsonDeserializer<Object> implements C
 
     @Override
     public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) throws JsonMappingException {
-        JsonEnc annotation = property.getAnnotation(JsonEnc.class);
+        JsonMask annotation = property.getAnnotation(JsonMask.class);
         if (annotation != null) {
             JsonDeserializer<?> handler = match(annotation, property);
             if (handler != null) {
@@ -44,12 +44,12 @@ public class JsonFieldDeserializer extends JsonDeserializer<Object> implements C
 
 
     @SneakyThrows
-    public JsonDeserializer<?> match(JsonEnc annotation, BeanProperty property) {
+    public JsonDeserializer<?> match(JsonMask annotation, BeanProperty property) {
         Class<?> propertyRawClass = property.getType().getRawClass();
         String methodFullName = property.getMember().getFullName();
         Class<? extends Function<String, ?>> funcClass = annotation.deserialize();
         JsonDeserializer<?> cache = METHOD_SIGNATURE_CACHE_MAP.get(methodFullName);
-        if (funcClass.equals(JsonEnc.Fallback.class)) {
+        if (funcClass.equals(JsonMask.Fallback.class)) {
             return null;
         }
         if (cache != null) {

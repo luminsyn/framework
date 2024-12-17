@@ -18,7 +18,7 @@ import java.util.function.Function;
 @JacksonAnnotationsInside
 @JsonSerialize(using = JsonFieldSerializer.class)
 @JsonDeserialize(using = JsonFieldDeserializer.class)
-public @interface JsonEnc {
+public @interface JsonMask {
 
     Class<? extends Function<?, String>> serialize() default Fallback.class;
 
