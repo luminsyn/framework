@@ -1,11 +1,11 @@
-package io.github.bootystar.autoconfigure.databind.jackson.serializer;
+package io.github.bootystar.starter.jackson.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import io.github.bootystar.autoconfigure.databind.jackson.anno.JsonEnc;
+import io.github.bootystar.starter.jackson.anno.JsonEnc;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;

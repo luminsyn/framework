@@ -1,4 +1,4 @@
-package io.github.bootystar.autoconfigure.mybatisplus;
+package io.github.bootystar.starter.mybatisplus;
 
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import org.apache.ibatis.executor.Executor;

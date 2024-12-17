@@ -1,14 +1,9 @@
-package io.github.bootystar.autoconfigure;
+package io.github.bootystar.starter.autoconfigure;
 
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import io.github.bootystar.autoconfigure.mybatisplus.DbInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -56,12 +51,7 @@ public class Config4MybatisPlus {
         }catch (Exception e) {
             log.debug("PaginationInnerInterceptor not found, skip");
         }
-
-
     }
-
-
-
 
     public void blockAttackInnerInterceptor(MybatisPlusInterceptor interceptor) {
         try {

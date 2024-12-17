@@ -1,10 +1,10 @@
-package io.github.bootystar.autoconfigure.databind.jackson.anno;
+package io.github.bootystar.starter.jackson.anno;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.github.bootystar.autoconfigure.databind.jackson.deserializer.JsonFieldDeserializer;
-import io.github.bootystar.autoconfigure.databind.jackson.serializer.JsonFieldSerializer;
+import io.github.bootystar.starter.jackson.deserializer.JsonFieldDeserializer;
+import io.github.bootystar.starter.jackson.serializer.JsonFieldSerializer;
 
 import java.lang.annotation.*;
 import java.util.function.Function;

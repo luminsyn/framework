@@ -1,8 +1,8 @@
-package io.github.bootystar.autoconfigure;
+package io.github.bootystar.starter.autoconfigure;
 
-import io.github.bootystar.autoconfigure.databind.converter.String2LocalDateConverter;
-import io.github.bootystar.autoconfigure.databind.converter.String2LocalDateTimeConverter;
-import io.github.bootystar.autoconfigure.databind.converter.String2LocalTimeConverter;
+import io.github.bootystar.starter.spring.converter.String2LocalDateConverter;
+import io.github.bootystar.starter.spring.converter.String2LocalDateTimeConverter;
+import io.github.bootystar.starter.spring.converter.String2LocalTimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

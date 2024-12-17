@@ -1,4 +1,4 @@
-package io.github.bootystar.autoconfigure.databind.jackson.deserializer;
+package io.github.bootystar.starter.jackson.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.BeanProperty;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
-import io.github.bootystar.autoconfigure.databind.jackson.anno.JsonEnc;
+import io.github.bootystar.starter.jackson.anno.JsonEnc;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.GenericTypeResolver;

@@ -1,4 +1,4 @@
-package io.github.bootystar.autoconfigure.databind.converter;
+package io.github.bootystar.starter.spring.converter;
 
 import org.springframework.core.convert.converter.Converter;
 
