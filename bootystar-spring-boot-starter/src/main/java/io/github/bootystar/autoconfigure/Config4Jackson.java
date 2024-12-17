@@ -1,6 +1,7 @@
 package io.github.bootystar.autoconfigure;
 
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -8,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import io.github.bootystar.autoconfigure.databind.jackson.temp.AnnoInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -34,7 +34,6 @@ public class Config4Jackson implements Ordered {
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
     private static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
-
 
     @Bean
     @ConditionalOnMissingBean(Jackson2ObjectMapperBuilderCustomizer.class)
@@ -73,7 +72,7 @@ public class Config4Jackson implements Ordered {
             builder.serializers(new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
 
             // 配置数据加解密解析器
-            builder.annotationIntrospector(new AnnoInterceptor());
+//            builder.annotationIntrospector(new AnnoInterceptor());
 
         };
     }

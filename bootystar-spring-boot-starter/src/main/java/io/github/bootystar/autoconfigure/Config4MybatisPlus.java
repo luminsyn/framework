@@ -3,10 +3,12 @@ package io.github.bootystar.autoconfigure;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import io.github.bootystar.autoconfigure.mybatisplus.DbInterceptor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -21,7 +23,6 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration(after = MybatisPlusAutoConfiguration.class)
 public class Config4MybatisPlus {
 
-
     @Bean
     @ConditionalOnMissingBean(MybatisPlusInterceptor.class)
     @ConditionalOnBean(MybatisPlusAutoConfiguration.class)
@@ -29,38 +30,48 @@ public class Config4MybatisPlus {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 //        interceptor.addInnerInterceptor(new DbInterceptor());
         log.debug("MybatisPlusInterceptor Configured");
+        optimisticLockerInnerInterceptor(interceptor);
+        paginationInnerInterceptor(interceptor);
+        blockAttackInnerInterceptor(interceptor);
         return interceptor;
     }
 
-    @ConditionalOnClass(PaginationInnerInterceptor.class)
-    @ConditionalOnBean(MybatisPlusInterceptor.class)
-    @Bean
-    public String paginationInnerInterceptor(MybatisPlusInterceptor interceptor) {
-        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
-        interceptor.addInnerInterceptor(paginationInnerInterceptor);
-        log.debug("PaginationInnerInterceptor Configured");
-        return null;
+    public void optimisticLockerInnerInterceptor(MybatisPlusInterceptor interceptor) {
+        try {
+            Class<?> clazz = Class.forName("com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor");
+            Object instance = clazz.getConstructor().newInstance();
+            interceptor.addInnerInterceptor((InnerInterceptor) instance);
+            log.debug("OptimisticLockerInnerInterceptor Configured");
+        }catch (Exception e) {
+            log.debug("OptimisticLockerInnerInterceptor not found, skip");
+        }
     }
 
-    @ConditionalOnClass(OptimisticLockerInnerInterceptor.class)
-    @ConditionalOnBean(MybatisPlusInterceptor.class)
-    @Bean
-    public String optimisticLockerInnerInterceptor(MybatisPlusInterceptor interceptor) {
-        OptimisticLockerInnerInterceptor optimisticLockerInnerInterceptor = new OptimisticLockerInnerInterceptor();
-        interceptor.addInnerInterceptor(optimisticLockerInnerInterceptor);
-        log.debug("OptimisticLockerInnerInterceptor Configured");
-        return null;
+    public void paginationInnerInterceptor(MybatisPlusInterceptor interceptor) {
+        try {
+            Class<?> clazz = Class.forName("com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor");
+            Object instance = clazz.getConstructor().newInstance();
+            interceptor.addInnerInterceptor((InnerInterceptor) instance);
+            log.debug("PaginationInnerInterceptor Configured");
+        }catch (Exception e) {
+            log.debug("PaginationInnerInterceptor not found, skip");
+        }
+
+
     }
 
 
-    @ConditionalOnClass(BlockAttackInnerInterceptor.class)
-    @ConditionalOnBean(MybatisPlusInterceptor.class)
-    @Bean
-    public String blockAttackInnerInterceptor(MybatisPlusInterceptor interceptor) {
-        BlockAttackInnerInterceptor blockAttackInnerInterceptor = new BlockAttackInnerInterceptor();
-        interceptor.addInnerInterceptor(blockAttackInnerInterceptor);
-        log.debug("BlockAttackInnerInterceptor Configured");
-        return null;
+
+
+    public void blockAttackInnerInterceptor(MybatisPlusInterceptor interceptor) {
+        try {
+            Class<?> clazz = Class.forName("com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor");
+            Object instance = clazz.getConstructor().newInstance();
+            interceptor.addInnerInterceptor((InnerInterceptor) instance);
+            log.debug("BlockAttackInnerInterceptor Configured");
+        }catch (Exception e) {
+            log.debug("BlockAttackInnerInterceptor not found, skip");
+        }
     }
 
 
