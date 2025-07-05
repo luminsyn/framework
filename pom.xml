@@ -6,25 +6,13 @@
 
     <groupId>io.github.bootystar</groupId>
     <artifactId>framework</artifactId>
-    <version>1.0.0</version>
-
-
-    <properties>
-        <!-- 全局版本控制，如果要修改版本号，修改此处即可-->
-<!--        <revision>1.0.3</revision>-->
-        <java.version>1.8</java.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
-
-
+    <version>1.1.0</version>
     <packaging>pom</packaging>
+
     <name>framework</name>
     <url>https://github.com/bootystar/framework</url>
-    <description>simple framework</description>
-    <!-- 开源签名证书 -->
+    <description>frameworks powered by bootystar</description>
+    
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -32,13 +20,13 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <!-- 仓库信息 -->
+    
     <scm>
         <connection>scm:git@github.com:bootystar/framework.git</connection>
         <developerConnection>scm:git@github.com:bootystar/framework.git</developerConnection>
         <url>https://github.com/bootystar/framework</url>
     </scm>
-    <!-- 开发人员信息 -->
+    
     <developers>
         <developer>
             <name>bootystar</name>
@@ -51,32 +39,76 @@
         </developer>
     </developers>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    
+    <build>
+        <plugins>
+            <!-- Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.10.0</version>
+                <configuration>
+                    <additionalJOptions>
+                        <!-- ignore java doc warnings -->
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                    </additionalJOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
     <profiles>
         <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <!-- 发布项目到 sonatype -->
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
+            <id>maven central</id>
             <build>
                 <plugins>
+                    <!-- GPG -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <!--跳过GPG签名-->
+                        <version>3.2.7</version>
                         <configuration>
-                            <skip>true</skip>
+                            <skip>false</skip>
                         </configuration>
                         <executions>
                             <execution>
@@ -88,78 +120,17 @@
                             </execution>
                         </executions>
                     </plugin>
-<!--                    &lt;!&ndash;全局版本控制插件&ndash;&gt;-->
-<!--                    <plugin>-->
-<!--                        <groupId>org.codehaus.mojo</groupId>-->
-<!--                        <artifactId>flatten-maven-plugin</artifactId>-->
-<!--                        <version>1.5.0</version>-->
-<!--                        <executions>-->
-<!--                            <execution>-->
-<!--                                <id>flatten</id>-->
-<!--                                <phase>process-resources</phase>-->
-<!--                                <goals>-->
-<!--                                    <goal>flatten</goal>-->
-<!--                                </goals>-->
-<!--                            </execution>-->
-<!--                            <execution>-->
-<!--                                <id>flatten.clean</id>-->
-<!--                                <phase>clean</phase>-->
-<!--                                <goals>-->
-<!--                                    <goal>clean</goal>-->
-<!--                                </goals>-->
-<!--                            </execution>-->
-<!--                        </executions>-->
-<!--                        <inherited>true</inherited>-->
-<!--                        <configuration>-->
-<!--                            &lt;!&ndash; 避免IDE将 .flattened-pom.xml 自动识别为功能模块 &ndash;&gt;-->
-<!--                            <updatePomFile>true</updatePomFile>-->
-<!--                            <flattenMode>resolveCiFriendliesOnly</flattenMode>-->
-<!--                        </configuration>-->
-<!--                    </plugin>-->
+                    <!-- central-publishing -->
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <!--是否自动检测发布-->
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-<!--                            <autoReleaseAfterClose>false</autoReleaseAfterClose>-->
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <configuration>
-                            <!-- jdk1.8要加上，1.7要去掉，否则会报错 -->
-                            <additionalJOptions>
-                                <additionalJOption>-Xdoclint:none</additionalJOption>
-                            </additionalJOptions>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
