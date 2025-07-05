@@ -11,7 +11,7 @@
 
     <name>framework</name>
     <url>https://github.com/bootystar/framework</url>
-    <description>frameworks powered by bootystar</description>
+    <description>framework powered by bootystar</description>
     
     <licenses>
         <license>
@@ -22,9 +22,9 @@
     </licenses>
     
     <scm>
-        <connection>scm:git@github.com:bootystar/framework.git</connection>
-        <developerConnection>scm:git@github.com:bootystar/framework.git</developerConnection>
         <url>https://github.com/bootystar/framework</url>
+        <connection>scm:git:https://github.com/bootystar/framework.git</connection>
+        <developerConnection>scm:git:https://github.com/bootystar/framework.git</developerConnection>
     </scm>
     
     <developers>
@@ -99,7 +99,7 @@
     
     <profiles>
         <profile>
-            <id>maven central</id>
+            <id>maven-central-release</id>
             <build>
                 <plugins>
                     <!-- GPG -->
