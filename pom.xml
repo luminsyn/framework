@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/bootystar/framework</url>
+    <url>https://github.com/bootystar</url>
     <description>framework powered by bootystar</description>
 
     <licenses>
@@ -35,9 +35,9 @@
     </developers>
 
     <scm>
-        <url>https://github.com/bootystar/framework</url>
         <connection>scm:git:https://github.com/bootystar/framework.git</connection>
-        <developerConnection>scm:git:https://github.com/bootystar/framework.git</developerConnection>
+        <developerConnection>scm:git:ssh://github.com:bootystar/framework.git</developerConnection>
+        <url>https://github.com/bootystar</url>
     </scm>
 
     <properties>
