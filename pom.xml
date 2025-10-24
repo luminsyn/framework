@@ -10,9 +10,9 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
+    <description>This parent POM was used for common configuration for multiple projects. It is now deprecated. The original sub-modules have been split into independent project repositories. This project is archived for commit history to facilitate tracing historical changes.</description>
     <url>https://github.com/luxmixus</url>
-    <description>framework powered by luxmixus</description>
-
+    
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -111,7 +111,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
