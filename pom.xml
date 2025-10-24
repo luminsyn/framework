@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.bootystar</groupId>
+    <groupId>io.github.luxmixus</groupId>
     <artifactId>framework</artifactId>
-    <version>1.2.0</version>
+    <version>1.0.0-SANPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>https://github.com/bootystar</url>
-    <description>framework powered by bootystar</description>
+    <url>https://github.com/luxmixus</url>
+    <description>framework powered by luxmixus</description>
 
     <licenses>
         <license>
@@ -23,10 +23,10 @@
 
     <developers>
         <developer>
-            <name>bootystar</name>
-            <email>bootystar@qq.com</email>
-            <organization>bootystar</organization>
-            <organizationUrl>https://github.com/bootystar</organizationUrl>
+            <name>luxmixus</name>
+            <email>604647004@qq.com</email>
+            <organization>luxmixus</organization>
+            <organizationUrl>https://github.com/luxmixus</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -35,9 +35,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/bootystar/framework.git</connection>
-        <developerConnection>scm:git:ssh://github.com:bootystar/framework.git</developerConnection>
-        <url>https://github.com/bootystar</url>
+        <connection>scm:git:https://github.com/luxmixus/framework.git</connection>
+        <developerConnection>scm:git:ssh://github.com:luxmixus/framework.git</developerConnection>
+        <url>https://github.com/luxmixus</url>
     </scm>
 
     <properties>
