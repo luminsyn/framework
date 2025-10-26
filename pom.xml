@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.luxmixus</groupId>
+    <groupId>io.github.luminsyn</groupId>
     <artifactId>framework</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>This parent POM was used for common configuration for multiple projects. It is now deprecated. The original sub-modules have been split into independent project repositories. This project is archived for commit history to facilitate tracing historical changes.</description>
-    <url>https://github.com/luxmixus</url>
+    <url>https://github.com/luminsyn</url>
     
     <licenses>
         <license>
@@ -23,10 +23,10 @@
 
     <developers>
         <developer>
-            <name>luxmixus</name>
+            <name>luminsyn</name>
             <email>604647004@qq.com</email>
-            <organization>luxmixus</organization>
-            <organizationUrl>https://github.com/luxmixus</organizationUrl>
+            <organization>luminsyn</organization>
+            <organizationUrl>https://github.com/luminsyn</organizationUrl>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -35,9 +35,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/luxmixus/framework.git</connection>
-        <developerConnection>scm:git:ssh://github.com:luxmixus/framework.git</developerConnection>
-        <url>https://github.com/luxmixus</url>
+        <connection>scm:git:https://github.com/luminsyn/framework.git</connection>
+        <developerConnection>scm:git:ssh://github.com:luminsyn/framework.git</developerConnection>
+        <url>https://github.com/luminsyn</url>
     </scm>
 
     <properties>
