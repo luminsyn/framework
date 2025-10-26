@@ -16,7 +16,7 @@
 
 ```xml
 <dependency>
-    <groupId>io.github.luminsyn</groupId>
+    <groupId>io.github.luminion</groupId>
     <artifactId>framework</artifactId>
     <version>latest</version>
 </dependency>
