@@ -7,21 +7,6 @@
 
 同时，此仓库也作为早期已弃用和拆分项目的提交记录存档，方便追溯历史变更。
 
-## 主要特性
-
-*   **统一配置管理**：通过父 POM 集中管理公共依赖和插件版本。
-*   **历史记录追溯**：保留了早期项目的完整提交历史，便于审计和参考。
-
-## 快速开始
-
-```xml
-<dependency>
-    <groupId>io.github.luminion</groupId>
-    <artifactId>framework</artifactId>
-    <version>latest</version>
-</dependency>
-```
-
 ## SNAPSHOT 仓库
 ```xml
 <repositories>
